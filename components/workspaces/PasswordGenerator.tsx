@@ -1,0 +1,136 @@
+"use client";
+
+import { useState, useCallback } from "react";
+import { useCopy } from "@/hooks/useCopy";
+import { useLang } from "@/components/providers/I18nProvider";
+import { OptionsBar, OptBlock, SegControl, Toggle } from "@/components/workspace/OptionsBar";
+
+type Length = 8 | 12 | 16 | 24 | 32;
+
+const CHARS = {
+  lower:   "abcdefghijklmnopqrstuvwxyz",
+  upper:   "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+  digits:  "0123456789",
+  symbols: "!@#$%^&*()_+-=[]{}|;:,.<>?",
+  ambiguous: "l1IO0B8",
+};
+
+function generate(length: number, opts: { upper: boolean; digits: boolean; symbols: boolean; noAmbiguous: boolean }): string {
+  let charset = CHARS.lower;
+  if (opts.upper) charset += CHARS.upper;
+  if (opts.digits) charset += CHARS.digits;
+  if (opts.symbols) charset += CHARS.symbols;
+  if (opts.noAmbiguous) charset = charset.split("").filter((c) => !CHARS.ambiguous.includes(c)).join("");
+  if (!charset) return "";
+  const arr = new Uint32Array(length);
+  crypto.getRandomValues(arr);
+  return Array.from(arr, (n) => charset[n % charset.length]).join("");
+}
+
+function entropy(pw: string): number {
+  const charsets = [/[a-z]/, /[A-Z]/, /[0-9]/, /[^a-zA-Z0-9]/];
+  const pool = charsets.reduce((s, r) => s + (r.test(pw) ? (r === charsets[0] || r === charsets[1] ? 26 : r === charsets[2] ? 10 : 32) : 0), 0);
+  return Math.floor(pw.length * Math.log2(pool || 1));
+}
+
+function strengthLabel(bits: number, lang: string): { label: string; color: string } {
+  if (bits < 40) return { label: lang === "fr" ? "faible" : "weak",    color: "text-danger" };
+  if (bits < 60) return { label: lang === "fr" ? "moyen" : "fair",     color: "text-hot" };
+  if (bits < 80) return { label: lang === "fr" ? "fort" : "strong",    color: "text-brand" };
+  return           { label: lang === "fr" ? "très fort" : "very strong", color: "text-brand" };
+}
+
+const COUNT = 5;
+
+export function PasswordGenerator() {
+  const { lang } = useLang();
+  const [length, setLength] = useState<Length>(16);
+  const [upper, setUpper] = useState(true);
+  const [digits, setDigits] = useState(true);
+  const [symbols, setSymbols] = useState(false);
+  const [noAmbiguous, setNoAmbiguous] = useState(false);
+  const [passwords, setPasswords] = useState<string[]>(() =>
+    Array.from({ length: COUNT }, () => generate(16, { upper: true, digits: true, symbols: false, noAmbiguous: false }))
+  );
+  const { copy, copied } = useCopy();
+
+  const regen = useCallback((l: Length, opts: { upper: boolean; digits: boolean; symbols: boolean; noAmbiguous: boolean }) => {
+    setPasswords(Array.from({ length: COUNT }, () => generate(l, opts)));
+  }, []);
+
+  const opts = { upper, digits, symbols, noAmbiguous };
+
+  const handleCopy = (pw: string, idx: number) => copy(pw, String(idx));
+
+  return (
+    <section className="mb-10">
+      <OptionsBar
+        action={
+          <button
+            onClick={() => regen(length, opts)}
+            className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all"
+          >
+            {lang === "fr" ? "générer ⏎" : "generate ⏎"}
+          </button>
+        }
+      >
+        <OptBlock label={lang === "fr" ? "longueur" : "length"}>
+          <SegControl
+            options={[8, 12, 16, 24, 32] as Length[]}
+            value={length}
+            onChange={(v) => { setLength(v as Length); regen(v as Length, opts); }}
+          />
+        </OptBlock>
+        <OptBlock label="A-Z">
+          <Toggle on={upper} onChange={(v) => { setUpper(v); regen(length, { ...opts, upper: v }); }} />
+        </OptBlock>
+        <OptBlock label="0-9">
+          <Toggle on={digits} onChange={(v) => { setDigits(v); regen(length, { ...opts, digits: v }); }} />
+        </OptBlock>
+        <OptBlock label="!@#">
+          <Toggle on={symbols} onChange={(v) => { setSymbols(v); regen(length, { ...opts, symbols: v }); }} />
+        </OptBlock>
+        <OptBlock label={lang === "fr" ? "sans ambig." : "no ambig."}>
+          <Toggle on={noAmbiguous} onChange={(v) => { setNoAmbiguous(v); regen(length, { ...opts, noAmbiguous: v }); }} />
+        </OptBlock>
+      </OptionsBar>
+
+      <div className="border border-line">
+        <div className="flex items-center gap-4 px-[14px] py-[10px] border-b border-line bg-bg text-[12px]">
+          <span className="font-mono">
+            <span className="text-dim">// </span>
+            <span className="text-fg">{lang === "fr" ? "mots de passe" : "passwords"}</span>
+          </span>
+          <span className="font-mono text-[11px] text-dim">{COUNT} suggestions</span>
+        </div>
+
+        <div className="bg-bg-code divide-y divide-line">
+          {passwords.map((pw, idx) => {
+            const bits = entropy(pw);
+            const { label, color } = strengthLabel(bits, lang);
+            return (
+              <div
+                key={idx}
+                className="group flex items-center gap-4 px-[18px] py-[13px] hover:bg-bg-2 transition-colors cursor-pointer"
+                onClick={() => handleCopy(pw, idx)}
+              >
+                <span className="font-mono text-[11px] text-dim-2 w-6 shrink-0">{String(idx + 1).padStart(2, "0")}</span>
+                <span className="font-mono text-[13px] text-fg tracking-[0.06em] flex-1 break-all">{pw}</span>
+                <span className={`font-mono text-[11px] ${color} shrink-0 w-16 text-right`}>{label}</span>
+                <span className="font-mono text-[11px] text-dim shrink-0 w-12 text-right">{bits}b</span>
+                <span className="font-mono text-[11px] text-dim opacity-0 group-hover:opacity-100 transition-opacity ml-1 w-12 text-right">
+                  {copied === String(idx) ? "✓" : (lang === "fr" ? "copier" : "copy")}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center gap-4 px-[14px] py-2 border-t border-line bg-bg font-mono text-[11px] text-dim">
+          <span>crypto.getRandomValues()</span>
+          <span>{lang === "fr" ? "cliquer pour copier" : "click to copy"}</span>
+        </div>
+      </div>
+    </section>
+  );
+}
