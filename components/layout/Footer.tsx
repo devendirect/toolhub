@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n";
 import { useLang } from "@/components/providers/I18nProvider";
 import { LogoMark } from "@/components/brand/LogoMark";
 import { CATEGORIES } from "@/lib/tools";
+import { localePath } from "@/lib/localePath";
 
 export function Footer() {
   const { lang } = useLang();
@@ -39,11 +40,11 @@ export function Footer() {
             {toolCats.map((c) => (
               <Link
                 key={c.id}
-                href={`/tools/${c.id}`}
+                href={localePath(lang, `/tools/${c.id}`)}
                 className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150"
               >
                 <span className="mr-2 text-dim">{c.glyph}</span>
-                {c.label[lang]}
+                {c.label[lang].toLowerCase()}
               </Link>
             ))}
           </div>
@@ -51,10 +52,13 @@ export function Footer() {
           {/* Légal & infos */}
           <div className="flex flex-col gap-3">
             <div className="font-mono text-[11px] text-dim">// {lang === "fr" ? "infos" : "info"}</div>
-            <Link href="/about" className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
+            <Link href={localePath(lang, "/faq")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
+              faq
+            </Link>
+            <Link href={localePath(lang, "/about")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
               {i.about}
             </Link>
-            <Link href="/privacy" className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
+            <Link href={localePath(lang, "/privacy")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
               {lang === "fr" ? "vie privée" : "privacy"}
             </Link>
             <a

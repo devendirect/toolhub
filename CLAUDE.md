@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-**toolhub** (nom provisoire — centraliser la marque dans une constante `BRAND_NAME`) est une boîte à outils web tout-en-un (~25 micro-outils, gratuits, sans inscription). Stack : **Next.js App Router + TypeScript + Tailwind CSS + shadcn/ui**.
+**utilisio** (`BRAND_NAME` dans `lib/brand.ts`) est une boîte à outils web tout-en-un (~25 micro-outils, gratuits, sans inscription). Stack : **Next.js App Router + TypeScript + Tailwind CSS + shadcn/ui**.
 
 Le prototype de référence visuelle est dans `docs/design/` (HTML standalone, ne pas modifier). Le brief complet est dans `docs/BRIEF.md`.
 

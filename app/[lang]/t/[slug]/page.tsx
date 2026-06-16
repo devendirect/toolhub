@@ -1,14 +1,14 @@
 import { notFound } from "next/navigation";
-import { TOOLS } from "@/lib/tools";
+import { TOOLS, CATEGORIES } from "@/lib/tools";
+import { SITE_URL } from "@/lib/brand";
 import { ToolPageClient } from "@/components/tool/ToolPageClient";
+import { toolJsonLd, breadcrumbJsonLd, faqJsonLd } from "@/lib/jsonld";
 import type { Metadata } from "next";
 import type { Lang } from "@/lib/types";
 
 interface Props {
   params: Promise<{ lang: string; slug: string }>;
 }
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export function generateStaticParams() {
   return TOOLS.flatMap((t) => [
@@ -27,14 +27,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: tool.name[l],
     description: tool.desc[l],
+    keywords: tool.tags,
     alternates: {
       canonical: `${SITE_URL}/${l}/t/${slug}`,
       languages: {
         en: `${SITE_URL}/en/t/${slug}`,
         fr: `${SITE_URL}/fr/t/${slug}`,
+        "x-default": `${SITE_URL}/en/t/${slug}`,
       },
     },
     openGraph: {
+      title: tool.name[l],
+      description: tool.desc[l],
+      url: `${SITE_URL}/${l}/t/${slug}`,
+    },
+    twitter: {
+      card: "summary",
       title: tool.name[l],
       description: tool.desc[l],
     },
@@ -43,8 +51,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ToolPage({ params }: Props) {
-  const { slug } = await params;
+  const { lang, slug } = await params;
   const tool = TOOLS.find((t) => t.slug === slug);
   if (!tool) notFound();
-  return <ToolPageClient tool={tool} />;
+
+  const l = (lang === "fr" ? "fr" : "en") satisfies Lang;
+
+  const catLabel = CATEGORIES.find((c) => c.id === tool.cat)?.label[l] ?? "";
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(toolJsonLd(tool, l)) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd(tool, l, catLabel)) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(tool, l)) }}
+      />
+      <ToolPageClient tool={tool} />
+    </>
+  );
 }

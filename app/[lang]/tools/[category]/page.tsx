@@ -1,19 +1,35 @@
 import { notFound } from "next/navigation";
 import { CATEGORIES } from "@/lib/tools";
-import { BRAND_NAME } from "@/lib/brand";
+import { SITE_URL } from "@/lib/brand";
 import { CatalogPageClient } from "@/components/catalog/CatalogPageClient";
 import type { Metadata } from "next";
+import type { Lang } from "@/lib/types";
 
 interface Props {
   params: Promise<{ lang: string; category: string }>;
 }
 
-const CATEGORY_DESCRIPTIONS: Record<string, string> = {
-  file:   "File conversion tools: image converter, PDF merge, audio and video converter. Free, no upload required.",
-  dev:    "Developer tools: JSON formatter, Base64 encoder, UUID generator, QR code generator, regex tester, IP lookup and more.",
-  text:   "Text utilities: case converter, URL encoder, HTML entity encoder, word counter, line break remover.",
-  design: "Design tools: color palette generator, CSS gradient builder, password generator.",
-  seo:    "SEO and marketing tools: meta tag preview for Google, Facebook and Twitter; on-page SEO analyzer with scoring.",
+const CATEGORY_DESCRIPTIONS: Record<string, Record<Lang, string>> = {
+  file: {
+    en: "File conversion tools: image converter, PDF merge, audio and video converter. Free, no upload required.",
+    fr: "Outils de conversion de fichiers : convertisseur d'images, fusion PDF, convertisseur audio et vidéo. Gratuit, sans envoi sur un serveur.",
+  },
+  dev: {
+    en: "Developer tools: JSON formatter, Base64 encoder, UUID generator, QR code generator, regex tester, IP lookup and more.",
+    fr: "Outils pour développeurs : formateur JSON, encodeur Base64, générateur UUID, QR code, testeur de regex, recherche IP et plus.",
+  },
+  text: {
+    en: "Text utilities: case converter, URL encoder, HTML entity encoder, word counter, line break remover.",
+    fr: "Utilitaires texte : convertisseur de casse, encodeur URL, entités HTML, compteur de mots, suppression de sauts de ligne.",
+  },
+  design: {
+    en: "Design tools: color palette generator, CSS gradient builder, password generator.",
+    fr: "Outils design : générateur de palette de couleurs, créateur de dégradés CSS, générateur de mots de passe.",
+  },
+  seo: {
+    en: "SEO and marketing tools: meta tag preview for Google, Facebook and X; on-page SEO analyzer with scoring.",
+    fr: "Outils SEO et marketing : aperçu des balises meta pour Google, Facebook et X ; analyseur SEO avec score de page.",
+  },
 };
 
 export function generateStaticParams() {
@@ -24,12 +40,31 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { category } = await params;
+  const { lang, category } = await params;
+  const l = (lang === "fr" ? "fr" : "en") satisfies Lang;
   const cat = CATEGORIES.find((c) => c.id === category);
   if (!cat) return {};
+
+  const label = cat.label[l];
+  const title = `${label} tools`;
+  const description = CATEGORY_DESCRIPTIONS[category]?.[l] ?? `${label} tools on utilisio. Free, no signup.`;
+
   return {
-    title: `${cat.label.en} tools — ${BRAND_NAME}`,
-    description: CATEGORY_DESCRIPTIONS[category] ?? `${cat.label.en} tools on ${BRAND_NAME}. Free, no signup.`,
+    title,
+    description,
+    alternates: {
+      canonical: `${SITE_URL}/${l}/tools/${category}`,
+      languages: {
+        en: `${SITE_URL}/en/tools/${category}`,
+        fr: `${SITE_URL}/fr/tools/${category}`,
+        "x-default": `${SITE_URL}/en/tools/${category}`,
+      },
+    },
+    openGraph: {
+      title,
+      description,
+      url: `${SITE_URL}/${l}/tools/${category}`,
+    },
   };
 }
 

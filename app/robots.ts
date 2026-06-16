@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/brand";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 const indexing = process.env.INDEXING_ENABLED === "true";
 
 export default function robots(): MetadataRoute.Robots {
