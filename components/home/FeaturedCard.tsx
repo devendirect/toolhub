@@ -29,8 +29,8 @@ export function FeaturedCard({ tool, lang, catLabel, openLabel, mostUsedLabel }:
 
       {/* Mid */}
       <div>
-        <div className="text-[22px] font-medium tracking-[-0.02em] mb-[6px]">{tool.name[lang]}</div>
-        <div className="text-[14px] text-fg-1 mb-[14px] max-w-[60ch]">{tool.desc[lang]}</div>
+        <h3 className="text-[22px] font-medium tracking-[-0.02em] mb-[6px]">{tool.name[lang]}</h3>
+        <p className="text-[14px] text-fg-1 mb-[14px] max-w-[60ch]">{tool.desc[lang]}</p>
         <div className="flex flex-wrap gap-[6px]">
           {tool.tags.map((tag) => (
             <span key={tag} className="font-mono text-[11px] text-dim border border-line rounded-[3px] px-2 py-[1px]">

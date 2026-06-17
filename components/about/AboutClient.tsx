@@ -111,9 +111,9 @@ export function AboutClient() {
       <div className="flex flex-col gap-8">
         {SECTIONS.map((section) => (
           <div key={section.titleEn}>
-            <div className="font-mono text-[11px] text-dim uppercase tracking-[0.1em] mb-3 border-b border-line pb-2">
+            <h2 className="font-mono text-[11px] text-dim uppercase tracking-[0.1em] mb-3 border-b border-line pb-2">
               {lang === "fr" ? section.titleFr : section.titleEn}
-            </div>
+            </h2>
             <div className="divide-y divide-line border border-line">
               {section.libs.map((lib) => (
                 <div key={lib.name} className="flex items-start gap-4 px-4 py-3 hover:bg-bg-1 transition-colors">

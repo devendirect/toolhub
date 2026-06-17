@@ -188,7 +188,7 @@ export default async function PrivacyPage({ params }: Props) {
       <div className="flex flex-col gap-8">
         {page.sections.map((section, i) => (
           <section key={i}>
-            <div className="font-mono text-[11px] text-brand mb-3">{section.heading}</div>
+            <h2 className="font-mono text-[11px] text-brand mb-3">{section.heading}</h2>
             <div className="flex flex-col gap-3">
               {section.content.map((block, j) =>
                 typeof block === "string" ? (

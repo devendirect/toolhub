@@ -33,6 +33,7 @@ import { GenericWorkspace } from "@/components/workspaces/GenericWorkspace";
 import { SectionHead } from "@/components/home/SectionHead";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { localePath } from "@/lib/localePath";
+import { TOOLS_CONTENT } from "@/lib/tools-content";
 
 function WorkspaceSkeleton() {
   return <div className="border border-line min-h-[420px] bg-bg-1 animate-pulse" />;
@@ -96,6 +97,31 @@ export function ToolPageClient({ tool }: { tool: Tool }) {
         <Workspace tool={tool} />
       </ErrorBoundary>
 
+      {/* Tool content */}
+      {(() => {
+        const content = TOOLS_CONTENT[tool.slug];
+        if (!content) return null;
+        return (
+          <section className="mb-10">
+            <SectionHead label={`// ${lang === "fr" ? "à propos de cet outil" : "about this tool"}`} />
+            <div className="border border-line bg-bg-1 p-6">
+              <p className="text-[13px] text-fg-1 leading-relaxed mb-6">{content.desc[lang]}</p>
+              <h3 className="font-mono text-[11px] text-dim mb-3">
+                {"// "}{lang === "fr" ? "cas d'usage" : "use cases"}
+              </h3>
+              <ul className="flex flex-col gap-2">
+                {content.useCases[lang].map((item, idx) => (
+                  <li key={idx} className="flex gap-3 text-[13px] text-fg-1 leading-relaxed">
+                    <span className="text-dim shrink-0">—</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        );
+      })()}
+
       {/* Related tools */}
       {related.length > 0 && (
         <section className="mb-10">
@@ -111,8 +137,8 @@ export function ToolPageClient({ tool }: { tool: Tool }) {
                 >
                   <span className="absolute top-5 right-5 font-mono text-[14px] text-dim transition-all duration-150 group-hover:text-brand group-hover:translate-x-1">→</span>
                   <span className="font-mono text-[22px] text-fg tracking-[0.1em] mb-3 transition-colors duration-150 group-hover:text-brand">{rel.glyph}</span>
-                  <span className="text-[15px] font-medium tracking-[-0.015em] mb-[6px]">{rel.name[lang]}</span>
-                  <span className="text-[13px] text-fg-1 leading-[1.5] flex-1">{rel.desc[lang]}</span>
+                  <h3 className="text-[15px] font-medium tracking-[-0.015em] mb-[6px]">{rel.name[lang]}</h3>
+                  <p className="text-[13px] text-fg-1 leading-[1.5] flex-1">{rel.desc[lang]}</p>
                 </Link>
               );
             })}
