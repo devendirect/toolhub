@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BRAND_NAME, SITE_URL } from "@/lib/brand";
 import type { Lang } from "@/lib/types";
+import { FaqList } from "@/components/FaqList";
 
 interface Props {
   params: Promise<{ lang: string }>;
@@ -137,22 +138,7 @@ export default async function FaqPage({ params }: Props) {
             : `Everything you need to know about ${BRAND_NAME}.`}
         </p>
 
-        <div className="flex flex-col divide-y divide-line border border-line">
-          {items.map((item, i) => (
-            <details key={i} className="group px-5 py-4">
-              <summary className="flex items-center justify-between gap-4 cursor-pointer list-none font-mono text-[13px] text-fg font-medium select-none">
-                <h2 className="text-[13px] font-medium">
-                  <span className="text-brand mr-2">{">"}</span>
-                  {item.q}
-                </h2>
-                <span className="text-dim text-[16px] transition-transform duration-150 group-open:rotate-45 shrink-0">+</span>
-              </summary>
-              <p className="mt-3 text-[13px] text-fg-1 leading-relaxed pl-5">
-                {item.a}
-              </p>
-            </details>
-          ))}
-        </div>
+        <FaqList items={items} headingAs="h2" />
       </div>
     </>
   );

@@ -103,8 +103,8 @@ export function AboutClient() {
         </h1>
         <p className="font-mono text-[13px] text-dim leading-relaxed">
           {lang === "fr"
-            ? "toolhub repose sur d'excellentes librairies open-source. Les composants sous licence LGPL (FFmpeg) sont utilisés sans modification et peuvent être remplacés en changeant l'URL du WASM."
-            : "toolhub is built on top of excellent open-source libraries. LGPL-licensed components (FFmpeg) are used unmodified and can be swapped by replacing the WASM URL."}
+            ? "utilisio repose sur d'excellentes librairies open-source. Les composants sous licence LGPL (FFmpeg) sont utilisés sans modification et peuvent être remplacés en changeant l'URL du WASM."
+            : "utilisio is built on top of excellent open-source libraries. LGPL-licensed components (FFmpeg) are used unmodified and can be swapped by replacing the WASM URL."}
         </p>
       </div>
 

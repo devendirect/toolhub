@@ -8,8 +8,8 @@ interface ToolContent {
 export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   "json-formatter": {
     desc: {
-      en: "The JSON Formatter instantly parses, indents and validates any JSON payload. Whether you're debugging an API response, cleaning up a config file, or inspecting a webhook body, paste your raw JSON and get a properly formatted, human-readable result in one click. Syntax errors are flagged with the exact line number so you can fix them without hunting through minified output.",
-      fr: "Le formateur JSON analyse, indente et valide instantanément n'importe quelle donnée JSON. Que vous déboguiez une réponse d'API, nettoyiez un fichier de configuration ou inspectiez une charge utile de webhook, collez votre JSON brut et obtenez une version lisible et correctement formatée en un clic. Les erreurs de syntaxe sont signalées avec le numéro de ligne exact.",
+      en: "The quickest way to format and validate JSON online — no login, no upload, works offline once loaded. Paste any raw JSON payload and get it back properly indented and validated in one click. Whether you're reading a minified API response, cleaning up a config file, or inspecting a webhook body, syntax errors are flagged with the exact line number so you can fix them without hunting through minified output.",
+      fr: "Le moyen le plus rapide de formater et valider du JSON en ligne — sans compte, sans envoi de données, fonctionne hors ligne une fois chargé. Collez n'importe quel JSON brut et récupérez-le correctement indenté et validé en un clic. Que vous lisiez une réponse d'API minifiée, nettoyiez un fichier de configuration ou inspectiez une charge utile de webhook, les erreurs de syntaxe sont signalées avec le numéro de ligne exact.",
     },
     useCases: {
       en: ["Debugging REST or GraphQL API responses", "Cleaning up minified JSON config files before editing", "Validating JSON before sending it to a webhook or database", "Reading JWT payloads without a dedicated decoder"],
@@ -18,8 +18,8 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "image-converter": {
     desc: {
-      en: "The Image Converter lets you change image formats directly in your browser — no software to install, no file upload required. Convert JPG to WebP, PNG to AVIF, or any combination of the four supported formats. You can also resize and adjust quality on export to hit the exact file size you need for web optimization, social media or email.",
-      fr: "Le convertisseur d'images vous permet de changer de format directement dans votre navigateur — sans logiciel à installer, sans envoi sur un serveur. Convertissez JPG en WebP, PNG en AVIF, ou n'importe quelle combinaison des quatre formats supportés. Vous pouvez également redimensionner et ajuster la qualité à l'export.",
+      en: "Convert images between JPG, PNG, WebP and AVIF directly in your browser — no file uploaded, no account needed, no software to install. Drop an image, pick a target format, and download the result instantly. You can also resize and adjust export quality at the same time to hit the exact file size you need for web optimization, social media or email.",
+      fr: "Convertissez des images entre JPG, PNG, WebP et AVIF directement dans votre navigateur — aucun fichier envoyé, aucun compte requis, aucun logiciel à installer. Déposez une image, choisissez un format cible, et téléchargez le résultat instantanément. Vous pouvez également redimensionner et ajuster la qualité à l'export pour obtenir exactement la taille de fichier souhaitée.",
     },
     useCases: {
       en: ["Converting PNG screenshots to WebP for faster web page loading", "Resizing and compressing images to meet social media upload limits", "Converting AVIF files to JPG for compatibility with older software", "Generating multiple format variants of the same image for a <picture> element"],
@@ -58,8 +58,8 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "pdf-merge": {
     desc: {
-      en: "PDF Merge combines multiple PDF files into a single document in seconds. Drop your PDFs, drag to reorder them, and download the merged result — all without any file leaving your browser. Useful for assembling invoices, contracts, reports or any collection of documents that needs to be sent as one coherent file.",
-      fr: "Fusion de PDF combine plusieurs fichiers PDF en un seul document en quelques secondes. Déposez vos PDF, faites glisser pour les réordonner, et téléchargez le résultat — sans qu'aucun fichier ne quitte votre navigateur. Utile pour assembler des factures, des contrats, des rapports ou tout ensemble de documents à envoyer en un seul fichier.",
+      en: "The simplest way to combine multiple PDF files online without sending them to a server — drop your PDFs, drag to reorder, and download the merged document instantly. All processing runs locally in your browser using pdf-lib, which makes it safe for confidential documents like contracts, invoices or medical records.",
+      fr: "Le moyen le plus simple de fusionner plusieurs PDF en ligne sans les envoyer sur un serveur — déposez vos PDF, réordonnez-les par glisser-déposer, et téléchargez le document fusionné instantanément. Tout le traitement s'effectue localement dans votre navigateur via pdf-lib, ce qui le rend sûr pour des documents confidentiels comme des contrats, factures ou dossiers médicaux.",
     },
     useCases: {
       en: ["Combining monthly invoices into a single PDF for accounting", "Merging multiple contract pages or annexes into one document to sign", "Assembling a portfolio or project report from separate PDF sections", "Reordering pages by splitting PDFs and re-merging in the desired order"],
@@ -68,8 +68,8 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "qr-generator": {
     desc: {
-      en: "The QR Code Generator creates scannable QR codes from any URL, plain text, email address or phone number — instantly, in your browser. Export as SVG for crisp quality at any print size, or as PNG for embedding in images and documents. No server, no API key, no usage limits.",
-      fr: "Le générateur de QR code crée des codes QR scannables depuis n'importe quelle URL, texte, adresse e-mail ou numéro de téléphone — instantanément, dans votre navigateur. Exportez en SVG pour une qualité parfaite quelle que soit la taille d'impression, ou en PNG pour l'intégration dans des images et des documents.",
+      en: "Create a QR code from any URL or text in seconds — free, offline, no account required. The generator runs entirely in your browser so no QR code is ever stored or tracked. Export as SVG for crisp quality at any print size, or PNG for embedding in images and documents.",
+      fr: "Créez un QR code depuis n'importe quelle URL ou texte en quelques secondes — gratuit, hors ligne, sans compte. Le générateur s'exécute entièrement dans votre navigateur, aucun QR code n'est stocké ni tracé. Exportez en SVG pour une qualité parfaite à n'importe quelle taille d'impression, ou en PNG pour l'intégration dans des images et des documents.",
     },
     useCases: {
       en: ["Creating QR codes for business cards, posters or product packaging", "Linking physical items to their online documentation or warranty page", "Generating a QR code to share Wi-Fi network credentials", "Adding a scannable link to a presentation slide or conference badge"],
@@ -218,8 +218,8 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "password-generator": {
     desc: {
-      en: "The Password Generator creates cryptographically secure passwords using the Web Crypto API — drawing from your operating system's secure entropy source, not a predictable algorithm. Customize the length and toggle uppercase, lowercase, numbers and symbols to meet any password policy. Nothing is transmitted; everything stays in your browser.",
-      fr: "Le générateur de mot de passe crée des mots de passe cryptographiquement sécurisés via la Web Crypto API — en s'appuyant sur la source d'entropie sécurisée de votre système d'exploitation, pas sur un algorithme prédictible. Personnalisez la longueur et activez majuscules, minuscules, chiffres et symboles. Rien n'est transmis ; tout reste dans votre navigateur.",
+      en: "Generate a secure, random password instantly — runs entirely in your browser, never transmitted to any server. Uses the Web Crypto API to draw from your OS's cryptographically secure entropy source, not a predictable algorithm. Set the length and independently toggle uppercase, lowercase, numbers and symbols to match any password policy.",
+      fr: "Générez un mot de passe sécurisé et aléatoire instantanément — s'exécute entièrement dans votre navigateur, jamais transmis à un serveur. Utilise la Web Crypto API pour s'appuyer sur la source d'entropie cryptographiquement sécurisée de votre système d'exploitation, pas sur un algorithme prédictible. Définissez la longueur et activez indépendamment majuscules, minuscules, chiffres et symboles.",
     },
     useCases: {
       en: ["Generating a strong, unique password for a new account or service", "Creating multiple secure passwords for a batch of test accounts", "Generating a random API key, secret token or session ID", "Verifying that a password meets specific complexity requirements by generating examples"],

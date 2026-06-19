@@ -34,6 +34,8 @@ import { SectionHead } from "@/components/home/SectionHead";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { localePath } from "@/lib/localePath";
 import { TOOLS_CONTENT } from "@/lib/tools-content";
+import { toolFaqItems } from "@/lib/faq";
+import { FaqList } from "@/components/FaqList";
 
 function WorkspaceSkeleton() {
   return <div className="border border-line min-h-[420px] bg-bg-1 animate-pulse" />;
@@ -118,6 +120,18 @@ export function ToolPageClient({ tool }: { tool: Tool }) {
                 ))}
               </ul>
             </div>
+          </section>
+        );
+      })()}
+
+      {/* FAQ */}
+      {(() => {
+        const faqItems = toolFaqItems(tool).map((item) => ({ q: item.q[lang], a: item.a[lang] }));
+        if (!faqItems.length) return null;
+        return (
+          <section className="mb-10">
+            <SectionHead label={`// ${lang === "fr" ? "questions fréquentes" : "faq"}`} />
+            <FaqList items={faqItems} headingAs="h3" />
           </section>
         );
       })()}
