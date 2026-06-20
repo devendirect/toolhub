@@ -20,7 +20,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error("[toolhub] workspace error:", error, info.componentStack);
+    console.error("[utilisio] workspace error:", error, info.componentStack);
   }
 
   render() {

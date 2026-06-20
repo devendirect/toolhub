@@ -32,7 +32,7 @@ export function QrGenerator() {
 
   const { copy } = useCopy();
   const trackRun = useTrackRun("qr-generator", "dev");
-  const [text, setText] = useState("https://toolhub.io");
+  const [text, setText] = useState("https://utilisio.com");
   const [format, setFormat] = useState<Format>("svg");
   const [ec, setEc] = useState<EC>("M");
   const [size, setSize] = useState<Size>(256);

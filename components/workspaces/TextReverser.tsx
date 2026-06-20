@@ -10,7 +10,7 @@ import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Mode = "chars" | "words" | "lines";
 
-const SAMPLE = "Hello, World!\nToolhub is fast.";
+const SAMPLE = "Hello, World!\nUtilisio is fast.";
 
 export function TextReverser() {
   const { lang } = useLang();

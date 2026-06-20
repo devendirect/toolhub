@@ -7,8 +7,6 @@ import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/Options
 import { downloadBlob, downloadUrl } from "@/lib/download";
 import { useTrackRun } from "@/hooks/useTrackRun";
 
-const AFFILIATE_CANVA = process.env.NEXT_PUBLIC_AFFILIATE_CANVA;
-
 type Size = 16 | 32 | 48 | 64;
 const SIZES: Size[] = [16, 32, 48, 64];
 
@@ -177,30 +175,6 @@ export function FaviconGenerator() {
           {i.localCanvas}
         </div>
       </div>
-
-      {AFFILIATE_CANVA && (
-        <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
-          <span className="font-mono text-[20px] shrink-0">◐</span>
-          <div className="flex flex-col gap-1">
-            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
-              {lang === "fr" ? "votre branding complet" : "your full branding"}
-            </span>
-            <p className="text-[13px] text-fg-1">
-              {lang === "fr"
-                ? "Favicon créé — allez plus loin avec un logo et une identité visuelle complète sur Canva."
-                : "Favicon created — go further with a full logo and visual identity on Canva."}
-            </p>
-            <a
-              href={AFFILIATE_CANVA}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
-            >
-              {lang === "fr" ? "Essayer Canva Pro gratuitement →" : "Try Canva Pro for free →"}
-            </a>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

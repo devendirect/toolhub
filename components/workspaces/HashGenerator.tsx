@@ -54,7 +54,7 @@ export function HashGenerator() {
   const { lang } = useLang();
   const i = t(lang);
   const [mode, setMode] = useState<InputMode>("text");
-  const [text, setText] = useState("Hello, toolhub!");
+  const [text, setText] = useState("Hello, utilisio!");
   const [file, setFile] = useState<File | null>(null);
   const [hashes, setHashes] = useState<HashResult[]>([]);
   const [computing, setComputing] = useState(false);

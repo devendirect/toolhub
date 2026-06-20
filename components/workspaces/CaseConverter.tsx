@@ -10,7 +10,7 @@ import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Case = "upper" | "lower" | "title" | "camel" | "pascal" | "snake" | "kebab";
 
-const SAMPLE = "Hello World from toolhub — the developer toolkit";
+const SAMPLE = "Hello World from utilisio — the developer toolkit";
 
 function splitWords(str: string): string[] {
   return str

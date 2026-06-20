@@ -6,8 +6,6 @@ import { t } from "@/lib/i18n";
 import { useTrackRun } from "@/hooks/useTrackRun";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
 
-const AFFILIATE_JETBRAINS = process.env.NEXT_PUBLIC_AFFILIATE_JETBRAINS;
-
 const TR = {
   fr: {
     testString:      "texte de test",
@@ -71,8 +69,8 @@ const SAMPLES = [
   { label: "date",    pattern: "\\d{4}-\\d{2}-\\d{2}", flags: "g" },
 ];
 
-const TEST_TEXT = `Contact us at hello@toolhub.io or support@example.com.
-Visit https://toolhub.io or https://github.com/toolhub for more.
+const TEST_TEXT = `Contact us at hello@utilisio.io or support@example.com.
+Visit https://utilisio.io or https://github.com/utilisio for more.
 Colors: #00e08a, #7c5cff, #fff.
 Release date: 2026-06-13.`;
 
@@ -226,30 +224,6 @@ export function RegexTester() {
           </div>
         </Pane>
       </div>
-
-      {AFFILIATE_JETBRAINS && matches.length > 0 && (
-        <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
-          <span className="font-mono text-[20px] shrink-0">&lt;/&gt;</span>
-          <div className="flex flex-col gap-1">
-            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
-              {lang === "fr" ? "votre IDE" : "your ide"}
-            </span>
-            <p className="text-[13px] text-fg-1">
-              {lang === "fr"
-                ? "Ces outils sont utiles en dehors du code. Dans le code, JetBrains fait la même chose — et bien plus."
-                : "These tools are handy outside your editor. Inside, JetBrains does the same — and much more."}
-            </p>
-            <a
-              href={AFFILIATE_JETBRAINS}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
-            >
-              {lang === "fr" ? "Essayer JetBrains gratuitement →" : "Try JetBrains for free →"}
-            </a>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

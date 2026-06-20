@@ -10,9 +10,7 @@ import { Pane, PaneBtn } from "@/components/workspace/Pane";
 import { Editor } from "@/components/workspace/Editor";
 import { useTrackRun } from "@/hooks/useTrackRun";
 
-const AFFILIATE_JETBRAINS = process.env.NEXT_PUBLIC_AFFILIATE_JETBRAINS;
-
-const SAMPLE = `{"user":{"id":42,"name":"Ada Lovelace","email":"ada@example.com","roles":["admin","engineer"],"meta":{"created_at":"2026-04-18T09:14:00Z","plan":"pro","seats":12}},"projects":[{"slug":"toolhub","status":"active"},{"slug":"engine","status":"archived"}]}`;
+const SAMPLE = `{"user":{"id":42,"name":"Ada Lovelace","email":"ada@example.com","roles":["admin","engineer"],"meta":{"created_at":"2026-04-18T09:14:00Z","plan":"pro","seats":12}},"projects":[{"slug":"utilisio","status":"active"},{"slug":"engine","status":"archived"}]}`;
 
 function sortDeep(v: unknown): unknown {
   if (Array.isArray(v)) return v.map(sortDeep);
@@ -148,30 +146,6 @@ export function JsonFormatter() {
           <Editor value={output} readOnly />
         </Pane>
       </div>
-
-      {AFFILIATE_JETBRAINS && parsed && (
-        <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
-          <span className="font-mono text-[20px] shrink-0">&lt;/&gt;</span>
-          <div className="flex flex-col gap-1">
-            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
-              {lang === "fr" ? "votre IDE" : "your ide"}
-            </span>
-            <p className="text-[13px] text-fg-1">
-              {lang === "fr"
-                ? "Ces outils sont utiles en dehors du code. Dans le code, JetBrains fait la même chose — et bien plus."
-                : "These tools are handy outside your editor. Inside, JetBrains does the same — and much more."}
-            </p>
-            <a
-              href={AFFILIATE_JETBRAINS}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
-            >
-              {lang === "fr" ? "Essayer JetBrains gratuitement →" : "Try JetBrains for free →"}
-            </a>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

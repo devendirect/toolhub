@@ -39,7 +39,7 @@ function decodeB64(str: string): string {
 export function Base64Tool() {
   const { lang } = useLang();
   const i = t(lang);
-  const { mode, setMode, input, setInput, output, error, swap } = useBidirectionalConverter(encodeB64, decodeB64, "Hello, toolhub!");
+  const { mode, setMode, input, setInput, output, error, swap } = useBidirectionalConverter(encodeB64, decodeB64, "Hello, utilisio!");
   const { copy } = useCopy();
   const trackRun = useTrackRun("base64", "dev");
   const inputBytes = useMemo(() => new TextEncoder().encode(input).length, [input]);

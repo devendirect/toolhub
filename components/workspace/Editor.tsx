@@ -4,7 +4,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { json } from "@codemirror/lang-json";
 import { EditorView } from "@codemirror/view";
 
-const toolhubTheme = EditorView.theme({
+const utilisioTheme = EditorView.theme({
   "&": {
     background: "var(--bg-code)",
     color: "var(--fg)",
@@ -52,7 +52,7 @@ export function Editor({ value, onChange, readOnly = false, minHeight = "380px" 
       value={value}
       onChange={onChange}
       readOnly={readOnly}
-      extensions={[json(), toolhubTheme]}
+      extensions={[json(), utilisioTheme]}
       basicSetup={{
         lineNumbers: true,
         foldGutter: false,

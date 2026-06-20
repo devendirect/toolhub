@@ -17,7 +17,7 @@ export async function fetchPageHtml(raw: string): Promise<HtmlFetchResult> {
   try {
     const res = await fetch(raw, {
       signal: controller.signal,
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; toolhub-bot/1.0)" },
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; utilisio-bot/1.0)" },
     });
     clearTimeout(timer);
 

@@ -14,7 +14,6 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { localePath } from "@/lib/localePath";
 import { FaqList } from "@/components/FaqList";
 import { WORKSPACE_REGISTRY } from "@/lib/workspace-registry";
-import { EthicalAd } from "@/components/ads/EthicalAd";
 
 function ToolContentSection({ content, lang }: { content: ToolContent; lang: "fr" | "en" }) {
   return (
@@ -70,8 +69,6 @@ export function ToolPageClient({ tool, content, faqItems }: Props) {
           ? <WorkspaceComp />
           : <GenericWorkspace tool={tool} />}
       </ErrorBoundary>
-
-      <EthicalAd />
 
       {content && <ToolContentSection content={content} lang={lang} />}
 

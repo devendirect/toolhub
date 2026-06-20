@@ -9,7 +9,7 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => { console.error("[toolhub] runtime error:", error); }, [error]);
+  useEffect(() => { console.error("[utilisio] runtime error:", error); }, [error]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">

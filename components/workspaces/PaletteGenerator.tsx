@@ -18,8 +18,6 @@ const TR = {
   },
 } as const;
 
-const AFFILIATE_CANVA = process.env.NEXT_PUBLIC_AFFILIATE_CANVA;
-
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 
 type Harmony = "analogous" | "complementary" | "triadic" | "split" | "tetradic";
@@ -196,30 +194,6 @@ export function PaletteGenerator() {
           ))}
         </div>
       </div>
-
-      {AFFILIATE_CANVA && (
-        <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
-          <span className="font-mono text-[20px] shrink-0">◐</span>
-          <div className="flex flex-col gap-1">
-            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
-              {lang === "fr" ? "utiliser ces couleurs" : "use these colors"}
-            </span>
-            <p className="text-[13px] text-fg-1">
-              {lang === "fr"
-                ? "Transposez votre palette dans un design professionnel avec Canva."
-                : "Take your palette into a professional design with Canva."}
-            </p>
-            <a
-              href={AFFILIATE_CANVA}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
-            >
-              {lang === "fr" ? "Essayer Canva Pro gratuitement →" : "Try Canva Pro for free →"}
-            </a>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
-const STORAGE_KEY = "toolhub-favorites";
+const STORAGE_KEY = "utilisio-favorites";
 
 interface FavoritesCtx {
   favorites: string[];

@@ -24,13 +24,13 @@ const TR = {
 
 type View = "preview" | "html";
 
-const SAMPLE = `# Hello, toolhub!
+const SAMPLE = `# Hello, utilisio!
 
 Un **formatter** Markdown vers HTML. Supporte :
 
 - *italique* et **gras**
 - \`code inline\` et blocs de code
-- [liens](https://toolhub.io) et images
+- [liens](https://utilisio.io) et images
 - Listes ordonnées et non-ordonnées
 - > Citations en bloc
 
@@ -38,7 +38,7 @@ Un **formatter** Markdown vers HTML. Supporte :
 
 \`\`\`js
 const greet = (name) => \`Hello, \${name}!\`;
-console.log(greet("toolhub"));
+console.log(greet("utilisio"));
 \`\`\`
 
 ---
@@ -126,7 +126,7 @@ export function MarkdownHtml() {
           <div className="flex-1 bg-bg-code min-h-[420px] overflow-auto">
             {view === "preview" ? (
               <div
-                className="p-[18px] prose-toolhub"
+                className="p-[18px] prose-utilisio"
                 dangerouslySetInnerHTML={{ __html: html }}
               />
             ) : (

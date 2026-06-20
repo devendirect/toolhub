@@ -187,28 +187,28 @@
 }
 
 /* ── Prose styles (Markdown preview) ── */
-.prose-toolhub { color: var(--fg); line-height: 1.7; font-size: 14px; }
-.prose-toolhub h1,.prose-toolhub h2,.prose-toolhub h3,.prose-toolhub h4 { font-weight: 600; line-height: 1.25; margin: 1.4em 0 0.5em; color: var(--fg); letter-spacing: -0.02em; }
-.prose-toolhub h1 { font-size: 1.6em; }
-.prose-toolhub h2 { font-size: 1.3em; border-bottom: 1px solid var(--line); padding-bottom: 0.3em; }
-.prose-toolhub h3 { font-size: 1.1em; }
-.prose-toolhub p  { margin: 0.75em 0; }
-.prose-toolhub a  { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
-.prose-toolhub strong { font-weight: 600; color: var(--fg); }
-.prose-toolhub em { font-style: italic; color: var(--fg-1); }
-.prose-toolhub code { font-family: var(--font-mono); font-size: 0.88em; background: var(--bg-2); color: var(--brand); padding: 0.15em 0.4em; border-radius: 3px; }
-.prose-toolhub pre { background: var(--bg); border: 1px solid var(--line); border-radius: 3px; padding: 14px 16px; overflow-x: auto; margin: 1em 0; }
-.prose-toolhub pre code { background: none; padding: 0; color: var(--fg-1); font-size: 0.85em; }
-.prose-toolhub ul,.prose-toolhub ol { padding-left: 1.5em; margin: 0.75em 0; }
-.prose-toolhub li { margin: 0.3em 0; }
-.prose-toolhub ul li::marker { color: var(--brand); }
-.prose-toolhub ol li::marker { color: var(--dim); font-family: var(--font-mono); font-size: 0.85em; }
-.prose-toolhub blockquote { border-left: 3px solid var(--brand-mid); padding-left: 1em; margin: 1em 0; color: var(--fg-1); }
-.prose-toolhub hr { border: none; border-top: 1px solid var(--line); margin: 1.5em 0; }
-.prose-toolhub table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: 0.9em; }
-.prose-toolhub th,.prose-toolhub td { border: 1px solid var(--line); padding: 6px 12px; text-align: left; }
-.prose-toolhub th { background: var(--bg-1); color: var(--fg); font-weight: 600; }
-.prose-toolhub img { max-width: 100%; border-radius: 3px; }
+.prose-utilisio { color: var(--fg); line-height: 1.7; font-size: 14px; }
+.prose-utilisio h1,.prose-utilisio h2,.prose-utilisio h3,.prose-utilisio h4 { font-weight: 600; line-height: 1.25; margin: 1.4em 0 0.5em; color: var(--fg); letter-spacing: -0.02em; }
+.prose-utilisio h1 { font-size: 1.6em; }
+.prose-utilisio h2 { font-size: 1.3em; border-bottom: 1px solid var(--line); padding-bottom: 0.3em; }
+.prose-utilisio h3 { font-size: 1.1em; }
+.prose-utilisio p  { margin: 0.75em 0; }
+.prose-utilisio a  { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
+.prose-utilisio strong { font-weight: 600; color: var(--fg); }
+.prose-utilisio em { font-style: italic; color: var(--fg-1); }
+.prose-utilisio code { font-family: var(--font-mono); font-size: 0.88em; background: var(--bg-2); color: var(--brand); padding: 0.15em 0.4em; border-radius: 3px; }
+.prose-utilisio pre { background: var(--bg); border: 1px solid var(--line); border-radius: 3px; padding: 14px 16px; overflow-x: auto; margin: 1em 0; }
+.prose-utilisio pre code { background: none; padding: 0; color: var(--fg-1); font-size: 0.85em; }
+.prose-utilisio ul,.prose-utilisio ol { padding-left: 1.5em; margin: 0.75em 0; }
+.prose-utilisio li { margin: 0.3em 0; }
+.prose-utilisio ul li::marker { color: var(--brand); }
+.prose-utilisio ol li::marker { color: var(--dim); font-family: var(--font-mono); font-size: 0.85em; }
+.prose-utilisio blockquote { border-left: 3px solid var(--brand-mid); padding-left: 1em; margin: 1em 0; color: var(--fg-1); }
+.prose-utilisio hr { border: none; border-top: 1px solid var(--line); margin: 1.5em 0; }
+.prose-utilisio table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: 0.9em; }
+.prose-utilisio th,.prose-utilisio td { border: 1px solid var(--line); padding: 6px 12px; text-align: left; }
+.prose-utilisio th { background: var(--bg-1); color: var(--fg); font-weight: 600; }
+.prose-utilisio img { max-width: 100%; border-radius: 3px; }
 
 /* QR Generator — force le SVG injecté à respecter la taille du wrapper */
 .qr-preview svg { width: 100%; height: 100%; }

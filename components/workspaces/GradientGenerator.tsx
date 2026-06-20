@@ -6,8 +6,6 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { useTrackRun } from "@/hooks/useTrackRun";
 
-const AFFILIATE_CANVA = process.env.NEXT_PUBLIC_AFFILIATE_CANVA;
-
 const TR = {
   fr: {
     colorStops: "// couleurs",
@@ -178,30 +176,6 @@ export function GradientGenerator() {
           </div>
         </div>
       </div>
-
-      {AFFILIATE_CANVA && (
-        <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
-          <span className="font-mono text-[20px] shrink-0">◐</span>
-          <div className="flex flex-col gap-1">
-            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
-              {lang === "fr" ? "utiliser ce dégradé" : "use this gradient"}
-            </span>
-            <p className="text-[13px] text-fg-1">
-              {lang === "fr"
-                ? "Transposez votre dégradé dans un design professionnel avec Canva."
-                : "Take your gradient into a professional design with Canva."}
-            </p>
-            <a
-              href={AFFILIATE_CANVA}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
-            >
-              {lang === "fr" ? "Essayer Canva Pro gratuitement →" : "Try Canva Pro for free →"}
-            </a>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
