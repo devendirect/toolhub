@@ -3,6 +3,8 @@
 import { useState, useMemo } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
+import { syllablesEn, syllablesFr, analyze, fleschLevel } from "@/lib/readability";
+import type { ReadResult } from "@/lib/readability";
 
 const TR = {
   fr: {
@@ -36,64 +38,6 @@ const TR = {
 const SAMPLE_EN = `The quick brown fox jumps over the lazy dog. This short sentence is very clear. However, the implementation of sophisticated algorithms requires careful consideration of multiple interdependent factors and technical constraints. Readability improves significantly when sentences remain concise and vocabulary stays accessible to the intended audience.`;
 const SAMPLE_FR = `Le renard brun et vif bondit par-dessus le chien paresseux. Cette phrase est simple. Cependant, la mise en œuvre d'algorithmes sophistiqués nécessite une considération attentive de facteurs interdépendants complexes. La lisibilité s'améliore lorsque les phrases restent concises et le vocabulaire est accessible au lecteur ciblé.`;
 
-function syllablesEn(word: string): number {
-  const w = word.toLowerCase().replace(/[^a-z]/g, "");
-  if (w.length <= 3) return 1;
-  const adj = w.length > 4 && w.endsWith("e") ? w.slice(0, -1) : w;
-  return Math.max(1, (adj.match(/[aeiouy]+/g) ?? []).length);
-}
-
-function syllablesFr(word: string): number {
-  const w = word.toLowerCase().replace(/[^a-zàâæéèêëîïôœùûü]/g, "");
-  if (!w) return 0;
-  return Math.max(1, (w.match(/[aeiouyàâæéèêëîïôœùûü]+/g) ?? []).length);
-}
-
-interface ReadResult {
-  flesch:     number;
-  fog:        number;
-  asl:        number;
-  asw:        number;
-  complexPct: number;
-  wordCount:  number;
-  sentCount:  number;
-}
-
-function analyze(text: string, lang: "fr" | "en"): ReadResult | null {
-  const sentences  = text.split(/[.!?…]+/).map((s) => s.trim()).filter((s) => s.length > 1);
-  const words      = text.split(/\s+/).filter((w) => w.replace(/[^a-zA-ZÀ-ÿ]/g, "").length > 0);
-  if (words.length < 5) return null;
-
-  const countSyl    = lang === "fr" ? syllablesFr : syllablesEn;
-  const sylCounts   = words.map((w) => countSyl(w));
-  const totalSyl    = sylCounts.reduce((s, n) => s + n, 0);
-  const complexCount = sylCounts.filter((n) => n >= 3).length;
-
-  const asl    = words.length / Math.max(1, sentences.length);
-  const asw    = totalSyl / words.length;
-  const flesch = lang === "fr"
-    ? 207 - 1.015 * asl - 73.6 * asw
-    : 206.835 - 1.015 * asl - 84.6 * asw;
-  const fog = 0.4 * (asl + 100 * complexCount / words.length);
-
-  return {
-    flesch:     Math.max(0, Math.min(100, Math.round(flesch))),
-    fog:        Math.round(fog * 10) / 10,
-    asl:        Math.round(asl * 10) / 10,
-    asw:        Math.round(asw * 10) / 10,
-    complexPct: Math.round(100 * complexCount / words.length),
-    wordCount:  words.length,
-    sentCount:  sentences.length,
-  };
-}
-
-function fleschLevel(score: number, tr: { levels: readonly string[] }): string {
-  if (score >= 80) return tr.levels[4] ?? "";
-  if (score >= 60) return tr.levels[3] ?? "";
-  if (score >= 40) return tr.levels[2] ?? "";
-  if (score >= 20) return tr.levels[1] ?? "";
-  return tr.levels[0] ?? "";
-}
 
 function scoreColor(score: number): string {
   if (score >= 60) return "text-brand";
@@ -164,7 +108,7 @@ export function ReadabilityScore() {
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className={`font-mono text-[14px] font-semibold ${scoreColor(result.flesch)}`}>
-                    {fleschLevel(result.flesch, TR[lang])}
+                    {fleschLevel(result.flesch, TR[lang].levels)}
                   </span>
                   <span className="font-mono text-[11px] text-dim">{TR[lang].fkLabel}</span>
                 </div>

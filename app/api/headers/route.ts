@@ -56,7 +56,7 @@ const NOTES: Record<Lang, NoteSet> = {
 
 const CRITICAL = new Set(["Content-Security-Policy", "Strict-Transport-Security", "X-Content-Type-Options", "X-Frame-Options"]);
 
-function computeGrade(checks: HeaderCheck[]): HeadersData["grade"] {
+export function computeGrade(checks: HeaderCheck[]): HeadersData["grade"] {
   const missing = checks.filter((c) => CRITICAL.has(c.name) && c.status === "missing").length;
   if (missing === 0) return "A";
   if (missing === 1) return "B";

@@ -61,13 +61,14 @@ function FieldRow({ label, value, onChange, placeholder }: FieldRowProps) {
   );
 }
 
-function buildUtm(
+export function buildUtm(
   url: string, source: string, medium: string, campaign: string,
   term: string, content: string
 ): string | null {
   if (!url.trim() || !source.trim() || !medium.trim() || !campaign.trim()) return null;
   try {
-    const u = new URL(url.startsWith("http") ? url : `https://${url}`);
+    const trimmedUrl = url.trim();
+    const u = new URL(trimmedUrl.startsWith("http") ? trimmedUrl : `https://${trimmedUrl}`);
     u.searchParams.set("utm_source",   source.trim());
     u.searchParams.set("utm_medium",   medium.trim());
     u.searchParams.set("utm_campaign", campaign.trim());

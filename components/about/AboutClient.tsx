@@ -21,7 +21,7 @@ const SECTIONS: Section[] = [
     titleFr: "Framework & runtime",
     titleEn: "Framework & runtime",
     libs: [
-      { name: "Next.js",      version: "15",  license: "MIT",        url: "https://nextjs.org" },
+      { name: "Next.js",      version: "16",  license: "MIT",        url: "https://nextjs.org" },
       { name: "React",        version: "19",  license: "MIT",        url: "https://react.dev" },
       { name: "TypeScript",   version: "5",   license: "Apache 2.0", url: "https://www.typescriptlang.org" },
       { name: "Tailwind CSS", version: "4",   license: "MIT",        url: "https://tailwindcss.com" },

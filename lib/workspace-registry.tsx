@@ -7,7 +7,7 @@ const Skeleton = () => (
   <div className="border border-line min-h-[420px] bg-bg-1 animate-pulse" />
 );
 
-function lazy(load: () => Promise<{ [k: string]: WC }>, name: string): WC {
+function lazy(load: () => Promise<{ [k: string]: unknown }>, name: string): WC {
   return dynamic(() => load().then((m) => ({ default: m[name] as WC })), {
     ssr: false,
     loading: Skeleton,

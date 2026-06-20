@@ -27,7 +27,7 @@ const TR = {
 const ALIGN_ICON: Record<Align, string> = { left: "←", center: "⊝", right: "→" };
 const ALIGN_CYCLE: Record<Align, Align>  = { left: "center", center: "right", right: "left" };
 
-function toMarkdown(rows: string[][], aligns: Align[]): string {
+export function toMarkdown(rows: string[][], aligns: readonly Align[]): string {
   const cols  = rows[0]?.length ?? 0;
   const cell  = (s: string) => ` ${s.replace(/\|/g, "\\|").replace(/\n/g, " ")} `;
   const sepOf = (a: Align)  => a === "center" ? ":---:" : a === "right" ? "---:" : ":---";

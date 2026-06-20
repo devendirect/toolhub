@@ -21,7 +21,7 @@ export function isSafeUrl(raw: string): { ok: true; url: URL } | { ok: false; er
     return { ok: false, error: "only http/https allowed" };
   }
 
-  const host = url.hostname;
+  const host = url.hostname.replace(/^\[|\]$/g, ""); // normalise IPv6 brackets: [::1] → ::1
 
   if (PRIVATE_HOSTNAMES.test(host)) {
     return { ok: false, error: "private/loopback addresses are not allowed" };
