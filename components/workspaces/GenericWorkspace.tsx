@@ -5,6 +5,27 @@ import { t } from "@/lib/i18n";
 import { CATEGORIES } from "@/lib/tools";
 import type { Tool } from "@/lib/types";
 
+const TR = {
+  fr: {
+    category:       "catégorie",
+    runBtn:         "lancer ⏎",
+    yourInput:      "votre entrée ici…",
+    uiInDesign:     "interface dédiée en cours de design",
+    catalogedDesc:  "L'outil est catalogué et prêt à être maquetté. Le moteur tourne déjà côté navigateur.",
+    specced:        "spécifié",
+    queued:         "planifié",
+  },
+  en: {
+    category:       "category",
+    runBtn:         "run ⏎",
+    yourInput:      "your input here…",
+    uiInDesign:     "dedicated UI in design",
+    catalogedDesc:  "Tool is cataloged and ready to be designed. The engine already runs client-side.",
+    specced:        "specced",
+    queued:         "queued",
+  },
+} as const;
+
 export function GenericWorkspace({ tool }: { tool: Tool }) {
   const { lang } = useLang();
   const i = t(lang);
@@ -16,13 +37,13 @@ export function GenericWorkspace({ tool }: { tool: Tool }) {
       <div className="flex items-center gap-6 px-[18px] py-[14px] border border-line bg-bg-1 border-b-0">
         <div className="flex items-center gap-[10px] text-[12px]">
           <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
-            {lang === "fr" ? "catégorie" : "category"}
+            {TR[lang].category}
           </span>
           <span className="font-mono text-[12px] text-fg-1">{catLabel}</span>
         </div>
         <div className="flex-1" />
         <button disabled className="px-[18px] py-2 bg-brand/50 text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] cursor-not-allowed opacity-50">
-          {lang === "fr" ? "lancer ⏎" : "run ⏎"}
+          {TR[lang].runBtn}
         </button>
       </div>
 
@@ -38,7 +59,7 @@ export function GenericWorkspace({ tool }: { tool: Tool }) {
           <div className="flex-1 flex flex-col bg-bg-code p-[18px]">
             <div className="flex items-baseline gap-2 font-mono text-[13px] mb-6">
               <span className="text-brand">{">"}</span>
-              <span className="text-dim">{lang === "fr" ? "votre entrée ici…" : "your input here…"}</span>
+              <span className="text-dim">{TR[lang].yourInput}</span>
             </div>
             <div className="flex flex-col gap-[10px]">
               {tool.tags.map((tag) => (
@@ -62,15 +83,13 @@ export function GenericWorkspace({ tool }: { tool: Tool }) {
             <div className="font-mono text-[40px] text-brand tracking-[0.1em] mb-[6px]">{tool.glyph}</div>
             <div className="text-[18px] font-medium tracking-[-0.015em]">{tool.name[lang]}</div>
             <div className="font-mono text-[12px] text-dim">
-              {"// "}{lang === "fr" ? "interface dédiée en cours de design" : "dedicated UI in design"}
+              {"// "}{TR[lang].uiInDesign}
             </div>
             <p className="text-[13px] text-fg-1 max-w-[38ch] leading-[1.55] mt-2">
-              {lang === "fr"
-                ? "L'outil est catalogué et prêt à être maquetté. Le moteur tourne déjà côté navigateur."
-                : "Tool is cataloged and ready to be designed. The engine already runs client-side."}
+              {TR[lang].catalogedDesc}
             </p>
             <div className="flex gap-2 mt-3">
-              {[lang === "fr" ? "spécifié" : "specced", i.inBrowser].map((label) => (
+              {[TR[lang].specced, i.inBrowser].map((label) => (
                 <span key={label} className="inline-flex items-center gap-[6px] px-[10px] py-1 border border-line-2 bg-bg rounded-full font-mono text-[11px] text-fg-1">
                   <span className="w-[5px] h-[5px] rounded-full bg-brand shrink-0" />
                   {label}
@@ -80,7 +99,7 @@ export function GenericWorkspace({ tool }: { tool: Tool }) {
           </div>
           <div className="flex items-center gap-4 px-[14px] py-2 border-t border-line bg-bg font-mono text-[11px] text-dim">
             <span><span className="inline-block w-[6px] h-[6px] rounded-full bg-brand mr-[6px]" />
-              {lang === "fr" ? "planifié" : "queued"}
+              {TR[lang].queued}
             </span>
           </div>
         </div>

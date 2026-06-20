@@ -4,11 +4,29 @@ import { useState, useEffect, useRef } from "react";
 import { DropZone } from "@/components/workspace/DropZone";
 import { useCopy } from "@/hooks/useCopy";
 import { useLang } from "@/components/providers/I18nProvider";
+import { t } from "@/lib/i18n";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
+import { CopyableRow } from "@/components/workspace/CopyableRow";
+import { fmtSize } from "@/lib/format";
 
 type InputMode = "text" | "file";
 
 interface HashResult { algo: string; value: string; }
+
+const TR = {
+  fr: {
+    hashPlaceholder: "texte à hacher…",
+    hashesHere:      "les hashes apparaîtront ici",
+    dragOrClick:     "glisser un fichier ou cliquer",
+    clickToCopy:     "cliquer pour copier",
+  },
+  en: {
+    hashPlaceholder: "text to hash…",
+    hashesHere:      "hashes will appear here",
+    dragOrClick:     "drag a file or click",
+    clickToCopy:     "click to copy",
+  },
+} as const;
 
 async function hashBuffer(buf: ArrayBuffer): Promise<HashResult[]> {
   const algos: [string, string][] = [
@@ -31,14 +49,9 @@ async function hashBuffer(buf: ArrayBuffer): Promise<HashResult[]> {
   return [{ algo: "MD5", value: md5 }, ...shaResults];
 }
 
-function formatBytes(n: number) {
-  if (n < 1024) return `${n} B`;
-  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
-  return `${(n / 1024 / 1024).toFixed(2)} MB`;
-}
-
 export function HashGenerator() {
   const { lang } = useLang();
+  const i = t(lang);
   const [mode, setMode] = useState<InputMode>("text");
   const [text, setText] = useState("Hello, toolhub!");
   const [file, setFile] = useState<File | null>(null);
@@ -67,13 +80,10 @@ export function HashGenerator() {
     setComputing(false);
   };
 
-  const handleCopy = (value: string) => copy(value);
-
   return (
     <section className="mb-10">
-      <OptionsBar
-      >
-        <OptBlock label={lang === "fr" ? "source" : "source"}>
+      <OptionsBar>
+        <OptBlock label="source">
           <SegControl
             options={["text", "file"] as InputMode[]}
             value={mode}
@@ -83,14 +93,13 @@ export function HashGenerator() {
       </OptionsBar>
 
       <div className="border border-line">
-        {/* Input area */}
         <div className="border-b border-line bg-bg-code">
           {mode === "text" ? (
             <div className="p-[14px]">
               <textarea
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder={lang === "fr" ? "texte à hacher…" : "text to hash…"}
+                placeholder={TR[lang].hashPlaceholder}
                 className="w-full min-h-[120px] bg-transparent font-mono text-[12.5px] text-fg leading-[1.65] outline-none resize-none placeholder:text-dim-2"
                 spellCheck={false}
               />
@@ -99,43 +108,41 @@ export function HashGenerator() {
             <DropZone
               onFile={handleFile}
               glyph="#"
-              label={lang === "fr" ? "glisser un fichier ou cliquer" : "drag a file or click"}
-              current={file ? `${file.name} (${formatBytes(file.size)})` : null}
+              label={TR[lang].dragOrClick}
+              current={file ? `${file.name} (${fmtSize(file.size)})` : null}
               className="border-0 min-h-[120px]"
             />
           )}
         </div>
 
-        {/* Hash results */}
         <div className="divide-y divide-line">
           {computing && (
             <div className="flex items-center justify-center py-8 font-mono text-[12px] text-dim">
-              {lang === "fr" ? "calcul en cours…" : "computing…"}
+              {i.computing}
             </div>
           )}
           {!computing && hashes.map(({ algo, value }) => (
-            <div
+            <CopyableRow
               key={algo}
-              className="group flex items-center gap-4 px-[14px] py-[12px] hover:bg-bg-2 transition-colors cursor-pointer"
-              onClick={() => handleCopy(value)}
-            >
-              <span className="font-mono text-[11px] text-dim uppercase tracking-[0.08em] w-16 shrink-0">{algo}</span>
-              <span className="font-mono text-[12px] text-fg-1 flex-1 break-all">{value}</span>
-              <span className="font-mono text-[11px] text-dim opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                {copied === value ? "✓" : (lang === "fr" ? "copier" : "copy")}
-              </span>
-            </div>
+              id={value}
+              label={algo}
+              value={value}
+              copied={copied}
+              onClick={() => copy(value)}
+              lang={lang}
+              valueClass="text-[12px] text-fg-1"
+            />
           ))}
           {!computing && hashes.length === 0 && (
             <div className="flex items-center justify-center py-8 font-mono text-[12px] text-dim-2">
-              {"// "}{lang === "fr" ? "les hashes apparaîtront ici" : "hashes will appear here"}
+              {"// "}{TR[lang].hashesHere}
             </div>
           )}
         </div>
 
         <div className="flex items-center gap-4 px-[14px] py-2 border-t border-line bg-bg font-mono text-[11px] text-dim">
           <span>MD5 · SHA-1 · SHA-256 · SHA-512</span>
-          <span>{lang === "fr" ? "cliquer pour copier" : "click to copy"}</span>
+          <span>{TR[lang].clickToCopy}</span>
         </div>
       </div>
     </section>

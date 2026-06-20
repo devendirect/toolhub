@@ -36,6 +36,11 @@ function convert(str: string, mode: Case): string {
 
 const CASES: Case[] = ["upper", "lower", "title", "camel", "pascal", "snake", "kebab"];
 
+const TR = {
+  fr: { originalText: "texte original" },
+  en: { originalText: "original text" },
+} as const;
+
 export function CaseConverter() {
   const { lang } = useLang();
   const i = t(lang);
@@ -56,7 +61,7 @@ export function CaseConverter() {
             disabled={!output}
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all disabled:opacity-40"
           >
-            {lang === "fr" ? "copier ⏎" : "copy ⏎"}
+            {i.copyAlt}
           </button>
         }
       >
@@ -71,7 +76,7 @@ export function CaseConverter() {
           ext="txt"
           meta={`${input.length} chars`}
           actions={<PaneBtn onClick={() => setInput("")}>{i.clear}</PaneBtn>}
-          footer={<span>{lang === "fr" ? "texte original" : "original text"}</span>}
+          footer={<span>{TR[lang].originalText}</span>}
           className="border-r border-line"
         >
           <div className="flex-1 p-[14px] bg-bg-code">
@@ -93,7 +98,7 @@ export function CaseConverter() {
         >
           <div className="flex-1 p-[14px] bg-bg-code">
             <pre className="font-mono text-[12.5px] text-fg-1 leading-[1.65] whitespace-pre-wrap break-all min-h-[320px]">
-              {output || <span className="text-dim-2">{lang === "fr" ? "résultat ici…" : "result here…"}</span>}
+              {output || <span className="text-dim-2">{i.resultHere}</span>}
             </pre>
           </div>
         </Pane>

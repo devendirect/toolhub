@@ -1,6 +1,6 @@
 import type { Lang } from "./types";
 
-interface ToolContent {
+export interface ToolContent {
   desc: Record<Lang, string>;
   useCases: Record<Lang, string[]>;
 }
@@ -254,6 +254,66 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
     useCases: {
       en: ["Running a quick SEO audit on a newly published page before promoting it", "Comparing your page's on-page SEO against a competitor's equivalent page", "Identifying missing meta descriptions, duplicate H1 tags or empty alt attributes", "Checking minimum content requirements (word count, heading hierarchy) before indexing"],
       fr: ["Effectuer un audit SEO rapide d'une page nouvellement publiée avant de la promouvoir", "Comparer le SEO on-page de votre page face à une page équivalente d'un concurrent", "Identifier les meta descriptions manquantes, les H1 dupliqués ou les attributs alt vides", "Vérifier les exigences minimales de contenu (nombre de mots, hiérarchie des titres) avant indexation"],
+    },
+  },
+  "utm-builder": {
+    desc: {
+      en: "The UTM Builder constructs campaign tracking URLs by appending UTM parameters (source, medium, campaign, term, content) to any base URL. Fill in the fields, click to copy the result — no external service involved, no data sent anywhere. Quick presets for Google Ads, Facebook, email newsletters and Twitter/X let you get to a valid tracking URL in seconds.",
+      fr: "Le générateur UTM construit des URLs de suivi de campagne en ajoutant des paramètres UTM (source, canal, campagne, terme, contenu) à n'importe quelle URL de base. Remplissez les champs, cliquez pour copier le résultat — aucun service externe, aucune donnée envoyée. Des préréglages rapides pour Google Ads, Facebook, les newsletters et Twitter/X permettent d'obtenir une URL valide en quelques secondes.",
+    },
+    useCases: {
+      en: ["Tagging newsletter links before sending a campaign to track click-through in Google Analytics", "Creating separate UTM variants for A/B testing ad copy across Google and Facebook", "Building consistent UTM conventions across a marketing team with shared presets", "Tracking traffic sources for a product launch landing page across multiple channels"],
+      fr: ["Taguer les liens d'une newsletter avant envoi pour suivre les clics dans Google Analytics", "Créer des variantes UTM distinctes pour un test A/B de visuels publicitaires sur Google et Facebook", "Établir des conventions UTM cohérentes dans une équipe marketing grâce aux préréglages partagés", "Suivre les sources de trafic d'une landing page de lancement produit sur plusieurs canaux"],
+    },
+  },
+  "jwt-generator": {
+    desc: {
+      en: "The JWT Generator signs a JSON payload as an HS256 JWT token directly in your browser using the Web Crypto API. Enter any valid JSON object as the payload, set a secret key, and click sign. The resulting token is rendered with each part color-coded (header, payload, signature) so you can visually confirm the structure. The secret key never leaves your browser — no server involved.",
+      fr: "Le générateur JWT signe un payload JSON en token JWT HS256 directement dans votre navigateur via l'API Web Crypto. Entrez n'importe quel objet JSON valide en payload, définissez une clé secrète, et cliquez sur signer. Le token résultant est affiché avec chaque partie colorée (header, payload, signature) pour confirmer visuellement la structure. La clé secrète ne quitte jamais votre navigateur.",
+    },
+    useCases: {
+      en: ["Generating test JWTs to validate your backend authentication middleware", "Creating short-lived tokens for local API testing without spinning up an auth server", "Understanding the JWT format by modifying claims and observing the output", "Quickly signing a payload during a demo or code review without installing a library"],
+      fr: ["Générer des JWT de test pour valider votre middleware d'authentification backend", "Créer des tokens de courte durée pour des tests d'API locaux sans démarrer un serveur d'auth", "Comprendre le format JWT en modifiant les claims et en observant le résultat", "Signer rapidement un payload lors d'une démo ou d'une revue de code sans installer de bibliothèque"],
+    },
+  },
+  "readability": {
+    desc: {
+      en: "The Readability Score tool analyzes text and returns two standard metrics: the Flesch-Kincaid Reading Ease (0–100, higher is easier) and the Gunning Fog Index (approximate school grade level needed to read the text). It also shows average sentence length, average syllables per word and the percentage of complex words (3 or more syllables). English and French use slightly different formulas, applied automatically based on your language setting.",
+      fr: "L'outil de score de lisibilité analyse un texte et retourne deux métriques standard : l'indice de lisibilité Flesch-Kincaid (0–100, plus c'est haut, plus c'est lisible) et l'indice Gunning Fog (niveau scolaire approximatif nécessaire pour lire le texte). Il affiche aussi la longueur moyenne des phrases, le nombre moyen de syllabes par mot et le pourcentage de mots complexes (3 syllabes ou plus). Le français et l'anglais utilisent des formules légèrement différentes, appliquées automatiquement selon votre langue.",
+    },
+    useCases: {
+      en: ["Simplifying landing page copy to reach a broader audience before publishing", "Checking that user-facing error messages and documentation are easy to understand", "Comparing the readability of two versions of the same article during editing", "Ensuring legal or compliance text meets accessibility readability guidelines"],
+      fr: ["Simplifier le texte d'une landing page pour toucher un public plus large avant publication", "Vérifier que les messages d'erreur et la documentation sont compréhensibles par tous les utilisateurs", "Comparer la lisibilité de deux versions d'un même article lors de la révision", "S'assurer que des textes juridiques ou de conformité respectent les recommandations d'accessibilité"],
+    },
+  },
+  "md-table": {
+    desc: {
+      en: "The Markdown Table editor lets you build tables visually — click cells to edit, add or remove rows and columns with toolbar buttons, and toggle column alignment (left, center, right) in one click. The corresponding Markdown syntax updates in real time below the grid. Copy it directly into any Markdown file, README, GitHub issue or documentation site.",
+      fr: "L'éditeur de tableau Markdown vous permet de construire des tableaux visuellement — cliquez sur les cellules pour éditer, ajoutez ou supprimez des lignes et colonnes avec les boutons de la barre d'outils, et changez l'alignement par colonne (gauche, centré, droite) en un clic. La syntaxe Markdown correspondante se met à jour en temps réel sous la grille. Copiez-la directement dans n'importe quel fichier Markdown, README, issue GitHub ou site de documentation.",
+    },
+    useCases: {
+      en: ["Building comparison tables for README files without remembering pipe syntax", "Creating feature matrices for a product documentation site", "Generating Markdown tables from manually typed data to paste into GitHub issues or PRs", "Formatting data tables for blog posts or technical articles written in Markdown"],
+      fr: ["Créer des tableaux comparatifs pour des README sans mémoriser la syntaxe pipe", "Générer des matrices de fonctionnalités pour un site de documentation produit", "Créer des tableaux Markdown depuis des données saisies manuellement pour les coller dans des issues ou PR GitHub", "Formater des tableaux de données pour des articles de blog ou des articles techniques en Markdown"],
+    },
+  },
+  "toml-json": {
+    desc: {
+      en: "TOML ↔ JSON converts between the two formats in one click using smol-toml, a modern parser that supports the full TOML 1.0 specification. Paste a TOML config file and get clean JSON, or go the other way to generate TOML from a JSON object. No upload, no server — the conversion runs entirely in your browser.",
+      fr: "TOML ↔ JSON convertit entre les deux formats en un clic grâce à smol-toml, un parseur moderne supportant la spécification TOML 1.0 complète. Collez un fichier de configuration TOML et obtenez du JSON propre, ou faites l'inverse pour générer du TOML depuis un objet JSON. Aucun envoi, aucun serveur — la conversion s'effectue entièrement dans votre navigateur.",
+    },
+    useCases: {
+      en: ["Converting a Cargo.toml or pyproject.toml to JSON for programmatic processing", "Translating a Hugo or Zola config file from TOML to JSON to use in a script", "Inspecting nested TOML structures in a familiar JSON format", "Generating a TOML config skeleton from an existing JSON settings file"],
+      fr: ["Convertir un Cargo.toml ou pyproject.toml en JSON pour un traitement programmatique", "Traduire un fichier de config Hugo ou Zola de TOML en JSON pour l'utiliser dans un script", "Inspecter des structures TOML imbriquées dans un format JSON familier", "Générer un squelette de config TOML depuis un fichier de paramètres JSON existant"],
+    },
+  },
+  "headers-checker": {
+    desc: {
+      en: "The HTTP Headers Checker fetches the security headers returned by any public URL and grades them from A (all critical headers present) to F (most missing). It evaluates Content-Security-Policy, Strict-Transport-Security, X-Content-Type-Options, X-Frame-Options, Referrer-Policy and Permissions-Policy — the headers most commonly checked in security audits. Each header shows its current value alongside a specific recommendation when it is missing or misconfigured.",
+      fr: "Le vérificateur de headers HTTP récupère les headers de sécurité renvoyés par n'importe quelle URL publique et les note de A (tous les headers critiques présents) à F (la plupart absents). Il évalue Content-Security-Policy, Strict-Transport-Security, X-Content-Type-Options, X-Frame-Options, Referrer-Policy et Permissions-Policy — les headers les plus souvent contrôlés lors d'audits de sécurité. Chaque header affiche sa valeur courante ainsi qu'une recommandation spécifique lorsqu'il est absent ou mal configuré.",
+    },
+    useCases: {
+      en: ["Verifying that a newly deployed site has all required security headers before launch", "Comparing the security header configuration of your site against a competitor or benchmark", "Quickly checking whether a CSP or HSTS header was correctly deployed after a configuration change", "Auditing a client's website security posture as part of a web security review"],
+      fr: ["Vérifier qu'un site nouvellement déployé possède tous les headers de sécurité requis avant le lancement", "Comparer la configuration des headers de sécurité de votre site par rapport à un concurrent ou à une référence", "Vérifier rapidement si un header CSP ou HSTS a été correctement déployé après un changement de configuration", "Auditer la posture de sécurité du site d'un client dans le cadre d'une revue de sécurité web"],
     },
   },
 };

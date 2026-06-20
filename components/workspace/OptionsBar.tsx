@@ -24,14 +24,14 @@ export function OptBlock({ label, children }: { label: string; children: ReactNo
   );
 }
 
-export function SegControl({
+export function SegControl<T extends string | number>({
   options,
   value,
   onChange,
 }: {
-  options: (string | number)[];
-  value: string | number;
-  onChange: (v: string | number) => void;
+  options: T[];
+  value: T;
+  onChange: (v: T) => void;
 }) {
   return (
     <div className="flex border border-line-2 rounded-[3px] overflow-hidden">

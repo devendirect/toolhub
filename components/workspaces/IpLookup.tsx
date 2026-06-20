@@ -3,6 +3,27 @@
 import { useState } from "react";
 import { useCopy } from "@/hooks/useCopy";
 import { useLang } from "@/components/providers/I18nProvider";
+import { t } from "@/lib/i18n";
+import type { IpErrorCode } from "@/app/api/ip/route";
+
+const TR = {
+  fr: {
+    address:      "adresse",
+    leaveEmpty:   "laisser vide pour votre IP…",
+    enterIp:      "entrez une IP ou laissez vide pour la vôtre",
+    queryingIp:   "interrogation ip-api.com…",
+    viewOnMap:    "voir sur la carte →",
+    lookupFailed: "échec de la requête",
+  },
+  en: {
+    address:      "address",
+    leaveEmpty:   "leave empty for your IP…",
+    enterIp:      "enter an IP or leave empty for yours",
+    queryingIp:   "querying ip-api.com…",
+    viewOnMap:    "view on map →",
+    lookupFailed: "lookup failed",
+  },
+} as const;
 
 interface IpData {
   query: string; country: string; countryCode: string;
@@ -28,30 +49,31 @@ const ROWS: { key: keyof IpData; label: Record<"fr" | "en", string> }[] = [
 
 export function IpLookup() {
   const { lang } = useLang();
+  const i = t(lang);
   const [input, setInput] = useState("");
-  const [data, setData] = useState<IpData | null>(null);
+  const [ipData, setIpData] = useState<IpData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { copy, copied } = useCopy();
 
   const lookup = async (ip?: string) => {
-    setLoading(true); setError(null); setData(null);
+    setLoading(true); setError(null); setIpData(null);
     try {
       const params = ip ? `?ip=${encodeURIComponent(ip)}` : "";
       const res = await fetch(`/api/ip${params}`);
-      const json = await res.json();
+      const json = await res.json() as { error?: string; code?: IpErrorCode } & Partial<IpData>;
       if (!res.ok || json.error) {
-        const msg = json.error ?? "";
-        // Traduit les messages d'erreur de l'API en français
-        if (lang === "fr") {
-          if (msg.includes("Too many requests"))   throw new Error("Trop de requêtes — attendez une minute.");
-          if (msg.includes("Invalid IP"))          throw new Error("Format d'adresse IP invalide.");
-          if (msg.includes("rate limit reached"))  throw new Error("Quota ip-api.com atteint — réessayez dans quelques secondes.");
-          if (msg.includes("timeout"))             throw new Error("Délai d'attente dépassé.");
-        }
-        throw new Error(msg || (lang === "fr" ? "échec de la requête" : "lookup failed"));
+        const FR: Record<IpErrorCode, string> = {
+          RATE_LIMITED:   "Trop de requêtes — attendez une minute.",
+          INVALID_IP:     "Format d'adresse IP invalide.",
+          TIMEOUT:        "Délai d'attente dépassé.",
+          UPSTREAM_ERROR: "Erreur du service ip-api.com.",
+          LOOKUP_FAILED:  "Adresse IP introuvable.",
+        };
+        const frMsg = lang === "fr" && json.code ? FR[json.code] : undefined;
+        throw new Error(frMsg ?? json.error ?? TR[lang].lookupFailed);
       }
-      setData(json);
+      setIpData(json as IpData);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -66,13 +88,13 @@ export function IpLookup() {
       {/* Input bar */}
       <div className="flex items-center gap-0 border border-line border-b-0">
         <span className="font-mono text-[12px] text-dim px-4 py-[11px] border-r border-line bg-bg-1 shrink-0">
-          {lang === "fr" ? "adresse" : "address"}
+          {TR[lang].address}
         </span>
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && lookup(input || undefined)}
-          placeholder={lang === "fr" ? "laisser vide pour votre IP…" : "leave empty for your IP…"}
+          placeholder={TR[lang].leaveEmpty}
           className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim-2"
           spellCheck={false}
         />
@@ -81,16 +103,16 @@ export function IpLookup() {
           disabled={loading}
           className="px-[18px] py-[11px] bg-brand text-bg font-mono text-[12px] font-semibold shrink-0 hover:brightness-110 transition-all disabled:opacity-50 border-l border-brand"
         >
-          {loading ? "…" : (lang === "fr" ? "analyser ⏎" : "lookup ⏎")}
+          {loading ? "…" : i.lookupBtn}
         </button>
       </div>
 
       <div className="border border-line">
         {/* Results */}
-        {data && (
+        {ipData && (
           <div className="divide-y divide-line">
             {ROWS.map(({ key, label }) => {
-              const val = String(data[key]);
+              const val = String(ipData[key]);
               return (
                 <div
                   key={key}
@@ -103,19 +125,19 @@ export function IpLookup() {
                     <span className="text-[18px] shrink-0">{val.toUpperCase().replace(/./g, (c) => String.fromCodePoint(c.codePointAt(0)! + 127397))}</span>
                   )}
                   <span className="font-mono text-[11px] text-dim opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                    {copied === val ? "✓" : (lang === "fr" ? "copier" : "copy")}
+                    {copied === val ? "✓" : i.copy}
                   </span>
                 </div>
               );
             })}
             <div className="flex items-center gap-4 px-[14px] py-[9px] bg-bg-1">
               <a
-                href={`https://www.openstreetmap.org/?mlat=${data.lat}&mlon=${data.lon}#map=10/${data.lat}/${data.lon}`}
+                href={`https://www.openstreetmap.org/?mlat=${ipData.lat}&mlon=${ipData.lon}#map=10/${ipData.lat}/${ipData.lon}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-mono text-[11px] text-dim hover:text-brand transition-colors"
               >
-                {lang === "fr" ? "voir sur la carte →" : "view on map →"} ({data.lat}, {data.lon})
+                {TR[lang].viewOnMap} ({ipData.lat}, {ipData.lon})
               </a>
             </div>
           </div>
@@ -127,13 +149,11 @@ export function IpLookup() {
           </div>
         )}
 
-        {!data && !error && !loading && (
+        {!ipData && !error && !loading && (
           <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
             <span className="font-mono text-[28px] text-dim">ip</span>
             <span className="font-mono text-[12px] text-dim">
-              {lang === "fr"
-                ? "entrez une IP ou laissez vide pour la vôtre"
-                : "enter an IP or leave empty for yours"}
+              {TR[lang].enterIp}
             </span>
           </div>
         )}
@@ -141,16 +161,14 @@ export function IpLookup() {
         {loading && (
           <div className="flex items-center justify-center py-16">
             <span className="font-mono text-[12px] text-dim">
-              {lang === "fr" ? "interrogation ip-api.com…" : "querying ip-api.com…"}
+              {TR[lang].queryingIp}
             </span>
           </div>
         )}
 
         <div className="flex items-center gap-4 px-[14px] py-2 border-t border-line bg-bg font-mono text-[11px] text-dim">
           <span className="inline-block w-[6px] h-[6px] rounded-full bg-hot mr-1" />
-          {lang === "fr"
-            ? "récupération via proxy — résultat mis en cache 1h en mémoire, aucun log persistant"
-            : "proxied fetch — result cached 1h in memory, no persistent log"}
+          {i.proxied1h}
           <span className="ml-auto">ip-api.com</span>
         </div>
       </div>

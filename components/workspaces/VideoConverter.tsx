@@ -2,7 +2,12 @@
 
 import { useState, useRef } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
+import { t } from "@/lib/i18n";
 import { DropZone } from "@/components/workspace/DropZone";
+import { fmtSize } from "@/lib/format";
+import { useConversionState } from "@/hooks/useConversionState";
+import { loadFFmpeg } from "@/lib/ffmpeg";
+import { downloadUrl } from "@/lib/download";
 
 type Status = "idle" | "loading-ffmpeg" | "converting" | "done" | "error";
 
@@ -20,46 +25,46 @@ const RES_MAP: Record<Resolution, string | null> = {
   "360p":  "640:360",
 };
 
-function fmtSize(bytes: number) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / 1048576).toFixed(1)} MB`;
-}
+const TR = {
+  fr: {
+    dropVideo:          "déposer une vidéo ou cliquer",
+    gifWarning:         "GIF : limiter à de courtes séquences (< 10s), fichier souvent lourd",
+    convertingProgress: "conversion",
+    convert:            "convertir",
+  },
+  en: {
+    dropVideo:          "drop a video file or click",
+    gifWarning:         "GIF: keep clips short (< 10s), output can be large",
+    convertingProgress: "converting",
+    convert:            "convert",
+  },
+} as const;
 
 export function VideoConverter() {
   const { lang } = useLang();
+  const i = t(lang);
   const [file, setFile] = useState<File | null>(null);
   const [format, setFormat] = useState<Format>("mp4");
   const [resolution, setResolution] = useState<Resolution>("original");
-  const [status, setStatus] = useState<Status>("idle");
   const [progress, setProgress] = useState(0);
-  const [outputUrl, setOutputUrl] = useState<string | null>(null);
-  const [outputSize, setOutputSize] = useState(0);
-  const [error, setError] = useState<string | null>(null);
+  const { status, setStatus, error, outputUrl, outputSize, fail, succeed, reset } =
+    useConversionState<Status>("idle");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (f: File) => {
-    setFile(f); setOutputUrl(null);
-    setStatus("idle"); setError(null); setProgress(0);
+    setFile(f);
+    reset();
+    setProgress(0);
   };
 
   const convert = async () => {
     if (!file) return;
-    setStatus("loading-ffmpeg"); setError(null);
-    setProgress(0); setOutputUrl(null);
+    setStatus("loading-ffmpeg");
+    setProgress(0);
 
     try {
-      const { FFmpeg } = await import("@ffmpeg/ffmpeg");
-      const { fetchFile, toBlobURL } = await import("@ffmpeg/util");
-
-      const ffmpeg = new FFmpeg();
-      ffmpeg.on("progress", ({ progress: p }) => setProgress(Math.round(p * 100)));
-
-      const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
-      await ffmpeg.load({
-        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`,   "text/javascript"),
-        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
-      });
+      const ffmpeg = await loadFFmpeg((p) => setProgress(p));
+      const { fetchFile } = await import("@ffmpeg/util");
 
       setStatus("converting");
       const ext = file.name.split(".").pop() ?? "mp4";
@@ -87,23 +92,20 @@ export function VideoConverter() {
       await ffmpeg.exec(args);
 
       const data = await ffmpeg.readFile(outputName);
+      const blobPart = data instanceof Uint8Array
+        ? data.buffer as ArrayBuffer
+        : new TextEncoder().encode(data).buffer as ArrayBuffer;
       const mime = format === "gif" ? "image/gif" : `video/${format}`;
-      const blob = new Blob([data as unknown as BlobPart], { type: mime });
-      setOutputUrl(URL.createObjectURL(blob));
-      setOutputSize(blob.size);
-      setStatus("done");
+      const blob = new Blob([blobPart], { type: mime });
+      succeed(URL.createObjectURL(blob), blob.size);
     } catch (e) {
-      setError((e as Error).message);
-      setStatus("error");
+      fail(e);
     }
   };
 
   const download = () => {
     if (!outputUrl || !file) return;
-    const a = document.createElement("a");
-    a.href = outputUrl;
-    a.download = file.name.replace(/\.[^.]+$/, "") + "." + format;
-    a.click();
+    downloadUrl(outputUrl, file.name.replace(/\.[^.]+$/, "") + "." + format);
   };
 
   return (
@@ -112,7 +114,7 @@ export function VideoConverter() {
         onFile={handleFile}
         accept="video/*"
         glyph="▶"
-        label={lang === "fr" ? "déposer une vidéo ou cliquer" : "drop a video file or click"}
+        label={TR[lang].dropVideo}
         current={file ? `${file.name} — ${fmtSize(file.size)}` : null}
       />
 
@@ -142,7 +144,7 @@ export function VideoConverter() {
       <div className="border border-line border-t-0 p-4 flex flex-col gap-4">
         {format === "gif" && (
           <p className="font-mono text-[11px] text-hot">
-            ⚠ {lang === "fr" ? "GIF : limiter à de courtes séquences (< 10s), fichier souvent lourd" : "GIF: keep clips short (< 10s), output can be large"}
+            ⚠ {TR[lang].gifWarning}
           </p>
         )}
 
@@ -150,10 +152,10 @@ export function VideoConverter() {
           disabled={!file || status === "loading-ffmpeg" || status === "converting"}
           className="w-full py-[11px] bg-brand text-bg font-mono text-[12px] font-semibold hover:brightness-110 transition-all disabled:opacity-40">
           {status === "loading-ffmpeg"
-            ? (lang === "fr" ? "chargement ffmpeg.wasm (~10 Mo)…" : "loading ffmpeg.wasm (~10 MB)…")
+            ? i.ffmpegLoading
             : status === "converting"
-            ? `${lang === "fr" ? "conversion" : "converting"} ${progress}%`
-            : (lang === "fr" ? "convertir" : "convert")}
+            ? `${TR[lang].convertingProgress} ${progress}%`
+            : TR[lang].convert}
         </button>
 
         {(status === "loading-ffmpeg" || status === "converting") && (
@@ -182,7 +184,7 @@ export function VideoConverter() {
             </div>
             <button onClick={download}
               className="font-mono text-[12px] text-brand hover:brightness-110 transition-all px-4 py-2 border border-brand">
-              {lang === "fr" ? "télécharger ↓" : "download ↓"}
+              {i.download} ↓
             </button>
           </div>
         )}
@@ -197,9 +199,7 @@ export function VideoConverter() {
 
         <p className="font-mono text-[11px] text-dim">
           <span className="inline-block w-[6px] h-[6px] rounded-full bg-brand mr-2" />
-          {lang === "fr"
-            ? "conversion locale — aucun fichier envoyé au serveur"
-            : "local conversion — no file sent to server"}
+          {i.localConversion}
           {" · "}Powered by <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" className="underline hover:text-fg">FFmpeg</a>
         </p>
       </div>

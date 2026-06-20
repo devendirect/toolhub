@@ -1,8 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
+import { t } from "@/lib/i18n";
 import { DropZoneMulti } from "@/components/workspace/DropZone";
+import { fmtSize } from "@/lib/format";
+import { downloadBlob } from "@/lib/download";
 
 interface PdfFile {
   id: string;
@@ -10,21 +13,36 @@ interface PdfFile {
   pages: number | null;
 }
 
-function formatBytes(n: number) {
-  if (n < 1024) return `${n} B`;
-  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
-  return `${(n / 1024 / 1024).toFixed(2)} MB`;
-}
+type MergeStatus = null | "done" | string; // null=idle, "done"=success, string=error message
+
+const TR = {
+  fr: {
+    fileCount:         "fichier(s)",
+    noFilesSelected:   "aucun fichier sélectionné",
+    mergedDownloaded:  "PDF fusionné téléchargé",
+    addTwoFiles:       "ajoutez au moins 2 fichiers",
+    readyMerge:        "prêt à fusionner",
+    dropPdfs:          "glisser des PDF ici ou cliquer pour sélectionner",
+  },
+  en: {
+    fileCount:         "file(s)",
+    noFilesSelected:   "no files selected",
+    mergedDownloaded:  "merged PDF downloaded",
+    addTwoFiles:       "add at least 2 files",
+    readyMerge:        "ready to merge",
+    dropPdfs:          "drag PDFs here or click to select",
+  },
+} as const;
 
 export function PdfMerge() {
   const { lang } = useLang();
+  const i = t(lang);
 
   const [files, setFiles] = useState<PdfFile[]>([]);
   const [merging, setMerging] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState(false);
+  const [mergeStatus, setMergeStatus] = useState<MergeStatus>(null);
 
-  const addFiles = useCallback(async (incoming: FileList | File[]) => {
+  const addFiles = async (incoming: FileList | File[]) => {
     const arr = Array.from(incoming).filter((f) => f.type === "application/pdf");
     const { PDFDocument } = await import("pdf-lib");
     const entries: PdfFile[] = await Promise.all(
@@ -42,8 +60,8 @@ export function PdfMerge() {
       const existing = new Set(prev.map((p) => p.id));
       return [...prev, ...entries.filter((e) => !existing.has(e.id))];
     });
-    setDone(false);
-  }, []);
+    setMergeStatus(null);
+  };
 
   const handleRemove = (id: string) => setFiles((prev) => prev.filter((f) => f.id !== id));
 
@@ -74,7 +92,7 @@ export function PdfMerge() {
   const handleMerge = async () => {
     if (files.length < 2) return;
     setMerging(true);
-    setError(null);
+    setMergeStatus(null);
     try {
       const { PDFDocument } = await import("pdf-lib");
       const merged = await PDFDocument.create();
@@ -85,14 +103,10 @@ export function PdfMerge() {
         pages.forEach((p) => merged.addPage(p));
       }
       const bytes = await merged.save();
-      const blob = new Blob([bytes.buffer as ArrayBuffer], { type: "application/pdf" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "merged.pdf";
-      a.click();
-      setDone(true);
+      downloadBlob(new Blob([bytes.buffer as ArrayBuffer], { type: "application/pdf" }), "merged.pdf");
+      setMergeStatus("done");
     } catch (e) {
-      setError((e as Error).message);
+      setMergeStatus((e as Error).message);
     } finally {
       setMerging(false);
     }
@@ -106,26 +120,24 @@ export function PdfMerge() {
       {/* Options bar */}
       <div className="flex items-center gap-6 px-[18px] py-[14px] border border-line bg-bg-1 border-b-0">
         <span className="font-mono text-[11px] text-dim">
-          {files.length} {lang === "fr" ? "fichier(s)" : "file(s)"}
-          {totalPages > 0 && ` · ${totalPages} ${lang === "fr" ? "pages" : "pages"}`}
-          {totalSize > 0 && ` · ${formatBytes(totalSize)}`}
+          {files.length} {TR[lang].fileCount}
+          {totalPages > 0 && ` · ${totalPages} pages`}
+          {totalSize > 0 && ` · ${fmtSize(totalSize)}`}
         </span>
         <div className="flex-1" />
         <button
-          onClick={() => { setFiles([]); setDone(false); setError(null); }}
+          onClick={() => { setFiles([]); setMergeStatus(null); }}
           disabled={files.length === 0}
           className="font-mono text-[12px] text-dim hover:text-fg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          {lang === "fr" ? "effacer tout" : "clear all"}
+          {i.clearAll}
         </button>
         <button
           onClick={handleMerge}
           disabled={files.length < 2 || merging}
           className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {merging
-            ? (lang === "fr" ? "fusion…" : "merging…")
-            : (lang === "fr" ? "fusionner ⏎" : "merge ⏎")}
+          {merging ? i.merging : i.mergeBtn}
         </button>
       </div>
 
@@ -134,7 +146,7 @@ export function PdfMerge() {
           onFiles={(fs) => addFiles(fs)}
           accept=".pdf,application/pdf"
           glyph="≡+≡"
-          label={lang === "fr" ? "glisser des PDF ici ou cliquer pour sélectionner" : "drag PDFs here or click to select"}
+          label={TR[lang].dropPdfs}
         />
 
         {/* File list */}
@@ -144,7 +156,7 @@ export function PdfMerge() {
             <div className="flex items-center gap-3 px-4 py-2 font-mono text-[10px] text-dim-2 uppercase tracking-[0.08em] bg-bg-1">
               <span className="w-6">#</span>
               <span className="flex-1">filename</span>
-              <span className="w-16 text-right">{lang === "fr" ? "pages" : "pages"}</span>
+              <span className="w-16 text-right">pages</span>
               <span className="w-20 text-right">size</span>
               <span className="w-16" />
             </div>
@@ -158,7 +170,7 @@ export function PdfMerge() {
                   {f.pages !== null ? `${f.pages}p` : "—"}
                 </span>
                 <span className="w-20 font-mono text-[11px] text-dim-2 text-right shrink-0">
-                  {formatBytes(f.file.size)}
+                  {fmtSize(f.file.size)}
                 </span>
                 <div className="flex items-center gap-1 w-16 justify-end shrink-0">
                   <button
@@ -181,23 +193,23 @@ export function PdfMerge() {
           </div>
         ) : (
           <div className="flex-1 flex items-center justify-center font-mono text-[12px] text-dim-2">
-            {"// "}{lang === "fr" ? "aucun fichier sélectionné" : "no files selected"}
+            {"// "}{TR[lang].noFilesSelected}
           </div>
         )}
 
         {/* Footer */}
         <div className="flex items-center gap-4 px-4 py-2 border-t border-line bg-bg font-mono text-[11px]">
-          {error && <span className="text-danger">✕ {error}</span>}
-          {done && !error && (
+          {mergeStatus === "done" && (
             <span className="text-brand">
-              ✓ {lang === "fr" ? "PDF fusionné téléchargé" : "merged PDF downloaded"}
+              ✓ {TR[lang].mergedDownloaded}
             </span>
           )}
-          {!error && !done && (
+          {mergeStatus !== null && mergeStatus !== "done" && (
+            <span className="text-danger">✕ {mergeStatus}</span>
+          )}
+          {mergeStatus === null && (
             <span className="text-dim">
-              {files.length < 2
-                ? (lang === "fr" ? "ajoutez au moins 2 fichiers" : "add at least 2 files")
-                : (lang === "fr" ? "prêt à fusionner" : "ready to merge")}
+              {files.length < 2 ? TR[lang].addTwoFiles : TR[lang].readyMerge}
             </span>
           )}
         </div>

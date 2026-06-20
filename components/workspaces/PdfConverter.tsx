@@ -2,54 +2,83 @@
 
 import { useState, useRef } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
+import { t } from "@/lib/i18n";
+import { fmtSize } from "@/lib/format";
+import { downloadUrl } from "@/lib/download";
+import { useConversionState } from "@/hooks/useConversionState";
 
 type Status = "idle" | "loading" | "converting" | "done" | "error";
 type Mode = "pdf-to-images" | "images-to-pdf";
 type ImgFormat = "png" | "jpeg";
 
-function fmtSize(bytes: number) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / 1048576).toFixed(1)} MB`;
-}
-
 interface PageResult { url: string; page: number; size: number; }
+
+const TR = {
+  fr: {
+    dropPdf:           "déposer un PDF ou cliquer",
+    dropImages:        "déposer des images ou cliquer",
+    imagesSelected:    "image(s) sélectionnée(s)",
+    convertingPage:    "conversion page",
+    convertToImages:   "convertir en images",
+    processingImage:   "traitement image",
+    createPdf:         "créer le PDF",
+    pagesExtracted:    "pages extraites",
+    downloadAll:       "tout télécharger ↓",
+    downloadArrow:     "télécharger ↓",
+  },
+  en: {
+    dropPdf:           "drop a PDF or click",
+    dropImages:        "drop images or click",
+    imagesSelected:    "image(s) selected",
+    convertingPage:    "converting page",
+    convertToImages:   "convert to images",
+    processingImage:   "processing image",
+    createPdf:         "create PDF",
+    pagesExtracted:    "pages extracted",
+    downloadAll:       "download all ↓",
+    downloadArrow:     "download ↓",
+  },
+} as const;
 
 export function PdfConverter() {
   const { lang } = useLang();
+  const i = t(lang);
   const [mode, setMode] = useState<Mode>("pdf-to-images");
   const [imgFormat, setImgFormat] = useState<ImgFormat>("png");
   const [scale, setScale] = useState(2);
   const [file, setFile]   = useState<File | null>(null);
   const [images, setImages] = useState<File[]>([]);
-  const [status, setStatus] = useState<Status>("idle");
-  const [pages, setPages]   = useState<PageResult[]>([]);
-  const [outputUrl, setOutputUrl] = useState<string | null>(null);
-  const [outputSize, setOutputSize] = useState(0);
+  const { status, setStatus, error, outputUrl, outputSize, fail, succeed, reset } =
+    useConversionState<Status>("idle");
+  const [pages, setPages]     = useState<PageResult[]>([]);
   const [pageCount, setPageCount] = useState(0);
-  const [error, setError]   = useState<string | null>(null);
   const [current, setCurrent] = useState(0);
   const pdfRef  = useRef<HTMLInputElement>(null);
   const imgRef  = useRef<HTMLInputElement>(null);
+  const openPicker = (ref: React.RefObject<HTMLInputElement | null>) => ref.current?.click();
 
   const handlePdf = (f: File) => {
-    setFile(f); setPages([]); setStatus("idle"); setError(null);
+    setFile(f);
+    setPages([]);
+    reset();
   };
 
   const handleImages = (files: FileList | null) => {
     if (!files) return;
-    setImages(Array.from(files)); setOutputUrl(null); setStatus("idle"); setError(null);
+    setImages(Array.from(files));
+    reset();
   };
 
   /* PDF → Images */
   const convertPdfToImages = async () => {
     if (!file) return;
-    setStatus("loading"); setError(null); setPages([]); setCurrent(0);
+    setStatus("loading");
+    setPages([]);
+    setCurrent(0);
 
     try {
-      const { getDocument, GlobalWorkerOptions } = await import("pdfjs-dist");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (GlobalWorkerOptions as any).workerSrc = `https://unpkg.com/pdfjs-dist@${(await import("pdfjs-dist")).version}/build/pdf.worker.min.mjs`;
+      const { getDocument, GlobalWorkerOptions, version } = await import("pdfjs-dist");
+      GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${version}/build/pdf.worker.min.mjs`;
 
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await getDocument({ data: arrayBuffer }).promise;
@@ -64,7 +93,8 @@ export function PdfConverter() {
         const canvas   = document.createElement("canvas");
         canvas.width   = viewport.width;
         canvas.height  = viewport.height;
-        const ctx      = canvas.getContext("2d")!;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) throw new Error("Canvas context unavailable");
 
         if (imgFormat === "jpeg") {
           ctx.fillStyle = "#ffffff";
@@ -73,8 +103,8 @@ export function PdfConverter() {
 
         await page.render({ canvasContext: ctx, viewport, canvas }).promise;
 
-        const blob = await new Promise<Blob>((res) =>
-          canvas.toBlob((b) => res(b!), `image/${imgFormat}`, 0.92)
+        const blob = await new Promise<Blob>((res, rej) =>
+          canvas.toBlob((b) => b ? res(b) : rej(new Error("toBlob failed")), `image/${imgFormat}`, 0.92)
         );
         results.push({
           url:  URL.createObjectURL(blob),
@@ -86,15 +116,15 @@ export function PdfConverter() {
       setPages(results);
       setStatus("done");
     } catch (e) {
-      setError((e as Error).message);
-      setStatus("error");
+      fail(e);
     }
   };
 
   /* Images → PDF */
   const convertImagesToPdf = async () => {
     if (images.length === 0) return;
-    setStatus("loading"); setError(null); setOutputUrl(null); setCurrent(0);
+    setStatus("loading");
+    setCurrent(0);
 
     try {
       const { PDFDocument } = await import("pdf-lib");
@@ -102,8 +132,8 @@ export function PdfConverter() {
 
       const pdf = await PDFDocument.create();
 
-      for (const [i, img] of images.entries()) {
-        setCurrent(i + 1);
+      for (const [idx, img] of images.entries()) {
+        setCurrent(idx + 1);
         const bytes  = await img.arrayBuffer();
         const isJpeg = img.type === "image/jpeg" || img.name.match(/\.jpe?g$/i);
 
@@ -118,9 +148,12 @@ export function PdfConverter() {
             const bmp = await createImageBitmap(img);
             const canvas = document.createElement("canvas");
             canvas.width = bmp.width; canvas.height = bmp.height;
-            const ctx = canvas.getContext("2d")!;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) throw new Error("Canvas context unavailable");
             ctx.drawImage(bmp, 0, 0);
-            const pngBlob = await new Promise<Blob>((r) => canvas.toBlob((b) => r(b!), "image/png"));
+            const pngBlob = await new Promise<Blob>((res, rej) =>
+              canvas.toBlob((b) => b ? res(b) : rej(new Error("toBlob failed")), "image/png")
+            );
             embedded = await pdf.embedPng(await pngBlob.arrayBuffer());
           }
         }
@@ -130,69 +163,55 @@ export function PdfConverter() {
       }
 
       const pdfBytes = await pdf.save();
-      const blob     = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
-      setOutputUrl(URL.createObjectURL(blob));
-      setOutputSize(blob.size);
-      setStatus("done");
+      const blob     = new Blob([pdfBytes.buffer as ArrayBuffer], { type: "application/pdf" });
+      succeed(URL.createObjectURL(blob), blob.size);
     } catch (e) {
-      setError((e as Error).message);
-      setStatus("error");
+      fail(e);
     }
   };
 
   const downloadAll = () => {
     pages.forEach(({ url, page }) => {
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${file?.name.replace(/\.pdf$/i, "") ?? "page"}_p${page}.${imgFormat}`;
-      a.click();
+      downloadUrl(url, `${file?.name.replace(/\.pdf$/i, "") ?? "page"}_p${page}.${imgFormat}`);
     });
   };
 
   const downloadPdf = () => {
     if (!outputUrl) return;
-    const a = document.createElement("a");
-    a.href = outputUrl;
-    a.download = "converted.pdf";
-    a.click();
+    downloadUrl(outputUrl, "converted.pdf");
   };
 
   const busy = status === "loading" || status === "converting";
 
   return (
     <section className="mb-10">
-      {/* Mode toggle */}
       <div className="flex border border-line border-b-0">
         {(["pdf-to-images", "images-to-pdf"] as Mode[]).map((m) => (
           <button
             key={m}
-            onClick={() => { setMode(m); setStatus("idle"); setError(null); setPages([]); setOutputUrl(null); }}
+            onClick={() => { setMode(m); setPages([]); reset(); }}
             className={`flex-1 font-mono text-[12px] px-4 py-[10px] border-r last:border-r-0 border-line transition-colors ${mode === m ? "bg-brand text-bg" : "text-dim hover:text-fg"}`}
           >
-            {m === "pdf-to-images"
-              ? (lang === "fr" ? "PDF → images" : "PDF → images")
-              : (lang === "fr" ? "images → PDF" : "images → PDF")}
+            {m === "pdf-to-images" ? "PDF → images" : "images → PDF"}
           </button>
         ))}
       </div>
 
-      {/* PDF → images */}
       {mode === "pdf-to-images" && (
         <>
           <div
             className="border border-line border-dashed flex flex-col items-center justify-center gap-3 py-14 cursor-pointer hover:bg-bg-1 transition-colors"
-            onClick={() => pdfRef.current?.click()}
+            onClick={() => openPicker(pdfRef)}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handlePdf(f); }}
           >
             <span className="font-mono text-[28px] text-dim">▣</span>
             <span className="font-mono text-[12px] text-dim">
-              {file ? `${file.name} — ${fmtSize(file.size)}` : (lang === "fr" ? "déposer un PDF ou cliquer" : "drop a PDF or click")}
+              {file ? `${file.name} — ${fmtSize(file.size)}` : TR[lang].dropPdf}
             </span>
           </div>
           <input ref={pdfRef} type="file" accept=".pdf,application/pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handlePdf(f); }} />
 
-          {/* Options */}
           <div className="flex gap-0 border border-line border-t-0">
             <div className="flex items-center border-r border-line">
               <span className="font-mono text-[11px] text-dim px-3 py-[10px] border-r border-line bg-bg-1">format</span>
@@ -205,7 +224,7 @@ export function PdfConverter() {
             </div>
             <div className="flex items-center">
               <span className="font-mono text-[11px] text-dim px-3 py-[10px] border-r border-line bg-bg-1">
-                {lang === "fr" ? "qualité" : "quality"}
+                {i.quality}
               </span>
               {[1, 2, 3].map((s) => (
                 <button key={s} onClick={() => setScale(s)}
@@ -220,8 +239,8 @@ export function PdfConverter() {
             <button onClick={convertPdfToImages} disabled={!file || busy}
               className="w-full py-[11px] bg-brand text-bg font-mono text-[12px] font-semibold hover:brightness-110 transition-all disabled:opacity-40">
               {busy
-                ? `${lang === "fr" ? "conversion page" : "converting page"} ${current}${pageCount ? `/${pageCount}` : ""}…`
-                : (lang === "fr" ? "convertir en images" : "convert to images")}
+                ? `${TR[lang].convertingPage} ${current}${pageCount ? `/${pageCount}` : ""}…`
+                : TR[lang].convertToImages}
             </button>
 
             {busy && (
@@ -236,10 +255,10 @@ export function PdfConverter() {
             {pages.length > 0 && (
               <>
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[12px] text-dim">{pages.length} {lang === "fr" ? "pages extraites" : "pages extracted"}</span>
+                  <span className="font-mono text-[12px] text-dim">{pages.length} {TR[lang].pagesExtracted}</span>
                   <button onClick={downloadAll}
                     className="font-mono text-[12px] text-brand px-4 py-2 border border-brand hover:brightness-110 transition-all">
-                    {lang === "fr" ? "tout télécharger ↓" : "download all ↓"}
+                    {TR[lang].downloadAll}
                   </button>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
@@ -260,20 +279,19 @@ export function PdfConverter() {
         </>
       )}
 
-      {/* Images → PDF */}
       {mode === "images-to-pdf" && (
         <>
           <div
             className="border border-line border-dashed flex flex-col items-center justify-center gap-3 py-14 cursor-pointer hover:bg-bg-1 transition-colors"
-            onClick={() => imgRef.current?.click()}
+            onClick={() => openPicker(imgRef)}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => { e.preventDefault(); handleImages(e.dataTransfer.files); }}
           >
             <span className="font-mono text-[28px] text-dim">⊞</span>
             <span className="font-mono text-[12px] text-dim">
               {images.length > 0
-                ? `${images.length} ${lang === "fr" ? "image(s) sélectionnée(s)" : "image(s) selected"}`
-                : (lang === "fr" ? "déposer des images ou cliquer" : "drop images or click")}
+                ? `${images.length} ${TR[lang].imagesSelected}`
+                : TR[lang].dropImages}
             </span>
             <span className="font-mono text-[11px] text-dim-2">PNG, JPEG, WEBP, GIF…</span>
           </div>
@@ -281,9 +299,9 @@ export function PdfConverter() {
 
           {images.length > 0 && (
             <div className="border border-line border-t-0 divide-y divide-line max-h-40 overflow-y-auto">
-              {images.map((img, i) => (
-                <div key={i} className="flex items-center justify-between px-3 py-[7px] font-mono text-[11px]">
-                  <span className="text-dim w-6 shrink-0">{i + 1}</span>
+              {images.map((img, idx) => (
+                <div key={img.name + idx} className="flex items-center justify-between px-3 py-[7px] font-mono text-[11px]">
+                  <span className="text-dim w-6 shrink-0">{idx + 1}</span>
                   <span className="text-fg flex-1 truncate">{img.name}</span>
                   <span className="text-dim-2 ml-3">{fmtSize(img.size)}</span>
                 </div>
@@ -295,8 +313,8 @@ export function PdfConverter() {
             <button onClick={convertImagesToPdf} disabled={images.length === 0 || busy}
               className="w-full py-[11px] bg-brand text-bg font-mono text-[12px] font-semibold hover:brightness-110 transition-all disabled:opacity-40">
               {busy
-                ? `${lang === "fr" ? "traitement image" : "processing image"} ${current}/${images.length}…`
-                : (lang === "fr" ? "créer le PDF" : "create PDF")}
+                ? `${TR[lang].processingImage} ${current}/${images.length}…`
+                : TR[lang].createPdf}
             </button>
 
             {busy && (
@@ -312,11 +330,11 @@ export function PdfConverter() {
               <div className="flex items-center justify-between border border-line px-4 py-3">
                 <div className="flex flex-col gap-1">
                   <span className="font-mono text-[12px] text-fg">converted.pdf</span>
-                  <span className="font-mono text-[11px] text-dim">{fmtSize(outputSize)} · {images.length} {lang === "fr" ? "pages" : "pages"}</span>
+                  <span className="font-mono text-[11px] text-dim">{fmtSize(outputSize)} · {images.length} pages</span>
                 </div>
                 <button onClick={downloadPdf}
                   className="font-mono text-[12px] text-brand px-4 py-2 border border-brand hover:brightness-110 transition-all">
-                  {lang === "fr" ? "télécharger ↓" : "download ↓"}
+                  {TR[lang].downloadArrow}
                 </button>
               </div>
             )}
@@ -326,7 +344,7 @@ export function PdfConverter() {
 
       <div className="flex items-center gap-4 px-[14px] py-2 border border-line border-t-0 bg-bg font-mono text-[11px] text-dim">
         <span className="inline-block w-[6px] h-[6px] rounded-full bg-brand mr-1" />
-        {lang === "fr" ? "conversion locale — aucun fichier envoyé au serveur" : "local conversion — no file sent to server"}
+        {i.localConversion}
       </div>
     </section>
   );

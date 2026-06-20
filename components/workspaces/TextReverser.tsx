@@ -38,7 +38,7 @@ export function TextReverser() {
             disabled={!output}
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all disabled:opacity-40"
           >
-            {lang === "fr" ? "copier ⏎" : "copy ⏎"}
+            {i.copyAlt}
           </button>
         }
       >
@@ -57,7 +57,7 @@ export function TextReverser() {
           ext="txt"
           meta={`${Array.from(input).length} chars`}
           actions={<PaneBtn onClick={() => setInput("")}>{i.clear}</PaneBtn>}
-          footer={<span>{input.split(/\r?\n/).length} {lang === "fr" ? "lignes" : "lines"}</span>}
+          footer={<span>{input.split(/\r?\n/).length} {i.lines}</span>}
           className="border-r border-line"
         >
           <div className="flex-1 p-[14px] bg-bg-code">
@@ -79,7 +79,7 @@ export function TextReverser() {
         >
           <div className="flex-1 p-[14px] bg-bg-code">
             <pre className="font-mono text-[12.5px] text-fg-1 leading-[1.65] whitespace-pre-wrap min-h-[320px]">
-              {output || <span className="text-dim-2">{lang === "fr" ? "résultat ici…" : "result here…"}</span>}
+              {output || <span className="text-dim-2">{i.resultHere}</span>}
             </pre>
           </div>
         </Pane>

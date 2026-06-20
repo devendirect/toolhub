@@ -5,15 +5,44 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
 
+const TR = {
+  fr: {
+    characters:  "caractères",
+    noSpaces:    "sans espaces",
+    sentences:   "phrases",
+    paragraphs:  "paragraphes",
+    readTime:    "lecture (~238 mpm)",
+    statistics:  "statistiques",
+    realTime:    "analyse en temps réel",
+    pastePlaceholder: "collez votre texte ici…",
+  },
+  en: {
+    characters:  "characters",
+    noSpaces:    "no spaces",
+    sentences:   "sentences",
+    paragraphs:  "paragraphs",
+    readTime:    "read time (~238 wpm)",
+    statistics:  "statistics",
+    realTime:    "real-time analysis",
+    pastePlaceholder: "paste your text here…",
+  },
+} as const;
+
 const SAMPLE = `La boîte à outils du développeur moderne. Convertir, encoder, générer, formatter — une commande, un résultat. La plupart des outils tournent 100 % en local.`;
 
 const WPM = 238;
 
+interface WordSegment { isWordLike: boolean; }
+type SegmenterCtor = new (locale?: string, opts?: { granularity: string }) => {
+  segment(s: string): Iterable<WordSegment>;
+};
+
 function countWords(str: string): number {
   if (!str.trim()) return 0;
   if (typeof Intl !== "undefined" && "Segmenter" in Intl) {
-    const seg = new (Intl as any).Segmenter(undefined, { granularity: "word" });
-    return [...seg.segment(str)].filter((s: any) => s.isWordLike).length;
+    const Seg = (Intl as unknown as { Segmenter: SegmenterCtor }).Segmenter;
+    const seg = new Seg(undefined, { granularity: "word" });
+    return [...seg.segment(str)].filter((s) => s.isWordLike).length;
   }
   return str.trim().split(/\s+/).filter(Boolean).length;
 }
@@ -45,12 +74,12 @@ export function WordCounter() {
   }, [input]);
 
   const STAT_ROWS = [
-    { label: lang === "fr" ? "mots" : "words",              value: stats.words.toLocaleString() },
-    { label: lang === "fr" ? "caractères" : "characters",   value: stats.chars.toLocaleString() },
-    { label: lang === "fr" ? "sans espaces" : "no spaces",  value: stats.charsNoSpace.toLocaleString() },
-    { label: lang === "fr" ? "phrases" : "sentences",       value: stats.sentences.toLocaleString() },
-    { label: lang === "fr" ? "paragraphes" : "paragraphs",  value: stats.paragraphs.toLocaleString() },
-    { label: lang === "fr" ? "lecture (~238 mpm)" : "read time (~238 wpm)", value: stats.readTime },
+    { label: i.wordsLabel,             value: stats.words.toLocaleString() },
+    { label: TR[lang].characters,      value: stats.chars.toLocaleString() },
+    { label: TR[lang].noSpaces,        value: stats.charsNoSpace.toLocaleString() },
+    { label: TR[lang].sentences,       value: stats.sentences.toLocaleString() },
+    { label: TR[lang].paragraphs,      value: stats.paragraphs.toLocaleString() },
+    { label: TR[lang].readTime,        value: stats.readTime },
   ];
 
   return (
@@ -61,14 +90,14 @@ export function WordCounter() {
           title={i.input}
           ext="txt"
           actions={<PaneBtn onClick={() => setInput("")}>{i.clear}</PaneBtn>}
-          footer={<span>{stats.chars} chars · {stats.words} {lang === "fr" ? "mots" : "words"}</span>}
+          footer={<span>{stats.chars} chars · {stats.words} {i.wordsLabel}</span>}
           className="border-r border-line"
         >
           <div className="flex-1 p-[14px] bg-bg-code">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={lang === "fr" ? "collez votre texte ici…" : "paste your text here…"}
+              placeholder={TR[lang].pastePlaceholder}
               className="w-full h-full min-h-[380px] bg-transparent font-mono text-[12.5px] text-fg leading-[1.65] outline-none resize-none placeholder:text-dim-2"
               spellCheck={false}
             />
@@ -76,8 +105,8 @@ export function WordCounter() {
         </Pane>
 
         <Pane
-          title={lang === "fr" ? "statistiques" : "statistics"}
-          footer={<span>{lang === "fr" ? "analyse en temps réel" : "real-time analysis"} ✓</span>}
+          title={TR[lang].statistics}
+          footer={<span>{TR[lang].realTime} ✓</span>}
         >
           <div className="flex-1 bg-bg-code p-[14px] flex flex-col gap-[6px] min-h-[380px]">
             {STAT_ROWS.map(({ label, value }) => (

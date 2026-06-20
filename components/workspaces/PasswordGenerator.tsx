@@ -4,6 +4,29 @@ import { useState, useCallback } from "react";
 import { useCopy } from "@/hooks/useCopy";
 import { useLang } from "@/components/providers/I18nProvider";
 import { OptionsBar, OptBlock, SegControl, Toggle } from "@/components/workspace/OptionsBar";
+import { t } from "@/lib/i18n";
+import type { Lang } from "@/lib/types";
+
+const TR = {
+  fr: {
+    lengthLabel: "longueur",
+    noAmbig:     "sans ambig.",
+    passwords:   "mots de passe",
+    weak:        "faible",
+    fair:        "moyen",
+    strong:      "fort",
+    veryStrong:  "très fort",
+  },
+  en: {
+    lengthLabel: "length",
+    noAmbig:     "no ambig.",
+    passwords:   "passwords",
+    weak:        "weak",
+    fair:        "fair",
+    strong:      "strong",
+    veryStrong:  "very strong",
+  },
+} as const;
 
 type Length = 8 | 12 | 16 | 24 | 32;
 
@@ -33,17 +56,18 @@ function entropy(pw: string): number {
   return Math.floor(pw.length * Math.log2(pool || 1));
 }
 
-function strengthLabel(bits: number, lang: string): { label: string; color: string } {
-  if (bits < 40) return { label: lang === "fr" ? "faible" : "weak",    color: "text-danger" };
-  if (bits < 60) return { label: lang === "fr" ? "moyen" : "fair",     color: "text-hot" };
-  if (bits < 80) return { label: lang === "fr" ? "fort" : "strong",    color: "text-brand" };
-  return           { label: lang === "fr" ? "très fort" : "very strong", color: "text-brand" };
+function strengthLabel(bits: number, lang: Lang): { label: string; color: string } {
+  if (bits < 40) return { label: TR[lang].weak,      color: "text-danger" };
+  if (bits < 60) return { label: TR[lang].fair,      color: "text-hot" };
+  if (bits < 80) return { label: TR[lang].strong,    color: "text-brand" };
+  return           { label: TR[lang].veryStrong,     color: "text-brand" };
 }
 
 const COUNT = 5;
 
 export function PasswordGenerator() {
   const { lang } = useLang();
+  const i = t(lang);
   const [length, setLength] = useState<Length>(16);
   const [upper, setUpper] = useState(true);
   const [digits, setDigits] = useState(true);
@@ -70,11 +94,11 @@ export function PasswordGenerator() {
             onClick={() => regen(length, opts)}
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all"
           >
-            {lang === "fr" ? "générer ⏎" : "generate ⏎"}
+            {i.generateBtn}
           </button>
         }
       >
-        <OptBlock label={lang === "fr" ? "longueur" : "length"}>
+        <OptBlock label={TR[lang].lengthLabel}>
           <SegControl
             options={[8, 12, 16, 24, 32] as Length[]}
             value={length}
@@ -90,7 +114,7 @@ export function PasswordGenerator() {
         <OptBlock label="!@#">
           <Toggle on={symbols} onChange={(v) => { setSymbols(v); regen(length, { ...opts, symbols: v }); }} />
         </OptBlock>
-        <OptBlock label={lang === "fr" ? "sans ambig." : "no ambig."}>
+        <OptBlock label={TR[lang].noAmbig}>
           <Toggle on={noAmbiguous} onChange={(v) => { setNoAmbiguous(v); regen(length, { ...opts, noAmbiguous: v }); }} />
         </OptBlock>
       </OptionsBar>
@@ -99,7 +123,7 @@ export function PasswordGenerator() {
         <div className="flex items-center gap-4 px-[14px] py-[10px] border-b border-line bg-bg text-[12px]">
           <span className="font-mono">
             <span className="text-dim">// </span>
-            <span className="text-fg">{lang === "fr" ? "mots de passe" : "passwords"}</span>
+            <span className="text-fg">{TR[lang].passwords}</span>
           </span>
           <span className="font-mono text-[11px] text-dim">{COUNT} suggestions</span>
         </div>
@@ -119,7 +143,7 @@ export function PasswordGenerator() {
                 <span className={`font-mono text-[11px] ${color} shrink-0 w-16 text-right`}>{label}</span>
                 <span className="font-mono text-[11px] text-dim shrink-0 w-12 text-right">{bits}b</span>
                 <span className="font-mono text-[11px] text-dim opacity-0 group-hover:opacity-100 transition-opacity ml-1 w-12 text-right">
-                  {copied === String(idx) ? "✓" : (lang === "fr" ? "copier" : "copy")}
+                  {copied === String(idx) ? "✓" : i.copy}
                 </span>
               </div>
             );
@@ -128,7 +152,7 @@ export function PasswordGenerator() {
 
         <div className="flex items-center gap-4 px-[14px] py-2 border-t border-line bg-bg font-mono text-[11px] text-dim">
           <span>crypto.getRandomValues()</span>
-          <span>{lang === "fr" ? "cliquer pour copier" : "click to copy"}</span>
+          <span>{i.clickToCopy}</span>
         </div>
       </div>
     </section>

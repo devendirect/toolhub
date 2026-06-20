@@ -5,12 +5,29 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
 
-interface Segment { text: string; isMatch: boolean; matchIdx: number; }
-interface Match { value: string; index: number; groups: string[]; }
+const TR = {
+  fr: {
+    testString:      "texte de test",
+    matchesPane:     "correspondances",
+    matchesHere:     "les matches apparaîtront ici…",
+    emptyMatch:      "(vide)",
+    regexPlaceholder:"expression régulière…",
+  },
+  en: {
+    testString:      "test string",
+    matchesPane:     "matches",
+    matchesHere:     "matches will appear here…",
+    emptyMatch:      "(empty)",
+    regexPlaceholder:"regular expression…",
+  },
+} as const;
+
+interface RegexSegment { text: string; isMatch: boolean; matchIdx: number; }
+interface RegexMatch { value: string; index: number; groups: string[]; }
 
 function analyze(text: string, pattern: string, flags: string): {
-  segments: Segment[];
-  matches: Match[];
+  segments: RegexSegment[];
+  matches: RegexMatch[];
   error: string | null;
 } {
   if (!pattern) return { segments: [{ text, isMatch: false, matchIdx: -1 }], matches: [], error: null };
@@ -18,13 +35,13 @@ function analyze(text: string, pattern: string, flags: string): {
     const allFlags = flags.includes("g") ? flags : flags + "g";
     const regex = new RegExp(pattern, allFlags);
     const rawMatches = [...text.matchAll(regex)];
-    const matches: Match[] = rawMatches.map((m) => ({
+    const matches: RegexMatch[] = rawMatches.map((m) => ({
       value: m[0],
       index: m.index ?? 0,
       groups: m.slice(1).map((g) => g ?? "undefined"),
     }));
 
-    const segments: Segment[] = [];
+    const segments: RegexSegment[] = [];
     let last = 0;
     rawMatches.forEach((m, i) => {
       const start = m.index ?? 0;
@@ -64,7 +81,7 @@ export function RegexTester() {
   const i = t(lang);
 
   const [pattern, setPattern] = useState("[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}");
-  const [flags, setFlags] = useState<Set<Flag>>(new Set(["g", "i"] as any));
+  const [flags, setFlags] = useState<Set<Flag>>(new Set<Flag>(["i"]));
   const [text, setText] = useState(TEST_TEXT);
 
   const flagStr = ["g", ...FLAG_LIST.filter((f) => flags.has(f))].join("");
@@ -75,23 +92,21 @@ export function RegexTester() {
 
   const loadSample = (s: typeof SAMPLES[0]) => {
     setPattern(s.pattern);
-    setFlags(new Set(s.flags.split("").filter((f) => FLAG_LIST.includes(f as Flag)) as Flag[]));
+    setFlags(new Set(FLAG_LIST.filter((f) => s.flags.includes(f))));
   };
 
   return (
     <section className="mb-10">
-      {/* Pattern bar */}
       <div className="flex items-center gap-0 border border-line border-b-0 bg-bg-1">
         <span className="font-mono text-[14px] text-dim px-4 border-r border-line py-[11px]">/</span>
         <input
           value={pattern}
           onChange={(e) => setPattern(e.target.value)}
-          placeholder={lang === "fr" ? "expression régulière…" : "regular expression…"}
+          placeholder={TR[lang].regexPlaceholder}
           className="flex-1 bg-transparent font-mono text-[13px] text-brand px-4 py-[11px] outline-none placeholder:text-dim-2"
           spellCheck={false}
         />
         <span className="font-mono text-[14px] text-dim px-2 border-l border-line py-[11px]">/</span>
-        {/* Flags */}
         <div className="flex items-center gap-1 px-3 border-l border-line py-[8px]">
           {(["g", ...FLAG_LIST] as string[]).map((f) => {
             const isG = f === "g";
@@ -110,20 +125,18 @@ export function RegexTester() {
             );
           })}
         </div>
-        {/* Match count */}
         <div className="px-4 border-l border-line py-[11px] font-mono text-[12px] shrink-0">
           {error
             ? <span className="text-danger">✕ error</span>
             : <span className={matches.length > 0 ? "text-brand" : "text-dim"}>
-                {matches.length} {lang === "fr" ? "match(es)" : "match(es)"}
+                {matches.length} {"match(es)"}
               </span>}
         </div>
       </div>
 
-      {/* Quick samples */}
       <div className="flex items-center gap-2 px-[14px] py-[9px] border border-line border-b-0 bg-bg">
         <span className="font-mono text-[10px] text-dim-2 uppercase tracking-[0.1em] mr-1">
-          {lang === "fr" ? "exemples" : "samples"}
+          {i.samplesLabel}
         </span>
         {SAMPLES.map((s) => (
           <button
@@ -137,13 +150,12 @@ export function RegexTester() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 border border-line">
-        {/* Test string */}
         <Pane
-          title={lang === "fr" ? "texte de test" : "test string"}
+          title={TR[lang].testString}
           ext="txt"
           meta={`${text.length} chars`}
-          actions={<PaneBtn onClick={() => setText("")}>{i.clear}</PaneBtn>}
-          footer={<span>{text.split(/\r?\n/).length} {lang === "fr" ? "lignes" : "lines"}</span>}
+          actions={<PaneBtn onClick={() => setText("")}>{i.clearInput}</PaneBtn>}
+          footer={<span>{text.split(/\r?\n/).length} {i.lines}</span>}
           className="border-r border-line"
         >
           <div className="flex-1 p-[14px] bg-bg-code">
@@ -156,13 +168,12 @@ export function RegexTester() {
           </div>
         </Pane>
 
-        {/* Highlighted output + matches */}
         <Pane
-          title={lang === "fr" ? "correspondances" : "matches"}
+          title={TR[lang].matchesPane}
           footer={
             error
               ? <span className="text-danger">✕ {error}</span>
-              : <span>{matches.length > 0 ? `${matches.length} match(es) · /${pattern}/${flagStr}` : (lang === "fr" ? "aucun match" : "no matches")}</span>
+              : <span>{matches.length > 0 ? `${matches.length} match(es) · /${pattern}/${flagStr}` : i.noMatches}</span>
           }
         >
           <div className="flex-1 flex flex-col bg-bg-code min-h-[340px]">
@@ -171,24 +182,24 @@ export function RegexTester() {
               {segments.length > 0
                 ? segments.map((seg, i) =>
                     seg.isMatch ? (
-                      <mark key={i} className="bg-brand-soft text-brand rounded-[2px] px-[1px]">
+                      <mark key={`${i}:m`} className="bg-brand-soft text-brand rounded-[2px] px-[1px]">
                         {seg.text}
                       </mark>
                     ) : (
-                      <span key={i} className="text-fg-1">{seg.text}</span>
+                      <span key={`${i}:t`} className="text-fg-1">{seg.text}</span>
                     )
                   )
-                : <span className="text-dim-2">{lang === "fr" ? "les matches apparaîtront ici…" : "matches will appear here…"}</span>}
+                : <span className="text-dim-2">{TR[lang].matchesHere}</span>}
             </div>
 
             {/* Match list */}
             {matches.length > 0 && (
               <div className="overflow-auto flex-1 divide-y divide-line">
                 {matches.map((m, i) => (
-                  <div key={i} className="flex items-start gap-3 px-[14px] py-[8px]">
+                  <div key={`${m.index}:${m.value.slice(0, 8)}`} className="flex items-start gap-3 px-[14px] py-[8px]">
                     <span className="font-mono text-[10px] text-dim-2 w-5 shrink-0 pt-[2px]">{i + 1}</span>
                     <div className="flex-1 min-w-0">
-                      <span className="font-mono text-[12px] text-brand break-all">{m.value || (lang === "fr" ? "(vide)" : "(empty)")}</span>
+                      <span className="font-mono text-[12px] text-brand break-all">{m.value || TR[lang].emptyMatch}</span>
                       <span className="font-mono text-[11px] text-dim-2 ml-2">@{m.index}</span>
                       {m.groups.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-1">

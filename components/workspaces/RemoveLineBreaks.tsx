@@ -9,6 +9,21 @@ import { Pane, PaneBtn } from "@/components/workspace/Pane";
 
 type Mode = "space" | "remove" | "normalize";
 
+const TR = {
+  fr: {
+    modeSpace:     "→ espace",
+    modeRemove:    "supprimer",
+    modeNormalize: "normaliser",
+    processed:     "traité",
+  },
+  en: {
+    modeSpace:     "→ space",
+    modeRemove:    "remove",
+    modeNormalize: "normalize",
+    processed:     "processed",
+  },
+} as const;
+
 const SAMPLE = `Voici un texte
 avec plusieurs
 sauts de ligne.
@@ -35,9 +50,9 @@ export function RemoveLineBreaks() {
   const handleCopy = () => output && copy(output);
 
   const MODE_LABELS: Record<Mode, string> = {
-    space:     lang === "fr" ? "→ espace"   : "→ space",
-    remove:    lang === "fr" ? "supprimer"  : "remove",
-    normalize: lang === "fr" ? "normaliser" : "normalize",
+    space:     TR[lang].modeSpace,
+    remove:    TR[lang].modeRemove,
+    normalize: TR[lang].modeNormalize,
   };
 
   return (
@@ -49,7 +64,7 @@ export function RemoveLineBreaks() {
             disabled={!output}
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all disabled:opacity-40"
           >
-            {lang === "fr" ? "copier ⏎" : "copy ⏎"}
+            {i.copyAlt}
           </button>
         }
       >
@@ -67,7 +82,7 @@ export function RemoveLineBreaks() {
         <Pane
           title={i.input}
           ext="txt"
-          meta={`${input.split(/\r?\n/).length} ${lang === "fr" ? "lignes" : "lines"}`}
+          meta={`${input.split(/\r?\n/).length} ${i.lines}`}
           actions={<PaneBtn onClick={() => setInput("")}>{i.clear}</PaneBtn>}
           footer={<span>{input.length} chars</span>}
           className="border-r border-line"
@@ -87,11 +102,11 @@ export function RemoveLineBreaks() {
           ext="txt"
           meta={output ? `${output.length} chars` : undefined}
           actions={<PaneBtn onClick={handleCopy} disabled={!output}>{i.copy}</PaneBtn>}
-          footer={output ? <span>{lang === "fr" ? "traité" : "processed"} ✓</span> : undefined}
+          footer={output ? <span>{TR[lang].processed} ✓</span> : undefined}
         >
           <div className="flex-1 p-[14px] bg-bg-code">
             <pre className="font-mono text-[12.5px] text-fg-1 leading-[1.65] whitespace-pre-wrap min-h-[320px]">
-              {output || <span className="text-dim-2">{lang === "fr" ? "résultat ici…" : "result here…"}</span>}
+              {output || <span className="text-dim-2">{i.resultHere}</span>}
             </pre>
           </div>
         </Pane>

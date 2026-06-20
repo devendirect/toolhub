@@ -5,6 +5,19 @@ import { useCopy } from "@/hooks/useCopy";
 import { useLang } from "@/components/providers/I18nProvider";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 
+const TR = {
+  fr: {
+    colorStops: "// couleurs",
+    addStop:    "ajouter",
+    copyValue:  "cliquer pour copier la valeur",
+  },
+  en: {
+    colorStops: "// color stops",
+    addStop:    "add stop",
+    copyValue:  "click to copy value",
+  },
+} as const;
+
 type GType = "linear" | "radial" | "conic";
 
 interface Stop { color: string; pos: number; }
@@ -32,8 +45,8 @@ export function GradientGenerator() {
 
   const gradient = useMemo(() => buildCss(type, angle, stops), [type, angle, stops]);
 
-  const updateStop = (i: number, patch: Partial<Stop>) =>
-    setStops((prev) => prev.map((s, idx) => (idx === i ? { ...s, ...patch } : s)));
+  const updateStop = (stopIdx: number, patch: Partial<Stop>) =>
+    setStops((prev) => prev.map((s, idx) => (idx === stopIdx ? { ...s, ...patch } : s)));
 
   const addStop = () => {
     if (stops.length >= 5) return;
@@ -46,9 +59,9 @@ export function GradientGenerator() {
     });
   };
 
-  const removeStop = (i: number) => {
+  const removeStop = (idx: number) => {
     if (stops.length <= 2) return;
-    setStops((prev) => prev.filter((_, idx) => idx !== i));
+    setStops((prev) => prev.filter((_, j) => j !== idx));
   };
 
   const handleCopyCss = () => copy(`background: ${gradient};`, "__css__");
@@ -99,24 +112,24 @@ export function GradientGenerator() {
       {/* Color stops */}
       <div className="border border-line border-t-0 bg-bg-1">
         <div className="flex items-center gap-3 px-[14px] py-[10px] border-b border-line">
-          <span className="font-mono text-[11px] text-dim">{lang === "fr" ? "// couleurs" : "// color stops"}</span>
+          <span className="font-mono text-[11px] text-dim">{TR[lang].colorStops}</span>
           <button
             onClick={addStop}
             disabled={stops.length >= 5}
             className="ml-auto font-mono text-[11px] text-dim hover:text-brand transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            + {lang === "fr" ? "ajouter" : "add stop"}
+            + {TR[lang].addStop}
           </button>
         </div>
 
         <div className="divide-y divide-line">
-          {stops.map((stop, i) => (
-            <div key={i} className="flex items-center gap-4 px-[14px] py-[10px]">
-              <span className="font-mono text-[11px] text-dim-2 w-5">{String(i + 1).padStart(2, "0")}</span>
+          {stops.map((stop, idx) => (
+            <div key={idx} className="flex items-center gap-4 px-[14px] py-[10px]">
+              <span className="font-mono text-[11px] text-dim-2 w-5">{String(idx + 1).padStart(2, "0")}</span>
               <input
                 type="color"
                 value={stop.color}
-                onChange={(e) => updateStop(i, { color: e.target.value })}
+                onChange={(e) => updateStop(idx, { color: e.target.value })}
                 className="w-8 h-8 rounded cursor-pointer border border-line-2 bg-transparent shrink-0"
               />
               <span className="font-mono text-[13px] text-fg w-20 shrink-0">{stop.color}</span>
@@ -124,19 +137,19 @@ export function GradientGenerator() {
                 <input
                   type="range"
                   min={0} max={100} value={stop.pos}
-                  onChange={(e) => updateStop(i, { pos: Number(e.target.value) })}
+                  onChange={(e) => updateStop(idx, { pos: Number(e.target.value) })}
                   className="flex-1 accent-[var(--brand)]"
                 />
                 <input
                   type="number"
                   min={0} max={100} value={stop.pos}
-                  onChange={(e) => updateStop(i, { pos: Number(e.target.value) })}
+                  onChange={(e) => updateStop(idx, { pos: Number(e.target.value) })}
                   className="w-[52px] font-mono text-[12px] bg-bg border border-line px-2 py-[3px] text-fg outline-none focus:border-brand-mid"
                 />
                 <span className="font-mono text-[12px] text-dim">%</span>
               </div>
               <button
-                onClick={() => removeStop(i)}
+                onClick={() => removeStop(idx)}
                 disabled={stops.length <= 2}
                 className="font-mono text-[12px] text-dim hover:text-danger transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
               >✕</button>
@@ -157,7 +170,7 @@ export function GradientGenerator() {
             </pre>
           </div>
           <div className="font-mono text-[11px] text-dim-2 mt-2">
-            {lang === "fr" ? "cliquer pour copier la valeur" : "click to copy value"} · {stops.length} stops
+            {TR[lang].copyValue} · {stops.length} stops
           </div>
         </div>
       </div>

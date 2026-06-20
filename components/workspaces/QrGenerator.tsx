@@ -2,14 +2,30 @@
 
 import { useState, useEffect } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
-import { useCopy } from "@/hooks/useCopy";
 import { t } from "@/lib/i18n";
+import { useCopy } from "@/hooks/useCopy";
+import { downloadBlob, downloadUrl } from "@/lib/download";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
 
 type Format = "svg" | "png";
 type EC = "L" | "M" | "Q" | "H";
 type Size = 128 | 256 | 512;
+
+const TR = {
+  fr: {
+    errCorrection: "correction",
+    qrPrompt:      "entrez un texte pour générer",
+    qrPlaceholder: "URL, texte, contact…",
+    plainText:     "texte brut",
+  },
+  en: {
+    errCorrection: "error correction",
+    qrPrompt:      "enter text to generate",
+    qrPlaceholder: "URL, text, contact…",
+    plainText:     "plain text",
+  },
+} as const;
 
 export function QrGenerator() {
   const { lang } = useLang();
@@ -46,15 +62,11 @@ export function QrGenerator() {
 
   const handleDownload = () => {
     if (!output) return;
-    const a = document.createElement("a");
     if (format === "svg") {
-      a.href = URL.createObjectURL(new Blob([output], { type: "image/svg+xml" }));
-      a.download = "qrcode.svg";
+      downloadBlob(new Blob([output], { type: "image/svg+xml" }), "qrcode.svg");
     } else {
-      a.href = output;
-      a.download = "qrcode.png";
+      downloadUrl(output, "qrcode.png");
     }
-    a.click();
   };
 
   const handleCopy = async () => {
@@ -69,17 +81,17 @@ export function QrGenerator() {
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all"
             onClick={() => setText(text)}
           >
-            {lang === "fr" ? "générer ⏎" : "generate ⏎"}
+            {i.generateBtn}
           </button>
         }
       >
         <OptBlock label="format">
           <SegControl options={["svg", "png"]} value={format} onChange={(v) => setFormat(v as Format)} />
         </OptBlock>
-        <OptBlock label={lang === "fr" ? "correction" : "error correction"}>
+        <OptBlock label={TR[lang].errCorrection}>
           <SegControl options={["L", "M", "Q", "H"]} value={ec} onChange={(v) => setEc(v as EC)} />
         </OptBlock>
-        <OptBlock label={lang === "fr" ? "taille" : "size"}>
+        <OptBlock label={i.sizeOpt}>
           <SegControl options={[128, 256, 512]} value={size} onChange={(v) => setSize(v as Size)} />
         </OptBlock>
       </OptionsBar>
@@ -95,7 +107,7 @@ export function QrGenerator() {
           }
           footer={
             <span className="text-fg-1">
-              {text.startsWith("http") ? "URL" : text.startsWith("BEGIN:") ? "vCard" : lang === "fr" ? "texte brut" : "plain text"}
+              {text.startsWith("http") ? "URL" : text.startsWith("BEGIN:") ? "vCard" : TR[lang].plainText}
             </span>
           }
           className="border-r border-line"
@@ -104,7 +116,7 @@ export function QrGenerator() {
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder={lang === "fr" ? "URL, texte, contact…" : "URL, text, contact…"}
+              placeholder={TR[lang].qrPlaceholder}
               className="w-full h-full min-h-[320px] bg-transparent font-mono text-[12.5px] text-fg leading-[1.65] outline-none resize-none placeholder:text-dim-2"
               spellCheck={false}
             />
@@ -142,7 +154,7 @@ export function QrGenerator() {
               <img src={output} alt="QR code" style={{ width: Math.min(size, 280), imageRendering: "pixelated" }} />
             ) : (
               <span className="font-mono text-[12px] text-dim">
-                {"// "}{lang === "fr" ? "entrez un texte pour générer" : "enter text to generate"}
+                {"// "}{TR[lang].qrPrompt}
               </span>
             )}
           </div>

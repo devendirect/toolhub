@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
+import { downloadBlob } from "@/lib/download";
 import { t } from "@/lib/i18n";
 import { OptionsBar, OptBlock, SegControl, Toggle } from "@/components/workspace/OptionsBar";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
@@ -57,10 +58,7 @@ export function JsonFormatter() {
   const handleCopy = () => output && copy(output);
   const handleDownload = () => {
     if (!output) return;
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([output], { type: "application/json" }));
-    a.download = "formatted.json";
-    a.click();
+    downloadBlob(new Blob([output], { type: "application/json" }), "formatted.json");
   };
 
   const outputLines = output ? output.split("\n").length : 0;
@@ -136,7 +134,7 @@ export function JsonFormatter() {
               <>
                 <span>indent: {indent === "tab" ? "tab" : `${indent} spaces`}</span>
                 <span>sorted: {sortKeys ? "yes" : "no"}</span>
-                <span>{lang === "fr" ? "généré" : "rendered"} ✓</span>
+                <span>{i.generated} ✓</span>
               </>
             ) : undefined
           }

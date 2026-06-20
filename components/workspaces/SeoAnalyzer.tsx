@@ -2,13 +2,22 @@
 
 import { useState } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
-import type { SeoCheck } from "@/app/api/seo/route";
+import { t } from "@/lib/i18n";
+import { useFetch } from "@/hooks/useFetch";
+import type { SeoCheck, SeoData } from "@/app/api/seo/route";
 
-interface SeoResult {
-  url: string; score: number; title: string;
-  description: string; wordCount: number; h1: string;
-  checks: SeoCheck[];
-}
+const TR = {
+  fr: {
+    seoPass:    "ok",
+    seoWarning: "avertissement(s)",
+    seoError:   "erreur(s)",
+  },
+  en: {
+    seoPass:    "pass",
+    seoWarning: "warning(s)",
+    seoError:   "error(s)",
+  },
+} as const;
 
 const STATUS_COLOR: Record<SeoCheck["status"], string> = {
   pass: "text-brand",
@@ -39,30 +48,21 @@ function ScoreRing({ score }: { score: number }) {
 
 export function SeoAnalyzer() {
   const { lang } = useLang();
+  const i = t(lang);
   const [url, setUrl] = useState("https://nextjs.org");
-  const [result, setResult] = useState<SeoResult | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { loading, error, data: seoData, run } = useFetch<SeoData>();
 
-  const analyze = async () => {
+  const analyze = () => {
     if (!url) return;
-    setLoading(true); setError(null); setResult(null);
-    try {
-      const res = await fetch(`/api/seo?url=${encodeURIComponent(url)}`);
-      const json = await res.json();
-      if (!res.ok || json.error) throw new Error(json.error);
-      setResult(json);
-    } catch (e) { setError((e as Error).message); }
-    finally { setLoading(false); }
+    run(`/api/seo?url=${encodeURIComponent(url)}`);
   };
 
-  const passCount = result?.checks.filter((c) => c.status === "pass").length ?? 0;
-  const warnCount = result?.checks.filter((c) => c.status === "warn").length ?? 0;
-  const failCount = result?.checks.filter((c) => c.status === "fail").length ?? 0;
+  const passCount = seoData?.checks.filter((c) => c.status === "pass").length ?? 0;
+  const warnCount = seoData?.checks.filter((c) => c.status === "warn").length ?? 0;
+  const failCount = seoData?.checks.filter((c) => c.status === "fail").length ?? 0;
 
   return (
     <section className="mb-10">
-      {/* URL bar */}
       <div className="flex items-center gap-0 border border-line border-b-0">
         <span className="font-mono text-[12px] text-dim px-4 py-[11px] border-r border-line bg-bg-1 shrink-0">URL</span>
         <input
@@ -78,18 +78,25 @@ export function SeoAnalyzer() {
           disabled={loading || !url}
           className="px-[18px] py-[11px] bg-brand text-bg font-mono text-[12px] font-semibold shrink-0 hover:brightness-110 transition-all disabled:opacity-50 border-l border-brand"
         >
-          {loading ? "…" : (lang === "fr" ? "analyser ⏎" : "analyze ⏎")}
+          {loading ? "…" : i.analyzeBtn}
         </button>
       </div>
 
       <div className="border border-line border-t-0 min-h-[340px]">
-        {error && <div className="p-6 font-mono text-[12px] text-danger">✕ {error}</div>}
+        {error && (
+          <div className="flex items-center gap-3 p-6">
+            <span className="font-mono text-[12px] text-danger">✕ {error}</span>
+            <button onClick={analyze} className="font-mono text-[11px] text-dim hover:text-brand transition-colors border border-line px-3 py-[5px]">
+              {i.retry}
+            </button>
+          </div>
+        )}
 
-        {!result && !error && !loading && (
+        {!seoData && !error && !loading && (
           <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
             <span className="font-mono text-[28px] text-dim">✓↗</span>
             <span className="font-mono text-[12px] text-dim">
-              {lang === "fr" ? "entrez une URL et cliquez analyser" : "enter a URL and click analyze"}
+              {i.enterUrlSeo}
             </span>
           </div>
         )}
@@ -97,35 +104,33 @@ export function SeoAnalyzer() {
         {loading && (
           <div className="flex items-center justify-center py-16">
             <span className="font-mono text-[12px] text-dim">
-              {lang === "fr" ? "analyse en cours…" : "analyzing…"}
+              {i.analyzing}
             </span>
           </div>
         )}
 
-        {result && (
+        {seoData && (
           <div>
-            {/* Score header */}
             <div className="grid grid-cols-1 md:grid-cols-[120px_1fr] border-b border-line">
               <div className="flex items-center justify-center p-6 border-r border-line">
-                <ScoreRing score={result.score} />
+                <ScoreRing score={seoData.score} />
               </div>
               <div className="p-6 flex flex-col gap-3">
-                <div className="font-mono text-[11px] text-dim">{result.url}</div>
+                <div className="font-mono text-[11px] text-dim">{seoData.url}</div>
                 <div className="flex gap-6">
-                  <span className="font-mono text-[13px] text-brand">✓ {passCount} {lang === "fr" ? "ok" : "pass"}</span>
-                  <span className="font-mono text-[13px] text-hot">⚠ {warnCount} {lang === "fr" ? "avertissement(s)" : "warning(s)"}</span>
-                  <span className="font-mono text-[13px] text-danger">✕ {failCount} {lang === "fr" ? "erreur(s)" : "error(s)"}</span>
+                  <span className="font-mono text-[13px] text-brand">✓ {passCount} {TR[lang].seoPass}</span>
+                  <span className="font-mono text-[13px] text-hot">⚠ {warnCount} {TR[lang].seoWarning}</span>
+                  <span className="font-mono text-[13px] text-danger">✕ {failCount} {TR[lang].seoError}</span>
                 </div>
                 <div className="flex gap-6 font-mono text-[11px] text-dim">
-                  {result.wordCount > 0 && <span>{result.wordCount} {lang === "fr" ? "mots" : "words"}</span>}
-                  {result.h1 && <span>H1: {result.h1.slice(0, 40)}</span>}
+                  {seoData.wordCount > 0 && <span>{seoData.wordCount} {i.wordsLabel}</span>}
+                  {seoData.h1 && <span>H1: {seoData.h1.slice(0, 40)}</span>}
                 </div>
               </div>
             </div>
 
-            {/* Checks */}
             <div className="divide-y divide-line">
-              {result.checks.map((check) => (
+              {seoData.checks.map((check) => (
                 <div key={check.id} className="flex items-start gap-4 px-[14px] py-[11px]">
                   <span className={`font-mono text-[13px] w-4 shrink-0 ${STATUS_COLOR[check.status]}`}>
                     {STATUS_ICON[check.status]}
@@ -139,7 +144,6 @@ export function SeoAnalyzer() {
                     </div>
                     <div className="font-mono text-[11px] text-dim-2 mt-[2px] truncate">{check.detail}</div>
                   </div>
-                  {/* Points bar */}
                   <div className="w-20 h-1 bg-bg-2 rounded-full mt-2 shrink-0">
                     <div
                       className="h-full rounded-full transition-all"
@@ -157,7 +161,7 @@ export function SeoAnalyzer() {
 
         <div className="flex items-center gap-4 px-[14px] py-2 border-t border-line bg-bg font-mono text-[11px] text-dim">
           <span className="inline-block w-[6px] h-[6px] rounded-full bg-hot mr-1" />
-          {lang === "fr" ? "récupération via proxy — résultat mis en cache 30 min en mémoire, aucun log persistant" : "proxied fetch — result cached 30 min in memory, no persistent log"}
+          {i.proxied30min}
         </div>
       </div>
     </section>

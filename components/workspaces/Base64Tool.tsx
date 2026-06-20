@@ -1,13 +1,30 @@
 "use client";
 
-import { useState, useMemo } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
 import { t } from "@/lib/i18n";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
+import { useBidirectionalConverter } from "@/hooks/useBidirectionalConverter";
 
 type Mode = "encode" | "decode";
+
+const TR = {
+  fr: {
+    plainText:      "texte brut",
+    encodePlaceholder: "texte à encoder…",
+    decodePlaceholder: "base64 à décoder…",
+    resultAppears:  "le résultat apparaît ici…",
+    converted:      "converti",
+  },
+  en: {
+    plainText:      "plain text",
+    encodePlaceholder: "text to encode…",
+    decodePlaceholder: "base64 to decode…",
+    resultAppears:  "result appears here…",
+    converted:      "converted",
+  },
+} as const;
 
 function encodeB64(str: string): string {
   const bytes = new TextEncoder().encode(str);
@@ -24,37 +41,19 @@ function decodeB64(str: string): string {
 export function Base64Tool() {
   const { lang } = useLang();
   const i = t(lang);
-
-  const [input, setInput] = useState("Hello, toolhub!");
-  const [mode, setMode] = useState<Mode>("encode");
-
-  const { output, error } = useMemo(() => {
-    if (!input) return { output: "", error: null };
-    try {
-      return { output: mode === "encode" ? encodeB64(input) : decodeB64(input), error: null };
-    } catch (e) {
-      return { output: "", error: (e as Error).message };
-    }
-  }, [input, mode]);
-
+  const { mode, setMode, input, setInput, output, error, swap } = useBidirectionalConverter(encodeB64, decodeB64, "Hello, toolhub!");
   const { copy } = useCopy();
-  const handleCopy = () => output && copy(output);
-  const handleSwap = () => {
-    if (!output) return;
-    setInput(output);
-    setMode((m) => (m === "encode" ? "decode" : "encode"));
-  };
 
   return (
     <section className="mb-10">
       <OptionsBar
         action={
           <button
-            onClick={handleSwap}
+            onClick={swap}
             disabled={!output}
             className="px-[18px] py-2 border border-line-2 bg-bg-1 font-mono text-[12px] text-fg-1 rounded-[3px] hover:border-brand-mid hover:text-fg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {lang === "fr" ? "inverser ⇄" : "swap ⇄"}
+            {i.swapBtn}
           </button>
         }
       >
@@ -68,16 +67,11 @@ export function Base64Tool() {
       </OptionsBar>
 
       <div className="grid grid-cols-1 md:grid-cols-2 border border-line">
-        {/* Input */}
         <Pane
-          title={mode === "encode" ? (lang === "fr" ? "texte brut" : "plain text") : "base64"}
+          title={mode === "encode" ? TR[lang].plainText : "base64"}
           ext="txt"
           meta={`${new TextEncoder().encode(input).length} ${i.bytes}`}
-          actions={
-            <>
-              <PaneBtn onClick={() => setInput("")}>{i.clear}</PaneBtn>
-            </>
-          }
+          actions={<PaneBtn onClick={() => setInput("")}>{i.clear}</PaneBtn>}
           footer={
             <span>
               <span className="inline-block w-[6px] h-[6px] rounded-full bg-brand mr-[6px]" />
@@ -91,27 +85,26 @@ export function Base64Tool() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={mode === "encode"
-                ? (lang === "fr" ? "texte à encoder…" : "text to encode…")
-                : (lang === "fr" ? "base64 à décoder…" : "base64 to decode…")}
+                ? TR[lang].encodePlaceholder
+                : TR[lang].decodePlaceholder}
               className="w-full h-full min-h-[320px] bg-transparent font-mono text-[12.5px] text-fg leading-[1.65] outline-none resize-none placeholder:text-dim-2"
               spellCheck={false}
             />
           </div>
         </Pane>
 
-        {/* Output */}
         <Pane
-          title={mode === "encode" ? "base64" : (lang === "fr" ? "texte brut" : "plain text")}
+          title={mode === "encode" ? "base64" : TR[lang].plainText}
           ext="txt"
           meta={output ? `${output.length} chars` : undefined}
           actions={
-            <PaneBtn onClick={handleCopy} disabled={!output}>{i.copy}</PaneBtn>
+            <PaneBtn onClick={() => output && copy(output)} disabled={!output}>{i.copy}</PaneBtn>
           }
           footer={
             error ? (
               <span className="text-danger">✕ {error}</span>
             ) : output ? (
-              <span>{lang === "fr" ? "converti" : "converted"} ✓</span>
+              <span>{TR[lang].converted} ✓</span>
             ) : undefined
           }
         >
@@ -119,7 +112,7 @@ export function Base64Tool() {
             <pre className="font-mono text-[12.5px] text-fg-1 leading-[1.65] whitespace-pre-wrap break-all min-h-[320px]">
               {error
                 ? <span className="text-danger">{error}</span>
-                : output || <span className="text-dim-2">{lang === "fr" ? "le résultat apparaît ici…" : "result appears here…"}</span>}
+                : output || <span className="text-dim-2">{TR[lang].resultAppears}</span>}
             </pre>
           </div>
         </Pane>

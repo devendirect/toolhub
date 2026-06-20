@@ -3,9 +3,25 @@
 import { useState, useMemo } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
+import { downloadBlob } from "@/lib/download";
 import { t } from "@/lib/i18n";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
+
+const TR = {
+  fr: {
+    viewLabel:      "vue",
+    renderedLabel:  "rendu",
+    downloadHtml:   "télécharger .html ⏎",
+    resultHere:     "résultat ici…",
+  },
+  en: {
+    viewLabel:      "view",
+    renderedLabel:  "rendered",
+    downloadHtml:   "download .html ⏎",
+    resultHere:     "result here…",
+  },
+} as const;
 
 type View = "preview" | "html";
 
@@ -50,10 +66,7 @@ export function MarkdownHtml() {
   const handleCopy = () => copy(view === "html" ? html : input);
   const handleDownload = () => {
     if (!html) return;
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([html], { type: "text/html" }));
-    a.download = "output.html";
-    a.click();
+    downloadBlob(new Blob([html], { type: "text/html" }), "output.html");
   };
 
   const wordCount = input.trim() ? input.trim().split(/\s+/).length : 0;
@@ -67,11 +80,11 @@ export function MarkdownHtml() {
             disabled={!html}
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all disabled:opacity-40"
           >
-            {lang === "fr" ? "télécharger .html ⏎" : "download .html ⏎"}
+            {TR[lang].downloadHtml}
           </button>
         }
       >
-        <OptBlock label={lang === "fr" ? "vue" : "view"}>
+        <OptBlock label={TR[lang].viewLabel}>
           <SegControl
             options={["preview", "html"] as View[]}
             value={view}
@@ -85,7 +98,7 @@ export function MarkdownHtml() {
         <Pane
           title="markdown"
           ext="md"
-          meta={`${wordCount} ${lang === "fr" ? "mots" : "words"}`}
+          meta={`${wordCount} ${i.wordsLabel}`}
           actions={<PaneBtn onClick={() => setInput("")}>{i.clear}</PaneBtn>}
           footer={<span>{input.length} chars</span>}
           className="border-r border-line"
@@ -107,7 +120,7 @@ export function MarkdownHtml() {
           ext={view === "preview" ? "html" : "txt"}
           meta={html ? `${html.length} chars` : undefined}
           actions={<PaneBtn onClick={handleCopy} disabled={!html}>{i.copy}</PaneBtn>}
-          footer={html ? <span>marked · {lang === "fr" ? "rendu" : "rendered"} ✓</span> : undefined}
+          footer={html ? <span>marked · {TR[lang].renderedLabel} ✓</span> : undefined}
         >
           <div className="flex-1 bg-bg-code min-h-[420px] overflow-auto">
             {view === "preview" ? (
@@ -117,7 +130,7 @@ export function MarkdownHtml() {
               />
             ) : (
               <pre className="p-[14px] font-mono text-[12px] text-fg-1 leading-[1.6] whitespace-pre-wrap break-all">
-                {html || <span className="text-dim-2">{lang === "fr" ? "résultat ici…" : "result here…"}</span>}
+                {html || <span className="text-dim-2">{TR[lang].resultHere}</span>}
               </pre>
             )}
           </div>

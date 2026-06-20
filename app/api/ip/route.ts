@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export type IpErrorCode =
+  | "RATE_LIMITED"
+  | "INVALID_IP"
+  | "TIMEOUT"
+  | "UPSTREAM_ERROR"
+  | "LOOKUP_FAILED";
+
 interface IpApiResponse {
   status:      "success" | "fail";
   message?:    string;
@@ -73,6 +80,11 @@ function checkRateLimit(ip: string): boolean {
 // ── Champs demandés à ip-api.com ─────────────────────────────────────────────
 const FIELDS = "status,message,query,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as";
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function ipErr(code: IpErrorCode, error: string) {
+  return { error, code };
+}
+
 // ── Handler ───────────────────────────────────────────────────────────────────
 export async function GET(req: NextRequest) {
   const requesterIp =
@@ -83,7 +95,7 @@ export async function GET(req: NextRequest) {
   // 1. Rate limiting
   if (!checkRateLimit(requesterIp)) {
     return NextResponse.json(
-      { error: "Too many requests — please wait a minute." },
+      ipErr("RATE_LIMITED", "Too many requests — please wait a minute."),
       { status: 429 }
     );
   }
@@ -92,7 +104,7 @@ export async function GET(req: NextRequest) {
   const paramIp = req.nextUrl.searchParams.get("ip")?.trim() ?? "";
   if (paramIp && !isValidIp(paramIp)) {
     return NextResponse.json(
-      { error: "Invalid IP address format." },
+      ipErr("INVALID_IP", "Invalid IP address format."),
       { status: 400 }
     );
   }
@@ -123,18 +135,24 @@ export async function GET(req: NextRequest) {
     // Quota ip-api.com dépassé
     if (res.status === 429) {
       return NextResponse.json(
-        { error: "ip-api.com rate limit reached — try again in a few seconds." },
+        ipErr("RATE_LIMITED", "ip-api.com rate limit reached — try again in a few seconds."),
         { status: 429 }
       );
     }
 
     if (!res.ok) {
-      return NextResponse.json({ error: `ip-api returned ${res.status}` }, { status: 502 });
+      return NextResponse.json(
+        ipErr("UPSTREAM_ERROR", `ip-api returned ${res.status}`),
+        { status: 502 }
+      );
     }
 
     const data = await res.json() as IpApiResponse;
     if (data.status === "fail") {
-      return NextResponse.json({ error: data.message ?? "lookup failed" }, { status: 422 });
+      return NextResponse.json(
+        ipErr("LOOKUP_FAILED", data.message ?? "lookup failed"),
+        { status: 422 }
+      );
     }
 
     // 5. Mise en cache (uniquement si on avait une IP cible connue)
@@ -143,7 +161,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(data);
   } catch (e) {
     clearTimeout(timer);
-    const msg = e instanceof Error && e.name === "AbortError" ? "timeout" : String(e);
-    return NextResponse.json({ error: msg }, { status: 502 });
+    const isTimeout = e instanceof Error && e.name === "AbortError";
+    return NextResponse.json(
+      ipErr(isTimeout ? "TIMEOUT" : "UPSTREAM_ERROR", isTimeout ? "timeout" : String(e)),
+      { status: 502 }
+    );
   }
 }

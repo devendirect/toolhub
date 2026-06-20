@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { TOOLS, CATEGORIES } from "@/lib/tools";
 import { SITE_URL } from "@/lib/brand";
+import { TOOLS_CONTENT } from "@/lib/tools-content";
+import { toolFaqItems } from "@/lib/faq";
 import { ToolPageClient } from "@/components/tool/ToolPageClient";
 import { toolJsonLd, breadcrumbJsonLd, faqJsonLd } from "@/lib/jsonld";
 import type { Metadata } from "next";
@@ -58,6 +60,8 @@ export default async function ToolPage({ params }: Props) {
   const l = (lang === "fr" ? "fr" : "en") satisfies Lang;
 
   const catLabel = CATEGORIES.find((c) => c.id === tool.cat)?.label[l] ?? "";
+  const content  = TOOLS_CONTENT[tool.slug];
+  const faqItems = toolFaqItems(tool);
 
   return (
     <>
@@ -73,7 +77,7 @@ export default async function ToolPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(tool, l)) }}
       />
-      <ToolPageClient tool={tool} />
+      <ToolPageClient tool={tool} content={content} faqItems={faqItems} />
     </>
   );
 }

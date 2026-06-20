@@ -1,6 +1,6 @@
 "use client";
 
-import CodeMirror, { type Extension } from "@uiw/react-codemirror";
+import CodeMirror from "@uiw/react-codemirror";
 import { json } from "@codemirror/lang-json";
 import { EditorView } from "@codemirror/view";
 
@@ -43,7 +43,6 @@ interface EditorProps {
   value: string;
   onChange?: (value: string) => void;
   readOnly?: boolean;
-  extensions?: Extension[];
   minHeight?: string;
 }
 

@@ -4,6 +4,12 @@ import { useState, useCallback } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
+import { t } from "@/lib/i18n";
+
+const TR = {
+  fr: { quantity: "quantité" },
+  en: { quantity: "count" },
+} as const;
 
 type Count = 1 | 5 | 10 | 25;
 
@@ -13,6 +19,7 @@ function genV4(): string {
 
 export function UuidGenerator() {
   const { lang } = useLang();
+  const i = t(lang);
   const [count, setCount] = useState<Count>(5);
   const [uuids, setUuids] = useState<string[]>(() => Array.from({ length: 5 }, genV4));
   const { copy, copied } = useCopy();
@@ -31,11 +38,11 @@ export function UuidGenerator() {
             onClick={() => generate(count)}
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all"
           >
-            {lang === "fr" ? "générer ⏎" : "generate ⏎"}
+            {i.generateBtn}
           </button>
         }
       >
-        <OptBlock label={lang === "fr" ? "quantité" : "count"}>
+        <OptBlock label={TR[lang].quantity}>
           <SegControl
             options={[1, 5, 10, 25]}
             value={count}
@@ -60,22 +67,22 @@ export function UuidGenerator() {
               onClick={handleCopyAll}
               className="px-[9px] py-[3px] font-mono text-[11px] text-fg-1 border border-line rounded-[3px] bg-bg-1 hover:text-brand hover:border-brand-mid transition-colors"
             >
-              {copied === "__all__" ? "✓ " : ""}{lang === "fr" ? "copier tout" : "copy all"}
+              {copied === "__all__" ? "✓ " : ""}{i.copyAll}
             </button>
           </div>
         </div>
 
         <div className="bg-bg-code divide-y divide-line">
-          {uuids.map((uuid, i) => (
+          {uuids.map((uuid, idx) => (
             <div
-              key={i}
+              key={idx}
               className="group flex items-center justify-between px-[18px] py-[11px] hover:bg-bg-2 transition-colors cursor-pointer"
               onClick={() => copy(uuid)}
             >
-              <span className="font-mono text-[11px] text-dim-2 w-6 shrink-0">{String(i + 1).padStart(2, "0")}</span>
+              <span className="font-mono text-[11px] text-dim-2 w-6 shrink-0">{String(idx + 1).padStart(2, "0")}</span>
               <span className="font-mono text-[13px] text-fg tracking-[0.04em] flex-1 ml-4">{uuid}</span>
               <span className="font-mono text-[11px] text-dim opacity-0 group-hover:opacity-100 transition-opacity ml-4">
-                {lang === "fr" ? "copier" : "copy"}
+                {i.copy}
               </span>
             </div>
           ))}
@@ -83,7 +90,7 @@ export function UuidGenerator() {
 
         <div className="flex items-center gap-4 px-[14px] py-2 border-t border-line bg-bg font-mono text-[11px] text-dim">
           <span>RFC 4122 · v4 (random)</span>
-          <span>{lang === "fr" ? "cliquer pour copier" : "click to copy"}</span>
+          <span>{i.clickToCopy}</span>
         </div>
       </div>
     </section>

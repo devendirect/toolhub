@@ -1,8 +1,46 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useCopy } from "@/hooks/useCopy";
 import { useLang } from "@/components/providers/I18nProvider";
+import { t } from "@/lib/i18n";
+
+const TR = {
+  fr: {
+    fieldsRequired: "5 champs requis",
+    presets:        "raccourcis",
+    exprLabel:      "// expression",
+    descLabel:      "// traduction",
+    loadingDesc:    "chargement de la description…",
+    fieldMinute:    "minute",
+    fieldHour:      "heure",
+    fieldDom:       "jour/mois",
+    fieldMonth:     "mois",
+    fieldDow:       "jour/semaine",
+    symAny:         "toute valeur",
+    symList:        "liste : 1,3,5",
+    symRange:       "plage : 1-5",
+    symStep:        "pas : */5",
+    symLast:        "dernier (dom/dow)",
+  },
+  en: {
+    fieldsRequired: "5 fields required",
+    presets:        "presets",
+    exprLabel:      "// cron",
+    descLabel:      "// description",
+    loadingDesc:    "loading description…",
+    fieldMinute:    "minute",
+    fieldHour:      "hour",
+    fieldDom:       "day/month",
+    fieldMonth:     "month",
+    fieldDow:       "day/week",
+    symAny:         "any value",
+    symList:        "list: 1,3,5",
+    symRange:       "range: 1-5",
+    symStep:        "step: */5",
+    symLast:        "last (dom/dow)",
+  },
+} as const;
 
 interface CronField { value: string; label: string; placeholder: string; hint: string; }
 
@@ -26,7 +64,7 @@ const FIELD_PRESETS: Record<string, string[]> = {
 
 function validate(expr: string, lang: "fr" | "en"): string | null {
   const parts = expr.trim().split(/\s+/);
-  if (parts.length !== 5) return lang === "fr" ? "5 champs requis" : "5 fields required";
+  if (parts.length !== 5) return TR[lang].fieldsRequired;
   return null;
 }
 
@@ -37,6 +75,7 @@ function parsePreset(expr: string): Record<string, string> {
 
 export function CronGenerator() {
   const { lang } = useLang();
+  const i = t(lang);
 
   const [fields, setFields] = useState({ min: "0", hour: "9", dom: "*", mon: "*", dow: "*" });
   const { copy, copied } = useCopy();
@@ -45,46 +84,49 @@ export function CronGenerator() {
   const expr = `${fields.min} ${fields.hour} ${fields.dom} ${fields.mon} ${fields.dow}`;
   const validationError = validate(expr, lang);
 
-  useMemo(() => {
+  useEffect(() => {
     if (validationError) { setDescription(""); return; }
-    Promise.all([
-      import("cronstrue"),
-      lang === "fr" ? import("cronstrue/locales/fr") : Promise.resolve(),
-    ]).then(([{ default: cronstrue }]) => {
+    let cancelled = false;
+    (async () => {
       try {
+        const { default: cronstrue } = await import("cronstrue");
+        if (lang === "fr") await import("cronstrue/locales/fr");
+        if (cancelled) return;
         const opts = lang === "fr"
           ? { locale: "fr", use24HourTimeFormat: true }
           : { use24HourTimeFormat: false };
         setDescription(cronstrue.toString(expr, opts));
       } catch {
-        try { setDescription(cronstrue.toString(expr)); } catch { setDescription(""); }
+        if (!cancelled) {
+          try {
+            const { default: cronstrue } = await import("cronstrue");
+            if (!cancelled) setDescription(cronstrue.toString(expr));
+          } catch {
+            if (!cancelled) setDescription("");
+          }
+        }
       }
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [expr, lang]);
+    })();
+    return () => { cancelled = true; };
+  }, [expr, lang, validationError]);
 
   const setField = (key: string, value: string) => setFields((p) => ({ ...p, [key]: value }));
 
   const loadPreset = (e: string) => setFields(parsePreset(e) as typeof fields);
 
-  const handleCopy = () => {
-    copy(expr);
-  };
-
   const FIELD_DATA: Array<CronField & { key: string }> = [
-    { key: "min",  value: fields.min,  label: lang === "fr" ? "minute" : "minute",       placeholder: "0-59", hint: "0–59, */5, 1-30" },
-    { key: "hour", value: fields.hour, label: lang === "fr" ? "heure" : "hour",           placeholder: "0-23", hint: "0–23, */2, 9-17" },
-    { key: "dom",  value: fields.dom,  label: lang === "fr" ? "jour/mois" : "day/month",  placeholder: "1-31", hint: "1–31, L, */2" },
-    { key: "mon",  value: fields.mon,  label: lang === "fr" ? "mois" : "month",           placeholder: "1-12", hint: "1–12, JAN-DEC" },
-    { key: "dow",  value: fields.dow,  label: lang === "fr" ? "jour/semaine" : "day/week", placeholder: "0-7", hint: "0–7, MON-SUN, 1-5" },
+    { key: "min",  value: fields.min,  label: TR[lang].fieldMinute, placeholder: "0-59", hint: "0–59, */5, 1-30" },
+    { key: "hour", value: fields.hour, label: TR[lang].fieldHour,   placeholder: "0-23", hint: "0–23, */2, 9-17" },
+    { key: "dom",  value: fields.dom,  label: TR[lang].fieldDom,    placeholder: "1-31", hint: "1–31, L, */2" },
+    { key: "mon",  value: fields.mon,  label: TR[lang].fieldMonth,  placeholder: "1-12", hint: "1–12, JAN-DEC" },
+    { key: "dow",  value: fields.dow,  label: TR[lang].fieldDow,    placeholder: "0-7",  hint: "0–7, MON-SUN, 1-5" },
   ];
 
   return (
     <section className="mb-10">
-      {/* Presets */}
       <div className="flex flex-wrap items-center gap-2 px-[14px] py-[12px] border border-line border-b-0 bg-bg-1">
         <span className="font-mono text-[10px] text-dim-2 uppercase tracking-[0.1em] mr-1 shrink-0">
-          {lang === "fr" ? "raccourcis" : "presets"}
+          {TR[lang].presets}
         </span>
         {PRESETS.map((p) => (
           <button
@@ -100,7 +142,6 @@ export function CronGenerator() {
       </div>
 
       <div className="border border-line">
-        {/* Field editors */}
         <div className="grid grid-cols-5 border-b border-line">
           {FIELD_DATA.map(({ key, ...f }) => (
             <div key={f.label} className={`flex flex-col border-r border-line last:border-r-0`}>
@@ -134,35 +175,32 @@ export function CronGenerator() {
           ))}
         </div>
 
-        {/* Expression output */}
         <div className="flex items-center gap-4 px-[14px] py-[14px] border-b border-line bg-bg-code">
-          <span className="font-mono text-[11px] text-dim shrink-0">{lang === "fr" ? "// expression" : "// cron"}</span>
+          <span className="font-mono text-[11px] text-dim shrink-0">{TR[lang].exprLabel}</span>
           <code className="font-mono text-[18px] text-brand tracking-[0.12em] flex-1">{expr}</code>
           <button
-            onClick={handleCopy}
+            onClick={() => copy(expr)}
             className="px-[18px] py-[7px] bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all shrink-0"
           >
-            {copied ? "✓" : (lang === "fr" ? "copier" : "copy")}
+            {copied ? "✓" : i.copy}
           </button>
         </div>
 
-        {/* Description */}
         <div className="px-[14px] py-[14px] bg-bg-1">
           {validationError ? (
             <span className="font-mono text-[12px] text-danger">✕ {validationError}</span>
           ) : description ? (
             <div className="flex flex-col gap-[6px]">
-              <span className="font-mono text-[11px] text-dim">{lang === "fr" ? "// traduction" : "// description"}</span>
+              <span className="font-mono text-[11px] text-dim">{TR[lang].descLabel}</span>
               <span className="text-[15px] text-fg font-medium">{description}</span>
             </div>
           ) : (
             <span className="font-mono text-[12px] text-dim-2">
-              {lang === "fr" ? "chargement de la description…" : "loading description…"}
+              {TR[lang].loadingDesc}
             </span>
           )}
         </div>
 
-        {/* Reference */}
         <div className="grid grid-cols-5 border-t border-line">
           {[
             ["min", "0–59"],
@@ -179,14 +217,13 @@ export function CronGenerator() {
         </div>
       </div>
 
-      {/* Syntax reminder */}
       <div className="flex flex-wrap gap-x-8 gap-y-2 mt-3 px-1">
         {[
-          ["*", lang === "fr" ? "toute valeur" : "any value"],
-          [",", lang === "fr" ? "liste : 1,3,5" : "list: 1,3,5"],
-          ["-", lang === "fr" ? "plage : 1-5" : "range: 1-5"],
-          ["*/n", lang === "fr" ? "pas : */5" : "step: */5"],
-          ["L", lang === "fr" ? "dernier (dom/dow)" : "last (dom/dow)"],
+          ["*",   TR[lang].symAny],
+          [",",   TR[lang].symList],
+          ["-",   TR[lang].symRange],
+          ["*/n", TR[lang].symStep],
+          ["L",   TR[lang].symLast],
         ].map(([sym, desc]) => (
           <span key={sym} className="font-mono text-[11px] text-dim">
             <span className="text-brand">{sym}</span> — {desc}

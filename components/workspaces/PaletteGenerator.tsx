@@ -4,6 +4,20 @@ import { useState, useMemo } from "react";
 import { useCopy } from "@/hooks/useCopy";
 import { useLang } from "@/components/providers/I18nProvider";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
+import { t } from "@/lib/i18n";
+
+const TR = {
+  fr: {
+    harmony:  "harmonie",
+    count:    "nombre",
+  },
+  en: {
+    harmony:  "harmony",
+    count:    "count",
+  },
+} as const;
+
+const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 
 type Harmony = "analogous" | "complementary" | "triadic" | "split" | "tetradic";
 
@@ -57,6 +71,7 @@ function luminance(hex: string): number {
 
 export function PaletteGenerator() {
   const { lang } = useLang();
+  const i = t(lang);
 
   const [baseColor, setBaseColor] = useState("#00e08a");
   const [harmony, setHarmony] = useState<Harmony>("analogous");
@@ -98,7 +113,7 @@ export function PaletteGenerator() {
           </button>
         }
       >
-        <OptBlock label={lang === "fr" ? "couleur" : "color"}>
+        <OptBlock label={i.color}>
           <div className="flex items-center gap-2">
             <input
               type="color"
@@ -111,21 +126,21 @@ export function PaletteGenerator() {
               value={baseColor}
               onChange={(e) => {
                 const v = e.target.value;
-                if (/^#[0-9a-fA-F]{6}$/.test(v)) setBaseColor(v);
+                if (HEX_RE.test(v)) setBaseColor(v);
               }}
               className="w-[80px] font-mono text-[12px] bg-transparent text-fg border border-line px-2 py-[3px] outline-none focus:border-brand-mid"
               spellCheck={false}
             />
           </div>
         </OptBlock>
-        <OptBlock label={lang === "fr" ? "harmonie" : "harmony"}>
+        <OptBlock label={TR[lang].harmony}>
           <SegControl
             options={["analogous", "complementary", "triadic", "split", "tetradic"]}
             value={harmony}
             onChange={(v) => setHarmony(v as Harmony)}
           />
         </OptBlock>
-        <OptBlock label={lang === "fr" ? "nombre" : "count"}>
+        <OptBlock label={TR[lang].count}>
           <SegControl options={[3, 4, 5]} value={count} onChange={(v) => setCount(v as 3 | 4 | 5)} />
         </OptBlock>
       </OptionsBar>
