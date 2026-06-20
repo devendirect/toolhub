@@ -29,6 +29,8 @@ const TR = {
   },
 } as const;
 
+const AFFILIATE_GRAMMARLY = process.env.NEXT_PUBLIC_AFFILIATE_GRAMMARLY;
+
 const SAMPLE = `La boîte à outils du développeur moderne. Convertir, encoder, générer, formatter — une commande, un résultat. La plupart des outils tournent 100 % en local.`;
 
 const WPM = 238;
@@ -124,6 +126,30 @@ export function WordCounter() {
           </div>
         </Pane>
       </div>
+
+      {AFFILIATE_GRAMMARLY && stats.words > 0 && (
+        <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
+          <span className="font-mono text-[20px] shrink-0">✓</span>
+          <div className="flex flex-col gap-1">
+            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
+              {lang === "fr" ? "aller plus loin" : "go further"}
+            </span>
+            <p className="text-[13px] text-fg-1">
+              {lang === "fr"
+                ? "Comptez les mots, c'est bien. Corriger les fautes et améliorer le style, c'est mieux."
+                : "Counting words is good. Fixing mistakes and improving your writing style is better."}
+            </p>
+            <a
+              href={AFFILIATE_GRAMMARLY}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
+            >
+              {lang === "fr" ? "Essayer Grammarly gratuitement →" : "Try Grammarly for free →"}
+            </a>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

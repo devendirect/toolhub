@@ -7,6 +7,9 @@ import { useCopy } from "@/hooks/useCopy";
 import { downloadBlob } from "@/lib/download";
 import { useTrackRun } from "@/hooks/useTrackRun";
 
+const AFFILIATE_IONOS     = process.env.NEXT_PUBLIC_AFFILIATE_IONOS;
+const AFFILIATE_NAMECHEAP = process.env.NEXT_PUBLIC_AFFILIATE_NAMECHEAP;
+
 interface Rule { agent: string; disallow: string; allow: string; }
 
 const DEFAULT_RULES: Rule[] = [{ agent: "*", disallow: "/admin/", allow: "" }];
@@ -27,6 +30,7 @@ export function RobotsTxt() {
   const [sitemap, setSitemap] = useState("");
   const { copy, copied } = useCopy();
   const trackRun = useTrackRun("robots-txt", "seo");
+  const affiliateUrl = lang === "fr" ? AFFILIATE_IONOS : AFFILIATE_NAMECHEAP;
 
   const updateRule = (idx: number, patch: Partial<Rule>) =>
     setRules((prev) => prev.map((r, j) => (j === idx ? { ...r, ...patch } : r)));
@@ -118,6 +122,30 @@ export function RobotsTxt() {
           <pre className="font-mono text-[12.5px] text-fg-1 leading-[1.65] p-[14px] whitespace-pre-wrap">{output}</pre>
         </div>
       </div>
+
+      {affiliateUrl && (
+        <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
+          <span className="font-mono text-[20px] shrink-0">↗</span>
+          <div className="flex flex-col gap-1">
+            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
+              {lang === "fr" ? "votre site, votre domaine" : "your site, your domain"}
+            </span>
+            <p className="text-[13px] text-fg-1">
+              {lang === "fr"
+                ? "Prêt à mettre votre site en ligne ? Enregistrez votre domaine chez IONOS."
+                : "Ready to put your site online? Register your domain with Namecheap."}
+            </p>
+            <a
+              href={affiliateUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
+            >
+              {lang === "fr" ? "Trouver mon domaine →" : "Find my domain →"}
+            </a>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

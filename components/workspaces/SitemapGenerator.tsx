@@ -8,6 +8,9 @@ import { downloadBlob } from "@/lib/download";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { useTrackRun } from "@/hooks/useTrackRun";
 
+const AFFILIATE_IONOS     = process.env.NEXT_PUBLIC_AFFILIATE_IONOS;
+const AFFILIATE_NAMECHEAP = process.env.NEXT_PUBLIC_AFFILIATE_NAMECHEAP;
+
 type Freq = "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
 
 const FREQ_OPTIONS: Freq[] = ["daily", "weekly", "monthly", "yearly"];
@@ -34,6 +37,7 @@ export function SitemapGenerator() {
   const [lastmod, setLastmod] = useState(new Date().toISOString().slice(0, 10));
   const { copy, copied } = useCopy();
   const trackRun = useTrackRun("sitemap-generator", "seo");
+  const affiliateUrl = lang === "fr" ? AFFILIATE_IONOS : AFFILIATE_NAMECHEAP;
 
   const urls = useMemo(() =>
     urlInput.split(/\r?\n/).map((u) => u.trim()).filter((u) => u.length > 0),
@@ -111,6 +115,29 @@ export function SitemapGenerator() {
           </div>
         </div>
       </div>
+      {affiliateUrl && (
+        <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
+          <span className="font-mono text-[20px] shrink-0">↗</span>
+          <div className="flex flex-col gap-1">
+            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
+              {lang === "fr" ? "votre site, votre domaine" : "your site, your domain"}
+            </span>
+            <p className="text-[13px] text-fg-1">
+              {lang === "fr"
+                ? "Prêt à mettre votre site en ligne ? Enregistrez votre domaine chez IONOS."
+                : "Ready to put your site online? Register your domain with Namecheap."}
+            </p>
+            <a
+              href={affiliateUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
+            >
+              {lang === "fr" ? "Trouver mon domaine →" : "Find my domain →"}
+            </a>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

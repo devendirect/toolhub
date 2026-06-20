@@ -8,6 +8,9 @@ import { useFetch } from "@/hooks/useFetch";
 import { useTrackRun } from "@/hooks/useTrackRun";
 import type { MetaData } from "@/app/api/meta/route";
 
+const AFFILIATE_IONOS     = process.env.NEXT_PUBLIC_AFFILIATE_IONOS;
+const AFFILIATE_NAMECHEAP = process.env.NEXT_PUBLIC_AFFILIATE_NAMECHEAP;
+
 const GROUPS = [
   {
     label: "Open Graph",
@@ -42,6 +45,7 @@ export function OgChecker() {
   const { loading, error, data: ogData, run } = useFetch<MetaData>();
   const { copy, copied } = useCopy();
   const trackRun = useTrackRun("og-checker", "seo");
+  const affiliateUrl = lang === "fr" ? AFFILIATE_IONOS : AFFILIATE_NAMECHEAP;
 
   const check = () => {
     if (!input.trim()) return;
@@ -141,6 +145,30 @@ export function OgChecker() {
           </div>
         )}
       </div>
+
+      {affiliateUrl && ogData && (
+        <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
+          <span className="font-mono text-[20px] shrink-0">↗</span>
+          <div className="flex flex-col gap-1">
+            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
+              {lang === "fr" ? "votre site, votre domaine" : "your site, your domain"}
+            </span>
+            <p className="text-[13px] text-fg-1">
+              {lang === "fr"
+                ? "Prêt à mettre votre site en ligne ? Enregistrez votre domaine chez IONOS."
+                : "Ready to put your site online? Register your domain with Namecheap."}
+            </p>
+            <a
+              href={affiliateUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
+            >
+              {lang === "fr" ? "Trouver mon domaine →" : "Find my domain →"}
+            </a>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

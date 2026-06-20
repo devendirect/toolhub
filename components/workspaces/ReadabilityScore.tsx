@@ -36,6 +36,8 @@ const TR = {
   },
 } as const;
 
+const AFFILIATE_GRAMMARLY = process.env.NEXT_PUBLIC_AFFILIATE_GRAMMARLY;
+
 const SAMPLE_EN = `The quick brown fox jumps over the lazy dog. This short sentence is very clear. However, the implementation of sophisticated algorithms requires careful consideration of multiple interdependent factors and technical constraints. Readability improves significantly when sentences remain concise and vocabulary stays accessible to the intended audience.`;
 const SAMPLE_FR = `Le renard brun et vif bondit par-dessus le chien paresseux. Cette phrase est simple. Cependant, la mise en œuvre d'algorithmes sophistiqués nécessite une considération attentive de facteurs interdépendants complexes. La lisibilité s'améliore lorsque les phrases restent concises et le vocabulaire est accessible au lecteur ciblé.`;
 
@@ -144,6 +146,30 @@ export function ReadabilityScore() {
           )}
         </div>
       </div>
+
+      {AFFILIATE_GRAMMARLY && result && (
+        <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
+          <span className="font-mono text-[20px] shrink-0">✓</span>
+          <div className="flex flex-col gap-1">
+            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
+              {lang === "fr" ? "aller plus loin" : "go further"}
+            </span>
+            <p className="text-[13px] text-fg-1">
+              {lang === "fr"
+                ? "Comptez les mots, c'est bien. Corriger les fautes et améliorer le style, c'est mieux."
+                : "Counting words is good. Fixing mistakes and improving your writing style is better."}
+            </p>
+            <a
+              href={AFFILIATE_GRAMMARLY}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
+            >
+              {lang === "fr" ? "Essayer Grammarly gratuitement →" : "Try Grammarly for free →"}
+            </a>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

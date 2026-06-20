@@ -26,6 +26,8 @@ const TR = {
   },
 } as const;
 
+const AFFILIATE_NORDVPN = process.env.NEXT_PUBLIC_AFFILIATE_NORDVPN;
+
 interface IpData {
   query: string; country: string; countryCode: string;
   regionName: string; city: string; zip: string;
@@ -175,6 +177,30 @@ export function IpLookup() {
           <span className="ml-auto">ip-api.com</span>
         </div>
       </div>
+
+      {AFFILIATE_NORDVPN && ipData && (
+        <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
+          <span className="font-mono text-[20px] text-hot shrink-0">⚠</span>
+          <div className="flex flex-col gap-1">
+            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
+              {lang === "fr" ? "votre IP est visible" : "your IP is visible"}
+            </span>
+            <p className="text-[13px] text-fg-1">
+              {lang === "fr"
+                ? `Votre FAI (${ipData.isp}) et votre localisation approximative sont exposés à chaque site visité.`
+                : `Your ISP (${ipData.isp}) and approximate location are exposed to every site you visit.`}
+            </p>
+            <a
+              href={AFFILIATE_NORDVPN}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
+            >
+              {lang === "fr" ? "Masquer mon IP avec NordVPN →" : "Hide my IP with NordVPN →"}
+            </a>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

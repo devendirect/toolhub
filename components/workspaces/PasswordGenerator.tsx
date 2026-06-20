@@ -64,6 +64,8 @@ function strengthLabel(bits: number, lang: Lang): { label: string; color: string
   return           { label: TR[lang].veryStrong,     color: "text-brand" };
 }
 
+const AFFILIATE_1PASSWORD = process.env.NEXT_PUBLIC_AFFILIATE_1PASSWORD;
+
 const COUNT = 5;
 
 export function PasswordGenerator() {
@@ -157,6 +159,30 @@ export function PasswordGenerator() {
           <span>{i.clickToCopy}</span>
         </div>
       </div>
+
+      {AFFILIATE_1PASSWORD && (
+        <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
+          <span className="font-mono text-[20px] shrink-0">🔑</span>
+          <div className="flex flex-col gap-1">
+            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
+              {lang === "fr" ? "stocker en sécurité" : "store it safely"}
+            </span>
+            <p className="text-[13px] text-fg-1">
+              {lang === "fr"
+                ? "Un bon mot de passe ne sert à rien s'il est perdu. Stocke-le avec 1Password — essai gratuit 14 jours."
+                : "A strong password means nothing if you lose it. Store it with 1Password — free 14-day trial."}
+            </p>
+            <a
+              href={AFFILIATE_1PASSWORD}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
+            >
+              {lang === "fr" ? "Essayer 1Password →" : "Try 1Password →"}
+            </a>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
