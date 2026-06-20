@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
+import { useTrackRun } from "@/hooks/useTrackRun";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
 
 const TR = {
@@ -59,6 +60,8 @@ export function WordCounter() {
   const { lang } = useLang();
   const i = t(lang);
   const [input, setInput] = useState(SAMPLE);
+  const trackRun = useTrackRun("word-counter", "text");
+  const tracked = useRef(false);
 
   const stats = useMemo(() => {
     const words = countWords(input);
@@ -96,7 +99,7 @@ export function WordCounter() {
           <div className="flex-1 p-[14px] bg-bg-code">
             <textarea
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => { const v = e.target.value; if (!tracked.current && v) { tracked.current = true; trackRun(); } setInput(v); }}
               placeholder={TR[lang].pastePlaceholder}
               className="w-full h-full min-h-[380px] bg-transparent font-mono text-[12.5px] text-fg leading-[1.65] outline-none resize-none placeholder:text-dim-2"
               spellCheck={false}

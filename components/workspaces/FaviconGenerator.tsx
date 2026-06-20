@@ -5,6 +5,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { downloadBlob, downloadUrl } from "@/lib/download";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Size = 16 | 32 | 48 | 64;
 const SIZES: Size[] = [16, 32, 48, 64];
@@ -33,6 +34,7 @@ export function FaviconGenerator() {
   const [fg, setFg] = useState("#ffffff");
   const [size, setSize] = useState<Size>(32);
   const [fontWeight, setFontWeight] = useState<"normal" | "bold">("bold");
+  const trackRun = useTrackRun("favicon-generator", "design");
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -53,12 +55,14 @@ export function FaviconGenerator() {
   const downloadPng = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    trackRun();
     downloadUrl(canvas.toDataURL("image/png"), `favicon-${size}x${size}.png`);
   };
 
   const downloadIco = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    trackRun();
     canvas.toBlob((blob) => {
       if (!blob) return;
       downloadBlob(blob, "favicon.ico");

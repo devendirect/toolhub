@@ -5,6 +5,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { useCopy } from "@/hooks/useCopy";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: {
@@ -50,6 +51,7 @@ export function SchemaGenerator() {
   const i = t(lang);
   const [type, setType] = useState<SchemaType>("Article");
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("schema-generator", "seo");
 
   // Article fields
   const [artTitle, setArtTitle] = useState("");
@@ -131,7 +133,7 @@ export function SchemaGenerator() {
       <OptionsBar
         action={
           <button
-            onClick={() => copy(output)}
+            onClick={() => { trackRun(); copy(output); }}
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all"
           >
             {copied ? "✓" : "copy JSON-LD ⏎"}

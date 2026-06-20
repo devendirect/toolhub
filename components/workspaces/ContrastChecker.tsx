@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: {
@@ -51,11 +52,17 @@ export function ContrastChecker() {
   const { lang } = useLang();
   const [fg, setFg] = useState("#1a1a1a");
   const [bg, setBg] = useState("#ffffff");
+  const trackRun = useTrackRun("contrast-checker", "design");
+  const tracked = useRef(false);
 
   const ratio = useMemo(() => {
     try { return contrastRatio(fg, bg); }
     catch { return null; }
   }, [fg, bg]);
+
+  useEffect(() => {
+    if (!tracked.current && ratio !== null) { tracked.current = true; trackRun(); }
+  }, [ratio, trackRun]);
 
   const checks = ratio ? {
     aaText:      ratio >= 4.5,

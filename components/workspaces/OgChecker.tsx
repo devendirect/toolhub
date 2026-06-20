@@ -5,6 +5,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { useCopy } from "@/hooks/useCopy";
 import { useFetch } from "@/hooks/useFetch";
+import { useTrackRun } from "@/hooks/useTrackRun";
 import type { MetaData } from "@/app/api/meta/route";
 
 const GROUPS = [
@@ -40,9 +41,11 @@ export function OgChecker() {
   const [input, setInput] = useState("");
   const { loading, error, data: ogData, run } = useFetch<MetaData>();
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("og-checker", "seo");
 
   const check = () => {
     if (!input.trim()) return;
+    trackRun();
     run(`/api/meta?url=${encodeURIComponent(input.trim())}`);
   };
 

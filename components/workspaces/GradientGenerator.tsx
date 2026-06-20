@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useCopy } from "@/hooks/useCopy";
 import { useLang } from "@/components/providers/I18nProvider";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: {
@@ -42,6 +43,7 @@ export function GradientGenerator() {
   const [angle, setAngle] = useState(135);
   const [stops, setStops] = useState<Stop[]>(DEFAULTS);
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("gradient-generator", "design");
 
   const gradient = useMemo(() => buildCss(type, angle, stops), [type, angle, stops]);
 
@@ -64,9 +66,9 @@ export function GradientGenerator() {
     setStops((prev) => prev.filter((_, j) => j !== idx));
   };
 
-  const handleCopyCss = () => copy(`background: ${gradient};`, "__css__");
+  const handleCopyCss = () => { trackRun(); copy(`background: ${gradient};`, "__css__"); };
 
-  const handleCopyValue = () => copy(gradient, "__value__");
+  const handleCopyValue = () => { trackRun(); copy(gradient, "__value__"); };
 
   return (
     <section className="mb-10">

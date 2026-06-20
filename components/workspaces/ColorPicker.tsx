@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
 import { t } from "@/lib/i18n";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: { hexInvalid: "HEX invalide" },
@@ -49,6 +50,7 @@ export function ColorPicker() {
   const [hex, setHex] = useState("#00e08a");
   const [hexInput, setHexInput] = useState("#00e08a");
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("color-picker", "dev");
 
   const isValidHex = (h: string) => /^#[0-9A-Fa-f]{6}$/.test(h);
 
@@ -116,7 +118,7 @@ export function ColorPicker() {
           <div
             key={label}
             className="group flex items-center gap-4 px-[14px] py-[11px] hover:bg-bg-2 transition-colors cursor-pointer"
-            onClick={() => copy(value, label)}
+            onClick={() => { trackRun(); copy(value, label); }}
           >
             <span className="font-mono text-[11px] text-dim uppercase tracking-[0.08em] w-12 shrink-0">{label}</span>
             <span className="font-mono text-[13px] text-fg flex-1">{value}</span>

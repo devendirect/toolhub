@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
 import { useBidirectionalConverter } from "@/hooks/useBidirectionalConverter";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Mode = "encode" | "decode";
 
@@ -30,6 +31,7 @@ export function UrlEncoder() {
     SAMPLE_ENCODE,
   );
   const { copy } = useCopy();
+  const trackRun = useTrackRun("url-encoder", "text");
 
   return (
     <section className="mb-10">
@@ -79,7 +81,7 @@ export function UrlEncoder() {
           title={mode === "encode" ? "encoded" : TR[lang].rawUrl}
           ext="txt"
           meta={output ? `${output.length} chars` : undefined}
-          actions={<PaneBtn onClick={() => output && copy(output)} disabled={!output}>{i.copy}</PaneBtn>}
+          actions={<PaneBtn onClick={() => { if (output) { trackRun(); copy(output); } }} disabled={!output}>{i.copy}</PaneBtn>}
           footer={
             error
               ? <span className="text-danger">✕ {error}</span>

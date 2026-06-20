@@ -5,6 +5,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { t } from "@/lib/i18n";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 interface Slider { label: string; min: number; max: number; value: number; onChange: (v: number) => void; }
 
@@ -38,6 +39,7 @@ export function BoxShadow() {
   const [alpha, setAlpha] = useState(25);
   const [inset, setInset] = useState(false);
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("box-shadow", "design");
 
   const rgba = useMemo(() => {
     const r = parseInt(color.slice(1, 3), 16);
@@ -56,7 +58,7 @@ export function BoxShadow() {
       <OptionsBar
         action={
           <button
-            onClick={() => copy(`box-shadow: ${css};`)}
+            onClick={() => { trackRun(); copy(`box-shadow: ${css};`); }}
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all"
           >
             {copied ? "✓" : "copy CSS ⏎"}

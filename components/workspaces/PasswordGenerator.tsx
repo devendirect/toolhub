@@ -5,6 +5,7 @@ import { useCopy } from "@/hooks/useCopy";
 import { useLang } from "@/components/providers/I18nProvider";
 import { OptionsBar, OptBlock, SegControl, Toggle } from "@/components/workspace/OptionsBar";
 import { t } from "@/lib/i18n";
+import { useTrackRun } from "@/hooks/useTrackRun";
 import type { Lang } from "@/lib/types";
 
 const TR = {
@@ -77,6 +78,7 @@ export function PasswordGenerator() {
     Array.from({ length: COUNT }, () => generate(16, { upper: true, digits: true, symbols: false, noAmbiguous: false }))
   );
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("password-generator", "design");
 
   const regen = useCallback((l: Length, opts: { upper: boolean; digits: boolean; symbols: boolean; noAmbiguous: boolean }) => {
     setPasswords(Array.from({ length: COUNT }, () => generate(l, opts)));
@@ -84,7 +86,7 @@ export function PasswordGenerator() {
 
   const opts = { upper, digits, symbols, noAmbiguous };
 
-  const handleCopy = (pw: string, idx: number) => copy(pw, String(idx));
+  const handleCopy = (pw: string, idx: number) => { trackRun(); copy(pw, String(idx)); };
 
   return (
     <section className="mb-10">

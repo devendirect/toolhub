@@ -5,6 +5,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { fmtSize } from "@/lib/format";
 import { downloadBlob } from "@/lib/download";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type ZipEntry = {
   name: string;
@@ -41,12 +42,14 @@ export function ZipExtractor() {
   const { lang } = useLang();
   const i = t(lang);
   const inputRef = useRef<HTMLInputElement>(null);
+  const trackRun = useTrackRun("zip-extractor", "file");
   const [entries, setEntries] = useState<ZipEntry[]>([]);
   const [archiveName, setArchiveName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleFile = async (file: File) => {
+    trackRun();
     setLoading(true);
     setError(null);
     setEntries([]);

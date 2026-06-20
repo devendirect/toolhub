@@ -7,6 +7,7 @@ import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/Options
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
 import { fmtSize } from "@/lib/format";
 import { downloadUrl } from "@/lib/download";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Format = "image/jpeg" | "image/png" | "image/webp";
 const FORMAT_EXT: Record<Format, string> = {
@@ -59,6 +60,7 @@ export function ImageConverter() {
   const [converting, setConverting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const trackRun = useTrackRun("image-converter", "file");
 
   const loadFile = useCallback((f: File) => {
     setFile(f);
@@ -76,6 +78,7 @@ export function ImageConverter() {
 
   const handleConvert = () => {
     if (!file) return;
+    trackRun();
     setConverting(true);
     setError(null);
     const img = new Image();

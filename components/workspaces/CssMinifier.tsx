@@ -5,6 +5,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
 import { t } from "@/lib/i18n";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: { cssSource: "CSS source", cssMinified: "CSS minifié" },
@@ -54,6 +55,7 @@ export function CssMinifier() {
   const i = t(lang);
   const [input, setInput] = useState(SAMPLE);
   const { copy } = useCopy();
+  const trackRun = useTrackRun("css-minifier", "dev");
 
   const output = useMemo(() => (input.trim() ? minifyCss(input) : ""), [input]);
 
@@ -87,7 +89,7 @@ export function CssMinifier() {
           title={TR[lang].cssMinified}
           ext="min.css"
           meta={savings ? `${savings.pct}% saved` : undefined}
-          actions={<PaneBtn onClick={() => output && copy(output)} disabled={!output}>{i.copy}</PaneBtn>}
+          actions={<PaneBtn onClick={() => { if (output) { trackRun(); copy(output); } }} disabled={!output}>{i.copy}</PaneBtn>}
           footer={savings ? (
             <span>
               {savings.original} → {savings.minified} chars

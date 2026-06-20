@@ -8,6 +8,7 @@ import { t } from "@/lib/i18n";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { CopyableRow } from "@/components/workspace/CopyableRow";
 import { fmtSize } from "@/lib/format";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type InputMode = "text" | "file";
 
@@ -58,6 +59,7 @@ export function HashGenerator() {
   const [hashes, setHashes] = useState<HashResult[]>([]);
   const [computing, setComputing] = useState(false);
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("hash-generator", "dev");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -128,7 +130,7 @@ export function HashGenerator() {
               label={algo}
               value={value}
               copied={copied}
-              onClick={() => copy(value)}
+              onClick={() => { trackRun(); copy(value); }}
               lang={lang}
               valueClass="text-[12px] text-fg-1"
             />

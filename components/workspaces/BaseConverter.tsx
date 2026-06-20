@@ -5,6 +5,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { CopyableRow } from "@/components/workspace/CopyableRow";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Base = 2 | 8 | 10 | 16;
 
@@ -35,6 +36,7 @@ export function BaseConverter() {
   const [input, setInput] = useState("255");
   const [fromBase, setFromBase] = useState<Base>(10);
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("base-converter", "dev");
 
   const decimal = useMemo(() => {
     const n = parseInt(input.trim(), fromBase);
@@ -89,7 +91,7 @@ export function BaseConverter() {
             label={label}
             value={value}
             copied={copied}
-            onClick={() => copy(value, label)}
+            onClick={() => { trackRun(); copy(value, label); }}
             lang={lang}
             labelClass="w-12"
             valueClass="text-[14px] text-fg"

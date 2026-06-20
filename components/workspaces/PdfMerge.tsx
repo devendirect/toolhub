@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n";
 import { DropZoneMulti } from "@/components/workspace/DropZone";
 import { fmtSize } from "@/lib/format";
 import { downloadBlob } from "@/lib/download";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 interface PdfFile {
   id: string;
@@ -41,6 +42,7 @@ export function PdfMerge() {
   const [files, setFiles] = useState<PdfFile[]>([]);
   const [merging, setMerging] = useState(false);
   const [mergeStatus, setMergeStatus] = useState<MergeStatus>(null);
+  const trackRun = useTrackRun("pdf-merge", "file");
 
   const addFiles = async (incoming: FileList | File[]) => {
     const arr = Array.from(incoming).filter((f) => f.type === "application/pdf");
@@ -91,6 +93,7 @@ export function PdfMerge() {
 
   const handleMerge = async () => {
     if (files.length < 2) return;
+    trackRun();
     setMerging(true);
     setMergeStatus(null);
     try {

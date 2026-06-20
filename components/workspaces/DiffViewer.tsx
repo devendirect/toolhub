@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: { modified: "modifié" },
@@ -48,6 +49,8 @@ export function DiffViewer() {
   const { lang } = useLang();
   const [textA, setTextA] = useState(SAMPLE_A);
   const [textB, setTextB] = useState(SAMPLE_B);
+  const trackRun = useTrackRun("diff-viewer", "dev");
+  const tracked = useRef(false);
 
   const diff = useMemo(() => {
     const linesA = textA.split(/\r?\n/);
@@ -59,6 +62,10 @@ export function DiffViewer() {
     added:   diff.filter((l) => l.type === "added").length,
     removed: diff.filter((l) => l.type === "removed").length,
   }), [diff]);
+
+  useEffect(() => {
+    if (!tracked.current && (stats.added + stats.removed) > 0) { tracked.current = true; trackRun(); }
+  }, [stats, trackRun]);
 
   const LINE_CLASS: Record<DiffLine["type"], string> = {
     equal:   "text-fg-1",

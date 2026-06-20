@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { useCopy } from "@/hooks/useCopy";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: {
@@ -61,6 +62,7 @@ export function JwtGenerator() {
   const { lang } = useLang();
   const i = t(lang);
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("jwt-generator", "dev");
 
   const [payload, setPayload] = useState(DEFAULT_PAYLOAD);
   const [secret,  setSecret]  = useState("your-256-bit-secret");
@@ -74,6 +76,7 @@ export function JwtGenerator() {
       setError(TR[lang].invalidJson);
       return;
     }
+    trackRun();
     setSigning(true);
     setError(null);
     try {

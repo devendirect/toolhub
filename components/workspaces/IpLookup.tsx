@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useCopy } from "@/hooks/useCopy";
 import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
+import { useTrackRun } from "@/hooks/useTrackRun";
 import type { IpErrorCode } from "@/app/api/ip/route";
 
 const TR = {
@@ -55,8 +56,10 @@ export function IpLookup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("ip-lookup", "dev");
 
   const lookup = async (ip?: string) => {
+    trackRun();
     setLoading(true); setError(null); setIpData(null);
     try {
       const params = ip ? `?ip=${encodeURIComponent(ip)}` : "";

@@ -5,6 +5,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { useFetch } from "@/hooks/useFetch";
+import { useTrackRun } from "@/hooks/useTrackRun";
 import { truncate } from "@/lib/format";
 import type { MetaData } from "@/app/api/meta/route";
 
@@ -38,8 +39,9 @@ export function MetaPreview() {
   const [url, setUrl] = useState("https://nextjs.org");
   const [tab, setTab] = useState<Tab>("google");
   const { loading, error, data: metaData, run: fetchMeta } = useFetch<MetaData>();
+  const trackRun = useTrackRun("meta-preview", "seo");
 
-  const preview = () => url && fetchMeta(`/api/meta?url=${encodeURIComponent(url)}`);
+  const preview = () => { if (url) { trackRun(); fetchMeta(`/api/meta?url=${encodeURIComponent(url)}`); } };
 
   const googleTitle = metaData?.ogTitle || metaData?.title || "";
   const googleDesc  = metaData?.ogDescription || metaData?.description || "";

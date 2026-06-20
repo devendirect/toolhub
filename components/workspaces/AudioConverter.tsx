@@ -8,6 +8,7 @@ import { fmtSize } from "@/lib/format";
 import { useConversionState } from "@/hooks/useConversionState";
 import { loadFFmpeg } from "@/lib/ffmpeg";
 import { downloadUrl } from "@/lib/download";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Status = "idle" | "loading-ffmpeg" | "converting" | "done" | "error";
 
@@ -41,6 +42,7 @@ export function AudioConverter() {
   const [progress, setProgress] = useState(0);
   const { status, setStatus, error, outputUrl, outputSize, fail, succeed, reset } =
     useConversionState<Status>("idle");
+  const trackRun = useTrackRun("audio-converter", "file");
 
   const handleFile = (f: File) => {
     setFile(f);
@@ -50,6 +52,7 @@ export function AudioConverter() {
 
   const convert = async () => {
     if (!file) return;
+    trackRun();
     setStatus("loading-ffmpeg");
     setProgress(0);
 

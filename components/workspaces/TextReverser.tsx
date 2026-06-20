@@ -6,6 +6,7 @@ import { useCopy } from "@/hooks/useCopy";
 import { t } from "@/lib/i18n";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Mode = "chars" | "words" | "lines";
 
@@ -27,7 +28,8 @@ export function TextReverser() {
   }, [input, mode]);
 
   const { copy } = useCopy();
-  const handleCopy = () => output && copy(output);
+  const trackRun = useTrackRun("text-reverser", "text");
+  const handleCopy = () => { if (output) { trackRun(); copy(output); } };
 
   return (
     <section className="mb-10">

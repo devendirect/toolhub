@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { syllablesEn, syllablesFr, analyze, fleschLevel } from "@/lib/readability";
 import type { ReadResult } from "@/lib/readability";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: {
@@ -49,8 +50,14 @@ export function ReadabilityScore() {
   const { lang } = useLang();
   const i = t(lang);
   const [text, setText] = useState(lang === "fr" ? SAMPLE_FR : SAMPLE_EN);
+  const trackRun = useTrackRun("readability", "text");
+  const tracked = useRef(false);
 
   const result = useMemo(() => analyze(text, lang), [text, lang]);
+
+  useEffect(() => {
+    if (!tracked.current && result !== null) { tracked.current = true; trackRun(); }
+  }, [result, trackRun]);
 
   return (
     <section className="mb-10">

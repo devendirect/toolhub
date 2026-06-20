@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n";
 import { fmtSize } from "@/lib/format";
 import { downloadUrl } from "@/lib/download";
 import { useConversionState } from "@/hooks/useConversionState";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Status = "idle" | "loading" | "converting" | "done" | "error";
 type Mode = "pdf-to-images" | "images-to-pdf";
@@ -55,6 +56,7 @@ export function PdfConverter() {
   const [current, setCurrent] = useState(0);
   const pdfRef  = useRef<HTMLInputElement>(null);
   const imgRef  = useRef<HTMLInputElement>(null);
+  const trackRun = useTrackRun("pdf-converter", "file");
   const openPicker = (ref: React.RefObject<HTMLInputElement | null>) => ref.current?.click();
 
   const handlePdf = (f: File) => {
@@ -72,6 +74,7 @@ export function PdfConverter() {
   /* PDF → Images */
   const convertPdfToImages = async () => {
     if (!file) return;
+    trackRun();
     setStatus("loading");
     setPages([]);
     setCurrent(0);

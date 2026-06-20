@@ -5,6 +5,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { useCopy } from "@/hooks/useCopy";
 import { downloadBlob } from "@/lib/download";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 interface Rule { agent: string; disallow: string; allow: string; }
 
@@ -25,6 +26,7 @@ export function RobotsTxt() {
   const [rules, setRules] = useState<Rule[]>(DEFAULT_RULES);
   const [sitemap, setSitemap] = useState("");
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("robots-txt", "seo");
 
   const updateRule = (idx: number, patch: Partial<Rule>) =>
     setRules((prev) => prev.map((r, j) => (j === idx ? { ...r, ...patch } : r)));
@@ -108,7 +110,7 @@ export function RobotsTxt() {
               <button onClick={download} className="font-mono text-[11px] text-dim hover:text-brand transition-colors">
                 {i.download}
               </button>
-              <button onClick={() => copy(output)} className="font-mono text-[11px] text-dim hover:text-brand transition-colors">
+              <button onClick={() => { trackRun(); copy(output); }} className="font-mono text-[11px] text-dim hover:text-brand transition-colors">
                 {copied ? "✓" : i.copy}
               </button>
             </div>

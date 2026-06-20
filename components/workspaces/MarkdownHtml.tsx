@@ -7,6 +7,7 @@ import { downloadBlob } from "@/lib/download";
 import { t } from "@/lib/i18n";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: {
@@ -63,9 +64,11 @@ export function MarkdownHtml() {
   }, [input]);
 
   const { copy } = useCopy();
+  const trackRun = useTrackRun("markdown-html", "dev");
   const handleCopy = () => copy(view === "html" ? html : input);
   const handleDownload = () => {
     if (!html) return;
+    trackRun();
     downloadBlob(new Blob([html], { type: "text/html" }), "output.html");
   };
 

@@ -7,6 +7,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { LogoMark } from "@/components/brand/LogoMark";
 import { CATEGORIES } from "@/lib/tools";
 import { localePath } from "@/lib/localePath";
+import { resetConsent } from "@/components/analytics/CookieBanner";
 
 export function Footer() {
   const { lang } = useLang();
@@ -70,10 +71,7 @@ export function Footer() {
               github
             </a>
             <button
-              onClick={() => {
-                document.cookie = "toolhub-consent=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                window.location.reload();
-              }}
+              onClick={() => { resetConsent(); window.location.reload(); }}
               className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150 text-left"
             >
               {lang === "fr" ? "gérer les cookies" : "manage cookies"}

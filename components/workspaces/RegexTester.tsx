@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
+import { useTrackRun } from "@/hooks/useTrackRun";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
 
 const TR = {
@@ -86,6 +87,11 @@ export function RegexTester() {
 
   const flagStr = ["g", ...FLAG_LIST.filter((f) => flags.has(f))].join("");
   const { segments, matches, error } = useMemo(() => analyze(text, pattern, flagStr), [text, pattern, flagStr]);
+  const trackRun = useTrackRun("regex-tester", "dev");
+  const tracked = useRef(false);
+  useEffect(() => {
+    if (!tracked.current && matches.length > 0) { tracked.current = true; trackRun(); }
+  }, [matches, trackRun]);
 
   const toggleFlag = (f: Flag) =>
     setFlags((prev) => { const n = new Set(prev); n.has(f) ? n.delete(f) : n.add(f); return n; });

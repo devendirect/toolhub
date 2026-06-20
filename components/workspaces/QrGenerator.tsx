@@ -5,6 +5,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { useCopy } from "@/hooks/useCopy";
 import { downloadBlob, downloadUrl } from "@/lib/download";
+import { useTrackRun } from "@/hooks/useTrackRun";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
 
@@ -32,6 +33,7 @@ export function QrGenerator() {
   const i = t(lang);
 
   const { copy } = useCopy();
+  const trackRun = useTrackRun("qr-generator", "dev");
   const [text, setText] = useState("https://toolhub.io");
   const [format, setFormat] = useState<Format>("svg");
   const [ec, setEc] = useState<EC>("M");
@@ -62,6 +64,7 @@ export function QrGenerator() {
 
   const handleDownload = () => {
     if (!output) return;
+    trackRun();
     if (format === "svg") {
       downloadBlob(new Blob([output], { type: "image/svg+xml" }), "qrcode.svg");
     } else {

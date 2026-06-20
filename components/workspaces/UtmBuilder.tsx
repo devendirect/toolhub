@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { useCopy } from "@/hooks/useCopy";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const PRESETS = [
   { label: "Google CPC",  source: "google",     medium: "cpc"    },
@@ -84,6 +85,7 @@ export function UtmBuilder() {
   const { lang } = useLang();
   const i = t(lang);
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("utm-builder", "seo");
 
   const [url,      setUrl]      = useState("https://example.com");
   const [source,   setSource]   = useState("google");
@@ -127,7 +129,7 @@ export function UtmBuilder() {
         <div className="flex items-center justify-between px-[14px] py-[9px] bg-bg-1 border-b border-line">
           <span className="font-mono text-[11px] text-dim">// {TR[lang].result}</span>
           <button
-            onClick={() => result && copy(result)}
+            onClick={() => { if (result) { trackRun(); copy(result); } }}
             disabled={!result}
             className="font-mono text-[11px] text-dim hover:text-brand transition-colors disabled:opacity-30"
           >

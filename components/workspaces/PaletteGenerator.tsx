@@ -5,6 +5,7 @@ import { useCopy } from "@/hooks/useCopy";
 import { useLang } from "@/components/providers/I18nProvider";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { t } from "@/lib/i18n";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: {
@@ -77,6 +78,7 @@ export function PaletteGenerator() {
   const [harmony, setHarmony] = useState<Harmony>("analogous");
   const [count, setCount] = useState<3 | 4 | 5>(5);
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("palette-generator", "design");
 
   const palette = useMemo(() => {
     const [h, s, l] = hexToHsl(baseColor);
@@ -94,10 +96,11 @@ export function PaletteGenerator() {
     });
   }, [baseColor, harmony, count]);
 
-  const handleCopy = (value: string) => copy(value);
+  const handleCopy = (value: string) => { trackRun(); copy(value); };
 
   const handleExportCss = () => {
     const css = `:root {\n${palette.map((c, i) => `  --color-${i + 1}: ${c.hex};`).join("\n")}\n}`;
+    trackRun();
     copy(css, "__css__");
   };
 

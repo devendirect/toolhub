@@ -5,6 +5,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { t } from "@/lib/i18n";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: { link: "lier" },
@@ -27,6 +28,7 @@ export function BorderRadius() {
   const [linked, setLinked] = useState(true);
   const [values, setValues] = useState<Record<Corner, number>>({ tl: 12, tr: 12, br: 12, bl: 12 });
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("border-radius", "design");
 
   const update = (key: Corner, v: number) => {
     if (linked) setValues({ tl: v, tr: v, br: v, bl: v });
@@ -47,7 +49,7 @@ export function BorderRadius() {
       <OptionsBar
         action={
           <button
-            onClick={() => copy(`border-radius: ${css};`)}
+            onClick={() => { trackRun(); copy(`border-radius: ${css};`); }}
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all"
           >
             {copied ? "✓" : "copy CSS ⏎"}

@@ -5,6 +5,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { t } from "@/lib/i18n";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: { quantity: "quantité" },
@@ -23,6 +24,7 @@ export function UuidGenerator() {
   const [count, setCount] = useState<Count>(5);
   const [uuids, setUuids] = useState<string[]>(() => Array.from({ length: 5 }, genV4));
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("uuid-generator", "dev");
 
   const generate = useCallback((n: Count) => {
     setUuids(Array.from({ length: n }, genV4));
@@ -35,7 +37,7 @@ export function UuidGenerator() {
       <OptionsBar
         action={
           <button
-            onClick={() => generate(count)}
+            onClick={() => { trackRun(); generate(count); }}
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all"
           >
             {i.generateBtn}

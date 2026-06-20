@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: {
@@ -33,6 +34,7 @@ export function CssGrid() {
   const [gap, setGap] = useState(16);
   const [unit, setUnit] = useState<Unit>("fr");
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("css-grid", "design");
 
   const css = useMemo(() => {
     const colTrack = buildTrack(cols, colSize);
@@ -51,7 +53,7 @@ export function CssGrid() {
       <OptionsBar
         action={
           <button
-            onClick={() => copy(css)}
+            onClick={() => { trackRun(); copy(css); }}
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all"
           >
             {copied ? "✓" : "copy CSS ⏎"}

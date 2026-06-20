@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { useCopy } from "@/hooks/useCopy";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Align = "left" | "center" | "right";
 
@@ -43,6 +44,7 @@ export function MarkdownTable() {
   const { lang } = useLang();
   const i = t(lang);
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("md-table", "dev");
 
   const [rows, setRows] = useState<string[][]>([
     ["Header 1", "Header 2", "Header 3"],
@@ -112,7 +114,7 @@ export function MarkdownTable() {
         </button>
         <div className="flex-1" />
         <button
-          onClick={() => copy(markdown)}
+          onClick={() => { trackRun(); copy(markdown); }}
           className="px-[18px] py-[6px] bg-brand text-bg font-mono text-[12px] font-semibold rounded-[3px] hover:brightness-110 transition-all"
         >
           {copied ? "✓" : i.copyAlt}
@@ -164,7 +166,7 @@ export function MarkdownTable() {
         <div className="flex items-center justify-between px-[14px] py-[9px] bg-bg-1 border-b border-line">
           <span className="font-mono text-[11px] text-dim">// {TR[lang].output}</span>
           <button
-            onClick={() => copy(markdown)}
+            onClick={() => { trackRun(); copy(markdown); }}
             className="font-mono text-[11px] text-dim hover:text-brand transition-colors"
           >
             {copied ? "✓" : i.copy}

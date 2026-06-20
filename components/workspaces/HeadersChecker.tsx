@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { useFetch } from "@/hooks/useFetch";
+import { useTrackRun } from "@/hooks/useTrackRun";
 import type { HeaderCheck, HeadersData } from "@/app/api/headers/route";
 
 const TR = {
@@ -64,9 +65,11 @@ export function HeadersChecker() {
   const i = t(lang);
   const [url, setUrl] = useState("https://nextjs.org");
   const { loading, error, data, run } = useFetch<HeadersData>();
+  const trackRun = useTrackRun("headers-checker", "dev");
 
   const analyze = () => {
     if (!url.trim()) return;
+    trackRun();
     run(`/api/headers?url=${encodeURIComponent(url.trim())}&lang=${lang}`);
   };
 

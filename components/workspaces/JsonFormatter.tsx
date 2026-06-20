@@ -8,6 +8,7 @@ import { t } from "@/lib/i18n";
 import { OptionsBar, OptBlock, SegControl, Toggle } from "@/components/workspace/OptionsBar";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
 import { Editor } from "@/components/workspace/Editor";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const SAMPLE = `{"user":{"id":42,"name":"Ada Lovelace","email":"ada@example.com","roles":["admin","engineer"],"meta":{"created_at":"2026-04-18T09:14:00Z","plan":"pro","seats":12}},"projects":[{"slug":"toolhub","status":"active"},{"slug":"engine","status":"archived"}]}`;
 
@@ -55,7 +56,8 @@ export function JsonFormatter() {
   const handlePasteSample = () => setInput(SAMPLE);
   const handleClear = () => setInput("");
   const { copy } = useCopy();
-  const handleCopy = () => output && copy(output);
+  const trackRun = useTrackRun("json-formatter", "text");
+  const handleCopy = () => { if (output) { trackRun(); copy(output); } };
   const handleDownload = () => {
     if (!output) return;
     downloadBlob(new Blob([output], { type: "application/json" }), "formatted.json");

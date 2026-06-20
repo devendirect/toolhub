@@ -7,6 +7,7 @@ import { t } from "@/lib/i18n";
 import { useCopy } from "@/hooks/useCopy";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Dir = "toml→json" | "json→toml";
 
@@ -41,6 +42,7 @@ export function TomlJson() {
   const [dir, setDir] = useState<Dir>("toml→json");
   const [input, setInput] = useState(SAMPLE_TOML);
   const { copy } = useCopy();
+  const trackRun = useTrackRun("toml-json", "dev");
 
   const handleDirChange = (v: string) => {
     const d = v as Dir;
@@ -66,7 +68,7 @@ export function TomlJson() {
       <OptionsBar
         action={
           <button
-            onClick={() => output && copy(output)}
+            onClick={() => { if (output) { trackRun(); copy(output); } }}
             disabled={!output}
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all disabled:opacity-40"
           >

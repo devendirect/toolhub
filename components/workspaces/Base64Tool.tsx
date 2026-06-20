@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
 import { useBidirectionalConverter } from "@/hooks/useBidirectionalConverter";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Mode = "encode" | "decode";
 
@@ -43,6 +44,7 @@ export function Base64Tool() {
   const i = t(lang);
   const { mode, setMode, input, setInput, output, error, swap } = useBidirectionalConverter(encodeB64, decodeB64, "Hello, toolhub!");
   const { copy } = useCopy();
+  const trackRun = useTrackRun("base64", "dev");
 
   return (
     <section className="mb-10">
@@ -98,7 +100,7 @@ export function Base64Tool() {
           ext="txt"
           meta={output ? `${output.length} chars` : undefined}
           actions={
-            <PaneBtn onClick={() => output && copy(output)} disabled={!output}>{i.copy}</PaneBtn>
+            <PaneBtn onClick={() => { if (output) { trackRun(); copy(output); } }} disabled={!output}>{i.copy}</PaneBtn>
           }
           footer={
             error ? (

@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { fmtSize } from "@/lib/format";
 import { downloadUrl } from "@/lib/download";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Format = "image/webp" | "image/jpeg" | "image/png";
 const FORMAT_LABELS: Record<Format, string> = {
@@ -33,6 +34,7 @@ export function ImageCompressor() {
   const { lang } = useLang();
   const i = t(lang);
   const inputRef = useRef<HTMLInputElement>(null);
+  const trackRun = useTrackRun("image-compressor", "file");
   const [format, setFormat] = useState<Format>("image/webp");
   const [quality, setQuality] = useState(80);
   const [original, setOriginal] = useState<{ name: string; size: number; url: string } | null>(null);
@@ -78,6 +80,7 @@ export function ImageCompressor() {
 
   const handleDownload = () => {
     if (!result || !original) return;
+    trackRun();
     const ext = format === "image/webp" ? "webp" : format === "image/jpeg" ? "jpg" : "png";
     downloadUrl(result.url, original.name.replace(/\.[^.]+$/, `.${ext}`));
   };

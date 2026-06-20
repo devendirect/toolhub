@@ -8,6 +8,7 @@ import { fmtSize } from "@/lib/format";
 import { useConversionState } from "@/hooks/useConversionState";
 import { loadFFmpeg } from "@/lib/ffmpeg";
 import { downloadUrl } from "@/lib/download";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Status = "idle" | "loading-ffmpeg" | "converting" | "done" | "error";
 
@@ -50,6 +51,7 @@ export function VideoConverter() {
   const { status, setStatus, error, outputUrl, outputSize, fail, succeed, reset } =
     useConversionState<Status>("idle");
   const inputRef = useRef<HTMLInputElement>(null);
+  const trackRun = useTrackRun("video-converter", "file");
 
   const handleFile = (f: File) => {
     setFile(f);
@@ -59,6 +61,7 @@ export function VideoConverter() {
 
   const convert = async () => {
     if (!file) return;
+    trackRun();
     setStatus("loading-ffmpeg");
     setProgress(0);
 

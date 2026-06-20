@@ -5,6 +5,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { useCopy } from "@/hooks/useCopy";
 import { OptionsBar, OptBlock, Toggle } from "@/components/workspace/OptionsBar";
+import { useTrackRun } from "@/hooks/useTrackRun";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
 
 const SAMPLE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
@@ -29,9 +30,11 @@ export function SvgOptimizer() {
   const [removeMetadata, setRemoveMetadata] = useState(true);
   const [removeEditorsNS, setRemoveEditorsNS] = useState(true);
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("svg-optimizer", "file");
 
   const optimize = useCallback(async () => {
     if (!input.trim()) return;
+    trackRun();
     setLoading(true);
     setError(null);
     try {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
 import { useFetch } from "@/hooks/useFetch";
+import { useTrackRun } from "@/hooks/useTrackRun";
 import type { SeoCheck, SeoData } from "@/app/api/seo/route";
 
 const TR = {
@@ -51,9 +52,11 @@ export function SeoAnalyzer() {
   const i = t(lang);
   const [url, setUrl] = useState("https://nextjs.org");
   const { loading, error, data: seoData, run } = useFetch<SeoData>();
+  const trackRun = useTrackRun("seo-analyzer", "seo");
 
   const analyze = () => {
     if (!url) return;
+    trackRun();
     run(`/api/seo?url=${encodeURIComponent(url)}`);
   };
 

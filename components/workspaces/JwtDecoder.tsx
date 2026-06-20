@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
 import { t } from "@/lib/i18n";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: {
@@ -47,6 +48,8 @@ export function JwtDecoder() {
   const i = t(lang);
   const [input, setInput] = useState(SAMPLE);
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("jwt-decoder", "dev");
+  const tracked = useRef(false);
 
   const result = useMemo(() => {
     if (!input.trim()) return null;
@@ -56,6 +59,10 @@ export function JwtDecoder() {
       return { data: null, error: (e as Error).message };
     }
   }, [input]);
+
+  useEffect(() => {
+    if (!tracked.current && result?.data) { tracked.current = true; trackRun(); }
+  }, [result, trackRun]);
 
   const expiry = useMemo(() => {
     const exp = result?.data?.payload?.exp;

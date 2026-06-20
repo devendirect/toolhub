@@ -6,6 +6,7 @@ import { useCopy } from "@/hooks/useCopy";
 import { t } from "@/lib/i18n";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: {
@@ -28,6 +29,7 @@ export function DeduplicateLines() {
   const [input, setInput] = useState(SAMPLE);
   const [caseMode, setCaseMode] = useState<"sensitive" | "insensitive">("sensitive");
   const { copy } = useCopy();
+  const trackRun = useTrackRun("deduplicate-lines", "text");
 
   const output = useMemo(() => {
     if (!input) return "";
@@ -54,7 +56,7 @@ export function DeduplicateLines() {
       <OptionsBar
         action={
           <button
-            onClick={() => output && copy(output)}
+            onClick={() => { if (output) { trackRun(); copy(output); } }}
             disabled={!output}
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all disabled:opacity-40"
           >

@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n";
 import { useCopy } from "@/hooks/useCopy";
 import { downloadBlob } from "@/lib/download";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Freq = "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
 
@@ -32,6 +33,7 @@ export function SitemapGenerator() {
   const [priority, setPriority] = useState("0.8");
   const [lastmod, setLastmod] = useState(new Date().toISOString().slice(0, 10));
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("sitemap-generator", "seo");
 
   const urls = useMemo(() =>
     urlInput.split(/\r?\n/).map((u) => u.trim()).filter((u) => u.length > 0),
@@ -57,7 +59,7 @@ export function SitemapGenerator() {
             <button onClick={download} className="px-[14px] py-2 font-mono text-[12px] text-dim border border-line rounded-[3px] hover:text-brand hover:border-brand-mid transition-colors">
               {i.download}
             </button>
-            <button onClick={() => copy(xml)} className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all">
+            <button onClick={() => { trackRun(); copy(xml); }} className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all">
               {copied ? "✓" : "copy XML ⏎"}
             </button>
           </div>

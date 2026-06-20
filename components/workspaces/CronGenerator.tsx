@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useCopy } from "@/hooks/useCopy";
 import { useLang } from "@/components/providers/I18nProvider";
 import { t } from "@/lib/i18n";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: {
@@ -79,6 +80,7 @@ export function CronGenerator() {
 
   const [fields, setFields] = useState({ min: "0", hour: "9", dom: "*", mon: "*", dow: "*" });
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("cron-generator", "dev");
   const [description, setDescription] = useState<string>("");
 
   const expr = `${fields.min} ${fields.hour} ${fields.dom} ${fields.mon} ${fields.dow}`;
@@ -179,7 +181,7 @@ export function CronGenerator() {
           <span className="font-mono text-[11px] text-dim shrink-0">{TR[lang].exprLabel}</span>
           <code className="font-mono text-[18px] text-brand tracking-[0.12em] flex-1">{expr}</code>
           <button
-            onClick={() => copy(expr)}
+            onClick={() => { trackRun(); copy(expr); }}
             className="px-[18px] py-[7px] bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all shrink-0"
           >
             {copied ? "✓" : i.copy}

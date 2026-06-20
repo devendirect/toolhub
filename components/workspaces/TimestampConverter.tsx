@@ -5,6 +5,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
 import { t } from "@/lib/i18n";
 import { CopyableRow } from "@/components/workspace/CopyableRow";
+import { useTrackRun } from "@/hooks/useTrackRun";
 
 const TR = {
   fr: {
@@ -32,13 +33,14 @@ export function TimestampConverter() {
   const [ts, setTs] = useState(String(nowTs()));
   const [dateInput, setDateInput] = useState(new Date().toISOString().slice(0, 16));
   const { copy, copied } = useCopy();
+  const trackRun = useTrackRun("timestamp", "dev");
 
   const parsed = parseInt(ts, 10);
   const isValid = !isNaN(parsed) && parsed > 0;
 
   const fromDate = () => {
     const d = new Date(dateInput);
-    if (!isNaN(d.getTime())) setTs(String(Math.floor(d.getTime() / 1000)));
+    if (!isNaN(d.getTime())) { trackRun(); setTs(String(Math.floor(d.getTime() / 1000))); }
   };
 
   const rows = isValid
