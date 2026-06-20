@@ -1,4 +1,6 @@
+export type Accent  = "green" | "amber" | "violet" | "cyan";
 export type Density = "compact" | "regular" | "comfy";
+export type UIFont  = "geist" | "inter" | "ibm";
 
 export function densityGridCols(density: string): string {
   if (density === "compact") return "grid-cols-4";

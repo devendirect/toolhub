@@ -62,9 +62,10 @@ export function SeoAnalyzer() {
     run(`/api/seo?url=${encodeURIComponent(url)}`);
   };
 
-  const passCount = seoData?.checks.filter((c) => c.status === "pass").length ?? 0;
-  const warnCount = seoData?.checks.filter((c) => c.status === "warn").length ?? 0;
-  const failCount = seoData?.checks.filter((c) => c.status === "fail").length ?? 0;
+  const { pass: passCount, warn: warnCount, fail: failCount } = seoData?.checks.reduce(
+    (acc, c) => { acc[c.status]++; return acc; },
+    { pass: 0, warn: 0, fail: 0 }
+  ) ?? { pass: 0, warn: 0, fail: 0 };
 
   return (
     <section className="mb-10">

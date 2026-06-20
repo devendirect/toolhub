@@ -37,7 +37,7 @@ export function Footer() {
 
           {/* Outils par catégorie */}
           <div className="flex flex-col gap-3">
-            <div className="font-mono text-[11px] text-dim">// {lang === "fr" ? "outils" : "tools"}</div>
+            <div className="font-mono text-[11px] text-dim">// {i.navTools}</div>
             {toolCats.map((c) => (
               <Link
                 key={c.id}
@@ -60,7 +60,7 @@ export function Footer() {
               {i.about}
             </Link>
             <Link href={localePath(lang, "/privacy")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
-              {lang === "fr" ? "vie privée" : "privacy"}
+              {i.privacy}
             </Link>
             <a
               href="https://github.com"
@@ -83,7 +83,7 @@ export function Footer() {
             <div className="font-mono text-[11px] text-dim">// stack</div>
             <span className="font-mono text-[12px] text-dim">Next.js + Tailwind v4</span>
             <span className="font-mono text-[12px] text-dim">open-source / MIT</span>
-            <span className="font-mono text-[12px] text-dim">© {new Date().getFullYear()} {BRAND_NAME}</span>
+            <span className="font-mono text-[12px] text-dim" suppressHydrationWarning>© {new Date().getFullYear()} {BRAND_NAME}</span>
           </div>
 
         </div>

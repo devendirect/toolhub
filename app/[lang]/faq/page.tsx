@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BRAND_NAME, SITE_URL } from "@/lib/brand";
 import type { Lang } from "@/lib/types";
+import { coerceLang } from "@/lib/localePath";
 import { FaqList } from "@/components/FaqList";
 
 interface Props {
@@ -82,7 +83,7 @@ const FAQ: Record<Lang, FaqItem[]> = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  const l = (lang === "fr" ? "fr" : "en") satisfies Lang;
+  const l = coerceLang(lang);
   const isEn = l === "en";
 
   const title = isEn ? "FAQ" : "FAQ";
@@ -106,7 +107,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function FaqPage({ params }: Props) {
   const { lang } = await params;
-  const l = (lang === "fr" ? "fr" : "en") satisfies Lang;
+  const l = coerceLang(lang);
   const items = FAQ[l];
 
   const jsonLd = {

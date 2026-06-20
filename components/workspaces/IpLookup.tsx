@@ -86,8 +86,6 @@ export function IpLookup() {
     }
   };
 
-  const handleCopy = (val: string) => copy(val);
-
   return (
     <section className="mb-10">
       {/* Input bar */}
@@ -122,7 +120,7 @@ export function IpLookup() {
                 <div
                   key={key}
                   className="group flex items-center gap-4 px-[14px] py-[11px] hover:bg-bg-2 transition-colors cursor-pointer"
-                  onClick={() => handleCopy(val)}
+                  onClick={() => copy(val)}
                 >
                   <span className="font-mono text-[11px] text-dim uppercase tracking-[0.08em] w-32 shrink-0">{label[lang]}</span>
                   <span className="font-mono text-[13px] text-fg flex-1">{val || "—"}</span>

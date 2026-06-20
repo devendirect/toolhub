@@ -43,15 +43,17 @@ export function JsonFormatter() {
   const [sortKeys, setSortKeys] = useState(false);
   const [minify, setMinify] = useState(false);
 
-  const { output, error, parsed } = useMemo(() => {
+  const { output, error, parsed, inputBytes, outputBytes } = useMemo(() => {
+    const enc = new TextEncoder();
+    const inB = enc.encode(input).length;
     try {
       const p = JSON.parse(input);
       const val = sortKeys ? sortDeep(p) : p;
       const spaces = indent === "tab" ? "\t" : indent;
       const out = minify ? JSON.stringify(val) : JSON.stringify(val, null, spaces);
-      return { output: out, error: null, parsed: p };
+      return { output: out, error: null, parsed: p, inputBytes: inB, outputBytes: enc.encode(out).length };
     } catch (e) {
-      return { output: "", error: (e as Error).message, parsed: null };
+      return { output: "", error: (e as Error).message, parsed: null, inputBytes: inB, outputBytes: 0 };
     }
   }, [input, indent, sortKeys, minify]);
 
@@ -96,7 +98,7 @@ export function JsonFormatter() {
         <Pane
           title={i.input}
           ext="json"
-          meta={`${new TextEncoder().encode(input).length} ${i.bytes}`}
+          meta={`${inputBytes} ${i.bytes}`}
           actions={
             <>
               <PaneBtn onClick={handlePasteSample}>{i.paste}</PaneBtn>
@@ -126,7 +128,7 @@ export function JsonFormatter() {
         <Pane
           title={i.output}
           ext="json"
-          meta={output ? `${new TextEncoder().encode(output).length} ${i.bytes} · ${outputLines} ${i.lines} · ${outputKeys} ${i.keys}` : undefined}
+          meta={output ? `${outputBytes} ${i.bytes} · ${outputLines} ${i.lines} · ${outputKeys} ${i.keys}` : undefined}
           actions={
             <>
               <PaneBtn onClick={handleCopy}>{i.copy}</PaneBtn>

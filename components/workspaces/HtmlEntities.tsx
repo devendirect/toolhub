@@ -10,14 +10,6 @@ import { useTrackRun } from "@/hooks/useTrackRun";
 
 type Mode = "encode" | "decode";
 
-const TR = {
-  fr: {
-    plainText: "texte brut",
-  },
-  en: {
-    plainText: "plain text",
-  },
-} as const;
 
 const SAMPLE_ENCODE = `<h1>Bonjour & bienvenue</h1>\n<p>Prix : "10€" — <strong>offre limitée</strong></p>`;
 const SAMPLE_DECODE = `&lt;h1&gt;Bonjour &amp; bienvenue&lt;/h1&gt;\n&lt;p&gt;Prix&nbsp;: &quot;10&euro;&quot; &mdash; &lt;strong&gt;offre limit&eacute;e&lt;/strong&gt;&lt;/p&gt;`;
@@ -72,7 +64,7 @@ export function HtmlEntities() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 border border-line">
         <Pane
-          title={mode === "encode" ? TR[lang].plainText : "HTML entities"}
+          title={mode === "encode" ? i.plainText : "HTML entities"}
           ext="html"
           meta={`${input.length} chars`}
           actions={<PaneBtn onClick={() => setInput("")}>{i.clear}</PaneBtn>}
@@ -90,7 +82,7 @@ export function HtmlEntities() {
         </Pane>
 
         <Pane
-          title={mode === "encode" ? "HTML entities" : TR[lang].plainText}
+          title={mode === "encode" ? "HTML entities" : i.plainText}
           ext="html"
           meta={output ? `${output.length} chars` : undefined}
           actions={<PaneBtn onClick={() => { if (output) { trackRun(); copy(output); } }} disabled={!output}>{i.copy}</PaneBtn>}

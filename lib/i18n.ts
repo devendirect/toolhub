@@ -74,7 +74,7 @@ export const dict = {
     generateBtn:       "générer ⏎",
     convertBtn:        "convertir ⏎",
     analyzeBtn:        "analyser ⏎",
-    lookupBtn:         "analyser ⏎",
+    lookupBtn:         "rechercher ⏎",
     mergeBtn:          "fusionner ⏎",
     optimizeBtn:       "optimiser ⏎",
     previewBtn:        "prévisualiser ⏎",
@@ -89,6 +89,7 @@ export const dict = {
     // ── Labels de panes ───────────────────────────────────────────────────
     inputPane:         "entrée",
     outputPane:        "sortie",
+    plainText:         "texte brut",
     resultHere:        "résultat ici…",
 
     // ── États / feedback ──────────────────────────────────────────────────
@@ -221,6 +222,7 @@ export const dict = {
     // ── Labels de panes ───────────────────────────────────────────────────
     inputPane:         "input",
     outputPane:        "output",
+    plainText:         "plain text",
     resultHere:        "result here…",
 
     // ── États / feedback ──────────────────────────────────────────────────

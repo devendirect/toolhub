@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { BRAND_NAME, BRAND_TAGLINE, SITE_URL } from "@/lib/brand";
 import { HomeClient } from "@/components/home/HomeClient";
 import { websiteJsonLd } from "@/lib/jsonld";
-import type { Lang } from "@/lib/types";
+import { coerceLang } from "@/lib/localePath";
 
 interface Props {
   params: Promise<{ lang: string }>;
@@ -10,7 +10,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  const l = (lang === "fr" ? "fr" : "en") satisfies Lang;
+  const l = coerceLang(lang);
   const isEn = l === "en";
 
   const title = `${BRAND_NAME} — ${BRAND_TAGLINE[l]}`;
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function HomePage({ params }: Props) {
   const { lang } = await params;
-  const l = (lang === "fr" ? "fr" : "en") satisfies Lang;
+  const l = coerceLang(lang);
   const schemas = websiteJsonLd(l);
 
   return (

@@ -18,13 +18,11 @@ const TR = {
     errCorrection: "correction",
     qrPrompt:      "entrez un texte pour générer",
     qrPlaceholder: "URL, texte, contact…",
-    plainText:     "texte brut",
   },
   en: {
     errCorrection: "error correction",
     qrPrompt:      "enter text to generate",
     qrPlaceholder: "URL, text, contact…",
-    plainText:     "plain text",
   },
 } as const;
 
@@ -110,7 +108,7 @@ export function QrGenerator() {
           }
           footer={
             <span className="text-fg-1">
-              {text.startsWith("http") ? "URL" : text.startsWith("BEGIN:") ? "vCard" : TR[lang].plainText}
+              {text.startsWith("http") ? "URL" : text.startsWith("BEGIN:") ? "vCard" : i.plainText}
             </span>
           }
           className="border-r border-line"

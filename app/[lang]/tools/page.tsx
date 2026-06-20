@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/brand";
 import { CatalogPageClient } from "@/components/catalog/CatalogPageClient";
-import type { Lang } from "@/lib/types";
+import { coerceLang } from "@/lib/localePath";
 
 interface Props {
   params: Promise<{ lang: string }>;
@@ -9,7 +9,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  const l = (lang === "fr" ? "fr" : "en") satisfies Lang;
+  const l = coerceLang(lang);
   const isEn = l === "en";
 
   const title = isEn ? "All tools" : "Tous les outils";

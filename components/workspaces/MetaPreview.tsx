@@ -43,10 +43,8 @@ export function MetaPreview() {
 
   const preview = () => { if (url) { trackRun(); fetchMeta(`/api/meta?url=${encodeURIComponent(url)}`); } };
 
-  const googleTitle = metaData?.ogTitle || metaData?.title || "";
-  const googleDesc  = metaData?.ogDescription || metaData?.description || "";
-  const fbTitle     = metaData?.ogTitle || metaData?.title || "";
-  const fbDesc      = metaData?.ogDescription || metaData?.description || "";
+  const ogTitle     = metaData?.ogTitle || metaData?.title || "";
+  const ogDesc      = metaData?.ogDescription || metaData?.description || "";
   const twTitle     = metaData?.twitterTitle || metaData?.ogTitle || metaData?.title || "";
   const twDesc      = metaData?.twitterDesc || metaData?.ogDescription || metaData?.description || "";
 
@@ -118,10 +116,10 @@ export function MetaPreview() {
                   <span className="text-[#4d5156]">› {hostname(url)}</span>
                 </div>
                 <div className="text-[20px] text-[#1a0dab] hover:underline cursor-pointer leading-snug mb-1">
-                  {truncate(googleTitle || hostname(url), 65)}
+                  {truncate(ogTitle || hostname(url), 65)}
                 </div>
                 <div className="text-[14px] text-[#4d5156] leading-[1.58]">
-                  {truncate(googleDesc, 165) || <span className="italic text-[#70757a]">{TR[lang].noDesc}</span>}
+                  {truncate(ogDesc, 165) || <span className="italic text-[#70757a]">{TR[lang].noDesc}</span>}
                 </div>
               </div>
             )}
@@ -136,8 +134,8 @@ export function MetaPreview() {
                 )}
                 <div className="bg-[#f2f3f5] px-3 py-[10px]">
                   <div className="text-[11px] text-[#606770] uppercase tracking-[0.04em] mb-1">{hostname(url)}</div>
-                  <div className="text-[16px] font-semibold text-[#1d2129] leading-snug mb-1">{truncate(fbTitle, 88) || TR[lang].noTitle}</div>
-                  <div className="text-[14px] text-[#606770] leading-[1.4]">{truncate(fbDesc, 110) || ""}</div>
+                  <div className="text-[16px] font-semibold text-[#1d2129] leading-snug mb-1">{truncate(ogTitle, 88) || TR[lang].noTitle}</div>
+                  <div className="text-[14px] text-[#606770] leading-[1.4]">{truncate(ogDesc, 110) || ""}</div>
                 </div>
               </div>
             )}

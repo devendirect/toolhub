@@ -14,20 +14,16 @@ const TR = {
 
 type Count = 1 | 5 | 10 | 25;
 
-function genV4(): string {
-  return crypto.randomUUID();
-}
-
 export function UuidGenerator() {
   const { lang } = useLang();
   const i = t(lang);
   const [count, setCount] = useState<Count>(5);
-  const [uuids, setUuids] = useState<string[]>(() => Array.from({ length: 5 }, genV4));
+  const [uuids, setUuids] = useState<string[]>(() => Array.from({ length: 5 }, () => crypto.randomUUID()));
   const { copy, copied } = useCopy();
   const trackRun = useTrackRun("uuid-generator", "dev");
 
   const generate = useCallback((n: Count) => {
-    setUuids(Array.from({ length: n }, genV4));
+    setUuids(Array.from({ length: n }, () => crypto.randomUUID()));
   }, []);
 
   const handleCopyAll = () => copy(uuids.join("\n"), "__all__");
@@ -50,9 +46,6 @@ export function UuidGenerator() {
             value={count}
             onChange={(v) => { setCount(v as Count); generate(v as Count); }}
           />
-        </OptBlock>
-        <OptBlock label="version">
-          <SegControl options={["v4"]} value="v4" onChange={() => {}} />
         </OptBlock>
       </OptionsBar>
 
@@ -77,7 +70,7 @@ export function UuidGenerator() {
         <div className="bg-bg-code divide-y divide-line">
           {uuids.map((uuid, idx) => (
             <div
-              key={idx}
+              key={uuid}
               className="group flex items-center justify-between px-[18px] py-[11px] hover:bg-bg-2 transition-colors cursor-pointer"
               onClick={() => copy(uuid)}
             >

@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
 import { t } from "@/lib/i18n";
@@ -12,17 +13,13 @@ type Mode = "encode" | "decode";
 
 const TR = {
   fr: {
-    plainText:      "texte brut",
     encodePlaceholder: "texte à encoder…",
     decodePlaceholder: "base64 à décoder…",
-    resultAppears:  "le résultat apparaît ici…",
     converted:      "converti",
   },
   en: {
-    plainText:      "plain text",
     encodePlaceholder: "text to encode…",
     decodePlaceholder: "base64 to decode…",
-    resultAppears:  "result appears here…",
     converted:      "converted",
   },
 } as const;
@@ -45,6 +42,7 @@ export function Base64Tool() {
   const { mode, setMode, input, setInput, output, error, swap } = useBidirectionalConverter(encodeB64, decodeB64, "Hello, toolhub!");
   const { copy } = useCopy();
   const trackRun = useTrackRun("base64", "dev");
+  const inputBytes = useMemo(() => new TextEncoder().encode(input).length, [input]);
 
   return (
     <section className="mb-10">
@@ -70,9 +68,9 @@ export function Base64Tool() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 border border-line">
         <Pane
-          title={mode === "encode" ? TR[lang].plainText : "base64"}
+          title={mode === "encode" ? i.plainText : "base64"}
           ext="txt"
-          meta={`${new TextEncoder().encode(input).length} ${i.bytes}`}
+          meta={`${inputBytes} ${i.bytes}`}
           actions={<PaneBtn onClick={() => setInput("")}>{i.clear}</PaneBtn>}
           footer={
             <span>
@@ -96,7 +94,7 @@ export function Base64Tool() {
         </Pane>
 
         <Pane
-          title={mode === "encode" ? "base64" : TR[lang].plainText}
+          title={mode === "encode" ? "base64" : i.plainText}
           ext="txt"
           meta={output ? `${output.length} chars` : undefined}
           actions={
@@ -114,7 +112,7 @@ export function Base64Tool() {
             <pre className="font-mono text-[12.5px] text-fg-1 leading-[1.65] whitespace-pre-wrap break-all min-h-[320px]">
               {error
                 ? <span className="text-danger">{error}</span>
-                : output || <span className="text-dim-2">{TR[lang].resultAppears}</span>}
+                : output || <span className="text-dim-2">{i.resultHere}</span>}
             </pre>
           </div>
         </Pane>

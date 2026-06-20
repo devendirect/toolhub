@@ -1,10 +1,9 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import type { Accent, Density, UIFont } from "@/lib/theme";
 
-export type Accent  = "green" | "amber" | "violet" | "cyan";
-export type Density = "compact" | "regular" | "comfy";
-export type UIFont  = "geist" | "inter" | "ibm";
+export type { Accent, Density, UIFont };
 
 type ThemeContextType = {
   accent: Accent;

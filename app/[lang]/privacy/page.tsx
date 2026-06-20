@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BRAND_NAME, SITE_URL } from "@/lib/brand";
 import type { Lang } from "@/lib/types";
+import { coerceLang } from "@/lib/localePath";
 
 interface Props {
   params: Promise<{ lang: string }>;
@@ -8,7 +9,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  const l = (lang === "fr" ? "fr" : "en") satisfies Lang;
+  const l = coerceLang(lang);
   const isEn = l === "en";
 
   return {
@@ -175,7 +176,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
 
 export default async function PrivacyPage({ params }: Props) {
   const { lang } = await params;
-  const l = (lang === "fr" ? "fr" : "en") satisfies Lang;
+  const l = coerceLang(lang);
   const page = CONTENT[l];
 
   return (

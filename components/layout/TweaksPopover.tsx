@@ -9,6 +9,11 @@ const ACCENTS:   Accent[]  = ["green", "amber", "violet", "cyan"];
 const DENSITIES: Density[] = ["compact", "regular", "comfy"];
 const FONTS:     UIFont[]  = ["geist", "inter", "ibm"];
 
+const TR = {
+  fr: { label: "Personnaliser l'apparence", section: "apparence", reset: "↺ réinitialiser" },
+  en: { label: "Customize appearance",      section: "tweaks",    reset: "↺ reset to defaults" },
+} as const;
+
 const ACCENT_DOTS: Record<Accent, string> = {
   green:  "#4ade80",
   amber:  "#fbbf24",
@@ -24,7 +29,7 @@ export function TweaksPopover() {
     <Popover>
       <PopoverTrigger
         className="inline-flex items-center justify-center w-8 h-8 font-mono text-[16px] text-dim border border-line-2 rounded bg-bg-1 transition-colors duration-150 hover:border-brand-mid hover:text-fg-1"
-        aria-label={lang === "fr" ? "Personnaliser l'apparence" : "Customize appearance"}
+        aria-label={TR[lang].label}
       >
         ⊞
       </PopoverTrigger>
@@ -38,7 +43,7 @@ export function TweaksPopover() {
         <div className="flex items-center gap-2 px-4 py-3 border-b border-line">
           <span className="font-mono text-[11px] text-brand">⊞</span>
           <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
-            {lang === "fr" ? "apparence" : "tweaks"}
+            {TR[lang].section}
           </span>
         </div>
 
@@ -93,7 +98,7 @@ export function TweaksPopover() {
             onClick={() => { setAccent("green"); setDensity("regular"); setFont("geist"); }}
             className="font-mono text-[11px] text-dim hover:text-fg-1 transition-colors"
           >
-            {lang === "fr" ? "↺ réinitialiser" : "↺ reset to defaults"}
+            {TR[lang].reset}
           </button>
         </div>
       </PopoverContent>

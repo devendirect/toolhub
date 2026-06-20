@@ -4,6 +4,7 @@ import { SITE_URL } from "@/lib/brand";
 import { CatalogPageClient } from "@/components/catalog/CatalogPageClient";
 import type { Metadata } from "next";
 import type { Lang } from "@/lib/types";
+import { coerceLang } from "@/lib/localePath";
 
 interface Props {
   params: Promise<{ lang: string; category: string }>;
@@ -41,7 +42,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, category } = await params;
-  const l = (lang === "fr" ? "fr" : "en") satisfies Lang;
+  const l = coerceLang(lang);
   const cat = CATEGORIES.find((c) => c.id === category);
   if (!cat) return {};
 

@@ -6,7 +6,7 @@ import { toolFaqItems } from "@/lib/faq";
 import { ToolPageClient } from "@/components/tool/ToolPageClient";
 import { toolJsonLd, breadcrumbJsonLd, faqJsonLd } from "@/lib/jsonld";
 import type { Metadata } from "next";
-import type { Lang } from "@/lib/types";
+import { coerceLang } from "@/lib/localePath";
 
 interface Props {
   params: Promise<{ lang: string; slug: string }>;
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const tool = TOOLS.find((t) => t.slug === slug);
   if (!tool) return { robots: { index: false } };
 
-  const l = (lang === "fr" ? "fr" : "en") satisfies Lang;
+  const l = coerceLang(lang);
 
   return {
     title: tool.name[l],
@@ -57,7 +57,7 @@ export default async function ToolPage({ params }: Props) {
   const tool = TOOLS.find((t) => t.slug === slug);
   if (!tool) notFound();
 
-  const l = (lang === "fr" ? "fr" : "en") satisfies Lang;
+  const l = coerceLang(lang);
 
   const catLabel = CATEGORIES.find((c) => c.id === tool.cat)?.label[l] ?? "";
   const content  = TOOLS_CONTENT[tool.slug];

@@ -1,17 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { computeGrade } from "@/app/api/headers/route";
+import { computeGrade, CRITICAL_HEADER_NAMES } from "@/app/api/headers/route";
 import type { HeaderCheck } from "@/app/api/headers/route";
 
 const check = (name: string, status: HeaderCheck["status"]): HeaderCheck => ({
   name, value: null, status, note: "",
 });
 
-const CRITICAL_NAMES = [
-  "Content-Security-Policy",
-  "Strict-Transport-Security",
-  "X-Content-Type-Options",
-  "X-Frame-Options",
-];
+const CRITICAL_NAMES = [...CRITICAL_HEADER_NAMES];
 
 const NON_CRITICAL = ["Referrer-Policy", "Permissions-Policy"];
 

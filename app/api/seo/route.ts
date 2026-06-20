@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import * as cheerio from "cheerio";
 import { makeRateLimiter, makeCache, getRequesterIp } from "@/lib/route-security";
 import { fetchPageHtml } from "@/lib/api-html-fetch";
+import { extractMeta } from "@/lib/api-html-parse";
 
 export interface SeoCheck {
   id:     string;
@@ -39,12 +40,8 @@ export async function GET(req: NextRequest) {
 
   const $ = cheerio.load(fetched.html);
 
-  const m = (name: string) =>
-    $(`meta[name="${name}"]`).attr("content") ??
-    $(`meta[property="${name}"]`).attr("content") ?? "";
-
   const title      = $("title").first().text().trim();
-  const desc       = m("description");
+  const desc       = extractMeta($, "description");
   const h1s        = $("h1").map((_, el) => $(el).text().trim()).get();
   const h2s        = $("h2").length;
   const h3s        = $("h3").length;
@@ -53,9 +50,9 @@ export async function GET(req: NextRequest) {
   const images     = $("img");
   const imgsNoAlt  = images.filter((_, el) => !$(el).attr("alt")).length;
   const canonical  = $('link[rel="canonical"]').attr("href") ?? "";
-  const robots     = m("robots");
-  const hasOg      = !!m("og:title");
-  const hasTwitter = !!m("twitter:card");
+  const robots     = extractMeta($, "robots");
+  const hasOg      = !!extractMeta($, "og:title");
+  const hasTwitter = !!extractMeta($, "twitter:card");
   const origin     = fetched.url.origin;
   const internalLinks = $(`a[href^="/"], a[href^="${origin}"]`).length;
   const externalLinks = $("a[href^='http']").not(`[href^="${origin}"]`).length;
@@ -118,7 +115,7 @@ export async function GET(req: NextRequest) {
     {
       id: "twitter", label: "Twitter Card",
       status: hasTwitter ? "pass" : "warn",
-      detail: hasTwitter ? m("twitter:card") : "Missing",
+      detail: hasTwitter ? extractMeta($, "twitter:card") : "Missing",
       points: hasTwitter ? 4 : 0, max: 4,
     },
     {

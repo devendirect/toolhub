@@ -54,7 +54,8 @@ const NOTES: Record<Lang, NoteSet> = {
   },
 };
 
-const CRITICAL = new Set(["Content-Security-Policy", "Strict-Transport-Security", "X-Content-Type-Options", "X-Frame-Options"]);
+export const CRITICAL_HEADER_NAMES = ["Content-Security-Policy", "Strict-Transport-Security", "X-Content-Type-Options", "X-Frame-Options"] as const;
+const CRITICAL: Set<string> = new Set(CRITICAL_HEADER_NAMES);
 
 export function computeGrade(checks: HeaderCheck[]): HeadersData["grade"] {
   const missing = checks.filter((c) => CRITICAL.has(c.name) && c.status === "missing").length;

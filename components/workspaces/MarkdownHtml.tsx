@@ -14,13 +14,11 @@ const TR = {
     viewLabel:      "vue",
     renderedLabel:  "rendu",
     downloadHtml:   "télécharger .html ⏎",
-    resultHere:     "résultat ici…",
   },
   en: {
     viewLabel:      "view",
     renderedLabel:  "rendered",
     downloadHtml:   "download .html ⏎",
-    resultHere:     "result here…",
   },
 } as const;
 
@@ -133,7 +131,7 @@ export function MarkdownHtml() {
               />
             ) : (
               <pre className="p-[14px] font-mono text-[12px] text-fg-1 leading-[1.6] whitespace-pre-wrap break-all">
-                {html || <span className="text-dim-2">{TR[lang].resultHere}</span>}
+                {html || <span className="text-dim-2">{i.resultHere}</span>}
               </pre>
             )}
           </div>

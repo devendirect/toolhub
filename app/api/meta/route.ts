@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import * as cheerio from "cheerio";
 import { makeRateLimiter, makeCache, getRequesterIp } from "@/lib/route-security";
 import { fetchPageHtml } from "@/lib/api-html-fetch";
+import { extractMeta } from "@/lib/api-html-parse";
 
 export interface MetaData {
   url: string; title: string; description: string;
@@ -14,13 +15,6 @@ export interface MetaData {
 const checkRate = makeRateLimiter(10, 60_000);
 const cache     = makeCache<MetaData>(30 * 60 * 1000, 200); // 30 min, 200 URLs
 
-function metaContent($: cheerio.CheerioAPI, name: string): string {
-  return (
-    $(`meta[name="${name}"]`).attr("content") ??
-    $(`meta[property="${name}"]`).attr("content") ??
-    ""
-  );
-}
 
 export async function GET(req: NextRequest) {
   const requesterIp = getRequesterIp(req);
@@ -43,19 +37,19 @@ export async function GET(req: NextRequest) {
   const data: MetaData = {
     url:           fetched.url.href,
     title:         $("title").first().text().trim(),
-    description:   metaContent($, "description"),
-    ogTitle:       metaContent($, "og:title"),
-    ogDescription: metaContent($, "og:description"),
-    ogImage:       metaContent($, "og:image"),
-    ogUrl:         metaContent($, "og:url"),
-    ogType:        metaContent($, "og:type"),
-    ogSiteName:    metaContent($, "og:site_name"),
-    twitterCard:   metaContent($, "twitter:card"),
-    twitterTitle:  metaContent($, "twitter:title"),
-    twitterDesc:   metaContent($, "twitter:description"),
-    twitterImage:  metaContent($, "twitter:image"),
+    description:   extractMeta($, "description"),
+    ogTitle:       extractMeta($, "og:title"),
+    ogDescription: extractMeta($, "og:description"),
+    ogImage:       extractMeta($, "og:image"),
+    ogUrl:         extractMeta($, "og:url"),
+    ogType:        extractMeta($, "og:type"),
+    ogSiteName:    extractMeta($, "og:site_name"),
+    twitterCard:   extractMeta($, "twitter:card"),
+    twitterTitle:  extractMeta($, "twitter:title"),
+    twitterDesc:   extractMeta($, "twitter:description"),
+    twitterImage:  extractMeta($, "twitter:image"),
     canonical:     $('link[rel="canonical"]').attr("href") ?? "",
-    robots:        metaContent($, "robots"),
+    robots:        extractMeta($, "robots"),
     favicon:       $('link[rel="icon"], link[rel="shortcut icon"]').first().attr("href") ?? "",
   };
 
