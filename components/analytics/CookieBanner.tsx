@@ -17,19 +17,58 @@ function setCookie(name: string, value: string, days: number) {
   document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
 }
 
-export function loadGA() {
+// Initialise GA avec les défauts Consent Mode v2 (tout refusé)
+// Le script charge mais ne collecte rien tant que l'utilisateur n'a pas accepté
+export function initGA() {
   if (!GA_ID || typeof window === "undefined") return;
   if (document.getElementById("ga-script")) return;
-  const script = document.createElement("script");
-  script.id = "ga-script";
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
-  script.async = true;
-  document.head.appendChild(script);
+
   window.dataLayer = window.dataLayer || [];
   window.gtag = function (...args: unknown[]) { window.dataLayer.push(args); };
+
+  // Consent Mode v2 — défauts refusés AVANT le chargement du script
+  window.gtag("consent", "default", {
+    analytics_storage:   "denied",
+    ad_storage:          "denied",
+    ad_user_data:        "denied",
+    ad_personalization:  "denied",
+    wait_for_update:     500,
+  });
+
   window.gtag("js", new Date());
-  window.gtag("config", GA_ID);
+  window.gtag("config", GA_ID, { send_page_view: false });
+
+  const script = document.createElement("script");
+  script.id    = "ga-script";
+  script.src   = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+  script.async = true;
+  document.head.appendChild(script);
 }
+
+export function grantConsent() {
+  if (typeof window === "undefined" || typeof window.gtag !== "function") return;
+  window.gtag("consent", "update", {
+    analytics_storage:   "granted",
+    ad_storage:          "granted",
+    ad_user_data:        "granted",
+    ad_personalization:  "granted",
+  });
+  // Envoie la page vue maintenant que le consentement est accordé
+  if (GA_ID) window.gtag("config", GA_ID, { send_page_view: true });
+}
+
+export function denyConsent() {
+  if (typeof window === "undefined" || typeof window.gtag !== "function") return;
+  window.gtag("consent", "update", {
+    analytics_storage:   "denied",
+    ad_storage:          "denied",
+    ad_user_data:        "denied",
+    ad_personalization:  "denied",
+  });
+}
+
+// Alias pour compatibilité avec les imports existants
+export const loadGA = initGA;
 
 const TR = {
   fr: {
@@ -49,21 +88,23 @@ export function CookieBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    initGA(); // Toujours initialiser avec les défauts refusés
     const consent = getCookie(COOKIE_KEY);
-    if (consent === "true") { loadGA(); return; }
-    if (consent === "false") return;
-    setVisible(true);
+    if (consent === "true")  { grantConsent(); return; }
+    if (consent === "false") { denyConsent();  return; }
+    setVisible(true); // Pas de choix → afficher la bannière
   }, []);
 
   const accept = () => {
     setCookie(COOKIE_KEY, "true", 365);
     setVisible(false);
-    loadGA();
+    grantConsent();
   };
 
   const decline = () => {
     setCookie(COOKIE_KEY, "false", 365);
     setVisible(false);
+    denyConsent();
   };
 
   if (!visible) return null;
