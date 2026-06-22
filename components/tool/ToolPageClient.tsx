@@ -17,7 +17,7 @@ import { WORKSPACE_REGISTRY } from "@/lib/workspace-registry";
 
 function ToolContentSection({ content, lang }: { content: ToolContent; lang: "fr" | "en" }) {
   return (
-    <section className="mb-10">
+    <article className="mb-10">
       <SectionHead label={`// ${lang === "fr" ? "à propos de cet outil" : "about this tool"}`} />
       <div className="border border-line bg-bg-1 p-6">
         <p className="text-[13px] text-fg-1 leading-relaxed mb-6">{content.desc[lang]}</p>
@@ -33,7 +33,7 @@ function ToolContentSection({ content, lang }: { content: ToolContent; lang: "fr
           ))}
         </ul>
       </div>
-    </section>
+    </article>
   );
 }
 

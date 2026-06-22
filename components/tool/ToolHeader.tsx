@@ -35,7 +35,7 @@ export function ToolHeader({ tool }: { tool: Tool }) {
   };
 
   return (
-    <div className="mb-7">
+    <header className="mb-7">
       {/* Breadcrumb */}
       <div className="mb-7">
         <PromptBar text={`~/tools/${tool.slug} $ run`} />
@@ -87,6 +87,6 @@ export function ToolHeader({ tool }: { tool: Tool }) {
 
         <TrustSignals privacy={tool.privacy} lang={lang} />
       </div>
-    </div>
+    </header>
   );
 }

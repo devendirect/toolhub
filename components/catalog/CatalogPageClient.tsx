@@ -14,7 +14,7 @@ import { CatalogList } from "./CatalogList";
 
 type Sort = "popularity" | "name";
 
-export function CatalogPageClient({ initialCat = "all" }: { initialCat?: string }) {
+export function CatalogPageClient({ initialCat = "all", categoryDescription }: { initialCat?: string; categoryDescription?: string }) {
   const { lang } = useLang();
   const i = t(lang);
   const { favorites } = useFavorites();
@@ -75,6 +75,9 @@ export function CatalogPageClient({ initialCat = "all" }: { initialCat?: string 
               ? i.catalogAll
               : i.catalogCat(catObj.label[lang].toLowerCase())}
           </p>
+          {categoryDescription && activeCat !== "all" && (
+            <p className="text-fg-2 text-[14px] max-w-[60ch] mt-2 leading-relaxed">{categoryDescription}</p>
+          )}
         </div>
         <div className="border border-line">
           <StatBlock label={i.totalTools} value={String(filtered.length)} />

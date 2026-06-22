@@ -1,4 +1,5 @@
 import type { Tool } from "./types";
+import type { ToolContent } from "./tools-content";
 import { SITE_URL, BRAND_NAME, BRAND_TAGLINE } from "./brand";
 import { toolFaqItems } from "./faq";
 
@@ -10,7 +11,7 @@ const CAT_APPLICATION: Record<string, string> = {
   seo:    "BusinessApplication",
 };
 
-export function toolJsonLd(tool: Tool, lang: "en" | "fr") {
+export function toolJsonLd(tool: Tool, lang: "en" | "fr", content?: ToolContent) {
   return {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -20,6 +21,7 @@ export function toolJsonLd(tool: Tool, lang: "en" | "fr") {
     applicationCategory: CAT_APPLICATION[tool.cat] ?? "UtilitiesApplication",
     operatingSystem: "Any",
     inLanguage: lang === "fr" ? "fr-FR" : "en",
+    ...(content ? { featureList: content.useCases[lang] } : {}),
     offers: {
       "@type": "Offer",
       price: "0",

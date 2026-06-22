@@ -4,4 +4,4 @@ export const BRAND_TAGLINE = {
   fr: "Boîte à outils en ligne, sans friction.",
   en: "Online toolkit. Zero friction.",
 } as const;
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://utilisio.com";
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://utilisio.com").replace(/\/$/, "");

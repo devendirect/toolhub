@@ -70,8 +70,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CategoryPage({ params }: Props) {
-  const { category } = await params;
+  const { lang, category } = await params;
+  const l = coerceLang(lang);
   const cat = CATEGORIES.find((c) => c.id === category);
   if (!cat || cat.id === "all") notFound();
-  return <CatalogPageClient initialCat={category} />;
+  const description = CATEGORY_DESCRIPTIONS[category]?.[l];
+  return <CatalogPageClient initialCat={category} categoryDescription={description} />;
 }

@@ -9,6 +9,7 @@ function alternates(enPath: string, frPath: string) {
   return [
     { href: `${SITE_URL}${enPath}`, hreflang: "en" },
     { href: `${SITE_URL}${frPath}`, hreflang: "fr" },
+    { href: `${SITE_URL}${enPath}`, hreflang: "x-default" },
   ];
 }
 

@@ -67,7 +67,7 @@ export default async function ToolPage({ params }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(toolJsonLd(tool, l)) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(toolJsonLd(tool, l, content)) }}
       />
       <script
         type="application/ld+json"
