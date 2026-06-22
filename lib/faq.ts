@@ -21,10 +21,10 @@ function universal(name: Record<"en" | "fr", string>, isNetwork: boolean): FaqIt
       },
       a: {
         en: isNetwork
-          ? "A request passes through our proxy to fetch external data, but nothing you enter is stored or logged."
+          ? "A request passes through our proxy to fetch external data. Nothing you enter is stored in a database. Standard server access logs (IP address, timestamp) are retained for ~30 days for security purposes — see our privacy policy."
           : "No. All processing happens locally in your browser. Your files never leave your device.",
         fr: isNetwork
-          ? "Une requête transite par notre proxy pour récupérer des données externes, mais rien de ce que vous saisissez n'est stocké ni journalisé."
+          ? "Une requête transite par notre proxy pour récupérer des données externes. Vos saisies ne sont pas stockées en base de données. Les logs d'accès HTTP standard (adresse IP, horodatage) sont conservés environ 30 jours à des fins de sécurité — voir notre politique de confidentialité."
           : "Non. Tout le traitement s'effectue localement dans votre navigateur. Vos fichiers ne quittent jamais votre appareil.",
       },
     },
@@ -58,7 +58,7 @@ const SPECIFIC: Partial<Record<string, FaqItem[]>> = {
   "audio-converter": [{ q: { en: "Why does the first conversion take longer?", fr: "Pourquoi la première conversion prend-elle plus de temps ?" }, a: { en: "The FFmpeg WebAssembly engine (~20 MB) needs to load once. Subsequent conversions are instant.", fr: "Le moteur FFmpeg WebAssembly (~20 Mo) doit se charger une fois. Les conversions suivantes sont instantanées." } }],
   "video-converter": [{ q: { en: "Can I extract audio from a video?", fr: "Puis-je extraire l'audio d'une vidéo ?" }, a: { en: "Yes — choose MP3 or WAV as the output format and the tool will extract the audio track.", fr: "Oui — choisissez MP3 ou WAV comme format de sortie et l'outil extraira la piste audio." } }],
   "pdf-merge": [
-    { q: { en: "Is there a limit on the number of PDFs I can merge?", fr: "Y a-t-il une limite sur le nombre de PDF à fusionner ?" }, a: { en: "No hard limit — merge as many PDFs as your browser memory allows.", fr: "Aucune limite stricte — fusionnez autant de PDF que la mémoire de votre navigateur le permet." } },
+    { q: { en: "Is there a limit on the number of PDFs I can merge?", fr: "Y a-t-il une limite sur le nombre de PDF à fusionner ?" }, a: { en: "You can merge as many files as your device's memory allows — tested up to 20+ files in most browsers without issue.", fr: "Vous pouvez fusionner autant de fichiers que la mémoire de votre appareil le permet — testé avec plus de 20 fichiers dans la plupart des navigateurs sans problème." } },
     { q: { en: "Can I reorder the PDFs before merging?", fr: "Puis-je réordonner les PDF avant de les fusionner ?" }, a: { en: "Yes. After adding your files, drag and drop them to set the order before generating the merged document.", fr: "Oui. Après avoir ajouté vos fichiers, glissez-déposez-les pour définir l'ordre avant de générer le document fusionné." } },
   ],
   "qr-generator": [

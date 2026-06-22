@@ -72,12 +72,12 @@ export const loadGA = initGA;
 
 const TR = {
   fr: {
-    msg:     "Ce site utilise Google Analytics pour mesurer l'audience. Vos données sont anonymisées.",
+    msg:     "Ce site utilise Google Analytics pour mesurer l'audience. Aucune donnée n'est collectée tant que vous n'acceptez pas.",
     accept:  "Accepter",
     decline: "Refuser",
   },
   en: {
-    msg:     "This site uses Google Analytics to measure traffic. Your data is anonymized.",
+    msg:     "This site uses Google Analytics to measure traffic. No data is collected until you accept.",
     accept:  "Accept",
     decline: "Decline",
   },

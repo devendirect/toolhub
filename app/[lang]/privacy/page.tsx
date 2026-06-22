@@ -77,8 +77,8 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// analytics",
         content: [
-          "We currently use no analytics platform. No Google Analytics, no Mixpanel, no session recording tool.",
-          "If we add analytics in the future, we will update this page and favor privacy-respecting tools (Plausible, Fathom) that do not track individuals.",
+          "We use Google Analytics 4 to measure traffic volume. GA4 is loaded with Consent Mode v2 defaults — all consent signals are set to denied before the script runs. No personal data is collected unless you explicitly accept via the cookie banner.",
+          "If you decline, GA4 may produce aggregated modeled estimates on Google's side, but no identifier, cookie or individual event is sent from your browser. If you accept, usage data is processed by Google in accordance with their privacy policy.",
         ],
       },
       {
@@ -91,7 +91,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// your rights",
         content: [
-          "You are covered by the General Data Protection Regulation (GDPR) if you are located in the European Union. Since we collect almost no personal data, there is very little to exercise rights over.",
+          "You are covered by the General Data Protection Regulation (GDPR) if you are located in the European Union. Since we collect almost no personal data, there is little data on which to exercise your rights — but those rights remain fully intact.",
           "You can delete the `lang` cookie at any time through your browser settings. To request information about any data we may hold, contact us at the address below.",
         ],
       },
@@ -146,8 +146,8 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// analytiques",
         content: [
-          "Nous n'utilisons actuellement aucune plateforme d'analyse. Pas de Google Analytics, pas de Mixpanel, pas d'outil d'enregistrement de session.",
-          "Si nous ajoutons des analytiques à l'avenir, nous mettrons cette page à jour et privilégierons des outils respectueux de la vie privée (Plausible, Fathom) qui ne tracent pas les individus.",
+          "Nous utilisons Google Analytics 4 pour mesurer le volume de trafic. GA4 est chargé avec les valeurs par défaut du Consent Mode v2 — tous les signaux de consentement sont refusés avant l'exécution du script. Aucune donnée personnelle n'est collectée sauf si vous acceptez explicitement via la bannière de cookies.",
+          "En cas de refus, GA4 peut produire des estimations modélisées agrégées côté Google, mais aucun identifiant, cookie ni événement individuel n'est envoyé depuis votre navigateur. En cas d'acceptation, les données d'usage sont traitées par Google conformément à leur politique de confidentialité.",
         ],
       },
       {
@@ -160,7 +160,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// vos droits",
         content: [
-          "Vous êtes protégé par le Règlement Général sur la Protection des Données (RGPD) si vous êtes situé dans l'Union Européenne. Puisque nous collectons presque aucune donnée personnelle, il y a très peu de droits à exercer.",
+          "Vous êtes protégé par le Règlement Général sur la Protection des Données (RGPD) si vous êtes situé dans l'Union Européenne. Puisque nous collectons presque aucune donnée personnelle, il y a peu de données sur lesquelles exercer vos droits — mais vos droits restent entiers.",
           "Vous pouvez supprimer le cookie `lang` à tout moment via les paramètres de votre navigateur. Pour demander des informations sur les données que nous pourrions détenir, contactez-nous à l'adresse ci-dessous.",
         ],
       },
