@@ -13,7 +13,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const l = coerceLang(lang);
   const isEn = l === "en";
 
-  const title = `${BRAND_NAME} — ${BRAND_TAGLINE[l]}`;
+  const title = isEn
+    ? "utilisio — Free web tools: JSON, file, text, generators."
+    : "utilisio — Outils JSON, texte et fichiers pour développeurs.";
   const description = isEn
     ? "25 free tools, no signup. JSON formatter, Base64 encoder, UUID generator, QR codes, PDF converter, SEO analyzer and more. Most tools run 100% in your browser."
     : "25 outils gratuits, sans inscription. Formateur JSON, encodeur Base64, générateur UUID, QR codes, convertisseur PDF, analyseur SEO et plus. La plupart fonctionnent 100% dans votre navigateur.";
