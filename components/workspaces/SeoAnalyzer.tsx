@@ -20,7 +20,6 @@ const TR = {
   },
 } as const;
 
-const AFFILIATE_SEMRUSH = process.env.NEXT_PUBLIC_AFFILIATE_SEMRUSH;
 
 const STATUS_COLOR: Record<SeoCheck["status"], string> = {
   pass: "text-brand",
@@ -171,29 +170,6 @@ export function SeoAnalyzer() {
         </div>
       </div>
 
-      {AFFILIATE_SEMRUSH && seoData && seoData.score < 100 && (
-        <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
-          <span className="font-mono text-[20px] shrink-0">↗</span>
-          <div className="flex flex-col gap-1">
-            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
-              {lang === "fr" ? "aller plus loin" : "go further"}
-            </span>
-            <p className="text-[13px] text-fg-1">
-              {lang === "fr"
-                ? "Analyse complète : mots-clés, backlinks, concurrents — avec Semrush."
-                : "Full audit: keywords, backlinks, competitors — with Semrush."}
-            </p>
-            <a
-              href={AFFILIATE_SEMRUSH}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
-            >
-              {lang === "fr" ? "Essayer Semrush gratuitement →" : "Try Semrush for free →"}
-            </a>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
