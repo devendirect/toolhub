@@ -24,7 +24,9 @@ export function initGA() {
   if (document.getElementById("ga-script")) return;
 
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function (...args: unknown[]) { window.dataLayer.push(args); };
+  // GA4 requiert un objet Arguments (pas un Array) pour reconnaître les commandes gtag
+  // eslint-disable-next-line prefer-rest-params
+  window.gtag = function() { window.dataLayer.push(arguments); } as typeof window.gtag;
 
   // Consent Mode v2 — défauts refusés AVANT le chargement du script
   window.gtag("consent", "default", {
