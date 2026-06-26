@@ -64,6 +64,8 @@ function strengthLabel(bits: number, lang: Lang): { label: string; color: string
   return           { label: TR[lang].veryStrong,     color: "text-brand" };
 }
 
+const AFFILIATE_NORDPASS = process.env.NEXT_PUBLIC_AFFILIATE_NORDPASS;
+
 const COUNT = 5;
 
 export function PasswordGenerator() {
@@ -157,6 +159,29 @@ export function PasswordGenerator() {
           <span>{i.clickToCopy}</span>
         </div>
       </div>
+      {AFFILIATE_NORDPASS && (
+        <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
+          <span className="font-mono text-[20px] text-brand shrink-0">🔑</span>
+          <div className="flex flex-col gap-1">
+            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
+              {lang === "fr" ? "stocker vos mots de passe" : "store your passwords"}
+            </span>
+            <p className="text-[13px] text-fg-1">
+              {lang === "fr"
+                ? "Un bon mot de passe ne sert à rien s'il est dans un post-it. NordPass le stocke et le remplit automatiquement."
+                : "A strong password is useless on a sticky note. NordPass stores and autofills it for you."}
+            </p>
+            <a
+              href={AFFILIATE_NORDPASS}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
+            >
+              {lang === "fr" ? "Essayer NordPass →" : "Try NordPass →"}
+            </a>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
