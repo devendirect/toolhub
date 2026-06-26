@@ -7,7 +7,7 @@ import { useCopy } from "@/hooks/useCopy";
 import { downloadBlob } from "@/lib/download";
 import { useTrackRun } from "@/hooks/useTrackRun";
 
-const AFFILIATE_IONOS     = process.env.NEXT_PUBLIC_AFFILIATE_IONOS;
+const AFFILIATE_STRATO    = process.env.NEXT_PUBLIC_AFFILIATE_STRATO;
 const AFFILIATE_NAMECHEAP = process.env.NEXT_PUBLIC_AFFILIATE_NAMECHEAP;
 
 interface Rule { agent: string; disallow: string; allow: string; }
@@ -30,7 +30,7 @@ export function RobotsTxt() {
   const [sitemap, setSitemap] = useState("");
   const { copy, copied } = useCopy();
   const trackRun = useTrackRun("robots-txt", "seo");
-  const affiliateUrl = lang === "fr" ? AFFILIATE_IONOS : AFFILIATE_NAMECHEAP;
+  const affiliateUrl = lang === "fr" ? AFFILIATE_STRATO : AFFILIATE_NAMECHEAP;
 
   const updateRule = (idx: number, patch: Partial<Rule>) =>
     setRules((prev) => prev.map((r, j) => (j === idx ? { ...r, ...patch } : r)));
@@ -132,7 +132,7 @@ export function RobotsTxt() {
             </span>
             <p className="text-[13px] text-fg-1">
               {lang === "fr"
-                ? "Prêt à mettre votre site en ligne ? Enregistrez votre domaine chez IONOS."
+                ? "Prêt à mettre votre site en ligne ? Enregistrez votre domaine chez Strato."
                 : "Ready to put your site online? Register your domain with Namecheap."}
             </p>
             <a
