@@ -1,10 +1,12 @@
 // Ping IndexNow (Bing/Seznam/Naver/Yandex — pas Google) avec les URLs nouvelles
-// ou modifiées du sitemap. À lancer sur le serveur APRÈS déploiement, quand le
-// site répond : `node scripts/indexnow-ping.mjs`
+// ou modifiées du sitemap. Exécuté par une tâche planifiée Plesk quotidienne,
+// depuis /httpdocs : `node scripts/indexnow-ping.mjs`
+// (pas un hook de déploiement : les actions Plesk tournent avant le redémarrage
+// Node.js et liraient l'ancien sitemap — cf. docs/seo-geo/indexnow.md)
 //
 // Différentiel : ne soumet que les URLs absentes de l'envoi précédent
-// (.indexnow-state.json, local au serveur, gitignoré). Les moteurs jaugent la
-// fiabilité des pings — ne jamais rejouer tout le sitemap à chaque déploiement.
+// (.indexnow-state.json, local au serveur, gitignoré). Les jours sans changement,
+// aucun ping ne part — les moteurs jaugent la fiabilité des soumissions.
 
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
