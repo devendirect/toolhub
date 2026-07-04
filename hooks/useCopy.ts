@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { useLang } from "@/components/providers/I18nProvider";
+import { track, toolSlugFromPath } from "@/lib/analytics";
 
 export function useCopy() {
   const { lang } = useLang();
@@ -13,6 +14,7 @@ export function useCopy() {
       await navigator.clipboard.writeText(text);
       setCopied(key ?? text);
       toast.success(lang === "fr" ? "Copié !" : "Copied!", { duration: 1200 });
+      track("copy_result", { tool_slug: toolSlugFromPath() });
       setTimeout(() => setCopied(null), 1500);
     } catch {
       toast.error(lang === "fr" ? "Échec de la copie" : "Copy failed");

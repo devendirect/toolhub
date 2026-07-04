@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
+import { track } from "@/lib/analytics";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 const COOKIE_KEY = "utilisio-consent";
@@ -76,6 +77,9 @@ export function CookieBanner() {
     setCookie(COOKIE_KEY, "true", 365);
     setVisible(false);
     initGA();
+    // Les refus ne sont pas mesurables en mode basic (rien n'est chargé) —
+    // le taux d'acceptation se lit en croisant avec les logs serveur
+    track("consent_choice", { choice: "accepted" });
   };
 
   const decline = () => {

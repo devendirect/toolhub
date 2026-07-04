@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { CATEGORIES } from "@/lib/tools";
+import { CATEGORIES, TOOLS } from "@/lib/tools";
 import { SITE_URL } from "@/lib/brand";
 import { CatalogPageClient } from "@/components/catalog/CatalogPageClient";
 import type { Metadata } from "next";
@@ -74,6 +74,14 @@ export default async function CategoryPage({ params }: Props) {
   const l = coerceLang(lang);
   const cat = CATEGORIES.find((c) => c.id === category);
   if (!cat || cat.id === "all") notFound();
-  const description = CATEGORY_DESCRIPTIONS[category]?.[l];
+
+  // Critère de classement énoncé en clair (contenu citable) — le tri par défaut
+  // du catalogue est bien la popularité (champ runs)
+  const count = TOOLS.filter((t) => t.cat === category && !t.comingSoon).length;
+  const ranking = l === "en"
+    ? ` The ${count} tools below are ranked by usage, most used first.`
+    : ` Les ${count} outils ci-dessous sont classés par utilisation, du plus utilisé au moins utilisé.`;
+  const description = (CATEGORY_DESCRIPTIONS[category]?.[l] ?? "") + ranking;
+
   return <CatalogPageClient initialCat={category} categoryDescription={description} />;
 }

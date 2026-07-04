@@ -44,7 +44,7 @@ export function HomeHero({ lang, i, onSearchClick }: HomeHeroProps) {
         </div>
 
         <h1 className="text-[44px] font-medium tracking-[-0.025em] leading-[1.1] mb-[18px]">
-          <span className="font-mono text-brand mr-2">$</span>
+          <span className="font-mono text-brand mr-2" aria-hidden>$</span>
           {i.tagline}
           <Cursor />
         </h1>

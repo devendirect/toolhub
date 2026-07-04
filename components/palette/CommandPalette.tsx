@@ -7,6 +7,7 @@ import { TOOLS, CATEGORIES } from "@/lib/tools";
 import type { Tool, Lang } from "@/lib/types";
 import { useLang } from "@/components/providers/I18nProvider";
 import { usePalette } from "@/components/providers/PaletteProvider";
+import { track } from "@/lib/analytics";
 
 function scoreTool(tool: Tool, q: string, lang: Lang): number {
   const name = tool.name[lang].toLowerCase();
@@ -95,6 +96,8 @@ export function CommandPalette() {
   }, [ql, lang]);
 
   const navigate = (tool: Tool) => {
+    // Événement standard GA4 : dit quels outils les gens cherchent (et lesquels manquent)
+    if (ql) track("search", { search_term: ql, tool_slug: tool.slug });
     router.push(`/${lang}/t/${tool.slug}`);
     setOpen(false);
   };

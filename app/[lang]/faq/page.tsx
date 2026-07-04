@@ -3,6 +3,7 @@ import { BRAND_NAME, SITE_URL } from "@/lib/brand";
 import type { Lang } from "@/lib/types";
 import { coerceLang } from "@/lib/localePath";
 import { jsonLdString } from "@/lib/jsonld";
+import { TOOLS } from "@/lib/tools";
 import { FaqList } from "@/components/FaqList";
 
 interface Props {
@@ -11,11 +12,14 @@ interface Props {
 
 type FaqItem = { q: string; a: string };
 
+// Compteur calculé depuis le catalogue — jamais de chiffre en dur qui périme
+const LIVE_TOOLS = TOOLS.filter((t) => !t.comingSoon).length;
+
 const FAQ: Record<Lang, FaqItem[]> = {
   en: [
     {
       q: `What is ${BRAND_NAME}?`,
-      a: `${BRAND_NAME} is a free, no-signup collection of ~25 browser-based micro-tools for developers, designers and everyday users. Convert files, generate codes, format data, analyze SEO — all from one place.`,
+      a: `${BRAND_NAME} is a free, no-signup collection of ${LIVE_TOOLS} browser-based micro-tools for developers, designers and everyday users. Convert files, generate codes, format data, analyze SEO — all from one place.`,
     },
     {
       q: "Are all the tools free?",
@@ -35,7 +39,7 @@ const FAQ: Record<Lang, FaqItem[]> = {
     },
     {
       q: "How many tools are available?",
-      a: `There are currently 22 live tools across 5 categories (File, Developer, Text, Design, SEO). A few more are marked "coming soon" and will be added progressively.`,
+      a: `There are currently ${LIVE_TOOLS} live tools across 5 categories (File, Developer, Text, Design, SEO). New tools are added regularly.`,
     },
     {
       q: `Do the tools work on mobile?`,
@@ -49,7 +53,7 @@ const FAQ: Record<Lang, FaqItem[]> = {
   fr: [
     {
       q: `Qu'est-ce qu'utilisio ?`,
-      a: `${BRAND_NAME} est une collection gratuite et sans inscription d'environ 25 micro-outils en ligne pour les développeurs, designers et utilisateurs du quotidien. Convertissez des fichiers, générez des codes, formatez des données, analysez le SEO — depuis un seul endroit.`,
+      a: `${BRAND_NAME} est une collection gratuite et sans inscription de ${LIVE_TOOLS} micro-outils en ligne pour les développeurs, designers et utilisateurs du quotidien. Convertissez des fichiers, générez des codes, formatez des données, analysez le SEO — depuis un seul endroit.`,
     },
     {
       q: "Tous les outils sont-ils gratuits ?",
@@ -69,7 +73,7 @@ const FAQ: Record<Lang, FaqItem[]> = {
     },
     {
       q: "Combien d'outils sont disponibles ?",
-      a: "Il y a actuellement 22 outils actifs répartis en 5 catégories (Fichiers, Développeur, Texte, Design, SEO). D'autres sont marqués « à venir » et seront ajoutés progressivement.",
+      a: `Il y a actuellement ${LIVE_TOOLS} outils actifs répartis en 5 catégories (Fichiers, Développeur, Texte, Design, SEO). De nouveaux outils sont ajoutés régulièrement.`,
     },
     {
       q: "Les outils fonctionnent-ils sur mobile ?",

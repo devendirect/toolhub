@@ -46,7 +46,12 @@ const TR = {
   },
 } as const;
 
-export function ImageConverter() {
+interface ImageConverterProps {
+  // Format cible pré-sélectionné (pages /convert/[pair])
+  initialFormat?: "jpg" | "png" | "webp";
+}
+
+export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
   const { lang } = useLang();
   const i = t(lang);
 
@@ -55,7 +60,9 @@ export function ImageConverter() {
   const [outputUrl, setOutputUrl] = useState<string>("");
   const [outputSize, setOutputSize] = useState<number>(0);
   const [dims, setDims] = useState<{ w: number; h: number } | null>(null);
-  const [format, setFormat] = useState<Format>("image/webp");
+  const [format, setFormat] = useState<Format>(
+    (initialFormat && EXT_TO_FORMAT[initialFormat]) || "image/webp"
+  );
   const [quality, setQuality] = useState<80 | 90 | 100>(80);
   const [converting, setConverting] = useState(false);
   const [error, setError] = useState<string | null>(null);

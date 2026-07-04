@@ -26,10 +26,12 @@ npx tsc --noEmit # type-check sans build
 - `/t/[slug]` — page outil + workspace (workspaces en **lazy-load**)
 
 ### Règle de synchronisation SEO/GEO (critique)
-**Tout nouvel outil ou nouvelle route publique doit mettre à jour `public/llms.txt`
-dans le même commit** (ligne descriptive dans la bonne catégorie + Key URLs si page
-transverse). Le sitemap (`app/sitemap.ts`) se met à jour tout seul via `lib/tools.ts`,
-mais `llms.txt` est statique — sans cette règle il diverge du catalogue réel.
+`llms.txt`, `llms-full.txt` (routes `app/llms.txt/`, `app/llms-full.txt/`) et le
+sitemap (`app/sitemap.ts`) sont **générés depuis `lib/tools.ts`** — un nouvel outil
+s'y propage tout seul. En revanche, **toute nouvelle page transverse** (À propos,
+FAQ, hub…) doit être ajoutée à la main dans le même commit : sections « Key URLs »
+des deux routes llms + `staticRoutes` du sitemap. Jamais de compteur d'outils en dur
+dans l'UI ou les metadata : toujours calculé depuis `TOOLS` (cf. FAQ, home, About).
 
 ### Design tokens → Tailwind
 Les tokens CSS vivent dans `app/globals.css`. Stack : Tailwind v4 — pas de `tailwind.config.ts`, tout est en CSS via `@theme inline`. **Les couleurs ne sont jamais écrites en dur**, toujours via les classes utilitaires (`bg-bg`, `text-fg`, `border-line`, `text-brand`, etc.).
