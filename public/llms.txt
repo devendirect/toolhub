@@ -56,6 +56,8 @@ Inputs are not stored. Standard HTTP access logs (IP, timestamp) are retained ~3
 
 - Tool catalog (EN): https://utilisio.com/en/tools
 - Tool catalog (FR): https://utilisio.com/fr/tools
+- About (EN): https://utilisio.com/en/about
+- About (FR): https://utilisio.com/fr/about
 - Privacy policy (EN): https://utilisio.com/en/privacy
 - Privacy policy (FR): https://utilisio.com/fr/privacy
 - FAQ (EN): https://utilisio.com/en/faq

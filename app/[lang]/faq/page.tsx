@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { BRAND_NAME, SITE_URL } from "@/lib/brand";
 import type { Lang } from "@/lib/types";
 import { coerceLang } from "@/lib/localePath";
+import { jsonLdString } from "@/lib/jsonld";
 import { FaqList } from "@/components/FaqList";
 
 interface Props {
@@ -124,7 +125,7 @@ export default async function FaqPage({ params }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }}
       />
       <div className="pt-9 pb-16 max-w-[720px]">
         <div className="font-mono text-[12px] text-brand mb-2">

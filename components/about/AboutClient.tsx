@@ -1,6 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useLang } from "@/components/providers/I18nProvider";
+import { localePath } from "@/lib/localePath";
+import { TOOLS } from "@/lib/tools";
 
 interface Lib {
   name: string;
@@ -95,13 +98,50 @@ const LICENSE_COLOR: Record<string, string> = {
 
 export function AboutClient() {
   const { lang } = useLang();
+  const toolCount = TOOLS.filter((t) => !t.comingSoon).length;
 
   return (
     <main className="max-w-[860px] mx-auto px-6 py-12">
-      <div className="mb-10">
-        <h1 className="font-mono text-[22px] font-semibold text-fg mb-2">
-          {lang === "fr" ? "// crédits open-source" : "// open-source credits"}
+      {/* Qui, quoi, comment — la page qui répond à "qui est derrière ce site ?" */}
+      <div className="mb-12">
+        <h1 className="font-mono text-[22px] font-semibold text-fg mb-4">
+          {lang === "fr" ? "// à propos d'utilisio" : "// about utilisio"}
         </h1>
+        <div className="flex flex-col gap-3 font-mono text-[13px] text-fg-1 leading-relaxed">
+          <p>
+            {lang === "fr"
+              ? `utilisio est une boîte à outils web gratuite : ${toolCount} outils pour développeurs, designers et rédacteurs — conversion de fichiers, formatage de code, générateurs, analyse SEO — sans compte, sans inscription et sans limite d'usage.`
+              : `utilisio is a free web toolkit: ${toolCount} tools for developers, designers and writers — file conversion, code formatting, generators, SEO analysis — with no account, no signup and no usage limit.`}
+          </p>
+          <p>
+            {lang === "fr"
+              ? "C'est un projet indépendant, développé et maintenu activement : de nouveaux outils sont ajoutés régulièrement. La quasi-totalité des outils s'exécute directement dans votre navigateur — vos fichiers et vos textes ne quittent jamais votre appareil. Seuls trois outils (IP Lookup, Meta Preview, SEO Analyzer) passent par notre serveur pour interroger des données externes, sans rien conserver."
+              : "It is an independent project, actively developed and maintained: new tools are added regularly. Almost every tool runs directly in your browser — your files and text never leave your device. Only three tools (IP Lookup, Meta Preview, SEO Analyzer) go through our server to fetch external data, and nothing is stored."}
+          </p>
+          <p className="text-dim">
+            {lang === "fr" ? (
+              <>
+                Le détail de ce qui est collecté (presque rien) est sur la page{" "}
+                <Link href={localePath(lang, "/privacy")} className="underline hover:text-fg transition-colors">confidentialité</Link>
+                {" "}; les questions fréquentes sont dans la{" "}
+                <Link href={localePath(lang, "/faq")} className="underline hover:text-fg transition-colors">FAQ</Link>.
+              </>
+            ) : (
+              <>
+                Details on what we collect (almost nothing) are on the{" "}
+                <Link href={localePath(lang, "/privacy")} className="underline hover:text-fg transition-colors">privacy page</Link>
+                ; common questions are answered in the{" "}
+                <Link href={localePath(lang, "/faq")} className="underline hover:text-fg transition-colors">FAQ</Link>.
+              </>
+            )}
+          </p>
+        </div>
+      </div>
+
+      <div className="mb-10">
+        <h2 className="font-mono text-[17px] font-semibold text-fg mb-2">
+          {lang === "fr" ? "// crédits open-source" : "// open-source credits"}
+        </h2>
         <p className="font-mono text-[13px] text-dim leading-relaxed">
           {lang === "fr"
             ? "utilisio repose sur d'excellentes librairies open-source. Les composants sous licence LGPL (FFmpeg) sont utilisés sans modification et peuvent être remplacés en changeant l'URL du WASM."

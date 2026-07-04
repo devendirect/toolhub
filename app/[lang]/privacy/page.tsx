@@ -42,7 +42,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// what we collect",
         content: [
-          "Almost nothing. There is no account system, no tracking pixel, no advertising network and no analytics platform.",
+          "Almost nothing. There is no account system, no tracking pixel and no advertising network. Audience measurement (Google Analytics) only runs if you explicitly accept it via the cookie banner.",
           "The only data stored on your device is a single cookie named `lang` that remembers your language preference (French or English). It expires after one year and contains no personal information.",
         ],
       },
@@ -77,8 +77,8 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// analytics",
         content: [
-          "We use Google Analytics 4 to measure traffic volume. GA4 is loaded with Consent Mode v2 defaults — all consent signals are set to denied before the script runs. No personal data is collected unless you explicitly accept via the cookie banner.",
-          "If you decline, GA4 may produce aggregated modeled estimates on Google's side, but no identifier, cookie or individual event is sent from your browser. If you accept, usage data is processed by Google in accordance with their privacy policy.",
+          "We use Google Analytics 4 to measure traffic volume. The Google script is only loaded after you click Accept on the cookie banner. If you decline, or before you make a choice, nothing is loaded and no request is sent to Google — not even an anonymous ping.",
+          "If you accept, usage data is processed by Google in accordance with their privacy policy. You can withdraw your consent at any time via the “manage cookies” link in the footer, which also deletes the Google Analytics cookies from your browser.",
         ],
       },
       {
@@ -111,7 +111,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// ce que nous collectons",
         content: [
-          "Presque rien. Il n'y a pas de système de compte, pas de pixel de tracking, pas de réseau publicitaire et pas de plateforme d'analyse.",
+          "Presque rien. Il n'y a pas de système de compte, pas de pixel de tracking et pas de réseau publicitaire. La mesure d'audience (Google Analytics) ne s'active que si vous l'acceptez explicitement via la bannière de cookies.",
           "La seule donnée stockée sur votre appareil est un cookie nommé `lang` qui mémorise votre préférence de langue (français ou anglais). Il expire après un an et ne contient aucune information personnelle.",
         ],
       },
@@ -146,8 +146,8 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// analytiques",
         content: [
-          "Nous utilisons Google Analytics 4 pour mesurer le volume de trafic. GA4 est chargé avec les valeurs par défaut du Consent Mode v2 — tous les signaux de consentement sont refusés avant l'exécution du script. Aucune donnée personnelle n'est collectée sauf si vous acceptez explicitement via la bannière de cookies.",
-          "En cas de refus, GA4 peut produire des estimations modélisées agrégées côté Google, mais aucun identifiant, cookie ni événement individuel n'est envoyé depuis votre navigateur. En cas d'acceptation, les données d'usage sont traitées par Google conformément à leur politique de confidentialité.",
+          "Nous utilisons Google Analytics 4 pour mesurer le volume de trafic. Le script Google n'est chargé qu'après votre clic sur Accepter dans la bannière de cookies. En cas de refus, ou avant votre choix, rien n'est chargé et aucune requête n'est envoyée à Google — pas même un ping anonyme.",
+          "En cas d'acceptation, les données d'usage sont traitées par Google conformément à leur politique de confidentialité. Vous pouvez retirer votre consentement à tout moment via le lien « gérer les cookies » du pied de page, qui supprime aussi les cookies Google Analytics de votre navigateur.",
         ],
       },
       {

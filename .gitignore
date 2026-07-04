@@ -44,3 +44,6 @@ next-env.d.ts
 docs/
 .claude/
 CLAUDE.md
+
+# indexnow
+.indexnow-state.json

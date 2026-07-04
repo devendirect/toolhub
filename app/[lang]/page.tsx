@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { BRAND_NAME, BRAND_TAGLINE, SITE_URL } from "@/lib/brand";
 import { HomeClient } from "@/components/home/HomeClient";
-import { websiteJsonLd } from "@/lib/jsonld";
+import { websiteJsonLd, jsonLdString } from "@/lib/jsonld";
 import { coerceLang } from "@/lib/localePath";
 
 interface Props {
@@ -57,7 +57,7 @@ export default async function HomePage({ params }: Props) {
         <script
           key={i}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdString(schema) }}
         />
       ))}
       <HomeClient />

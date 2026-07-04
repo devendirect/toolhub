@@ -25,6 +25,12 @@ npx tsc --noEmit # type-check sans build
 - `/tools/[category]` — catégorie filtrée
 - `/t/[slug]` — page outil + workspace (workspaces en **lazy-load**)
 
+### Règle de synchronisation SEO/GEO (critique)
+**Tout nouvel outil ou nouvelle route publique doit mettre à jour `public/llms.txt`
+dans le même commit** (ligne descriptive dans la bonne catégorie + Key URLs si page
+transverse). Le sitemap (`app/sitemap.ts`) se met à jour tout seul via `lib/tools.ts`,
+mais `llms.txt` est statique — sans cette règle il diverge du catalogue réel.
+
 ### Design tokens → Tailwind
 Les tokens CSS vivent dans `app/globals.css`. Stack : Tailwind v4 — pas de `tailwind.config.ts`, tout est en CSS via `@theme inline`. **Les couleurs ne sont jamais écrites en dur**, toujours via les classes utilitaires (`bg-bg`, `text-fg`, `border-line`, `text-brand`, etc.).
 

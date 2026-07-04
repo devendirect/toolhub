@@ -4,7 +4,7 @@ import { SITE_URL } from "@/lib/brand";
 import { TOOLS_CONTENT } from "@/lib/tools-content";
 import { toolFaqItems } from "@/lib/faq";
 import { ToolPageClient } from "@/components/tool/ToolPageClient";
-import { toolJsonLd, breadcrumbJsonLd, faqJsonLd } from "@/lib/jsonld";
+import { toolJsonLd, breadcrumbJsonLd, faqJsonLd, jsonLdString } from "@/lib/jsonld";
 import type { Metadata } from "next";
 import { coerceLang } from "@/lib/localePath";
 
@@ -67,15 +67,15 @@ export default async function ToolPage({ params }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(toolJsonLd(tool, l, content)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(toolJsonLd(tool, l, content)) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd(tool, l, catLabel)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(breadcrumbJsonLd(tool, l, catLabel)) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(tool, l)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(faqJsonLd(tool, l)) }}
       />
       <ToolPageClient tool={tool} content={content} faqItems={faqItems} />
     </>

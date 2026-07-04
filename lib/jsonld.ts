@@ -3,6 +3,11 @@ import type { ToolContent } from "./tools-content";
 import { SITE_URL, BRAND_NAME, BRAND_TAGLINE } from "./brand";
 import { toolFaqItems } from "./faq";
 
+// Échappe "<" pour empêcher un "</script>" contenu dans les données de casser la page
+export function jsonLdString(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
 const CAT_APPLICATION: Record<string, string> = {
   file:   "UtilitiesApplication",
   dev:    "DeveloperApplication",

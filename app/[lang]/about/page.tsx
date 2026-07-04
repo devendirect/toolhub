@@ -12,10 +12,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const l = coerceLang(lang);
   const isEn = l === "en";
 
-  const title = isEn ? "Open-source credits" : "Crédits open-source";
+  const title = isEn ? "About" : "À propos";
   const description = isEn
-    ? `Libraries and tools used to build ${BRAND_NAME}. Open-source credits.`
-    : `Bibliothèques et outils utilisés pour construire ${BRAND_NAME}. Crédits open-source.`;
+    ? `What ${BRAND_NAME} is, how the tools work (in-browser, no upload), who maintains it, and the open-source libraries it is built on.`
+    : `Ce qu'est ${BRAND_NAME}, comment fonctionnent les outils (dans le navigateur, sans upload), qui le maintient, et les librairies open-source utilisées.`;
 
   return {
     title,
