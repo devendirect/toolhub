@@ -24,13 +24,13 @@ const TR = {
   },
 } as const;
 
-function encodeB64(str: string): string {
+export function encodeB64(str: string): string {
   const bytes = new TextEncoder().encode(str);
   const binary = Array.from(bytes, (b) => String.fromCharCode(b)).join("");
   return btoa(binary);
 }
 
-function decodeB64(str: string): string {
+export function decodeB64(str: string): string {
   const binary = atob(str.trim());
   const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
   return new TextDecoder().decode(bytes);

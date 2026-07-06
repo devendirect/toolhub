@@ -26,7 +26,7 @@ const TR = {
 interface RegexSegment { text: string; isMatch: boolean; matchIdx: number; }
 interface RegexMatch { value: string; index: number; groups: string[]; }
 
-function analyze(text: string, pattern: string, flags: string): {
+export function analyze(text: string, pattern: string, flags: string): {
   segments: RegexSegment[];
   matches: RegexMatch[];
   error: string | null;

@@ -38,7 +38,7 @@ type SegmenterCtor = new (locale?: string, opts?: { granularity: string }) => {
   segment(s: string): Iterable<WordSegment>;
 };
 
-function countWords(str: string): number {
+export function countWords(str: string): number {
   if (!str.trim()) return 0;
   if (typeof Intl !== "undefined" && "Segmenter" in Intl) {
     const Seg = (Intl as unknown as { Segmenter: SegmenterCtor }).Segmenter;
@@ -48,11 +48,11 @@ function countWords(str: string): number {
   return str.trim().split(/\s+/).filter(Boolean).length;
 }
 
-function countSentences(str: string): number {
+export function countSentences(str: string): number {
   return (str.match(/[.!?]+/g) ?? []).length;
 }
 
-function countParagraphs(str: string): number {
+export function countParagraphs(str: string): number {
   return str.split(/\n{2,}/).filter((p) => p.trim()).length;
 }
 

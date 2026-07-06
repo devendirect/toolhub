@@ -32,20 +32,26 @@ sauts de ligne.
 Et un paragraphe vide.
 Ainsi qu'une   ligne   avec   des espaces multiples.`;
 
+export function removeLineBreaks(input: string, mode: Mode): string {
+  if (!input) return "";
+  switch (mode) {
+    case "space":     return input.replace(/\r?\n+/g, " ").replace(/ {2,}/g, " ").trim();
+    case "remove":    return input.replace(/\r?\n/g, "").trim();
+    case "normalize": return input
+      .split(/(?:\r?\n){2,}/)
+      .map((p) => p.replace(/\r?\n/g, " ").replace(/ {2,}/g, " ").trim())
+      .filter(Boolean)
+      .join("\n\n");
+  }
+}
+
 export function RemoveLineBreaks() {
   const { lang } = useLang();
   const i = t(lang);
   const [input, setInput] = useState(SAMPLE);
   const [mode, setMode] = useState<Mode>("space");
 
-  const output = useMemo(() => {
-    if (!input) return "";
-    switch (mode) {
-      case "space":     return input.replace(/\r?\n+/g, " ").replace(/ {2,}/g, " ").trim();
-      case "remove":    return input.replace(/\r?\n/g, "").trim();
-      case "normalize": return input.replace(/\r?\n{2,}/g, "\n\n").replace(/\r?\n/g, " ").replace(/ {2,}/g, " ").trim();
-    }
-  }, [input, mode]);
+  const output = useMemo(() => removeLineBreaks(input, mode), [input, mode]);
 
   const { copy } = useCopy();
   const trackRun = useTrackRun("remove-linebreaks", "text");

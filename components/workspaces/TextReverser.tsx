@@ -12,20 +12,22 @@ type Mode = "chars" | "words" | "lines";
 
 const SAMPLE = "Hello, World!\nUtilisio is fast.";
 
+export function reverseText(input: string, mode: Mode): string {
+  if (!input) return "";
+  switch (mode) {
+    case "chars": return Array.from(input).reverse().join("");
+    case "words": return input.split(/\r?\n/).map((line) => line.split(" ").reverse().join(" ")).join("\n");
+    case "lines": return input.split(/\r?\n/).reverse().join("\n");
+  }
+}
+
 export function TextReverser() {
   const { lang } = useLang();
   const i = t(lang);
   const [input, setInput] = useState(SAMPLE);
   const [mode, setMode] = useState<Mode>("chars");
 
-  const output = useMemo(() => {
-    if (!input) return "";
-    switch (mode) {
-      case "chars": return Array.from(input).reverse().join("");
-      case "words": return input.split(/\r?\n/).map((line) => line.split(" ").reverse().join(" ")).join("\n");
-      case "lines": return input.split(/\r?\n/).reverse().join("\n");
-    }
-  }, [input, mode]);
+  const output = useMemo(() => reverseText(input, mode), [input, mode]);
 
   const { copy } = useCopy();
   const trackRun = useTrackRun("text-reverser", "text");

@@ -21,7 +21,7 @@ function splitWords(str: string): string[] {
     .filter(Boolean);
 }
 
-function convert(str: string, mode: Case): string {
+export function convert(str: string, mode: Case): string {
   if (!str) return "";
   const words = splitWords(str);
   switch (mode) {

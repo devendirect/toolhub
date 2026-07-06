@@ -29,7 +29,7 @@ const TR = {
   },
 } as const;
 
-async function hashBuffer(buf: ArrayBuffer): Promise<HashResult[]> {
+export async function hashBuffer(buf: ArrayBuffer): Promise<HashResult[]> {
   const algos: [string, string][] = [
     ["MD5",     ""],
     ["SHA-1",   "SHA-1"],

@@ -39,7 +39,7 @@ const CHARS = {
   ambiguous: "l1IO0B8",
 };
 
-function generate(length: number, opts: { upper: boolean; digits: boolean; symbols: boolean; noAmbiguous: boolean }): string {
+export function generate(length: number, opts: { upper: boolean; digits: boolean; symbols: boolean; noAmbiguous: boolean }): string {
   let charset = CHARS.lower;
   if (opts.upper) charset += CHARS.upper;
   if (opts.digits) charset += CHARS.digits;
@@ -51,7 +51,7 @@ function generate(length: number, opts: { upper: boolean; digits: boolean; symbo
   return Array.from(arr, (n) => charset[n % charset.length]).join("");
 }
 
-function entropy(pw: string): number {
+export function entropy(pw: string): number {
   const charsets = [/[a-z]/, /[A-Z]/, /[0-9]/, /[^a-zA-Z0-9]/];
   const pool = charsets.reduce((s, r) => s + (r.test(pw) ? (r === charsets[0] || r === charsets[1] ? 26 : r === charsets[2] ? 10 : 32) : 0), 0);
   return Math.floor(pw.length * Math.log2(pool || 1));
