@@ -42,7 +42,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// what we collect",
         content: [
-          "Almost nothing. There is no account system, no tracking pixel and no advertising network. Audience measurement (Google Analytics) only runs if you explicitly accept it via the cookie banner.",
+          "Almost nothing. There is no account system and no tracking pixel. Audience measurement (Google Analytics) and advertising (Google AdSense) each only run if you explicitly accept the corresponding category via the cookie banner — they are requested separately, not bundled together.",
           "The only data stored on your device is a single cookie named `lang` that remembers your language preference (French or English). It expires after one year and contains no personal information.",
         ],
       },
@@ -82,6 +82,13 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
         ],
       },
       {
+        heading: "// advertising",
+        content: [
+          "We may display ads served by Google AdSense. The AdSense script is only loaded after you accept the “advertising” category in the cookie banner — separately from audience measurement. If you decline, or before you make a choice, no ad script is loaded and no advertising cookie is set.",
+          "If you accept, Google may use cookies to serve and measure ads, including personalized ads, as described in Google's advertising privacy policy. Because these cookies are set by Google on its own domain, they cannot be deleted from this site's “manage cookies” link — declining the category simply stops the script from loading again on future visits.",
+        ],
+      },
+      {
         heading: "// third-party services",
         content: [
           "The IP Lookup tool queries a third-party geolocation API. The queried IP is sent to that API to retrieve location data. No other personal information is transmitted.",
@@ -111,7 +118,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// ce que nous collectons",
         content: [
-          "Presque rien. Il n'y a pas de système de compte, pas de pixel de tracking et pas de réseau publicitaire. La mesure d'audience (Google Analytics) ne s'active que si vous l'acceptez explicitement via la bannière de cookies.",
+          "Presque rien. Il n'y a pas de système de compte ni de pixel de tracking. La mesure d'audience (Google Analytics) et la publicité (Google AdSense) ne s'activent chacune que si vous acceptez explicitement la catégorie correspondante via la bannière de cookies — les deux choix sont demandés séparément, jamais groupés.",
           "La seule donnée stockée sur votre appareil est un cookie nommé `lang` qui mémorise votre préférence de langue (français ou anglais). Il expire après un an et ne contient aucune information personnelle.",
         ],
       },
@@ -148,6 +155,13 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
         content: [
           "Nous utilisons Google Analytics 4 pour mesurer le volume de trafic. Le script Google n'est chargé qu'après votre clic sur Accepter dans la bannière de cookies. En cas de refus, ou avant votre choix, rien n'est chargé et aucune requête n'est envoyée à Google — pas même un ping anonyme.",
           "En cas d'acceptation, les données d'usage sont traitées par Google conformément à leur politique de confidentialité. Vous pouvez retirer votre consentement à tout moment via le lien « gérer les cookies » du pied de page, qui supprime aussi les cookies Google Analytics de votre navigateur.",
+        ],
+      },
+      {
+        heading: "// publicité",
+        content: [
+          "Nous pouvons afficher des annonces servies par Google AdSense. Le script AdSense n'est chargé qu'après votre acceptation de la catégorie « publicité » dans la bannière de cookies — indépendamment de la mesure d'audience. En cas de refus, ou avant votre choix, aucun script publicitaire n'est chargé et aucun cookie publicitaire n'est posé.",
+          "En cas d'acceptation, Google peut utiliser des cookies pour diffuser et mesurer les annonces, y compris des annonces personnalisées, conformément à la politique de confidentialité publicitaire de Google. Ces cookies étant posés par Google sur son propre domaine, ils ne peuvent pas être supprimés via le lien « gérer les cookies » de ce site — refuser la catégorie empêche simplement le script de se recharger lors des visites suivantes.",
         ],
       },
       {

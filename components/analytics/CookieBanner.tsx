@@ -5,7 +5,9 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { track } from "@/lib/analytics";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+const ADS_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 const COOKIE_KEY = "utilisio-consent";
+const ADS_COOKIE_KEY = "utilisio-consent-ads";
 
 function getCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
@@ -18,26 +20,33 @@ function setCookie(name: string, value: string, days: number) {
   document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
 }
 
-// Consent Mode "basic" (exigence CNIL) : cette fonction n'est appelée qu'APRÈS
-// acceptation explicite. Avant le clic Accepter, aucun script Google n'est chargé
-// et aucune requête ne part — pas même un ping sans cookies.
-export function initGA() {
-  if (!GA_ID || typeof window === "undefined") return;
-  if (document.getElementById("ga-script")) return;
-
+function ensureGtag() {
+  if (typeof window === "undefined") return;
   window.dataLayer = window.dataLayer || [];
-  // GA4 requiert un objet Arguments (pas un Array) pour reconnaître les commandes gtag
-  // eslint-disable-next-line prefer-rest-params
-  window.gtag = function() { window.dataLayer.push(arguments); } as typeof window.gtag;
+  if (typeof window.gtag !== "function") {
+    // eslint-disable-next-line prefer-rest-params
+    window.gtag = function() { window.dataLayer.push(arguments); } as typeof window.gtag;
+  }
+}
 
-  // Le consentement analytics est acquis (on n'arrive ici qu'après acceptation) ;
-  // les signaux publicitaires restent refusés — le site ne fait pas de pub Google
+// Consent Mode "basic" (exigence CNIL) : mesure d'audience et publicité sont deux
+// finalités distinctes, chacune avec son propre signal. Tant que l'utilisateur n'a
+// pas tranché une catégorie, son signal reste "denied" et aucun script correspondant
+// n'est chargé — pas même un ping sans cookies.
+function pushConsent(analytics: boolean, ads: boolean) {
+  ensureGtag();
   window.gtag("consent", "default", {
-    analytics_storage:   "granted",
-    ad_storage:          "denied",
-    ad_user_data:        "denied",
-    ad_personalization:  "denied",
+    analytics_storage:   analytics ? "granted" : "denied",
+    ad_storage:          ads ? "granted" : "denied",
+    ad_user_data:        ads ? "granted" : "denied",
+    ad_personalization:  ads ? "granted" : "denied",
   });
+}
+
+export function initGA(adsAccepted: boolean) {
+  if (!GA_ID || typeof window === "undefined") return;
+  pushConsent(true, adsAccepted);
+  if (document.getElementById("ga-script")) return;
 
   window.gtag("js", new Date());
   window.gtag("config", GA_ID);
@@ -49,71 +58,154 @@ export function initGA() {
   document.head.appendChild(script);
 }
 
+export function initAds(analyticsAccepted: boolean) {
+  if (!ADS_CLIENT || typeof window === "undefined") return;
+  pushConsent(analyticsAccepted, true);
+  if (document.getElementById("adsense-script")) return;
+
+  const script = document.createElement("script");
+  script.id          = "adsense-script";
+  script.async       = true;
+  script.src         = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADS_CLIENT}`;
+  script.crossOrigin = "anonymous";
+  document.head.appendChild(script);
+}
+
 const TR = {
   fr: {
-    msg:     "Ce site utilise Google Analytics pour mesurer l'audience. Aucune donnée n'est collectée tant que vous n'acceptez pas.",
-    accept:  "Accepter",
-    decline: "Refuser",
+    msg:        "Ce site utilise Google Analytics (mesure d'audience) et peut afficher des publicités Google AdSense. Aucune donnée n'est collectée tant que vous n'acceptez pas.",
+    customize:  "Personnaliser",
+    acceptAll:  "Tout accepter",
+    declineAll: "Tout refuser",
+    analyticsLabel: "Mesure d'audience",
+    analyticsDesc:  "Google Analytics — statistiques de trafic anonymisées.",
+    adsLabel: "Publicité",
+    adsDesc:  "Google AdSense — annonces, potentiellement personnalisées.",
+    save: "Enregistrer mes choix",
   },
   en: {
-    msg:     "This site uses Google Analytics to measure traffic. No data is collected until you accept.",
-    accept:  "Accept",
-    decline: "Decline",
+    msg:        "This site uses Google Analytics (audience measurement) and may show Google AdSense ads. No data is collected until you accept.",
+    customize:  "Customize",
+    acceptAll:  "Accept all",
+    declineAll: "Decline all",
+    analyticsLabel: "Audience measurement",
+    analyticsDesc:  "Google Analytics — anonymized traffic stats.",
+    adsLabel: "Advertising",
+    adsDesc:  "Google AdSense — ads, potentially personalized.",
+    save: "Save my choices",
   },
 } as const;
 
 export function CookieBanner() {
   const { lang } = useLang();
+  const i = TR[lang];
   const [visible, setVisible] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [prefAnalytics, setPrefAnalytics] = useState(false);
+  const [prefAds, setPrefAds] = useState(false);
 
   useEffect(() => {
-    const consent = getCookie(COOKIE_KEY);
-    if (consent === "true")  { initGA(); return; } // consentement déjà donné
-    if (consent === "false") return;               // refus : rien n'est chargé
-    setVisible(true);                              // pas de choix → bannière
+    const analyticsConsent = getCookie(COOKIE_KEY);
+    const adsConsent = getCookie(ADS_COOKIE_KEY);
+
+    if (analyticsConsent === "true") initGA(adsConsent === "true");
+    if (adsConsent === "true") initAds(analyticsConsent === "true");
+
+    setPrefAnalytics(analyticsConsent === "true");
+    setPrefAds(adsConsent === "true");
+
+    // Bannière ré-affichée si une des deux catégories n'a jamais reçu de choix explicite
+    // (ex : utilisateur ayant déjà répondu pour analytics avant l'ajout de la pub)
+    if (analyticsConsent === null || adsConsent === null) setVisible(true);
   }, []);
 
-  const accept = () => {
-    setCookie(COOKIE_KEY, "true", 365);
+  const applyChoice = (analytics: boolean, ads: boolean) => {
+    setCookie(COOKIE_KEY, String(analytics), 365);
+    setCookie(ADS_COOKIE_KEY, String(ads), 365);
     setVisible(false);
-    initGA();
-    // Les refus ne sont pas mesurables en mode basic (rien n'est chargé) —
-    // le taux d'acceptation se lit en croisant avec les logs serveur
-    track("consent_choice", { choice: "accepted" });
-  };
-
-  const decline = () => {
-    setCookie(COOKIE_KEY, "false", 365);
-    setVisible(false);
+    setExpanded(false);
+    if (analytics) initGA(ads);
+    if (ads) initAds(analytics);
+    // Refus non mesurables en mode basic (rien n'est chargé si aucune catégorie acceptée)
+    if (analytics || ads) track("consent_choice", { analytics: String(analytics), ads: String(ads) });
   };
 
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between gap-4 px-6 py-3 bg-bg-1 border-t border-line font-mono text-[12px] text-fg-1">
-      <p className="flex-1 min-w-0 text-dim">{TR[lang].msg}</p>
-      <div className="flex items-center gap-2 shrink-0">
-        <button
-          onClick={decline}
-          className="px-4 py-[5px] border border-line text-dim hover:text-fg transition-colors"
-        >
-          {TR[lang].decline}
-        </button>
-        <button
-          onClick={accept}
-          className="px-4 py-[5px] bg-brand text-bg font-semibold hover:brightness-110 transition-all"
-        >
-          {TR[lang].accept}
-        </button>
+    <div className="fixed bottom-0 left-0 right-0 z-50 flex flex-col gap-3 px-6 py-4 bg-bg-1 border-t border-line font-mono text-[12px] text-fg-1">
+      <div className="flex items-center justify-between gap-4">
+        <p className="flex-1 min-w-0 text-dim">{i.msg}</p>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            onClick={() => setExpanded((v) => !v)}
+            className="px-4 py-[5px] border border-line text-dim hover:text-fg transition-colors"
+          >
+            {i.customize}
+          </button>
+          <button
+            onClick={() => applyChoice(false, false)}
+            className="px-4 py-[5px] border border-line text-dim hover:text-fg transition-colors"
+          >
+            {i.declineAll}
+          </button>
+          <button
+            onClick={() => applyChoice(true, true)}
+            className="px-4 py-[5px] bg-brand text-bg font-semibold hover:brightness-110 transition-all"
+          >
+            {i.acceptAll}
+          </button>
+        </div>
       </div>
+
+      {expanded && (
+        <div className="flex flex-col gap-3 pt-3 border-t border-line">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={prefAnalytics}
+              onChange={(e) => setPrefAnalytics(e.target.checked)}
+              style={{ accentColor: "var(--brand)" }}
+              className="mt-[3px]"
+            />
+            <span>
+              <span className="text-fg-1">{i.analyticsLabel}</span>
+              <span className="block text-dim">{i.analyticsDesc}</span>
+            </span>
+          </label>
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={prefAds}
+              onChange={(e) => setPrefAds(e.target.checked)}
+              style={{ accentColor: "var(--brand)" }}
+              className="mt-[3px]"
+            />
+            <span>
+              <span className="text-fg-1">{i.adsLabel}</span>
+              <span className="block text-dim">{i.adsDesc}</span>
+            </span>
+          </label>
+          <button
+            onClick={() => applyChoice(prefAnalytics, prefAds)}
+            className="self-start px-4 py-[5px] bg-brand text-bg font-semibold hover:brightness-110 transition-all"
+          >
+            {i.save}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
 
 // Retrait du consentement (lien "gérer les cookies" du footer) :
-// efface le choix ET les cookies GA posés lors d'un consentement antérieur
+// efface les deux choix ET les cookies GA posés lors d'un consentement antérieur.
+// Les cookies publicitaires Google (doubleclick.net) sont posés sur un domaine tiers
+// et ne peuvent pas être supprimés depuis notre JS — seul le rechargement futur du
+// script est bloqué.
 export function resetConsent() {
   setCookie(COOKIE_KEY, "", -1);
+  setCookie(ADS_COOKIE_KEY, "", -1);
   const expired = "expires=Thu, 01 Jan 1970 00:00:00 GMT";
   const domain = location.hostname.replace(/^www\./, "");
   for (const entry of document.cookie.split("; ")) {
