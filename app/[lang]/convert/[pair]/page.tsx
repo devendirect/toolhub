@@ -1,13 +1,15 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { CONVERT_PAIRS, FORMAT_LABEL, findPair } from "@/lib/convert-pairs";
+import { CONVERT_PAIRS, FORMAT_LABEL, findPair, type ConvertPair, type TargetFormat } from "@/lib/convert-pairs";
+import { PDF_PAIRS, findPdfPair, type PdfPair } from "@/lib/pdf-pairs";
 import { TOOLS } from "@/lib/tools";
 import { toolFaqItems } from "@/lib/faq";
 import { jsonLdString } from "@/lib/jsonld";
 import { SITE_URL, BRAND_NAME } from "@/lib/brand";
 import { coerceLang } from "@/lib/localePath";
 import { ConvertWorkspace } from "@/components/convert/ConvertWorkspace";
+import { PdfConvertWorkspace } from "@/components/convert/PdfConvertWorkspace";
 import { ConvertHub } from "@/components/convert/ConvertHub";
 import { FaqList } from "@/components/FaqList";
 
@@ -15,25 +17,43 @@ interface Props {
   params: Promise<{ lang: string; pair: string }>;
 }
 
+// Une paire résolue expose toujours from/to/why/points/faq/slug — que ce soit
+// une ConvertPair (image) ou une PdfPair, ces champs partagent la même forme,
+// donc le reste de la page peut rester agnostique de la famille.
+type Resolved =
+  | { family: "image"; pair: ConvertPair }
+  | { family: "pdf"; pair: PdfPair };
+
+function resolvePair(slug: string): Resolved | null {
+  const imagePair = findPair(slug);
+  if (imagePair) return { family: "image", pair: imagePair };
+  const pdfPair = findPdfPair(slug);
+  if (pdfPair) return { family: "pdf", pair: pdfPair };
+  return null;
+}
+
+const PARENT_SLUG = { image: "image-converter", pdf: "pdf-converter" } as const;
+
 export function generateStaticParams() {
-  return CONVERT_PAIRS.flatMap((p) => [
+  return [...CONVERT_PAIRS, ...PDF_PAIRS].flatMap((p) => [
     { lang: "en", pair: p.slug },
     { lang: "fr", pair: p.slug },
   ]);
 }
 
 function pairTitle(from: string, to: string, lang: "en" | "fr") {
-  const f = FORMAT_LABEL[from];
-  const t = FORMAT_LABEL[to];
+  const f = FORMAT_LABEL[from] ?? from.toUpperCase();
+  const t = FORMAT_LABEL[to] ?? to.toUpperCase();
   return lang === "fr" ? `Convertir ${f} en ${t}` : `Convert ${f} to ${t}`;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, pair: pairSlug } = await params;
-  const pair = findPair(pairSlug);
-  if (!pair) return { robots: { index: false } };
+  const resolved = resolvePair(pairSlug);
+  if (!resolved) return { robots: { index: false } };
 
   const l = coerceLang(lang);
+  const { pair } = resolved;
   const title = pairTitle(pair.from, pair.to, l);
   // Description spécifique à la paire : la phrase-réponse, pas un gabarit
   const description = pair.why[l];
@@ -56,16 +76,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ConvertPairPage({ params }: Props) {
   const { lang, pair: pairSlug } = await params;
-  const pair = findPair(pairSlug);
-  if (!pair) notFound();
+  const resolved = resolvePair(pairSlug);
+  if (!resolved) notFound();
 
+  const { family, pair } = resolved;
   const l = coerceLang(lang);
   const title = pairTitle(pair.from, pair.to, l);
-  const imageTool = TOOLS.find((t) => t.slug === "image-converter");
+  const parentSlug = PARENT_SLUG[family];
+  const parentTool = TOOLS.find((t) => t.slug === parentSlug);
 
   // FAQ visible = questions spécifiques à la paire + questions universelles
   // (gratuit ? upload ?) — le JSON-LD reprend exactement le même texte
-  const universalFaq = imageTool ? toolFaqItems(imageTool).slice(0, 2) : [];
+  const universalFaq = parentTool ? toolFaqItems(parentTool).slice(0, 2) : [];
   const faqItems = [...pair.faq, ...universalFaq].map((item) => ({
     q: item.q[l],
     a: item.a[l],
@@ -76,7 +98,7 @@ export default async function ConvertPairPage({ params }: Props) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: BRAND_NAME, item: `${SITE_URL}/${l}` },
-      { "@type": "ListItem", position: 2, name: imageTool?.name[l] ?? "Image Converter", item: `${SITE_URL}/${l}/t/image-converter` },
+      { "@type": "ListItem", position: 2, name: parentTool?.name[l] ?? parentSlug, item: `${SITE_URL}/${l}/t/${parentSlug}` },
       { "@type": "ListItem", position: 3, name: title, item: `${SITE_URL}/${l}/convert/${pair.slug}` },
     ],
   };
@@ -100,8 +122,8 @@ export default async function ConvertPairPage({ params }: Props) {
       <div className="flex gap-[6px] font-mono text-[12px] text-dim mb-7">
         <Link href={`/${l}`} className="hover:text-brand transition-colors">~</Link>
         <span>/</span>
-        <Link href={`/${l}/t/image-converter`} className="hover:text-brand transition-colors">
-          {imageTool?.name[l].toLowerCase() ?? "image converter"}
+        <Link href={`/${l}/t/${parentSlug}`} className="hover:text-brand transition-colors">
+          {parentTool?.name[l].toLowerCase() ?? parentSlug}
         </Link>
         <span>/</span>
         <span className="text-brand">{pair.slug}</span>
@@ -118,7 +140,11 @@ export default async function ConvertPairPage({ params }: Props) {
         <p className="text-fg-1 text-[15px] leading-relaxed max-w-[72ch]">{pair.why[l]}</p>
       </div>
 
-      <ConvertWorkspace target={pair.to} />
+      {family === "image" ? (
+        <ConvertWorkspace target={pair.to as TargetFormat} />
+      ) : (
+        <PdfConvertWorkspace mode={pair.mode} imgFormat={pair.imgFormat} />
+      )}
 
       {/* Points différenciants */}
       <section className="mb-10">
@@ -143,13 +169,17 @@ export default async function ConvertPairPage({ params }: Props) {
         <FaqList items={faqItems} headingAs="h2" />
       </section>
 
-      {/* Maillage : paires sœurs + outil mère */}
-      <ConvertHub lang={l} currentSlug={pair.slug} />
+      {/* Maillage : paires sœurs de la même famille + outil mère */}
+      <ConvertHub lang={l} family={family} currentSlug={pair.slug} />
       <p className="mb-12 font-mono text-[13px]">
-        <Link href={`/${l}/t/image-converter`} className="text-fg-1 hover:text-brand transition-colors">
-          {l === "fr"
-            ? "→ Besoin d'un autre format ou du redimensionnement ? Ouvrir le convertisseur d'images complet"
-            : "→ Need another format or resizing? Open the full Image Converter"}
+        <Link href={`/${l}/t/${parentSlug}`} className="text-fg-1 hover:text-brand transition-colors">
+          {family === "image"
+            ? (l === "fr"
+                ? "→ Besoin d'un autre format ou du redimensionnement ? Ouvrir le convertisseur d'images complet"
+                : "→ Need another format or resizing? Open the full Image Converter")
+            : (l === "fr"
+                ? "→ Besoin d'un autre mode ou format ? Ouvrir le convertisseur PDF complet"
+                : "→ Need another mode or format? Open the full PDF Converter")}
         </Link>
       </p>
     </div>

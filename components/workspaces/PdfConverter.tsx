@@ -41,11 +41,17 @@ const TR = {
   },
 } as const;
 
-export function PdfConverter() {
+interface PdfConverterProps {
+  // Pré-configuration pour les pages /convert/[pair]
+  initialMode?: Mode;
+  initialImgFormat?: ImgFormat;
+}
+
+export function PdfConverter({ initialMode, initialImgFormat }: PdfConverterProps = {}) {
   const { lang } = useLang();
   const i = t(lang);
-  const [mode, setMode] = useState<Mode>("pdf-to-images");
-  const [imgFormat, setImgFormat] = useState<ImgFormat>("png");
+  const [mode, setMode] = useState<Mode>(initialMode ?? "pdf-to-images");
+  const [imgFormat, setImgFormat] = useState<ImgFormat>(initialImgFormat ?? "png");
   const [scale, setScale] = useState(2);
   const [file, setFile]   = useState<File | null>(null);
   const [images, setImages] = useState<File[]>([]);

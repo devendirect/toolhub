@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { TOOLS } from "@/lib/tools";
 import { CONVERT_PAIRS } from "@/lib/convert-pairs";
+import { PDF_PAIRS } from "@/lib/pdf-pairs";
 import { SITE_URL } from "@/lib/brand";
 
 const LANGS = ["en", "fr"] as const;
@@ -73,8 +74,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       }))
     );
 
-  // Pilote pSEO : uniquement les paires retenues dans lib/convert-pairs.ts
-  const convertRoutes: MetadataRoute.Sitemap = CONVERT_PAIRS.flatMap((p) =>
+  // Pilote pSEO : uniquement les paires retenues dans lib/convert-pairs.ts + lib/pdf-pairs.ts
+  const convertRoutes: MetadataRoute.Sitemap = [...CONVERT_PAIRS, ...PDF_PAIRS].flatMap((p) =>
     LANGS.map((lang) => ({
       url: `${SITE_URL}/${lang}/convert/${p.slug}`,
       changeFrequency: "monthly" as const,

@@ -79,8 +79,9 @@ export default async function ToolPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: jsonLdString(faqJsonLd(tool, l)) }}
       />
       <ToolPageClient tool={tool} content={content} faqItems={faqItems} />
-      {/* Hub pSEO : la page outil mère lie toutes les pages paires /convert/ */}
-      {tool.slug === "image-converter" && <ConvertHub lang={l} />}
+      {/* Hub pSEO : la page outil mère lie toutes les pages paires /convert/ de sa famille */}
+      {tool.slug === "image-converter" && <ConvertHub lang={l} family="image" />}
+      {tool.slug === "pdf-converter" && <ConvertHub lang={l} family="pdf" />}
     </>
   );
 }

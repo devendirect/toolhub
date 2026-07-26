@@ -30,6 +30,7 @@ export const FORMAT_LABEL: Record<string, string> = {
   png: "PNG",
   webp: "WebP",
   avif: "AVIF",
+  pdf: "PDF",
 };
 
 export const CONVERT_PAIRS: ConvertPair[] = [
