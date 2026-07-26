@@ -56,6 +56,7 @@ export function GET() {
     `- Tool catalog: ${SITE_URL}/en/tools`,
     `- About: ${SITE_URL}/en/about`,
     `- Privacy policy: ${SITE_URL}/en/privacy`,
+    `- Terms of use: ${SITE_URL}/en/terms`,
     `- FAQ: ${SITE_URL}/en/faq`,
     "",
   );

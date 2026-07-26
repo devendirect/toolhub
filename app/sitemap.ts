@@ -30,6 +30,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
       alternates: alternates("/en/tools", "/fr/tools"),
     },
+    {
+      url: `${SITE_URL}/${lang}/about`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+      alternates: alternates("/en/about", "/fr/about"),
+    },
+    {
+      url: `${SITE_URL}/${lang}/faq`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+      alternates: alternates("/en/faq", "/fr/faq"),
+    },
+    {
+      url: `${SITE_URL}/${lang}/privacy`,
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+      alternates: alternates("/en/privacy", "/fr/privacy"),
+    },
+    {
+      url: `${SITE_URL}/${lang}/terms`,
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+      alternates: alternates("/en/terms", "/fr/terms"),
+    },
     ...CATEGORY_SLUGS.map((cat) => ({
       url: `${SITE_URL}/${lang}/tools/${cat}`,
       changeFrequency: "monthly" as const,

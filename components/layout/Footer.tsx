@@ -62,14 +62,9 @@ export function Footer() {
             <Link href={localePath(lang, "/privacy")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
               {i.privacy}
             </Link>
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150"
-            >
-              github
-            </a>
+            <Link href={localePath(lang, "/terms")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
+              {i.terms}
+            </Link>
             <button
               onClick={() => { resetConsent(); window.location.reload(); }}
               className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150 text-left"

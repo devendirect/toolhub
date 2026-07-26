@@ -47,6 +47,8 @@ export function GET() {
     `- About (FR): ${SITE_URL}/fr/about`,
     `- Privacy policy (EN): ${SITE_URL}/en/privacy`,
     `- Privacy policy (FR): ${SITE_URL}/fr/privacy`,
+    `- Terms of use (EN): ${SITE_URL}/en/terms`,
+    `- Terms of use (FR): ${SITE_URL}/fr/terms`,
     `- FAQ (EN): ${SITE_URL}/en/faq`,
     `- FAQ (FR): ${SITE_URL}/fr/faq`,
     "",
