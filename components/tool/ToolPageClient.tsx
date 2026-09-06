@@ -14,6 +14,8 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { localePath } from "@/lib/localePath";
 import { FaqList } from "@/components/FaqList";
 import { WORKSPACE_REGISTRY } from "@/lib/workspace-registry";
+import { AdSlot } from "@/components/ads/AdSlot";
+import { AD_SLOTS, adsAllowedOn } from "@/lib/ads";
 
 function ToolContentSection({ content, lang }: { content: ToolContent; lang: "fr" | "en" }) {
   return (
@@ -71,6 +73,9 @@ export function ToolPageClient({ tool, content, faqItems }: Props) {
       </ErrorBoundary>
 
       {content && <ToolContentSection content={content} lang={lang} />}
+
+      {/* Après le contenu rédactionnel, jamais entre l'outil et son résultat */}
+      {adsAllowedOn(tool.slug) && <AdSlot slot={AD_SLOTS.toolContent} className="mb-10" />}
 
       {faqItems.length > 0 && <ToolFaqSection faqItems={faqItems} lang={lang} />}
 

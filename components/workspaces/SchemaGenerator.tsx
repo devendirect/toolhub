@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n";
 import { useCopy } from "@/hooks/useCopy";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { useTrackRun } from "@/hooks/useTrackRun";
+import { useClockSeededState } from "@/hooks/useClockSeededState";
 
 const TR = {
   fr: {
@@ -57,7 +58,7 @@ export function SchemaGenerator() {
   const [artTitle, setArtTitle] = useState("");
   const [artDesc, setArtDesc] = useState("");
   const [artAuthor, setArtAuthor] = useState("");
-  const [artDate, setArtDate] = useState(new Date().toISOString().slice(0, 10));
+  const [artDate, setArtDate] = useClockSeededState(() => new Date().toISOString().slice(0, 10));
   const [artUrl, setArtUrl] = useState("");
 
   // Product fields

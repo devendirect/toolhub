@@ -6,6 +6,7 @@ import { useCopy } from "@/hooks/useCopy";
 import { t } from "@/lib/i18n";
 import { CopyableRow } from "@/components/workspace/CopyableRow";
 import { useTrackRun } from "@/hooks/useTrackRun";
+import { useClockSeededState } from "@/hooks/useClockSeededState";
 
 const TR = {
   fr: {
@@ -30,8 +31,8 @@ function toRfc(ts: number) {
 export function TimestampConverter() {
   const { lang } = useLang();
   const i = t(lang);
-  const [ts, setTs] = useState(String(nowTs()));
-  const [dateInput, setDateInput] = useState(new Date().toISOString().slice(0, 16));
+  const [ts, setTs] = useClockSeededState(() => String(nowTs()));
+  const [dateInput, setDateInput] = useClockSeededState(() => new Date().toISOString().slice(0, 16));
   const { copy, copied } = useCopy();
   const trackRun = useTrackRun("timestamp", "dev");
 

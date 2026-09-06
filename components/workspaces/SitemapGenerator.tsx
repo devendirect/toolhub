@@ -7,6 +7,7 @@ import { useCopy } from "@/hooks/useCopy";
 import { downloadBlob } from "@/lib/download";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
 import { useTrackRun } from "@/hooks/useTrackRun";
+import { useClockSeededState } from "@/hooks/useClockSeededState";
 
 const AFFILIATE_STRATO    = process.env.NEXT_PUBLIC_AFFILIATE_STRATO;
 const AFFILIATE_NAMECHEAP = process.env.NEXT_PUBLIC_AFFILIATE_NAMECHEAP;
@@ -34,7 +35,7 @@ export function SitemapGenerator() {
   const [urlInput, setUrlInput] = useState("https://example.com/\nhttps://example.com/about\nhttps://example.com/contact");
   const [freq, setFreq] = useState<Freq>("monthly");
   const [priority, setPriority] = useState("0.8");
-  const [lastmod, setLastmod] = useState(new Date().toISOString().slice(0, 10));
+  const [lastmod, setLastmod] = useClockSeededState(() => new Date().toISOString().slice(0, 10));
   const { copy, copied } = useCopy();
   const trackRun = useTrackRun("sitemap-generator", "seo");
   const affiliateUrl = lang === "fr" ? AFFILIATE_STRATO : AFFILIATE_NAMECHEAP;

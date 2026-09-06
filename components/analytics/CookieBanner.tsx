@@ -5,7 +5,6 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { track } from "@/lib/analytics";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
-const ADS_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 const COOKIE_KEY = "utilisio-consent";
 const ADS_COOKIE_KEY = "utilisio-consent-ads";
 
@@ -29,13 +28,13 @@ function ensureGtag() {
   }
 }
 
-// Consent Mode "basic" (exigence CNIL) : mesure d'audience et publicité sont deux
-// finalités distinctes, chacune avec son propre signal. Tant que l'utilisateur n'a
-// pas tranché une catégorie, son signal reste "denied" et aucun script correspondant
-// n'est chargé — pas même un ping sans cookies.
+// Consent Mode v2 : mesure d'audience et publicité sont deux finalités distinctes,
+// chacune avec son propre signal. Les valeurs par défaut ("denied") sont posées dans
+// app/layout.tsx avant tout script Google ; on n'émet ici que des "update", qui sont
+// le seul type d'appel autorisé après coup — un second "default" serait ignoré.
 function pushConsent(analytics: boolean, ads: boolean) {
   ensureGtag();
-  window.gtag("consent", "default", {
+  window.gtag("consent", "update", {
     analytics_storage:   analytics ? "granted" : "denied",
     ad_storage:          ads ? "granted" : "denied",
     ad_user_data:        ads ? "granted" : "denied",
@@ -43,9 +42,17 @@ function pushConsent(analytics: boolean, ads: boolean) {
   });
 }
 
-export function initGA(adsAccepted: boolean) {
+// Le tag AdSense est chargé inconditionnellement par le layout racine : sans
+// consentement il diffuse des annonces non personnalisées et sans cookie. Seule la
+// mesure d'audience reste conditionnée au chargement effectif de son script — GA
+// émettrait sinon des pings sans cookie que l'on ne souhaite pas avant un choix.
+function applyConsent(analytics: boolean, ads: boolean) {
+  pushConsent(analytics, ads);
+  if (analytics) loadGA();
+}
+
+function loadGA() {
   if (!GA_ID || typeof window === "undefined") return;
-  pushConsent(true, adsAccepted);
   if (document.getElementById("ga-script")) return;
 
   window.gtag("js", new Date());
@@ -58,40 +65,27 @@ export function initGA(adsAccepted: boolean) {
   document.head.appendChild(script);
 }
 
-export function initAds(analyticsAccepted: boolean) {
-  if (!ADS_CLIENT || typeof window === "undefined") return;
-  pushConsent(analyticsAccepted, true);
-  if (document.getElementById("adsense-script")) return;
-
-  const script = document.createElement("script");
-  script.id          = "adsense-script";
-  script.async       = true;
-  script.src         = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADS_CLIENT}`;
-  script.crossOrigin = "anonymous";
-  document.head.appendChild(script);
-}
-
 const TR = {
   fr: {
-    msg:        "Ce site utilise Google Analytics (mesure d'audience) et peut afficher des publicités Google AdSense. Aucune donnée n'est collectée tant que vous n'acceptez pas.",
+    msg:        "Ce site utilise Google Analytics (mesure d'audience) et affiche des publicités Google AdSense. Sans votre accord, aucune mesure n'est effectuée et les annonces restent non personnalisées, sans cookie publicitaire.",
     customize:  "Personnaliser",
     acceptAll:  "Tout accepter",
     declineAll: "Tout refuser",
     analyticsLabel: "Mesure d'audience",
     analyticsDesc:  "Google Analytics — statistiques de trafic anonymisées.",
-    adsLabel: "Publicité",
-    adsDesc:  "Google AdSense — annonces, potentiellement personnalisées.",
+    adsLabel: "Publicité personnalisée",
+    adsDesc:  "Google AdSense — autorise les cookies publicitaires et la personnalisation des annonces. Refusé, les annonces restent affichées mais non personnalisées.",
     save: "Enregistrer mes choix",
   },
   en: {
-    msg:        "This site uses Google Analytics (audience measurement) and may show Google AdSense ads. No data is collected until you accept.",
+    msg:        "This site uses Google Analytics (audience measurement) and shows Google AdSense ads. Without your consent nothing is measured and ads stay non-personalized, with no advertising cookie.",
     customize:  "Customize",
     acceptAll:  "Accept all",
     declineAll: "Decline all",
     analyticsLabel: "Audience measurement",
     analyticsDesc:  "Google Analytics — anonymized traffic stats.",
-    adsLabel: "Advertising",
-    adsDesc:  "Google AdSense — ads, potentially personalized.",
+    adsLabel: "Personalized advertising",
+    adsDesc:  "Google AdSense — allows advertising cookies and ad personalization. If declined, ads still show but stay non-personalized.",
     save: "Save my choices",
   },
 } as const;
@@ -108,8 +102,7 @@ export function CookieBanner() {
     const analyticsConsent = getCookie(COOKIE_KEY);
     const adsConsent = getCookie(ADS_COOKIE_KEY);
 
-    if (analyticsConsent === "true") initGA(adsConsent === "true");
-    if (adsConsent === "true") initAds(analyticsConsent === "true");
+    applyConsent(analyticsConsent === "true", adsConsent === "true");
 
     setPrefAnalytics(analyticsConsent === "true");
     setPrefAds(adsConsent === "true");
@@ -124,10 +117,9 @@ export function CookieBanner() {
     setCookie(ADS_COOKIE_KEY, String(ads), 365);
     setVisible(false);
     setExpanded(false);
-    if (analytics) initGA(ads);
-    if (ads) initAds(analytics);
-    // Refus non mesurables en mode basic (rien n'est chargé si aucune catégorie acceptée)
-    if (analytics || ads) track("consent_choice", { analytics: String(analytics), ads: String(ads) });
+    applyConsent(analytics, ads);
+    // Un refus total reste non mesurable : GA n'est pas chargé, track() est un no-op
+    if (analytics) track("consent_choice", { analytics: String(analytics), ads: String(ads) });
   };
 
   if (!visible) return null;
@@ -206,6 +198,9 @@ export function CookieBanner() {
 export function resetConsent() {
   setCookie(COOKIE_KEY, "", -1);
   setCookie(ADS_COOKIE_KEY, "", -1);
+  // Repasser les signaux Consent Mode à "denied" immédiatement : AdSense retombe
+  // en annonces non personnalisées sans attendre le rechargement de la page.
+  pushConsent(false, false);
   const expired = "expires=Thu, 01 Jan 1970 00:00:00 GMT";
   const domain = location.hostname.replace(/^www\./, "");
   for (const entry of document.cookie.split("; ")) {
