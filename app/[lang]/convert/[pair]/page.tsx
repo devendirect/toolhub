@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { CONVERT_PAIRS, FORMAT_LABEL, findPair, type ConvertPair, type TargetFormat } from "@/lib/convert-pairs";
 import { PDF_PAIRS, findPdfPair, type PdfPair } from "@/lib/pdf-pairs";
 import { TOOLS } from "@/lib/tools";
-import { toolFaqItems } from "@/lib/faq";
+import { privacyFaqItem } from "@/lib/faq";
 import { jsonLdString } from "@/lib/jsonld";
 import { SITE_URL, BRAND_NAME } from "@/lib/brand";
 import { coerceLang } from "@/lib/localePath";
@@ -85,10 +85,13 @@ export default async function ConvertPairPage({ params }: Props) {
   const parentSlug = PARENT_SLUG[family];
   const parentTool = TOOLS.find((t) => t.slug === parentSlug);
 
-  // FAQ visible = questions spécifiques à la paire + questions universelles
-  // (gratuit ? upload ?) — le JSON-LD reprend exactement le même texte
-  const universalFaq = parentTool ? toolFaqItems(parentTool).slice(0, 2) : [];
-  const faqItems = [...pair.faq, ...universalFaq].map((item) => ({
+  // FAQ visible = questions spécifiques à la paire + la seule question
+  // transverse qui vaille ici. Auparavant on reprenait les deux premières
+  // entrées de toolFaqItems() ; depuis que celles-ci commencent par les
+  // questions propres à l'outil mère, cela recopiait la FAQ du convertisseur
+  // sur ses quatorze pages de paires. Le JSON-LD reprend le même texte.
+  const transverseFaq = parentTool ? [privacyFaqItem(parentTool)] : [];
+  const faqItems = [...pair.faq, ...transverseFaq].map((item) => ({
     q: item.q[l],
     a: item.a[l],
   }));
@@ -160,6 +163,30 @@ export default async function ConvertPairPage({ params }: Props) {
           ))}
         </ul>
       </section>
+
+      {/* Sections de fond propres à la paire */}
+      {pair.deepDive?.length ? (
+        <section className="mb-10">
+          <div className="font-mono text-[11px] text-dim mb-3">
+            {"// "}{l === "fr" ? "en détail" : "in depth"}
+          </div>
+          <div className="flex flex-col gap-px bg-line border border-line">
+            {pair.deepDive.map((section) => (
+              <article key={section.h.en} className="bg-bg-1 p-6">
+                <h2 className="font-mono text-[13px] text-fg font-medium mb-3">
+                  <span className="text-brand mr-2">{"#"}</span>
+                  {section.h[l]}
+                </h2>
+                <div className="flex flex-col gap-3">
+                  {section.p[l].map((para) => (
+                    <p key={para} className="text-[13px] text-fg-1 leading-relaxed">{para}</p>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {/* FAQ — même texte que le JSON-LD FAQPage */}
       <section className="mb-10">

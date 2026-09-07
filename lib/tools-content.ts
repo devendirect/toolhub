@@ -52,23 +52,105 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "audio-converter": {
     desc: {
-      en: "Convert between MP3, WAV, FLAC, AAC and OGG entirely in your browser using FFmpeg compiled to WebAssembly. No file size limits beyond your available RAM. The first conversion loads the FFmpeg engine (~20 MB) — subsequent conversions in the same session are near-instant.",
-      fr: "Convertissez entre MP3, WAV, FLAC, AAC et OGG entièrement dans votre navigateur grâce à FFmpeg compilé en WebAssembly. Aucune limite de taille au-delà de votre RAM disponible. La première conversion charge le moteur FFmpeg (~20 Mo) — les suivantes dans la même session sont quasi instantanées.",
+      en: "Convert between MP3, AAC, OGG, WAV, FLAC and M4A entirely in your browser using FFmpeg compiled to WebAssembly, with a target bitrate from 64 kbps to 320 kbps for the lossy formats. No file size limits beyond your available RAM. The first conversion loads the FFmpeg engine (~20 MB) — subsequent conversions in the same session are near-instant.",
+      fr: "Convertissez entre MP3, AAC, OGG, WAV, FLAC et M4A entièrement dans votre navigateur grâce à FFmpeg compilé en WebAssembly, avec un débit cible de 64 à 320 kbps pour les formats avec perte. Aucune limite de taille au-delà de votre RAM disponible. La première conversion charge le moteur FFmpeg (~20 Mo) — les suivantes dans la même session sont quasi instantanées.",
     },
     useCases: {
       en: ["Converting WAV recordings to MP3 for sharing or streaming", "Converting FLAC albums to AAC for Apple device compatibility", "Converting OGG audio from games or apps to a more portable format", "Preparing audio files for podcast upload platforms that require specific formats"],
       fr: ["Convertir des enregistrements WAV en MP3 pour le partage ou le streaming", "Convertir des albums FLAC en AAC pour la compatibilité avec les appareils Apple", "Convertir de l'audio OGG en format plus portable", "Préparer des fichiers audio pour des plateformes de podcast nécessitant un format spécifique"],
     },
+    deepDive: [
+      {
+        h: { en: "Why the first conversion is slow and the rest are not", fr: "Pourquoi la première conversion est lente et les suivantes non" },
+        p: {
+          en: [
+          "The conversion runs FFmpeg compiled to WebAssembly, which means the entire engine — around twenty megabytes — has to be downloaded and instantiated before the first file can be processed. Once it is in memory it stays there for the session, so subsequent conversions start immediately.",
+          "The upside of that cost is that nothing is uploaded. Your file never leaves the machine, there is no queue, no size limit imposed by a server, and no copy sitting in someone else's storage afterwards. The ceiling is your available memory rather than an upload quota.",
+          ],
+          fr: [
+          "La conversion fait tourner FFmpeg compilé en WebAssembly : le moteur entier — une vingtaine de mégaoctets — doit donc être téléchargé et instancié avant que le premier fichier puisse être traité. Une fois en mémoire, il y reste pour la session, et les conversions suivantes démarrent immédiatement.",
+          "La contrepartie de ce coût, c'est qu'aucun envoi n'a lieu. Votre fichier ne quitte jamais la machine, il n'y a ni file d'attente, ni limite de taille imposée par un serveur, ni copie qui subsiste ensuite dans le stockage d'un tiers. Le plafond est votre mémoire disponible plutôt qu'un quota d'envoi.",
+          ],
+        },
+      },
+      {
+        h: { en: "Every lossy re-encode costs quality", fr: "Chaque ré-encodage avec perte coûte de la qualité" },
+        p: {
+          en: [
+          "MP3, AAC and OGG are lossy: they discard detail judged inaudible and cannot get it back. Converting from one to another decodes the first approximation and throws away more on top of it, so quality degrades even when you raise the bitrate — a 320 kbps file made from a 128 kbps source is a larger file, not a better one.",
+          "WAV and FLAC are the exception. WAV stores the samples uncompressed and FLAC compresses them without loss, so converting between those two, or from either into a lossy format, loses nothing beyond what the target format inherently discards. Whenever you have the lossless original, convert from it rather than from an intermediate.",
+          ],
+          fr: [
+          "Le MP3, l'AAC et l'OGG sont des formats avec perte : ils écartent des détails jugés inaudibles et ne peuvent pas les restituer. Convertir de l'un vers l'autre décode la première approximation puis en écarte davantage : la qualité se dégrade même en augmentant le débit — un fichier à 320 kbps issu d'une source à 128 kbps est un fichier plus lourd, pas meilleur.",
+          "Le WAV et le FLAC font exception. Le WAV stocke les échantillons sans compression et le FLAC les compresse sans perte : convertir entre ces deux-là, ou de l'un vers un format avec perte, ne coûte rien au-delà de ce que le format cible écarte par nature. Chaque fois que vous disposez de l'original sans perte, partez de lui plutôt que d'un intermédiaire.",
+          ],
+        },
+      },
+      {
+        h: { en: "Choosing a bitrate", fr: "Choisir un débit" },
+        p: {
+          en: [
+          "For music, 192 kbps is where most listeners stop hearing a difference from the source on ordinary equipment, and 256 or 320 kbps buys headroom for archiving or for material you may re-encode later. Below 128 kbps, artefacts become audible on cymbals and applause first.",
+          "Speech is far more forgiving: a podcast or a voice memo remains perfectly clear at 64 to 96 kbps, and the smaller file is worth more than the inaudible difference. The bitrate setting applies to the lossy formats only — WAV ignores it entirely, and FLAC determines its own size from the content.",
+          ],
+          fr: [
+          "Pour de la musique, 192 kbps est le point où la plupart des auditeurs cessent d'entendre une différence avec la source sur un équipement ordinaire, et 256 ou 320 kbps offrent une marge pour l'archivage ou pour un matériau que vous pourriez ré-encoder plus tard. En dessous de 128 kbps, les artefacts s'entendent d'abord sur les cymbales et les applaudissements.",
+          "La parole est bien plus tolérante : un podcast ou un mémo vocal reste parfaitement clair entre 64 et 96 kbps, et le fichier plus léger vaut mieux que la différence inaudible. Le réglage de débit ne concerne que les formats avec perte — le WAV l'ignore entièrement, et le FLAC détermine sa taille d'après le contenu.",
+          ],
+        },
+      },
+    ],
   },
   "video-converter": {
     desc: {
-      en: "The Video Converter re-encodes video files or extracts audio tracks — powered by FFmpeg WASM running entirely in your browser. Convert MP4 to WebM for HTML5 embeds, create animated GIFs from short clips, or rip the audio to MP3 from any video file. Processing stays on your device: no file size cap beyond your available RAM.",
-      fr: "Le convertisseur vidéo ré-encode des fichiers vidéo ou extrait des pistes audio — propulsé par FFmpeg WASM s'exécutant entièrement dans votre navigateur. Convertissez MP4 en WebM pour le web, créez des GIF animés depuis des clips, ou extrayez l'audio en MP3. Le traitement reste sur votre appareil : aucune limite de taille au-delà de votre RAM disponible.",
+      en: "The Video Converter re-encodes video between MP4, WebM, MOV, AVI and MKV, and turns short clips into animated GIFs — powered by FFmpeg compiled to WebAssembly and running entirely in your browser. Output resolution can be scaled down to 1080p, 720p, 480p or 360p, or left at the source size. Processing stays on your device, with no file size cap beyond your available RAM.",
+      fr: "Le convertisseur vidéo ré-encode des vidéos entre MP4, WebM, MOV, AVI et MKV, et transforme de courts clips en GIF animés — propulsé par FFmpeg compilé en WebAssembly et s'exécutant entièrement dans votre navigateur. La résolution de sortie peut être réduite à 1080p, 720p, 480p ou 360p, ou conservée telle quelle. Le traitement reste sur votre appareil, sans limite de taille au-delà de votre RAM disponible.",
     },
     useCases: {
-      en: ["Converting MP4 to WebM for HTML5 <video> elements", "Creating GIFs from short video clips for documentation or social media", "Ripping the audio track from a recorded interview or lecture", "Converting MOV files from iPhone to MP4 for broader compatibility"],
-      fr: ["Convertir MP4 en WebM pour les éléments <video> HTML5", "Créer des GIF depuis de courts clips vidéo pour de la documentation ou les réseaux sociaux", "Extraire la piste audio d'un entretien ou d'un cours enregistré", "Convertir des fichiers MOV depuis iPhone en MP4 pour une meilleure compatibilité"],
+      en: ["Converting MP4 to WebM for HTML5 <video> elements", "Creating GIFs from short video clips for documentation or social media", "Shrinking a screen recording to 720p before attaching it to a ticket", "Converting MOV files from iPhone to MP4 for broader compatibility"],
+      fr: ["Convertir MP4 en WebM pour les éléments <video> HTML5", "Créer des GIF depuis de courts clips vidéo pour de la documentation ou les réseaux sociaux", "Réduire une capture d'écran vidéo en 720p avant de la joindre à un ticket", "Convertir des fichiers MOV depuis iPhone en MP4 pour une meilleure compatibilité"],
     },
+    deepDive: [
+      {
+        h: { en: "Container and codec are not the same thing", fr: "Le conteneur et le codec ne sont pas la même chose" },
+        p: {
+          en: [
+          "MP4, WebM, MOV, AVI and MKV are containers: envelopes holding a video stream, one or more audio streams and metadata. The codec is what actually compresses the picture inside. That distinction explains why a file plays on one device and not another even though the extension is familiar — the container opened, the codec was unsupported.",
+          "It also explains why changing container is sometimes nearly free and sometimes expensive. Moving the same streams into a different envelope is quick; re-encoding the picture for a codec the target container supports is where the time goes.",
+          ],
+          fr: [
+          "MP4, WebM, MOV, AVI et MKV sont des conteneurs : des enveloppes contenant un flux vidéo, un ou plusieurs flux audio et des métadonnées. Le codec, lui, est ce qui compresse effectivement l'image à l'intérieur. Cette distinction explique qu'un fichier se lise sur un appareil et pas sur un autre malgré une extension familière — le conteneur s'est ouvert, le codec n'était pas supporté.",
+          "Elle explique aussi qu'un changement de conteneur soit tantôt quasi gratuit, tantôt coûteux. Déplacer les mêmes flux dans une autre enveloppe est rapide ; ré-encoder l'image pour un codec que le conteneur cible accepte est ce qui prend du temps.",
+          ],
+        },
+      },
+      {
+        h: { en: "GIF is a terrible video format, and sometimes the right one", fr: "Le GIF est un mauvais format vidéo, et parfois le bon" },
+        p: {
+          en: [
+          "A GIF has no audio, is limited to 256 colours per frame, and compresses far worse than any video codec — a three-second clip that weighs 200 kB as MP4 routinely exceeds several megabytes as GIF. On gradients and film footage the colour limit shows as visible banding.",
+          "It survives because it plays everywhere without a player, loops on its own, and can be pasted into contexts that reject video outright: issue trackers, chat clients, email. For a short interface demonstration those properties usually outweigh the file size. For anything longer than a few seconds, a muted looping video is the better answer.",
+          ],
+          fr: [
+          "Un GIF n'a pas de son, se limite à 256 couleurs par image, et compresse bien plus mal que n'importe quel codec vidéo — un clip de trois secondes pesant 200 ko en MP4 dépasse couramment plusieurs mégaoctets en GIF. Sur des dégradés ou des prises de vue réelles, la limite de couleurs se voit sous forme de bandes.",
+          "Il survit parce qu'il se lit partout sans lecteur, boucle tout seul, et se colle dans des contextes qui refusent la vidéo : gestionnaires de tickets, messageries, e-mails. Pour une courte démonstration d'interface, ces propriétés l'emportent généralement sur le poids. Au-delà de quelques secondes, une vidéo muette en boucle reste la meilleure réponse.",
+          ],
+        },
+      },
+      {
+        h: { en: "What running in the browser costs", fr: "Ce que coûte l'exécution dans le navigateur" },
+        p: {
+          en: [
+          "Video encoding is the heaviest thing this site does. FFmpeg runs here as WebAssembly on the CPU, without the hardware acceleration a desktop application would use, so expect a long clip to take minutes rather than seconds, and expect a laptop fan to notice.",
+          "Memory is the real limit: the file is held in RAM rather than streamed from disk, so a large source can exhaust the tab on a modest machine. Reducing the output resolution before converting helps on both counts, and a file of more than a few hundred megabytes is better handled by a desktop tool.",
+          ],
+          fr: [
+          "L'encodage vidéo est l'opération la plus lourde de ce site. FFmpeg s'exécute ici en WebAssembly sur le processeur, sans l'accélération matérielle qu'utiliserait une application de bureau : attendez-vous à des minutes plutôt qu'à des secondes sur un long clip, et à ce que le ventilateur d'un portable s'en aperçoive.",
+          "La mémoire est la vraie limite : le fichier est gardé en RAM plutôt que lu en flux depuis le disque, si bien qu'une source volumineuse peut épuiser l'onglet sur une machine modeste. Réduire la résolution de sortie avant de convertir aide sur les deux plans, et un fichier de plusieurs centaines de mégaoctets se traite mieux avec un outil de bureau.",
+          ],
+        },
+      },
+    ],
   },
   "pdf-merge": {
     desc: {
@@ -150,6 +232,47 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
       en: ["Converting README files to HTML for embedding in documentation sites", "Previewing Markdown content before publishing to a CMS or blog platform", "Writing email newsletters in Markdown and exporting to HTML", "Generating HTML snippets from notes written in Markdown editors"],
       fr: ["Convertir des fichiers README en HTML pour des sites de documentation", "Prévisualiser du contenu Markdown avant publication sur un CMS ou blog", "Rédiger des newsletters en Markdown et les exporter en HTML", "Générer des fragments HTML depuis des notes rédigées en Markdown"],
     },
+    deepDive: [
+      {
+        h: { en: "Which flavour of Markdown this is", fr: "De quelle variante de Markdown il s'agit" },
+        p: {
+          en: [
+          "Conversion runs through marked, which implements CommonMark plus the GitHub extensions: tables, task lists, strikethrough and automatic links. That combination is what most people mean by Markdown today, and it matches what GitHub, GitLab and most documentation generators render.",
+          "It is worth knowing that the original 2004 Markdown had no specification, which is why renderers disagreed for a decade on edge cases like nested lists and emphasis inside words. CommonMark exists to settle exactly those, so a document that renders here renders the same way in any CommonMark-compliant tool.",
+          ],
+          fr: [
+          "La conversion passe par marked, qui implémente CommonMark plus les extensions GitHub : tableaux, listes de tâches, texte barré et liens automatiques. Cette combinaison correspond à ce que la plupart des gens appellent aujourd'hui Markdown, et à ce que rendent GitHub, GitLab et la plupart des générateurs de documentation.",
+          "Il est utile de savoir que le Markdown d'origine, en 2004, n'avait aucune spécification : c'est pourquoi les moteurs de rendu ont divergé pendant une décennie sur des cas limites comme les listes imbriquées ou l'emphase à l'intérieur d'un mot. CommonMark existe précisément pour trancher ceux-là, si bien qu'un document rendu ici se rendra à l'identique dans tout outil conforme.",
+          ],
+        },
+      },
+      {
+        h: { en: "Raw HTML passes straight through", fr: "Le HTML brut passe tel quel" },
+        p: {
+          en: [
+          "Markdown deliberately allows HTML inline, and it is not filtered on the way out. That is what lets you drop a break tag inside a table cell or wrap a section in a div that Markdown syntax cannot express — but it also means the output is only as safe as the input.",
+          "So never render Markdown written by someone else without sanitizing the resulting HTML first. Converting your own README carries no risk; converting a user-submitted comment and injecting the result into a page is a straightforward way to ship a cross-site scripting hole.",
+          ],
+          fr: [
+          "Markdown autorise délibérément le HTML en ligne, et celui-ci n'est pas filtré en sortie. C'est ce qui permet de glisser une balise de saut dans une cellule de tableau ou d'entourer une section d'un div que la syntaxe Markdown ne sait pas exprimer — mais cela signifie aussi que la sortie n'est sûre que dans la mesure où l'entrée l'est.",
+          "N'affichez donc jamais du Markdown écrit par un tiers sans assainir au préalable le HTML produit. Convertir votre propre README ne présente aucun risque ; convertir un commentaire soumis par un utilisateur et injecter le résultat dans une page est un moyen direct de livrer une faille de cross-site scripting.",
+          ],
+        },
+      },
+      {
+        h: { en: "The line-break rule that surprises everyone", fr: "La règle de saut de ligne qui surprend tout le monde" },
+        p: {
+          en: [
+          "A single newline inside a paragraph does not produce a line break in the output. Markdown joins those lines into one paragraph, which is deliberate — it lets you wrap your source at a comfortable width without affecting the rendering. A blank line starts a new paragraph.",
+          "To force a break without starting a paragraph, end the line with two spaces, or use a backslash. The two-space convention is invisible in most editors and gets stripped by trailing-whitespace tooling, which is why so many line breaks disappear between writing and publishing.",
+          ],
+          fr: [
+          "Un simple retour à la ligne dans un paragraphe ne produit pas de saut de ligne en sortie. Markdown fusionne ces lignes en un seul paragraphe, et c'est délibéré : cela permet de replier son source à une largeur confortable sans influer sur le rendu. Une ligne vide, elle, démarre un nouveau paragraphe.",
+          "Pour forcer un saut sans ouvrir de paragraphe, terminez la ligne par deux espaces, ou utilisez un antislash. La convention des deux espaces est invisible dans la plupart des éditeurs et se fait supprimer par les outils de nettoyage d'espaces en fin de ligne — d'où tant de sauts de ligne qui disparaissent entre l'écriture et la publication.",
+          ],
+        },
+      },
+    ],
   },
   "hash-generator": {
     desc: {
@@ -211,6 +334,47 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
       en: ["Prototyping an email, phone or postal code validation regex", "Extracting structured data from log lines using capture groups", "Testing regex patterns on real sample data before deploying to production", "Learning how quantifiers, anchors and lookaheads interact with text"],
       fr: ["Prototyper un regex de validation d'e-mail, téléphone ou code postal", "Extraire des données structurées de lignes de log via des groupes de capture", "Tester des patterns sur des données réelles avant déploiement en production", "Apprendre comment les quantificateurs, ancres et lookaheads interagissent avec le texte"],
     },
+    deepDive: [
+      {
+        h: { en: "Why the global flag is always on", fr: "Pourquoi le flag global est toujours actif" },
+        p: {
+          en: [
+          "A regular expression carrying the g flag keeps an internal position between calls, so testing the same pattern twice can return different answers. That statefulness is a classic source of bugs in application code, but a tester needs it: without g you would only ever see the first match.",
+          "The flag is therefore forced on here, and the three you can toggle are the ones that genuinely change matching. Remember the difference when you copy a pattern into your own code — a global regex reused across iterations must have its lastIndex reset, or use matchAll, which handles it for you.",
+          ],
+          fr: [
+          "Une expression régulière portant le flag g conserve une position interne entre les appels : tester deux fois le même motif peut donc donner deux réponses différentes. Cet état est une source classique de bugs dans du code applicatif, mais un testeur en a besoin — sans g, vous ne verriez jamais que la première correspondance.",
+          "Le flag est donc forcé ici, et les trois que vous pouvez activer sont ceux qui modifient réellement la correspondance. Gardez la différence en tête au moment de recopier un motif dans votre code : une regex globale réutilisée dans une boucle doit voir son lastIndex réinitialisé, ou passer par matchAll, qui s'en charge.",
+          ],
+        },
+      },
+      {
+        h: { en: "What the three toggles actually change", fr: "Ce que changent réellement les trois interrupteurs" },
+        p: {
+          en: [
+          "The i flag makes matching case-insensitive. The m flag changes the meaning of the anchors: with it, the start and end markers match at every line break rather than only at the boundaries of the whole string — which is what you want when testing against a multi-line block.",
+          "The s flag, often called dotAll, lets the dot match a newline. Without it the dot stops at the end of a line, which is why a pattern meant to capture a block spanning several lines silently returns nothing. Those two are the usual explanation for a regex that works in a one-line test and fails on real input.",
+          ],
+          fr: [
+          "Le flag i rend la correspondance insensible à la casse. Le flag m change le sens des ancres : avec lui, les marqueurs de début et de fin correspondent à chaque saut de ligne plutôt qu'aux seules bornes de la chaîne entière — ce qu'on veut quand on teste sur un bloc multiligne.",
+          "Le flag s, souvent appelé dotAll, autorise le point à correspondre à un saut de ligne. Sans lui, le point s'arrête en fin de ligne : c'est pourquoi un motif censé capturer un bloc réparti sur plusieurs lignes ne renvoie silencieusement rien. Ces deux-là expliquent la plupart des regex qui fonctionnent sur un test d'une ligne et échouent sur des données réelles.",
+          ],
+        },
+      },
+      {
+        h: { en: "Catastrophic backtracking, and how to spot it", fr: "Le retour arrière catastrophique, et comment le repérer" },
+        p: {
+          en: [
+          "Some patterns take exponential time on inputs that do not match. Nested quantifiers are the usual shape — a group that can repeat, itself inside something that repeats. On a short test string the cost is invisible; on a longer one the same pattern can hang the page outright.",
+          "If the highlighting stalls after you paste a larger sample, that is what you are seeing, and the pattern is not safe to deploy against user input. Rewriting the inner quantifier to be more specific, or anchoring the expression, usually removes the ambiguity that causes the engine to explore so many paths.",
+          ],
+          fr: [
+          "Certains motifs demandent un temps exponentiel sur des entrées qui ne correspondent pas. Les quantificateurs imbriqués en sont la forme habituelle — un groupe répétable, lui-même à l'intérieur de quelque chose de répétable. Sur une courte chaîne de test, le coût est invisible ; sur une plus longue, le même motif peut figer la page.",
+          "Si la coloration se bloque après avoir collé un échantillon plus volumineux, c'est de cela qu'il s'agit, et le motif n'est pas déployable sur des saisies utilisateur. Rendre le quantificateur interne plus spécifique, ou ancrer l'expression, lève généralement l'ambiguïté qui pousse le moteur à explorer autant de chemins.",
+          ],
+        },
+      },
+    ],
   },
   "ip-lookup": {
     desc: {
@@ -282,6 +446,47 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
       en: ["Building a cron expression for a daily database backup job", "Scheduling a weekly report to run every Monday at 8:00 AM", "Already have a cron string but not sure when it actually fires? Paste it in and read the plain-English explanation", "Learning cron syntax through the interactive field builder"],
       fr: ["Construire une expression cron pour une tâche de sauvegarde de base de données quotidienne", "Planifier un rapport hebdomadaire tous les lundis à 8h00", "Vous avez une expression cron mais vous ne savez pas exactement quand elle se déclenche ? Collez-la et lisez l'explication en langage clair", "Apprendre la syntaxe cron via le constructeur de champs interactif"],
     },
+    deepDive: [
+      {
+        h: { en: "The five fields, in order", fr: "Les cinq champs, dans l'ordre" },
+        p: {
+          en: [
+          "A cron expression is five space-separated fields: minute, hour, day of month, month, and day of week. An asterisk means every value, a comma lists several, a hyphen gives a range, and a slash sets a step — so */15 in the minute field means every fifteen minutes.",
+          "Day of week counts from 0 for Sunday. This builder validates that exactly five fields are present and describes the result in plain language as you type, which is the fastest way to catch a field written in the wrong position.",
+          ],
+          fr: [
+          "Une expression cron est faite de cinq champs séparés par des espaces : minute, heure, jour du mois, mois, jour de la semaine. Un astérisque signifie toutes les valeurs, une virgule en énumère plusieurs, un tiret donne un intervalle, et une barre oblique définit un pas — ainsi */15 dans le champ des minutes signifie toutes les quinze minutes.",
+          "Le jour de la semaine se compte à partir de 0 pour dimanche. Ce générateur vérifie que cinq champs exactement sont présents et décrit le résultat en langage courant au fil de la saisie, ce qui reste le moyen le plus rapide de repérer un champ écrit à la mauvaise position.",
+          ],
+        },
+      },
+      {
+        h: { en: "The day-of-month and day-of-week trap", fr: "Le piège du jour du mois et du jour de la semaine" },
+        p: {
+          en: [
+          "These two fields do not combine the way the others do. When both are set to something other than an asterisk, most cron implementations run the job when either matches, not when both do — so a schedule meant for the first of the month when it falls on a Monday will instead run on every first and every Monday.",
+          "The safe habit is to constrain one of the two and leave the other as an asterisk. If you genuinely need both conditions, the check belongs at the start of your script rather than in the expression.",
+          ],
+          fr: [
+          "Ces deux champs ne se combinent pas comme les autres. Quand tous deux valent autre chose qu'un astérisque, la plupart des implémentations de cron exécutent la tâche dès que l'un correspond, et non quand les deux correspondent — une planification censée viser le premier du mois lorsqu'il tombe un lundi s'exécutera donc chaque premier du mois et chaque lundi.",
+          "La bonne habitude est de contraindre l'un des deux et de laisser l'autre à l'astérisque. Si vous avez réellement besoin des deux conditions, le contrôle a sa place au début de votre script plutôt que dans l'expression.",
+          ],
+        },
+      },
+      {
+        h: { en: "Time zones and missing hours", fr: "Fuseaux horaires et heures manquantes" },
+        p: {
+          en: [
+          "A cron expression carries no time zone. It is interpreted in whatever zone the running system uses, which is why the same line fires at different moments on a laptop set to local time and on a server left in UTC. Setting the zone explicitly in the scheduler, when it allows it, removes the ambiguity.",
+          "Daylight saving makes this concrete twice a year: a job scheduled at 2:30 in a zone that skips that hour in spring simply does not run, and runs twice in autumn when the hour repeats. Scheduling outside the transition window, or working in UTC, avoids both.",
+          ],
+          fr: [
+          "Une expression cron ne porte aucun fuseau horaire. Elle est interprétée dans celui du système qui l'exécute — d'où le fait qu'une même ligne se déclenche à des moments différents sur un portable réglé en heure locale et sur un serveur laissé en UTC. Définir le fuseau explicitement dans le planificateur, quand il le permet, lève l'ambiguïté.",
+          "L'heure d'été rend cela concret deux fois par an : une tâche planifiée à 2h30 dans un fuseau qui saute cette heure au printemps ne s'exécute tout simplement pas, et s'exécute deux fois à l'automne quand l'heure se répète. Planifier hors de la fenêtre de transition, ou travailler en UTC, évite les deux.",
+          ],
+        },
+      },
+    ],
   },
   "case-converter": {
     desc: {
@@ -394,6 +599,47 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
       en: ["Cleaning up text copied from a PDF with hard-wrapped line breaks", "Removing formatting artifacts from copy-pasted email chains", "Preparing scraped or exported text for pasting into a rich-text CMS", "Normalizing text from OCR output before further processing"],
       fr: ["Nettoyer du texte copié depuis un PDF avec des sauts de ligne durs", "Supprimer les artefacts de formatage de chaînes d'e-mails copiées-collées", "Préparer du texte extrait ou exporté pour le coller dans un CMS rich-text", "Normaliser du texte issu d'OCR avant traitement ultérieur"],
     },
+    deepDive: [
+      {
+        h: { en: "Three modes for three different messes", fr: "Trois modes pour trois désordres différents" },
+        p: {
+          en: [
+          "Join replaces every run of line breaks with a single space and collapses repeated spaces, giving one continuous block. Strip removes the breaks without putting anything in their place, which is what you want when the break falls inside a word — the usual result of a hyphenated line wrap in a PDF.",
+          "Normalize is the one to reach for on real documents: it treats a blank line as a paragraph separator, unwraps the lines inside each paragraph, and keeps the paragraphs apart. You get readable prose instead of a single undifferentiated wall of text.",
+          ],
+          fr: [
+          "Le mode espace remplace chaque suite de sauts de ligne par une seule espace et fusionne les espaces répétées, donnant un bloc continu. Le mode suppression retire les sauts sans rien mettre à la place, ce qu'on veut quand le saut tombe au milieu d'un mot — le résultat habituel d'une césure de fin de ligne dans un PDF.",
+          "Le mode normalisation est celui à privilégier sur de vrais documents : il traite une ligne vide comme un séparateur de paragraphe, déplie les lignes à l'intérieur de chaque paragraphe, et conserve les paragraphes distincts. On obtient une prose lisible plutôt qu'un mur de texte indifférencié.",
+          ],
+        },
+      },
+      {
+        h: { en: "Where the stray breaks come from", fr: "D'où viennent les sauts parasites" },
+        p: {
+          en: [
+          "Text copied from a PDF arrives broken at every visual line because a PDF stores positioned glyphs, not paragraphs — the line ends are an artefact of the page layout, not of the writing. Email clients produce the same effect by hard-wrapping at 72 or 78 columns, a convention inherited from terminals.",
+          "In both cases the breaks carry no meaning and removing them restores the original text. That is not true of code, verse, or anything where the line is significant, so those need the paragraph-preserving mode at most.",
+          ],
+          fr: [
+          "Un texte copié depuis un PDF arrive coupé à chaque ligne visuelle, parce qu'un PDF stocke des glyphes positionnés et non des paragraphes — les fins de ligne sont un artefact de la mise en page, pas de l'écriture. Les clients de messagerie produisent le même effet en repliant durement à 72 ou 78 colonnes, une convention héritée des terminaux.",
+          "Dans les deux cas les sauts ne portent aucun sens et les retirer restitue le texte d'origine. Ce n'est pas vrai du code, de la poésie, ni de tout ce où la ligne est signifiante : ceux-là demandent au mieux le mode qui préserve les paragraphes.",
+          ],
+        },
+      },
+      {
+        h: { en: "What it does not repair", fr: "Ce qu'il ne répare pas" },
+        p: {
+          en: [
+          "Only line breaks are touched. A word split by a hyphen at the end of a PDF line keeps its hyphen once the break is removed, so a manual pass is still needed for those. Tabs, non-breaking spaces and other invisible characters are left as they are.",
+          "Carriage returns are handled alongside newlines, so text pasted from Windows behaves the same as text from macOS or Linux — a detail that otherwise leaves stray characters behind when only the newline is matched.",
+          ],
+          fr: [
+          "Seuls les sauts de ligne sont touchés. Un mot coupé par un trait d'union en fin de ligne de PDF conserve son trait d'union une fois le saut retiré : une passe manuelle reste nécessaire pour ceux-là. Tabulations, espaces insécables et autres caractères invisibles sont laissés tels quels.",
+          "Les retours chariot sont traités en même temps que les sauts de ligne, si bien qu'un texte collé depuis Windows se comporte comme un texte venu de macOS ou de Linux — un détail qui laisse sinon des caractères parasites quand on ne cherche que le saut de ligne.",
+          ],
+        },
+      },
+    ],
   },
   "text-reverser": {
     desc: {
@@ -577,6 +823,47 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
       en: ["Designing a background gradient for a hero section or landing page", "Building a gradient for a button, badge or card component", "Creating a radial spotlight or glow effect with a precise center", "Experimenting with multi-stop color transitions for a design system"],
       fr: ["Concevoir un dégradé de fond pour une section hero ou une landing page", "Créer un dégradé pour un bouton, badge ou composant carte", "Créer un effet de spot ou de halo radial avec un centre précis", "Expérimenter des transitions de couleurs multi-arrêts pour un design system"],
     },
+    deepDive: [
+      {
+        h: { en: "What the angle actually measures", fr: "Ce que mesure réellement l'angle" },
+        p: {
+          en: [
+          "In CSS a linear gradient angle points in the direction the gradient travels, measured clockwise from straight up. So 0 degrees runs bottom to top, 90 degrees runs left to right, and 180 degrees runs top to bottom. That clockwise-from-north convention trips people up, because most maths starts from the horizontal and turns the other way.",
+          "The gradient line is also sized so the corners of the box land exactly on its ends, which means the same angle produces a visibly different result on a wide banner and on a square tile.",
+          ],
+          fr: [
+          "En CSS, l'angle d'un dégradé linéaire pointe dans la direction que suit le dégradé, mesurée dans le sens horaire depuis la verticale vers le haut. Ainsi 0 degré va de bas en haut, 90 degrés de gauche à droite, et 180 degrés de haut en bas. Cette convention horaire depuis le nord déroute, parce que la plupart des repères mathématiques partent de l'horizontale et tournent dans l'autre sens.",
+          "La ligne de dégradé est en outre dimensionnée pour que les coins de la boîte tombent exactement sur ses extrémités : un même angle produit donc un résultat visiblement différent sur une bannière large et sur une tuile carrée.",
+          ],
+        },
+      },
+      {
+        h: { en: "Why gradients between saturated colours look muddy", fr: "Pourquoi un dégradé entre couleurs saturées paraît terne" },
+        p: {
+          en: [
+          "Browsers interpolate in sRGB by default, channel by channel. Between two colours sitting opposite each other on the colour wheel, the midpoint of that arithmetic lands near grey — which is why a blue-to-yellow gradient develops a dull band in the middle rather than passing through a vivid green.",
+          "Adding a third stop in the middle, in the hue you actually want, is the fix that works everywhere. Modern CSS also lets you name a different interpolation space, such as Oklab, which keeps the midpoint saturated, though support is more recent than the syntax this tool produces.",
+          ],
+          fr: [
+          "Les navigateurs interpolent par défaut en sRGB, canal par canal. Entre deux couleurs opposées sur la roue chromatique, le milieu de cette moyenne arithmétique tombe près du gris — d'où la bande terne au centre d'un dégradé bleu vers jaune, au lieu d'un passage par un vert franc.",
+          "Ajouter un troisième arrêt au milieu, dans la teinte réellement voulue, est le correctif qui fonctionne partout. Le CSS moderne permet aussi de nommer un autre espace d'interpolation, comme Oklab, qui garde le milieu saturé — mais son support est plus récent que la syntaxe produite par cet outil.",
+          ],
+        },
+      },
+      {
+        h: { en: "Three shapes, three behaviours", fr: "Trois formes, trois comportements" },
+        p: {
+          en: [
+          "A linear gradient runs along a straight line at the angle you set. A radial gradient spreads outward from a centre point, useful for spotlights and soft vignettes. A conic gradient sweeps around a centre like a clock hand, which is what makes pie charts and colour wheels possible in pure CSS.",
+          "Up to five colour stops are available, which is more than most designs need: gradients with many stops tend to read as banded rather than smooth. Two or three well-chosen stops almost always look better than five.",
+          ],
+          fr: [
+          "Un dégradé linéaire suit une droite selon l'angle défini. Un dégradé radial se diffuse depuis un point central, utile pour des halos et des vignettages doux. Un dégradé conique balaie autour d'un centre comme une aiguille d'horloge, ce qui rend possibles camemberts et roues chromatiques en CSS pur.",
+          "Jusqu'à cinq arrêts de couleur sont disponibles, ce qui dépasse le besoin de la plupart des designs : les dégradés à nombreux arrêts se lisent plutôt comme des bandes que comme une transition douce. Deux ou trois arrêts bien choisis rendent presque toujours mieux que cinq.",
+          ],
+        },
+      },
+    ],
   },
   "meta-preview": {
     desc: {
@@ -607,6 +894,47 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
       en: ["Tagging newsletter links before sending a campaign to track click-through in Google Analytics", "Creating separate UTM variants for A/B testing ad copy across Google and Facebook", "Building consistent UTM conventions across a marketing team with shared presets", "Tracking traffic sources for a product launch landing page across multiple channels"],
       fr: ["Taguer les liens d'une newsletter avant envoi pour suivre les clics dans Google Analytics", "Créer des variantes UTM distinctes pour un test A/B de visuels publicitaires sur Google et Facebook", "Établir des conventions UTM cohérentes dans une équipe marketing grâce aux préréglages partagés", "Suivre les sources de trafic d'une landing page de lancement produit sur plusieurs canaux"],
     },
+    deepDive: [
+      {
+        h: { en: "The five parameters, and the three that matter", fr: "Les cinq paramètres, et les trois qui comptent" },
+        p: {
+          en: [
+          "Source names where the traffic came from, medium names the kind of channel, and campaign names the initiative. Those three are what analytics tools group by, and omitting any of them leaves the visit sitting in an unhelpful bucket. Term and content are optional refinements, originally for paid keywords and for telling two variants of the same ad apart.",
+          "The convention that matters most is consistency of vocabulary: newsletter and email describe the same medium, but analytics will report them as two separate channels forever. Agreeing on the words before the first campaign is worth more than any tooling.",
+          ],
+          fr: [
+          "La source nomme la provenance du trafic, le medium le type de canal, et la campagne l'opération. Ces trois-là sont ce sur quoi les outils d'analyse regroupent, et en omettre un laisse la visite dans une catégorie inexploitable. Le terme et le contenu sont des raffinements facultatifs, prévus à l'origine pour les mots-clés payants et pour distinguer deux variantes d'une même annonce.",
+          "La convention la plus importante est la constance du vocabulaire : newsletter et email désignent le même medium, mais l'outil d'analyse les rapportera comme deux canaux distincts pour toujours. S'accorder sur les mots avant la première campagne vaut mieux que n'importe quel outillage.",
+          ],
+        },
+      },
+      {
+        h: { en: "Case sensitivity is the usual silent failure", fr: "La casse est le piège silencieux habituel" },
+        p: {
+          en: [
+          "UTM values are case-sensitive in most analytics platforms, so Newsletter and newsletter become two separate rows in the report. The same goes for trailing spaces picked up when pasting from a spreadsheet. Neither produces an error; the data simply fragments, and the split is often noticed only weeks later.",
+          "Sticking to lowercase throughout, with hyphens instead of spaces, removes the whole class of problem. Avoid characters that need encoding as well: a space becomes %20 in the URL and is easy to mistake for part of the value.",
+          ],
+          fr: [
+          "Les valeurs UTM sont sensibles à la casse dans la plupart des plateformes d'analyse : Newsletter et newsletter deviennent donc deux lignes distinctes du rapport. Il en va de même des espaces finales récupérées en collant depuis un tableur. Ni l'un ni l'autre ne produit d'erreur ; les données se fragmentent simplement, et l'on s'en aperçoit souvent des semaines plus tard.",
+          "S'en tenir aux minuscules de bout en bout, avec des traits d'union plutôt que des espaces, élimine toute cette classe de problèmes. Évitez aussi les caractères nécessitant un encodage : une espace devient %20 dans l'URL et se confond aisément avec la valeur.",
+          ],
+        },
+      },
+      {
+        h: { en: "Where tagged links do not belong", fr: "Où les liens balisés n'ont pas leur place" },
+        p: {
+          en: [
+          "Tag outbound links only — those you place on someone else's property, in an email or in an ad. Putting UTM parameters on internal links restarts the session attribution inside your own analytics, overwriting the real acquisition source with your own page and making the original channel disappear from the report.",
+          "Tagged URLs are also public: they show up in address bars, get shared, and end up indexed. Campaign names that are internal shorthand, or that reveal an unannounced launch, are best avoided for that reason alone.",
+          ],
+          fr: [
+          "Ne balisez que les liens sortants — ceux que vous placez sur une propriété qui n'est pas la vôtre, dans un e-mail ou dans une annonce. Poser des paramètres UTM sur des liens internes réamorce l'attribution de session dans votre propre outil d'analyse : la source d'acquisition réelle est écrasée par votre propre page, et le canal d'origine disparaît du rapport.",
+          "Les URL balisées sont par ailleurs publiques : elles apparaissent dans les barres d'adresse, se partagent, et finissent indexées. Les noms de campagne relevant du jargon interne, ou révélant un lancement non annoncé, sont à éviter pour cette seule raison.",
+          ],
+        },
+      },
+    ],
   },
   "jwt-generator": {
     desc: {
@@ -668,6 +996,47 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
       en: ["Simplifying landing page copy to reach a broader audience before publishing", "Checking that user-facing error messages and documentation are easy to understand", "Comparing the readability of two versions of the same article during editing", "Ensuring legal or compliance text meets accessibility readability guidelines"],
       fr: ["Simplifier le texte d'une landing page pour toucher un public plus large avant publication", "Vérifier que les messages d'erreur et la documentation sont compréhensibles par tous les utilisateurs", "Comparer la lisibilité de deux versions d'un même article lors de la révision", "S'assurer que des textes juridiques ou de conformité respectent les recommandations d'accessibilité"],
     },
+    deepDive: [
+      {
+        h: { en: "What the Flesch score measures, and what it ignores", fr: "Ce que mesure le score Flesch, et ce qu'il ignore" },
+        p: {
+          en: [
+          "The formula combines two ratios: average sentence length in words, and average word length in syllables. Shorter sentences and shorter words push the score up. That is the whole model — it has no notion of vocabulary difficulty, logical structure, or whether the text makes sense at all.",
+          "So a passage of short nonsense words scores as highly readable, and a clear sentence built from long technical terms scores as difficult even when its audience finds it obvious. Treat the number as a rough measure of surface complexity, useful for comparing two drafts of the same text, not as a verdict on quality.",
+          ],
+          fr: [
+          "La formule combine deux rapports : la longueur moyenne des phrases en mots, et la longueur moyenne des mots en syllabes. Des phrases et des mots plus courts font monter le score. C'est tout le modèle — il n'a aucune notion de difficulté du vocabulaire, de structure logique, ni du fait que le texte ait un sens.",
+          "Un passage fait de mots courts et absurdes obtient donc un excellent score, et une phrase claire bâtie sur des termes techniques longs est jugée difficile même si son public la trouve évidente. Prenez le nombre comme une mesure grossière de complexité de surface, utile pour comparer deux versions d'un même texte, pas comme un verdict sur la qualité.",
+          ],
+        },
+      },
+      {
+        h: { en: "Counting syllables is an approximation", fr: "Compter les syllabes est une approximation" },
+        p: {
+          en: [
+          "No formula counts syllables exactly. The usual approach groups consecutive vowels and applies corrections — the silent e at the end of an English word being the best known. It gets the common cases right and misses on names, borrowed words and irregular spellings.",
+          "French needs different rules from English, so the two languages are handled separately here rather than running English heuristics over French text. Running a French passage through an English-only readability tool inflates the syllable count and reports the text as far harder than it is.",
+          ],
+          fr: [
+          "Aucune formule ne compte les syllabes exactement. L'approche habituelle regroupe les voyelles consécutives et applique des corrections — le e muet en fin de mot anglais étant la plus connue. Elle traite correctement les cas courants et échoue sur les noms propres, les emprunts et les orthographes irrégulières.",
+          "Le français réclame des règles différentes de l'anglais : les deux langues sont donc traitées séparément ici, plutôt qu'en appliquant des heuristiques anglaises à du texte français. Passer un texte français dans un outil de lisibilité conçu pour l'anglais gonfle le compte de syllabes et rapporte un texte bien plus difficile qu'il ne l'est.",
+          ],
+        },
+      },
+      {
+        h: { en: "Using the score without letting it write for you", fr: "Se servir du score sans le laisser écrire à votre place" },
+        p: {
+          en: [
+          "Because the formula only rewards brevity, it is trivially gamed: split every sentence in two and the score climbs without the text becoming clearer. Chopping a well-built sentence at its logical joint usually makes it harder to follow, not easier, even as the number improves.",
+          "The score earns its keep as a flag rather than a target. A section scoring far worse than the rest of a document is worth rereading — it often turns out to contain one sentence that ran away with three subordinate clauses. Fix that sentence, and ignore the number afterwards.",
+          ],
+          fr: [
+          "Comme la formule ne récompense que la brièveté, elle se contourne trivialement : coupez chaque phrase en deux et le score grimpe sans que le texte gagne en clarté. Sectionner une phrase bien construite à son articulation logique la rend généralement plus difficile à suivre, pas plus facile, alors même que le nombre s'améliore.",
+          "Le score vaut comme signal d'alerte, pas comme objectif. Une section notée bien plus mal que le reste d'un document mérite une relecture — il s'y trouve souvent une phrase partie en vrille avec trois subordonnées. Corrigez cette phrase, puis oubliez le nombre.",
+          ],
+        },
+      },
+    ],
   },
   "md-table": {
     desc: {
