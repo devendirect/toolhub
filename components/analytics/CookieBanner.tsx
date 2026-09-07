@@ -6,7 +6,15 @@ import { track } from "@/lib/analytics";
 import { watchTcf, reopenCmp, type TcfState } from "@/lib/tcf";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
-const COOKIE_KEY = "utilisio-consent";
+
+// Version 2 du cookie, et le suffixe compte.
+//
+// Une version antérieure de la détection TCF prenait « CMP initialisée sans
+// verdict » pour un refus : elle enregistrait ce refus sans que personne n'ait
+// rien demandé au visiteur, et masquait la bannière. Les valeurs écrites dans
+// `utilisio-consent` pendant cette période ne reflètent aucun choix réel et ne
+// doivent pas être respectées — changer de clé les écarte proprement.
+const COOKIE_KEY = "utilisio-consent-v2";
 
 function getCookie(name: string): string | null {
   if (typeof document === "undefined") return null;

@@ -32,10 +32,23 @@ const HARD_TIMEOUT_MS = 15000;
 
 const POLL_INTERVAL_MS = 200;
 
+/**
+ * Délai accordé à une CMP chargée mais sans verdict, avant de rendre la main.
+ *
+ * Une CMP peut répondre tout en n'ayant ni chaîne de consentement ni interface à
+ * afficher — c'est ce qui arrive quand son message n'est pas publié, ou quand
+ * elle échoue à se servir elle-même. Sans cette échéance, on attendrait un
+ * verdict qui ne vient jamais : ni sa fenêtre ni la nôtre ne s'afficherait, et
+ * plus personne ne serait interrogé sur la mesure d'audience.
+ */
+const UNDECIDED_GRACE_MS = 4000;
+
 interface TcData {
   listenerId?: number;
   eventStatus?: "tcloaded" | "cmpuishown" | "useractioncomplete";
   gdprApplies?: boolean;
+  /** Chaîne de consentement : sa présence prouve qu'un choix est enregistré. */
+  tcString?: string;
   purpose?: { consents?: Record<number, boolean> };
 }
 
@@ -73,7 +86,36 @@ export function watchTcf(onState: (state: TcfState) => void): () => void {
   let cancelled = false;
   let listenerId: number | null = null;
   let reportedAbsent = false;
+  let fallbackTimer: number | null = null;
   const startedAt = Date.now();
+
+  const clearFallback = () => {
+    if (fallbackTimer !== null) {
+      window.clearTimeout(fallbackTimer);
+      fallbackTimer = null;
+    }
+  };
+
+  /** Un état conclusif annule tout repli en attente. */
+  const conclude = (state: TcfState) => {
+    clearFallback();
+    reportedAbsent = state.kind === "absent";
+    onState(state);
+  };
+
+  /**
+   * Arme le repli vers notre bannière si la CMP reste sans verdict.
+   * Un événement conclusif arrivant entre-temps l'annule.
+   */
+  const armFallback = () => {
+    if (fallbackTimer !== null || reportedAbsent) return;
+    fallbackTimer = window.setTimeout(() => {
+      fallbackTimer = null;
+      if (cancelled) return;
+      reportedAbsent = true;
+      onState({ kind: "absent" });
+    }, UNDECIDED_GRACE_MS);
+  };
 
   const attach = () => {
     if (cancelled) return;
@@ -96,24 +138,49 @@ export function watchTcf(onState: (state: TcfState) => void): () => void {
     }
 
     api("addEventListener", 2, (data, success) => {
-      if (cancelled || !success || !data) return;
+      if (cancelled) return;
+
+      // Un événement en échec ne dit rien de l'état du consentement : on
+      // l'ignore, mais l'échéance de repli continue de courir. Une CMP qui
+      // n'échoue que par intermittence ne doit pas laisser la page sans
+      // interlocuteur.
+      if (!success || !data) {
+        armFallback();
+        return;
+      }
+
       if (typeof data.listenerId === "number") listenerId = data.listenerId;
 
       // La CMP existe mais le RGPD ne s'applique pas à ce visiteur : elle
       // n'affichera aucune interface, c'est donc à notre bannière de prendre le
       // relais pour la mesure d'audience.
       if (data.gdprApplies === false) {
-        onState({ kind: "absent" });
+        conclude({ kind: "absent" });
         return;
       }
 
       // Interface affichée, choix en cours : surtout ne rien montrer par-dessus.
       if (data.eventStatus === "cmpuishown") {
+        clearFallback();
         onState({ kind: "pending" });
         return;
       }
 
-      onState({
+      // Un verdict n'existe que si l'utilisateur vient de répondre, ou si une
+      // chaîne de consentement a été enregistrée lors d'une visite précédente.
+      // `tcloaded` sans chaîne ne signifie pas « refusé » : il signifie que la
+      // CMP s'est initialisée sans rien avoir à dire — typiquement parce que son
+      // message n'est pas publié. Le confondre avec un refus revenait à masquer
+      // notre bannière et à n'interroger le visiteur nulle part.
+      const hasVerdict =
+        data.eventStatus === "useractioncomplete" || Boolean(data.tcString);
+
+      if (!hasVerdict) {
+        armFallback();
+        return;
+      }
+
+      conclude({
         kind: "decided",
         storageConsent: data.purpose?.consents?.[PURPOSE_DEVICE_STORAGE] === true,
       });
@@ -124,6 +191,7 @@ export function watchTcf(onState: (state: TcfState) => void): () => void {
 
   return () => {
     cancelled = true;
+    clearFallback();
     const api = getApi();
     if (api && listenerId !== null) {
       api("removeEventListener", 2, () => {}, listenerId);
