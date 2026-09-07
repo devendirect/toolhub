@@ -65,8 +65,10 @@ export function Footer() {
             <Link href={localePath(lang, "/terms")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
               {i.terms}
             </Link>
+            {/* Quand une CMP certifiée pilote la page, resetConsent lui rend la
+                main et rouvre son écran : recharger effacerait cet écran. */}
             <button
-              onClick={() => { resetConsent(); window.location.reload(); }}
+              onClick={() => { if (!resetConsent()) window.location.reload(); }}
               className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150 text-left"
             >
               {lang === "fr" ? "gérer les cookies" : "manage cookies"}

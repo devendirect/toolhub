@@ -44,16 +44,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-bg text-fg antialiased">
         {/*
           Consent Mode v2 — les signaux par défaut doivent être posés AVANT tout
-          script Google, d'où `beforeInteractive`. Tant que l'utilisateur n'a pas
-          tranché, tout est `denied` : AdSense bascule alors en « limited ads »
-          (annonces non personnalisées, sans cookie publicitaire) au lieu de ne
-          rien diffuser. `wait_for_update` laisse 500 ms au choix pour arriver
-          avant que les tags n'agissent sur les valeurs par défaut.
+          script Google, d'où `beforeInteractive`. `wait_for_update` laisse 500 ms
+          au choix de l'utilisateur pour arriver avant que les tags n'agissent sur
+          ces valeurs.
+
+          Deux jeux de valeurs, et c'est volontaire. Dans l'EEE, au Royaume-Uni et
+          en Suisse, tout part à `denied` : AdSense bascule alors en « limited ads »
+          — annonces non personnalisées, sans cookie publicitaire — jusqu'à ce que
+          la CMP certifiée accorde davantage. Partout ailleurs, aucune CMP ne
+          s'affiche : laisser les signaux publicitaires à `denied` y condamnerait
+          toutes les annonces à rester non personnalisées sans qu'aucun visiteur
+          ne puisse jamais en décider autrement.
+
+          `analytics_storage` reste refusé partout : la mesure d'audience n'est
+          chargée qu'après un consentement explicite, dans les deux régimes.
         */}
         <Script id="consent-default" strategy="beforeInteractive">
           {`window.dataLayer=window.dataLayer||[];
 window.gtag=window.gtag||function(){window.dataLayer.push(arguments)};
-window.gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});`}
+window.gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500,region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH']});
+window.gtag('consent','default',{ad_storage:'granted',ad_user_data:'granted',ad_personalization:'granted',analytics_storage:'denied'});`}
         </Script>
 
         {/*

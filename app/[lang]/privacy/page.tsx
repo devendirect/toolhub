@@ -42,7 +42,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// what we collect",
         content: [
-          "Almost nothing. There is no account system and no tracking pixel. Audience measurement (Google Analytics) runs only if you explicitly accept it via the cookie banner. Advertising (Google AdSense) is present on every page but serves non-personalized, cookie-free ads until you accept the advertising category — the two are requested separately, not bundled together.",
+          "Almost nothing. There is no account system and no tracking pixel. Audience measurement (Google Analytics) runs only if you explicitly accept it. Advertising (Google AdSense) is present on every page but serves non-personalized, cookie-free ads until you consent through the consent management platform described below. The two are separate decisions, never bundled together.",
           "The only data stored on your device is a single cookie named `lang` that remembers your language preference (French or English). It expires after one year and contains no personal information.",
         ],
       },
@@ -77,15 +77,15 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// analytics",
         content: [
-          "We use Google Analytics 4 to measure traffic volume. The Google script is only loaded after you click Accept on the cookie banner. If you decline, or before you make a choice, nothing is loaded and no request is sent to Google — not even an anonymous ping.",
+          "We use Google Analytics 4 to measure traffic volume. The Google script is only loaded once consent has been given. In the European Economic Area, the United Kingdom and Switzerland, that consent is the one you give in the consent management platform; elsewhere, a short banner on this site asks for it. If you decline, or before you make a choice, nothing is loaded and no request is sent to Google — not even an anonymous ping.",
           "If you accept, usage data is processed by Google in accordance with their privacy policy. You can withdraw your consent at any time via the “manage cookies” link in the footer, which also deletes the Google Analytics cookies from your browser.",
         ],
       },
       {
         heading: "// advertising",
         content: [
-          "We display ads served by Google AdSense. The AdSense script loads on every page, but it is governed by Google Consent Mode: until you accept the “personalized advertising” category in the cookie banner, the advertising signals stay set to “denied” and Google serves limited ads — non-personalized, with no advertising cookie stored on your device and no ad identifier read from it.",
-          "If you accept, Google may use cookies to serve and measure ads, including personalized ads, as described in Google's advertising privacy policy. Because these cookies are set by Google on its own domain, they cannot be deleted from this site's “manage cookies” link — using that link revokes your consent, which switches ad serving back to the non-personalized mode described above.",
+          "We display ads served by Google AdSense. The AdSense script loads on every page, but it is governed by Google Consent Mode. In the European Economic Area, the United Kingdom and Switzerland, advertising consent is collected by a consent management platform certified by Google and built on the IAB Transparency and Consent Framework; until you consent there, the advertising signals stay set to “denied” and Google serves limited ads — non-personalized, with no advertising cookie stored on your device and no ad identifier read from it.",
+          "If you accept, Google may use cookies to serve and measure ads, including personalized ads, as described in Google's advertising privacy policy. Those cookies are set by Google on its own domain and cannot be deleted from this site. The “manage cookies” link in the footer reopens the consent management platform so you can change or withdraw your choice, which switches ad serving back to the non-personalized mode described above.",
         ],
       },
       {
@@ -118,7 +118,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// ce que nous collectons",
         content: [
-          "Presque rien. Il n'y a pas de système de compte ni de pixel de tracking. La mesure d'audience (Google Analytics) ne s'active que si vous l'acceptez explicitement via la bannière de cookies. La publicité (Google AdSense) est présente sur toutes les pages mais diffuse des annonces non personnalisées et sans cookie tant que vous n'avez pas accepté la catégorie publicité — les deux choix sont demandés séparément, jamais groupés.",
+          "Presque rien. Il n'y a pas de système de compte ni de pixel de tracking. La mesure d'audience (Google Analytics) ne s'active que si vous l'acceptez explicitement. La publicité (Google AdSense) est présente sur toutes les pages mais diffuse des annonces non personnalisées et sans cookie tant que vous n'avez pas consenti via la plateforme de gestion du consentement décrite plus bas. Les deux choix restent distincts, jamais groupés.",
           "La seule donnée stockée sur votre appareil est un cookie nommé `lang` qui mémorise votre préférence de langue (français ou anglais). Il expire après un an et ne contient aucune information personnelle.",
         ],
       },
@@ -153,15 +153,15 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// analytiques",
         content: [
-          "Nous utilisons Google Analytics 4 pour mesurer le volume de trafic. Le script Google n'est chargé qu'après votre clic sur Accepter dans la bannière de cookies. En cas de refus, ou avant votre choix, rien n'est chargé et aucune requête n'est envoyée à Google — pas même un ping anonyme.",
+          "Nous utilisons Google Analytics 4 pour mesurer le volume de trafic. Le script Google n'est chargé qu'une fois le consentement donné. Dans l'Espace économique européen, au Royaume-Uni et en Suisse, ce consentement est celui que vous exprimez dans la plateforme de gestion du consentement ; ailleurs, une courte bannière propre à ce site vous le demande. En cas de refus, ou avant votre choix, rien n'est chargé et aucune requête n'est envoyée à Google — pas même un ping anonyme.",
           "En cas d'acceptation, les données d'usage sont traitées par Google conformément à leur politique de confidentialité. Vous pouvez retirer votre consentement à tout moment via le lien « gérer les cookies » du pied de page, qui supprime aussi les cookies Google Analytics de votre navigateur.",
         ],
       },
       {
         heading: "// publicité",
         content: [
-          "Nous affichons des annonces servies par Google AdSense. Le script AdSense est chargé sur toutes les pages, mais il est piloté par le Consent Mode de Google : tant que vous n'avez pas accepté la catégorie « publicité personnalisée » dans la bannière de cookies, les signaux publicitaires restent à « refusé » et Google diffuse des annonces limitées — non personnalisées, sans cookie publicitaire déposé sur votre appareil et sans lecture d'identifiant publicitaire.",
-          "En cas d'acceptation, Google peut utiliser des cookies pour diffuser et mesurer les annonces, y compris des annonces personnalisées, conformément à la politique de confidentialité publicitaire de Google. Ces cookies étant posés par Google sur son propre domaine, ils ne peuvent pas être supprimés via le lien « gérer les cookies » de ce site — ce lien retire votre consentement, ce qui rebascule la diffusion vers le mode non personnalisé décrit ci-dessus.",
+          "Nous affichons des annonces servies par Google AdSense. Le script AdSense est chargé sur toutes les pages, mais il est piloté par le Consent Mode de Google. Dans l'Espace économique européen, au Royaume-Uni et en Suisse, le consentement publicitaire est recueilli par une plateforme de gestion du consentement certifiée par Google et fondée sur le cadre de transparence et de consentement de l'IAB ; tant que vous n'y avez pas consenti, les signaux publicitaires restent à « refusé » et Google diffuse des annonces limitées — non personnalisées, sans cookie publicitaire déposé sur votre appareil et sans lecture d'identifiant publicitaire.",
+          "En cas d'acceptation, Google peut utiliser des cookies pour diffuser et mesurer les annonces, y compris des annonces personnalisées, conformément à la politique de confidentialité publicitaire de Google. Ces cookies sont posés par Google sur son propre domaine et ne peuvent pas être supprimés depuis ce site. Le lien « gérer les cookies » du pied de page rouvre la plateforme de gestion du consentement pour modifier ou retirer votre choix, ce qui rebascule la diffusion vers le mode non personnalisé décrit ci-dessus.",
         ],
       },
       {

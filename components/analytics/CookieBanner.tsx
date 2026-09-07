@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { track } from "@/lib/analytics";
+import { watchTcf, reopenCmp, type TcfState } from "@/lib/tcf";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 const COOKIE_KEY = "utilisio-consent";
-const ADS_COOKIE_KEY = "utilisio-consent-ads";
 
 function getCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
@@ -28,27 +28,29 @@ function ensureGtag() {
   }
 }
 
-// Consent Mode v2 : mesure d'audience et publicité sont deux finalités distinctes,
-// chacune avec son propre signal. Les valeurs par défaut ("denied") sont posées dans
-// app/layout.tsx avant tout script Google ; on n'émet ici que des "update", qui sont
-// le seul type d'appel autorisé après coup — un second "default" serait ignoré.
-function pushConsent(analytics: boolean, ads: boolean) {
+// Seul `analytics_storage` nous appartient désormais.
+//
+// Le consentement publicitaire relève de la CMP certifiée IAB TCF que Google
+// impose pour diffuser dans l'EEE, au Royaume-Uni et en Suisse : elle émet
+// elle-même `ad_storage`, `ad_user_data` et `ad_personalization`. Y toucher
+// depuis ici reviendrait à écraser son verdict selon l'ordre de chargement.
+//
+// Les valeurs par défaut sont posées dans app/layout.tsx avant tout script
+// Google ; on n'émet ici que des « update », seul type d'appel pris en compte
+// après coup — un second « default » serait ignoré.
+function pushAnalyticsConsent(granted: boolean) {
   ensureGtag();
   window.gtag("consent", "update", {
-    analytics_storage:   analytics ? "granted" : "denied",
-    ad_storage:          ads ? "granted" : "denied",
-    ad_user_data:        ads ? "granted" : "denied",
-    ad_personalization:  ads ? "granted" : "denied",
+    analytics_storage: granted ? "granted" : "denied",
   });
 }
 
-// Le tag AdSense est chargé inconditionnellement par le layout racine : sans
-// consentement il diffuse des annonces non personnalisées et sans cookie. Seule la
-// mesure d'audience reste conditionnée au chargement effectif de son script — GA
-// émettrait sinon des pings sans cookie que l'on ne souhaite pas avant un choix.
-function applyConsent(analytics: boolean, ads: boolean) {
-  pushConsent(analytics, ads);
-  if (analytics) loadGA();
+// GA reste conditionné au chargement effectif de son script : avec le seul
+// signal Consent Mode, il émettrait des pings sans cookie que l'on ne souhaite
+// pas avant un choix explicite.
+function applyAnalytics(granted: boolean) {
+  pushAnalyticsConsent(granted);
+  if (granted) loadGA();
 }
 
 function loadGA() {
@@ -67,148 +69,119 @@ function loadGA() {
 
 const TR = {
   fr: {
-    msg:        "Ce site utilise Google Analytics (mesure d'audience) et affiche des publicités Google AdSense. Sans votre accord, aucune mesure n'est effectuée et les annonces restent non personnalisées, sans cookie publicitaire.",
-    customize:  "Personnaliser",
-    acceptAll:  "Tout accepter",
-    declineAll: "Tout refuser",
-    analyticsLabel: "Mesure d'audience",
-    analyticsDesc:  "Google Analytics — statistiques de trafic anonymisées.",
-    adsLabel: "Publicité personnalisée",
-    adsDesc:  "Google AdSense — autorise les cookies publicitaires et la personnalisation des annonces. Refusé, les annonces restent affichées mais non personnalisées.",
-    save: "Enregistrer mes choix",
+    msg:     "Ce site mesure son audience avec Google Analytics. Rien n'est chargé tant que vous n'avez pas accepté.",
+    accept:  "Accepter",
+    decline: "Refuser",
   },
   en: {
-    msg:        "This site uses Google Analytics (audience measurement) and shows Google AdSense ads. Without your consent nothing is measured and ads stay non-personalized, with no advertising cookie.",
-    customize:  "Customize",
-    acceptAll:  "Accept all",
-    declineAll: "Decline all",
-    analyticsLabel: "Audience measurement",
-    analyticsDesc:  "Google Analytics — anonymized traffic stats.",
-    adsLabel: "Personalized advertising",
-    adsDesc:  "Google AdSense — allows advertising cookies and ad personalization. If declined, ads still show but stay non-personalized.",
-    save: "Save my choices",
+    msg:     "This site measures its audience with Google Analytics. Nothing is loaded until you accept.",
+    accept:  "Accept",
+    decline: "Decline",
   },
 } as const;
 
+/**
+ * Bannière de consentement pour la seule mesure d'audience.
+ *
+ * Elle ne s'affiche que lorsqu'aucune CMP certifiée ne pilote la page. Dans
+ * l'EEE, au Royaume-Uni et en Suisse, la CMP de Google prend la main : elle
+ * recueille le consentement publicitaire au format TCF, et nous en déduisons
+ * celui de la mesure d'audience via la finalité 1 — « stocker ou accéder à des
+ * informations sur un appareil », qui est exactement la base légale dont le
+ * cookie de Google Analytics a besoin.
+ *
+ * Le visiteur voit donc toujours exactement une bannière : la nôtre ou celle de
+ * la CMP, jamais les deux empilées.
+ */
 export function CookieBanner() {
   const { lang } = useLang();
   const i = TR[lang];
   const [visible, setVisible] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const [prefAnalytics, setPrefAnalytics] = useState(false);
-  const [prefAds, setPrefAds] = useState(false);
 
   useEffect(() => {
-    const analyticsConsent = getCookie(COOKIE_KEY);
-    const adsConsent = getCookie(ADS_COOKIE_KEY);
+    const stored = getCookie(COOKIE_KEY);
 
-    applyConsent(analyticsConsent === "true", adsConsent === "true");
+    // Un choix déjà enregistré s'applique immédiatement, sans attendre la CMP.
+    if (stored !== null) applyAnalytics(stored === "true");
 
-    setPrefAnalytics(analyticsConsent === "true");
-    setPrefAds(adsConsent === "true");
+    const stop = watchTcf((state: TcfState) => {
+      if (state.kind === "pending") {
+        setVisible(false);
+        return;
+      }
 
-    // Bannière ré-affichée si une des deux catégories n'a jamais reçu de choix explicite
-    // (ex : utilisateur ayant déjà répondu pour analytics avant l'ajout de la pub)
-    if (analyticsConsent === null || adsConsent === null) setVisible(true);
+      if (state.kind === "decided") {
+        // La CMP fait autorité et remplace tout choix antérieur de notre côté.
+        setCookie(COOKIE_KEY, String(state.storageConsent), 365);
+        applyAnalytics(state.storageConsent);
+        setVisible(false);
+        return;
+      }
+
+      // Aucune CMP applicable : à nous de demander, si ce n'est pas déjà fait.
+      setVisible(stored === null);
+    });
+
+    return stop;
   }, []);
 
-  const applyChoice = (analytics: boolean, ads: boolean) => {
-    setCookie(COOKIE_KEY, String(analytics), 365);
-    setCookie(ADS_COOKIE_KEY, String(ads), 365);
+  const choose = (granted: boolean) => {
+    setCookie(COOKIE_KEY, String(granted), 365);
     setVisible(false);
-    setExpanded(false);
-    applyConsent(analytics, ads);
-    // Un refus total reste non mesurable : GA n'est pas chargé, track() est un no-op
-    if (analytics) track("consent_choice", { analytics: String(analytics), ads: String(ads) });
+    applyAnalytics(granted);
+    // Un refus n'est pas mesurable : GA n'est pas chargé, track() est un no-op.
+    if (granted) track("consent_choice", { analytics: "true" });
   };
 
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 flex flex-col gap-3 px-6 py-4 bg-bg-1 border-t border-line font-mono text-[12px] text-fg-1">
-      <div className="flex items-center justify-between gap-4">
-        <p className="flex-1 min-w-0 text-dim">{i.msg}</p>
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            onClick={() => setExpanded((v) => !v)}
-            className="px-4 py-[5px] border border-line text-dim hover:text-fg transition-colors"
-          >
-            {i.customize}
-          </button>
-          <button
-            onClick={() => applyChoice(false, false)}
-            className="px-4 py-[5px] border border-line text-dim hover:text-fg transition-colors"
-          >
-            {i.declineAll}
-          </button>
-          <button
-            onClick={() => applyChoice(true, true)}
-            className="px-4 py-[5px] bg-brand text-bg font-semibold hover:brightness-110 transition-all"
-          >
-            {i.acceptAll}
-          </button>
-        </div>
+    <div className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between gap-4 px-6 py-4 bg-bg-1 border-t border-line font-mono text-[12px] text-fg-1">
+      <p className="flex-1 min-w-0 text-dim">{i.msg}</p>
+      <div className="flex items-center gap-2 shrink-0">
+        <button
+          onClick={() => choose(false)}
+          className="px-4 py-[5px] border border-line text-dim hover:text-fg transition-colors"
+        >
+          {i.decline}
+        </button>
+        <button
+          onClick={() => choose(true)}
+          className="px-4 py-[5px] bg-brand text-bg font-semibold hover:brightness-110 transition-all"
+        >
+          {i.accept}
+        </button>
       </div>
-
-      {expanded && (
-        <div className="flex flex-col gap-3 pt-3 border-t border-line">
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={prefAnalytics}
-              onChange={(e) => setPrefAnalytics(e.target.checked)}
-              style={{ accentColor: "var(--brand)" }}
-              className="mt-[3px]"
-            />
-            <span>
-              <span className="text-fg-1">{i.analyticsLabel}</span>
-              <span className="block text-dim">{i.analyticsDesc}</span>
-            </span>
-          </label>
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={prefAds}
-              onChange={(e) => setPrefAds(e.target.checked)}
-              style={{ accentColor: "var(--brand)" }}
-              className="mt-[3px]"
-            />
-            <span>
-              <span className="text-fg-1">{i.adsLabel}</span>
-              <span className="block text-dim">{i.adsDesc}</span>
-            </span>
-          </label>
-          <button
-            onClick={() => applyChoice(prefAnalytics, prefAds)}
-            className="self-start px-4 py-[5px] bg-brand text-bg font-semibold hover:brightness-110 transition-all"
-          >
-            {i.save}
-          </button>
-        </div>
-      )}
     </div>
   );
 }
 
-// Retrait du consentement (lien "gérer les cookies" du footer) :
-// efface les deux choix ET les cookies GA posés lors d'un consentement antérieur.
-// Les cookies publicitaires Google (doubleclick.net) sont posés sur un domaine tiers
-// et ne peuvent pas être supprimés depuis notre JS — seul le rechargement futur du
-// script est bloqué.
-export function resetConsent() {
+/**
+ * Retrait du consentement — lien « gérer les cookies » du pied de page.
+ *
+ * Quand la CMP est présente, la chaîne de consentement lui appartient : nous ne
+ * pouvons pas la révoquer depuis notre code, seulement lui rendre la main via
+ * son écran de révocation. Sinon, on efface notre propre choix ainsi que les
+ * cookies déjà posés par Google Analytics.
+ *
+ * Retourne `true` si la CMP a repris la main, auquel cas l'appelant n'a pas
+ * besoin de recharger la page.
+ */
+export function resetConsent(): boolean {
+  if (reopenCmp()) return true;
+
   setCookie(COOKIE_KEY, "", -1);
-  setCookie(ADS_COOKIE_KEY, "", -1);
-  // Repasser les signaux Consent Mode à "denied" immédiatement : AdSense retombe
-  // en annonces non personnalisées sans attendre le rechargement de la page.
-  pushConsent(false, false);
+  pushAnalyticsConsent(false);
+
   const expired = "expires=Thu, 01 Jan 1970 00:00:00 GMT";
   const domain = location.hostname.replace(/^www\./, "");
   for (const entry of document.cookie.split("; ")) {
     const name = entry.split("=")[0];
     if (name === "_ga" || name?.startsWith("_ga_")) {
-      // GA pose ses cookies sur le domaine racine — supprimer avec et sans attribut domain
+      // GA pose ses cookies sur le domaine racine — supprimer avec et sans domaine
       document.cookie = `${name}=; ${expired}; path=/`;
       document.cookie = `${name}=; ${expired}; path=/; domain=.${domain}`;
     }
   }
+  return false;
 }
