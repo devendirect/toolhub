@@ -1,8 +1,22 @@
 import type { Lang } from "./types";
 
+/** Section de fond : un sous-titre et ses paragraphes. */
+export interface ContentSection {
+  h: Record<Lang, string>;
+  p: Record<Lang, string[]>;
+}
+
 export interface ToolContent {
   desc: Record<Lang, string>;
   useCases: Record<Lang, string[]>;
+  /**
+   * Contenu de fond : fonctionnement réel, référence de format, pièges courants,
+   * limites assumées. C'est la partie qui distingue une page outil d'une simple
+   * fiche produit — et ce que Google attend d'une page qui affiche de la
+   * publicité. Optionnel : les outils qui n'en ont pas encore gardent l'ancienne
+   * structure.
+   */
+  deepDive?: ContentSection[];
 }
 
 export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
@@ -78,13 +92,54 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "base64": {
     desc: {
-      en: "Encode text or binary files to Base64, or decode any Base64 string back to its original form. Supports both standard Base64 and URL-safe variants. Drop any file — image, PDF, archive — to get its Base64 representation. Commonly used for data URIs, JWT inspection and API payload debugging.",
-      fr: "Encodez du texte ou des fichiers binaires en Base64, ou décodez n'importe quelle chaîne Base64 vers sa forme d'origine. Supporte le Base64 standard et la variante URL-safe. Déposez n'importe quel fichier — image, PDF, archive — pour obtenir sa représentation Base64.",
+      en: "Encode text or binary files to Base64, or decode any Base64 string back to its original form. It handles standard Base64 — the alphabet ending in + and / — which is what data URIs, HTTP Basic auth headers and most API payloads use. Text in, text out: paste a string to encode it, or paste a Base64 string to read what it contains.",
+      fr: "Encodez du texte ou des fichiers binaires en Base64, ou décodez n'importe quelle chaîne Base64 vers sa forme d'origine. Il gère le Base64 standard — l'alphabet se terminant par + et / — celui qu'utilisent les data URI, les en-têtes d'authentification HTTP Basic et la plupart des charges utiles d'API. Du texte en entrée, du texte en sortie : collez une chaîne pour l'encoder, ou une chaîne Base64 pour lire ce qu'elle contient.",
     },
     useCases: {
       en: ["Decoding a JWT token payload to inspect its claims and expiry", "Embedding a small image as a data URI in HTML, CSS or JSON", "Encoding binary file attachments for email or REST API transmission", "Debugging Base64-encoded values in API responses or config files"],
       fr: ["Décoder un payload JWT pour inspecter ses claims et sa date d'expiration", "Intégrer une petite image en data URI dans du HTML, CSS ou JSON", "Encoder des pièces jointes binaires pour une transmission par e-mail ou API REST", "Déboguer des valeurs Base64 dans des réponses d'API ou des fichiers de config"],
     },
+    deepDive: [
+      {
+        h: { en: "Three bytes in, four characters out", fr: "Trois octets en entrée, quatre caractères en sortie" },
+        p: {
+          en: [
+          "Base64 rewrites arbitrary bytes using only 64 printable characters, so binary data can travel through channels that expect text. It reads the input three bytes at a time — 24 bits — and re-splits those bits into four groups of six, each group naming one character in the alphabet A–Z, a–z, 0–9, plus and slash.",
+          "Because four characters carry three bytes, the output is always about 33% larger than the input. When the length is not a multiple of three, the last group is padded with one or two equals signs, which is why so many Base64 strings end that way.",
+          ],
+          fr: [
+          "Le Base64 réécrit des octets quelconques avec seulement 64 caractères imprimables, pour que des données binaires puissent traverser des canaux qui attendent du texte. Il lit l'entrée par groupes de trois octets — 24 bits — et redécoupe ces bits en quatre groupes de six, chaque groupe désignant un caractère de l'alphabet A–Z, a–z, 0–9, plus et barre oblique.",
+          "Puisque quatre caractères transportent trois octets, la sortie est toujours environ 33 % plus volumineuse que l'entrée. Quand la longueur n'est pas un multiple de trois, le dernier groupe est complété par un ou deux signes égal — d'où la terminaison si fréquente des chaînes Base64.",
+          ],
+        },
+      },
+      {
+        h: { en: "Encoding is not encryption", fr: "Encoder n'est pas chiffrer" },
+        p: {
+          en: [
+          "Base64 hides nothing. It is a reversible transformation with no key, and anyone can decode it in a second — including with this page. Treating it as a security measure is a recurring and costly mistake: a password or an API key placed in a Base64 string is exactly as exposed as if it were written in plain text.",
+          "Its legitimate purpose is transport. Embedding a small image in a data URI, carrying an attachment through an email protocol designed for text, or fitting a binary payload into a JSON field are all good reasons. Protecting a secret is not one of them.",
+          ],
+          fr: [
+          "Le Base64 ne cache rien. C'est une transformation réversible sans clé, que n'importe qui peut défaire en une seconde — y compris avec cette page. Le prendre pour une mesure de sécurité est une erreur récurrente et coûteuse : un mot de passe ou une clé d'API placés dans une chaîne Base64 sont exactement aussi exposés que s'ils étaient écrits en clair.",
+          "Sa vraie raison d'être est le transport. Intégrer une petite image dans un data URI, faire passer une pièce jointe par un protocole de messagerie conçu pour du texte, ou loger une charge binaire dans un champ JSON sont de bons motifs. Protéger un secret n'en est pas un.",
+          ],
+        },
+      },
+      {
+        h: { en: "The URL-safe variant, and why decoding sometimes fails", fr: "La variante URL-safe, et pourquoi le décodage échoue parfois" },
+        p: {
+          en: [
+          "Standard Base64 uses plus and slash, both of which have a meaning inside a URL. A separate variant replaces them with minus and underscore, and usually drops the padding. JSON Web Tokens use that variant, which is why the three segments of a JWT are not standard Base64.",
+          "This tool reads and writes the standard alphabet only. If decoding a token or a URL fragment fails here, that is normally the reason: swap minus back to plus and underscore back to slash first, and the string will decode.",
+          ],
+          fr: [
+          "Le Base64 standard utilise le plus et la barre oblique, deux caractères qui ont un sens dans une URL. Une variante distincte les remplace par le moins et le tiret bas, et supprime généralement le remplissage. Les JSON Web Tokens emploient cette variante — c'est pourquoi les trois segments d'un JWT ne sont pas du Base64 standard.",
+          "Cet outil lit et écrit uniquement l'alphabet standard. Si le décodage d'un token ou d'un fragment d'URL échoue ici, c'est normalement la raison : remplacez d'abord les moins par des plus et les tirets bas par des barres obliques, et la chaîne se décodera.",
+          ],
+        },
+      },
+    ],
   },
   "markdown-html": {
     desc: {
@@ -98,13 +153,54 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "hash-generator": {
     desc: {
-      en: "Compute MD5, SHA-1 and SHA-256 fingerprints for any text or file — instantly, using the Web Crypto API in your browser. Use it to verify file integrity after a download, compare files without opening them, or generate content hashes for caching strategies.",
-      fr: "Calculez les empreintes MD5, SHA-1 et SHA-256 pour n'importe quel texte ou fichier — instantanément, via la Web Crypto API dans votre navigateur. Vérifiez l'intégrité d'un fichier téléchargé, comparez des fichiers sans les ouvrir, ou générez des hashes de contenu pour la mise en cache.",
+      en: "Compute MD5, SHA-1, SHA-256 and SHA-512 fingerprints for any text or file — instantly, using the Web Crypto API in your browser. Use it to verify file integrity after a download, compare files without opening them, or generate content hashes for caching strategies.",
+      fr: "Calculez les empreintes MD5, SHA-1, SHA-256 et SHA-512 pour n'importe quel texte ou fichier — instantanément, via la Web Crypto API dans votre navigateur. Vérifiez l'intégrité d'un fichier téléchargé, comparez des fichiers sans les ouvrir, ou générez des hashes de contenu pour la mise en cache.",
     },
     useCases: {
       en: ["Verifying a downloaded file against its published SHA-256 checksum", "Generating a content hash for cache-busting asset URLs", "Drop two versions of a file and compare their hashes — if they match, the files are byte-for-byte identical", "Computing MD5 checksums for legacy systems or upload verification"],
       fr: ["Vérifier un fichier téléchargé face à son checksum SHA-256 publié", "Générer un hash de contenu pour les URL d'assets avec cache-busting", "Déposez deux versions d'un fichier et comparez leurs hashes — s'ils correspondent, les fichiers sont identiques octet par octet", "Calculer des checksums MD5 pour des systèmes legacy ou la vérification d'upload"],
     },
+    deepDive: [
+      {
+        h: { en: "What a hash actually proves", fr: "Ce qu'une empreinte prouve réellement" },
+        p: {
+          en: [
+          "A hash is a one-way fingerprint: the same input always yields the same digest, and changing a single bit changes that digest completely. It proves two pieces of data are identical, which is why checksums sit next to published downloads.",
+          "What it does not prove is where the data came from. An attacker able to replace a file can usually replace the checksum published beside it. A hash detects accidental corruption reliably; against deliberate substitution you need a signature, not a digest.",
+          ],
+          fr: [
+          "Une empreinte est une signature à sens unique : la même entrée produit toujours le même condensat, et changer un seul bit le change entièrement. Elle prouve que deux données sont identiques — d'où les checksums publiés à côté des téléchargements.",
+          "Ce qu'elle ne prouve pas, c'est l'origine des données. Un attaquant capable de remplacer un fichier peut généralement remplacer aussi le checksum publié à côté. Une empreinte détecte de façon fiable une corruption accidentelle ; contre une substitution délibérée, il faut une signature, pas un condensat.",
+          ],
+        },
+      },
+      {
+        h: { en: "Choosing between the four algorithms", fr: "Choisir parmi les quatre algorithmes" },
+        p: {
+          en: [
+          "MD5 and SHA-1 are both cryptographically broken: constructing two different files that share a digest is practical, not theoretical. They remain available because you still meet them — verifying a legacy vendor checksum, matching an existing database column, deduplicating files where nobody is trying to fool you.",
+          "Wherever an adversary might be involved, use SHA-256, or SHA-512 for a wider margin. None of the four is suitable for storing passwords: they are built to be fast, which is exactly the wrong property there. Password storage needs a deliberately slow function such as bcrypt, scrypt or Argon2.",
+          ],
+          fr: [
+          "MD5 et SHA-1 sont tous deux cryptographiquement cassés : construire deux fichiers différents partageant un même condensat est réaliste, pas théorique. Ils restent proposés parce qu'on les rencontre encore — vérifier le checksum d'un éditeur ancien, correspondre à une colonne existante en base, dédupliquer des fichiers là où personne ne cherche à vous tromper.",
+          "Dès qu'un adversaire peut être impliqué, utilisez SHA-256, ou SHA-512 pour une marge plus large. Aucun des quatre ne convient au stockage de mots de passe : ils sont conçus pour être rapides, ce qui est précisément la mauvaise propriété dans ce cas. Un mot de passe demande une fonction volontairement lente comme bcrypt, scrypt ou Argon2.",
+          ],
+        },
+      },
+      {
+        h: { en: "Why your digest does not match theirs", fr: "Pourquoi votre empreinte ne correspond pas à la leur" },
+        p: {
+          en: [
+          "When a file hashes correctly but a piece of text does not, the cause is almost always invisible. Text mode hashes the exact bytes of what you paste, encoded as UTF-8 — so a trailing newline, a Windows CRLF line ending instead of a bare LF, or a byte-order mark at the start each produce a completely different digest.",
+          "The other frequent culprit is a paste that silently altered characters: an editor turning straight quotes into typographic ones, or a non-breaking space swapped for a regular one. When a text comparison disagrees, hash the file itself rather than its contents pasted into a field.",
+          ],
+          fr: [
+          "Quand un fichier donne la bonne empreinte mais qu'un texte non, la cause est presque toujours invisible. Le mode texte calcule l'empreinte des octets exacts de ce que vous collez, encodés en UTF-8 — un saut de ligne final, une fin de ligne CRLF Windows au lieu d'un simple LF, ou une marque d'ordre des octets en tête suffisent chacun à produire un condensat entièrement différent.",
+          "L'autre coupable fréquent est un collage qui a modifié des caractères en silence : un éditeur transformant les guillemets droits en guillemets typographiques, ou une espace insécable échangée contre une espace ordinaire. Quand une comparaison de texte échoue, calculez l'empreinte du fichier lui-même plutôt que de son contenu collé dans un champ.",
+          ],
+        },
+      },
+    ],
   },
   "regex-tester": {
     desc: {
@@ -128,13 +224,54 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "uuid-generator": {
     desc: {
-      en: "Generate universally unique identifiers in v1 (time-based), v4 (fully random) and v7 (time-ordered random) formats. One at a time or hundreds in a batch, copy individually or all at once. All generation runs in your browser using the Web Crypto API — no network request.",
-      fr: "Générez des identifiants universellement uniques aux formats v1 (basé sur le temps), v4 (entièrement aléatoire) et v7 (aléatoire ordonné dans le temps). Un seul ou des centaines en lot, copiez individuellement ou en une fois. Tout se passe dans le navigateur via la Web Crypto API — aucune requête réseau.",
+      en: "Generate version 4 UUIDs — the fully random variant, and the one you want in almost every situation. Produce 1, 5, 10 or 25 at a time, copy them one by one or the whole batch in a single click. Generation uses crypto.randomUUID() from the Web Crypto API, so the values come from your operating system's cryptographic random source and never touch a network.",
+      fr: "Générez des UUID version 4 — la variante entièrement aléatoire, celle qui convient dans la quasi-totalité des cas. Produisez-en 1, 5, 10 ou 25 d'un coup, copiez-les un par un ou le lot entier en un clic. La génération utilise crypto.randomUUID() de la Web Crypto API : les valeurs proviennent de la source aléatoire cryptographique de votre système d'exploitation et ne transitent par aucun réseau.",
     },
     useCases: {
-      en: ["Generating primary keys for database inserts in development or testing", "Seeding a local database with a batch of 50 UUIDs in one copy — no script needed", "Generating v7 UUIDs for time-sortable records in distributed systems", "Producing correlation IDs for distributed tracing across microservices"],
-      fr: ["Générer des clés primaires pour des insertions en base de données en développement ou test", "Remplir une base de données locale avec un lot de 50 UUID en un seul copier-coller — sans script", "Générer des UUID v7 pour des enregistrements triables dans le temps en systèmes distribués", "Produire des correlation ID pour le tracing distribué entre microservices"],
+      en: ["Generating primary keys for database inserts in development or testing", "Seeding a local database with a batch of 25 UUIDs in one copy — no script needed", "Producing throwaway identifiers for fixtures, mock payloads and API test data", "Producing correlation IDs for distributed tracing across microservices"],
+      fr: ["Générer des clés primaires pour des insertions en base de données en développement ou test", "Remplir une base de données locale avec un lot de 25 UUID en un seul copier-coller — sans script", "Générer des UUID v7 pour des enregistrements triables dans le temps en systèmes distribués", "Produire des correlation ID pour le tracing distribué entre microservices"],
     },
+    deepDive: [
+      {
+        h: { en: "What version 4 actually contains", fr: "Ce que contient réellement la version 4" },
+        p: {
+          en: [
+          "A UUID is 128 bits shown as 32 hexadecimal digits in five dash-separated groups. In version 4, four of those bits identify the version and two more mark the variant, which leaves 122 bits drawn at random. That is what the fixed 4 at the start of the third group tells you.",
+          "The randomness here comes from crypto.randomUUID(), which draws on the operating system's cryptographic generator rather than Math.random(). The distinction matters: Math.random() is fast but predictable enough that sequences can be reconstructed, which would make identifiers guessable.",
+          ],
+          fr: [
+          "Un UUID fait 128 bits, présentés en 32 chiffres hexadécimaux répartis en cinq groupes séparés par des tirets. En version 4, quatre de ces bits identifient la version et deux autres marquent la variante, ce qui laisse 122 bits tirés au hasard. C'est ce qu'indique le 4 fixe en tête du troisième groupe.",
+          "L'aléa provient ici de crypto.randomUUID(), qui s'appuie sur le générateur cryptographique du système d'exploitation plutôt que sur Math.random(). La distinction compte : Math.random() est rapide mais suffisamment prévisible pour qu'on puisse reconstituer des séquences, ce qui rendrait les identifiants devinables.",
+          ],
+        },
+      },
+      {
+        h: { en: "Collisions, in practice", fr: "Les collisions, en pratique" },
+        p: {
+          en: [
+          "With 122 random bits, the number of possible values is around 5.3 undecillion. Generating a billion UUIDs per second for a century would still leave the probability of a single duplicate negligible — far below the odds of the storage silently corrupting a row.",
+          "This holds only when the randomness is genuinely random. Documented collisions in the wild almost always trace back to a weak generator, or to virtual machines cloned from a snapshot that resumed with an identical entropy pool, rather than to the format running out of room.",
+          ],
+          fr: [
+          "Avec 122 bits aléatoires, le nombre de valeurs possibles avoisine 5,3 undécillions. Générer un milliard d'UUID par seconde pendant un siècle laisserait encore la probabilité d'un seul doublon négligeable — très en dessous du risque que le stockage corrompe silencieusement une ligne.",
+          "Cela ne vaut que si l'aléa est réellement aléatoire. Les collisions documentées en production remontent presque toujours à un générateur faible, ou à des machines virtuelles clonées depuis un instantané et reprises avec un pool d'entropie identique, plutôt qu'à un format à court de place.",
+          ],
+        },
+      },
+      {
+        h: { en: "The cost of a random primary key", fr: "Le coût d'une clé primaire aléatoire" },
+        p: {
+          en: [
+          "Version 4 has one real drawback as a database key: it is random, so consecutive inserts land at unrelated positions in the index. On a clustered index — the default for InnoDB and SQL Server — that fragments pages and slows down bulk insertion noticeably compared with a sequential integer.",
+          "This is what versions 1 and 7 address by putting a timestamp in the high bits, making identifiers roughly sortable by creation time. If insertion throughput is your bottleneck, that is the trade-off to look at; for the vast majority of applications, version 4 is the right default.",
+          ],
+          fr: [
+          "La version 4 a un vrai inconvénient comme clé de base de données : elle est aléatoire, donc des insertions consécutives atterrissent à des positions sans rapport dans l'index. Sur un index clusterisé — le défaut d'InnoDB et de SQL Server — cela fragmente les pages et ralentit sensiblement l'insertion en masse par rapport à un entier séquentiel.",
+          "C'est ce que corrigent les versions 1 et 7 en plaçant un horodatage dans les bits de poids fort, rendant les identifiants à peu près triables par date de création. Si le débit d'insertion est votre goulot d'étranglement, c'est l'arbitrage à examiner ; pour l'immense majorité des applications, la version 4 reste le bon défaut.",
+          ],
+        },
+      },
+    ],
   },
   "cron-generator": {
     desc: {
@@ -148,23 +285,105 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "case-converter": {
     desc: {
-      en: "Switch text between eight case formats in a single click — from UPPER CASE and lower case to camelCase, PascalCase, snake_case and kebab-case. Handles Unicode and accented characters correctly, making it reliable for both code identifiers and natural-language content in any language.",
-      fr: "Passez d'un format de casse à l'autre en un seul clic — de MAJUSCULE et minuscule à camelCase, PascalCase, snake_case et kebab-case. Gère correctement l'Unicode et les caractères accentués, fiable pour les identifiants de code comme pour le contenu en langage naturel.",
+      en: "Switch text between seven case formats in a single click: UPPER CASE, lower case, Title Case, camelCase, PascalCase, snake_case and kebab-case. Handles Unicode and accented characters correctly, making it reliable for both code identifiers and natural-language content in any language.",
+      fr: "Passez d'un format de casse à l'autre en un seul clic : MAJUSCULE, minuscule, Titre, camelCase, PascalCase, snake_case et kebab-case. Gère correctement l'Unicode et les caractères accentués, fiable pour les identifiants de code comme pour le contenu en langage naturel.",
     },
     useCases: {
       en: ["Converting a list of column headers to snake_case for database field names", "Reformatting API response keys from camelCase to kebab-case for CSS custom properties", "Converting titles to Title Case for blog headlines or document headings", "Batch-converting variable names when migrating between coding conventions"],
       fr: ["Convertir une liste d'en-têtes de colonnes en snake_case pour des noms de champs de base de données", "Reformater des clés de réponse API de camelCase en kebab-case pour des propriétés CSS", "Convertir des titres en Titre pour des articles de blog ou des en-têtes de documents", "Convertir en lot des noms de variables lors d'une migration entre conventions de codage"],
     },
+    deepDive: [
+      {
+        h: { en: "How the text is cut into words", fr: "Comment le texte est découpé en mots" },
+        p: {
+          en: [
+          "Every format except UPPER CASE and lower case needs to know where the words are. The splitting works on three signals: a lowercase letter immediately followed by an uppercase one, any run of underscores or hyphens, and whitespace. That is what lets the same input arrive as camelCase, snake_case or a plain sentence and still convert correctly.",
+          "UPPER CASE and lower case skip that step entirely and transform the string as it stands, which is why they are the only two formats that preserve your punctuation and spacing untouched.",
+          ],
+          fr: [
+          "Tous les formats sauf MAJUSCULE et minuscule ont besoin de savoir où sont les mots. Le découpage s'appuie sur trois signaux : une minuscule immédiatement suivie d'une majuscule, toute suite de tirets bas ou de traits d'union, et les espaces. C'est ce qui permet à une même entrée d'arriver en camelCase, en snake_case ou en phrase ordinaire et d'être malgré tout convertie correctement.",
+          "MAJUSCULE et minuscule sautent cette étape et transforment la chaîne telle quelle — d'où le fait que ce soient les deux seuls formats à préserver intacts votre ponctuation et vos espaces.",
+          ],
+        },
+      },
+      {
+        h: { en: "Acronyms are the known weak spot", fr: "Les acronymes sont le point faible connu" },
+        p: {
+          en: [
+          "Consecutive capitals carry no boundary signal, so an acronym is read as a single word. HTTPResponse splits after the P — where a lowercase letter meets an uppercase one — giving httpResponse in camelCase, which is usually what you want. But APIKey behaves the same way and yields apikey rather than apiKey.",
+          "Once words are identified, each is lowercased before being recapitalised, so an acronym never survives in capitals: converting an identifier containing URL to Title Case produces Url. When acronym casing matters, check the result rather than assuming it.",
+          ],
+          fr: [
+          "Des majuscules consécutives ne portent aucun signal de frontière : un acronyme est donc lu comme un seul mot. HTTPResponse se découpe après le P — là où une minuscule rencontre une majuscule — ce qui donne httpResponse en camelCase, généralement le résultat voulu. Mais APIKey se comporte pareil et produit apikey plutôt que apiKey.",
+          "Une fois les mots identifiés, chacun est mis en minuscules avant d'être recapitalisé : un acronyme ne survit donc jamais en capitales, et convertir un identifiant contenant URL en Titre produit Url. Quand la casse des acronymes compte, vérifiez le résultat plutôt que de le supposer.",
+          ],
+        },
+      },
+      {
+        h: { en: "Which conversions are reversible", fr: "Quelles conversions sont réversibles" },
+        p: {
+          en: [
+          "Going from snake_case to camelCase and back returns the original, because both formats mark their boundaries unambiguously. The same is true between kebab-case, snake_case and PascalCase: the separators differ, the word boundaries survive.",
+          "Anything passing through Title Case or a plain sentence loses information, since spaces cannot be told apart from separators that were originally underscores. Accented letters are handled correctly throughout — lowercase and uppercase mappings apply to them as they do to plain ASCII — but a script without letter case, such as Chinese or Arabic, comes back unchanged.",
+          ],
+          fr: [
+          "Passer de snake_case à camelCase puis revenir restitue l'original, parce que les deux formats marquent leurs frontières sans ambiguïté. Il en va de même entre kebab-case, snake_case et PascalCase : les séparateurs diffèrent, les frontières de mots survivent.",
+          "Tout ce qui transite par le format Titre ou par une phrase ordinaire perd de l'information, puisqu'on ne peut plus distinguer les espaces des séparateurs qui étaient à l'origine des tirets bas. Les lettres accentuées sont correctement traitées de bout en bout — les correspondances minuscule/majuscule s'y appliquent comme à l'ASCII — mais une écriture sans casse, comme le chinois ou l'arabe, ressort inchangée.",
+          ],
+        },
+      },
+    ],
   },
   "word-counter": {
     desc: {
-      en: "Paste or type any text to get a real-time breakdown of words, characters, sentences and paragraphs — plus an estimated reading time at 200 words per minute. Useful for blog posts, press releases, academic submissions and any content with length requirements.",
-      fr: "Collez ou tapez n'importe quel texte pour obtenir une analyse en temps réel des mots, caractères, phrases et paragraphes — avec une estimation du temps de lecture à 200 mots par minute. Utile pour les articles de blog, communiqués de presse, soumissions académiques et tout contenu avec des contraintes de longueur.",
+      en: "Paste or type any text to get a real-time breakdown of words, characters, sentences and paragraphs — plus an estimated reading time at 238 words per minute. Useful for blog posts, press releases, academic submissions and any content with length requirements.",
+      fr: "Collez ou tapez n'importe quel texte pour obtenir une analyse en temps réel des mots, caractères, phrases et paragraphes — avec une estimation du temps de lecture à 238 mots par minute. Utile pour les articles de blog, communiqués de presse, soumissions académiques et tout contenu avec des contraintes de longueur.",
     },
     useCases: {
       en: ["Checking article length before submitting to a publication with strict word limits", "Estimating how long a speech or presentation script will take to deliver", "Counting characters for social media posts (Twitter, LinkedIn, meta descriptions)", "Verifying minimum word count targets for SEO content strategies"],
       fr: ["Vérifier la longueur d'un article avant soumission à une publication avec limite de mots", "Estimer la durée d'un discours ou d'un script de présentation", "Compter les caractères pour des publications sur les réseaux sociaux ou des meta descriptions", "Vérifier les cibles de nombre de mots minimum pour des stratégies de contenu SEO"],
     },
+    deepDive: [
+      {
+        h: { en: "What counts as a word", fr: "Ce qui compte comme un mot" },
+        p: {
+          en: [
+          "Splitting on spaces is the obvious approach and the wrong one for anything but English prose. It miscounts hyphenated compounds, breaks on apostrophes inconsistently, and fails completely for Chinese, Japanese and Thai, which do not separate words with spaces at all.",
+          "This counter uses the browser's own Unicode segmentation instead, the same machinery that decides what a double-click selects. It applies the locale-aware word boundary rules of the Unicode standard, so a Japanese sentence yields a meaningful count rather than one.",
+          ],
+          fr: [
+          "Découper sur les espaces est l'approche évidente, et la mauvaise pour autre chose que de la prose anglaise. Elle compte mal les composés à trait d'union, se comporte de façon incohérente sur les apostrophes, et échoue complètement pour le chinois, le japonais et le thaï, qui ne séparent pas les mots par des espaces.",
+          "Ce compteur s'appuie plutôt sur la segmentation Unicode du navigateur, la même mécanique qui décide de ce qu'un double-clic sélectionne. Elle applique les règles de frontière de mot du standard Unicode selon la locale : une phrase japonaise donne donc un compte pertinent, et non un seul mot.",
+          ],
+        },
+      },
+      {
+        h: { en: "Where the reading time comes from", fr: "D'où vient le temps de lecture" },
+        p: {
+          en: [
+          "The estimate uses 238 words per minute, a figure from a 2019 meta-analysis by Brysbaert covering more than a hundred studies of silent reading in adults. Round numbers like 200 or 250 circulate widely but are conventions rather than measurements.",
+          "Treat it as an order of magnitude. Reading speed varies enormously with the material: dense technical documentation is read far more slowly than a news article, reading aloud runs closer to 150 words per minute, and a text skimmed for a single fact is not read at all in the sense the figure assumes.",
+          ],
+          fr: [
+          "L'estimation retient 238 mots par minute, un chiffre issu d'une méta-analyse de Brysbaert publiée en 2019 et couvrant plus d'une centaine d'études sur la lecture silencieuse chez l'adulte. Les nombres ronds comme 200 ou 250 circulent largement mais relèvent de la convention plutôt que de la mesure.",
+          "Prenez-le comme un ordre de grandeur. La vitesse de lecture varie énormément selon le matériau : une documentation technique dense se lit bien plus lentement qu'un article de presse, la lecture à voix haute tourne plutôt autour de 150 mots par minute, et un texte parcouru pour y trouver un fait précis n'est pas lu au sens que suppose le chiffre.",
+          ],
+        },
+      },
+      {
+        h: { en: "Sentences and paragraphs are approximations", fr: "Phrases et paragraphes sont des approximations" },
+        p: {
+          en: [
+          "Sentences are counted by looking for runs of full stops, exclamation marks and question marks. That heuristic is right most of the time and wrong in predictable places: abbreviations, decimal numbers, ellipses and domain names each add a sentence that is not there.",
+          "Character counts are exact by comparison, and both variants are shown because platforms disagree on which they enforce. If you are checking a meta description or a social post against a limit, use the character count rather than the word count, since that is what the limit is actually expressed in.",
+          ],
+          fr: [
+          "Les phrases sont comptées en repérant les suites de points, points d'exclamation et points d'interrogation. Cette heuristique est juste la plupart du temps et fausse à des endroits prévisibles : abréviations, nombres décimaux, points de suspension et noms de domaine ajoutent chacun une phrase qui n'existe pas.",
+          "Le compte de caractères est exact en comparaison, et les deux variantes sont affichées parce que les plateformes ne s'accordent pas sur celle qu'elles appliquent. Pour vérifier une meta description ou un post face à une limite, fiez-vous au compte de caractères plutôt qu'à celui des mots : c'est dans cette unité que la limite est réellement exprimée.",
+          ],
+        },
+      },
+    ],
   },
   "remove-linebreaks": {
     desc: {
@@ -185,16 +404,98 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
       en: ["Creating mirror text for design, watermarks or social media posts", "Reversing word order to analyze or demonstrate sentence structure", "Generating reversed strings for simple text puzzles or games", "Testing string reversal logic in an application with real Unicode edge cases"],
       fr: ["Créer du texte miroir pour du design, des filigranes ou des publications sur les réseaux sociaux", "Inverser l'ordre des mots pour analyser ou illustrer la structure d'une phrase", "Générer des chaînes inversées pour des puzzles ou jeux de texte", "Tester la logique d'inversion de chaînes avec de vrais cas limites Unicode"],
     },
+    deepDive: [
+      {
+        h: { en: "Code points are not characters", fr: "Les points de code ne sont pas des caractères" },
+        p: {
+          en: [
+          "Reversing text looks trivial until Unicode is involved. Splitting a string the naive way cuts it into code points, and several code points often combine into what a reader sees as one character: a letter plus a combining accent, a family emoji joined by zero-width joiners, a regional-indicator pair forming a flag.",
+          "Reverse by code point and those units come apart — the accent lands on the neighbouring letter, the family becomes three separate people, the flag turns into two unrelated letters. This tool segments by grapheme cluster instead, so what you see as one character moves as one character.",
+          ],
+          fr: [
+          "Inverser du texte paraît trivial jusqu'à ce qu'Unicode s'en mêle. Découper une chaîne naïvement la coupe en points de code, et plusieurs points de code forment souvent ce qu'un lecteur perçoit comme un seul caractère : une lettre plus un accent combinant, un emoji famille assemblé par liaisons de largeur nulle, une paire d'indicateurs régionaux formant un drapeau.",
+          "Inversez par point de code et ces unités se disloquent — l'accent atterrit sur la lettre voisine, la famille devient trois personnages distincts, le drapeau se transforme en deux lettres sans rapport. Cet outil segmente par groupe de graphèmes : ce que vous voyez comme un caractère se déplace comme un caractère.",
+          ],
+        },
+      },
+      {
+        h: { en: "Right-to-left scripts will still look wrong", fr: "Les écritures de droite à gauche paraîtront tout de même fausses" },
+        p: {
+          en: [
+          "Arabic and Hebrew are stored in logical order — the order in which the letters are read — and reordered for display by the browser's bidirectional algorithm. Reversing the stored string therefore produces something that renders unpredictably, because the display algorithm runs again over your reversed sequence.",
+          "There is no correct way to reverse bidirectional text in the abstract: the answer depends on whether you mean the reading order or the visual order. If you need mirrored display for a design, use a CSS transform rather than reversing the underlying string.",
+          ],
+          fr: [
+          "L'arabe et l'hébreu sont stockés en ordre logique — celui dans lequel les lettres se lisent — puis réordonnés à l'affichage par l'algorithme bidirectionnel du navigateur. Inverser la chaîne stockée produit donc un rendu imprévisible, puisque l'algorithme d'affichage repasse ensuite sur votre séquence inversée.",
+          "Il n'existe pas de façon correcte d'inverser du texte bidirectionnel dans l'absolu : la réponse dépend de si vous parlez de l'ordre de lecture ou de l'ordre visuel. Si vous cherchez un affichage en miroir pour du design, utilisez une transformation CSS plutôt que d'inverser la chaîne sous-jacente.",
+          ],
+        },
+      },
+      {
+        h: { en: "Three modes, three different operations", fr: "Trois modes, trois opérations différentes" },
+        p: {
+          en: [
+          "Character mode reverses the whole text end to end, lines included, so the last line becomes the first. Word mode reverses the order of words within each line and leaves the lines where they are. Line mode reverses the order of the lines and leaves each line's contents intact.",
+          "Word mode splits on single spaces, which keeps punctuation attached to its word: reversing a sentence moves the full stop with the word it follows rather than to the end. Applying any mode twice returns the original text exactly.",
+          ],
+          fr: [
+          "Le mode caractère inverse l'ensemble du texte de bout en bout, sauts de ligne compris : la dernière ligne devient donc la première. Le mode mot inverse l'ordre des mots à l'intérieur de chaque ligne et laisse les lignes en place. Le mode ligne inverse l'ordre des lignes et laisse le contenu de chacune intact.",
+          "Le mode mot découpe sur les espaces simples, ce qui garde la ponctuation attachée à son mot : inverser une phrase déplace le point avec le mot qu'il suit plutôt que de l'envoyer à la fin. Appliquer deux fois n'importe quel mode restitue exactement le texte d'origine.",
+          ],
+        },
+      },
+    ],
   },
   "url-encoder": {
     desc: {
-      en: "Convert special characters to percent-encoded form for safe use in URLs, or decode them back to readable text. Handles both complete URLs (preserving slashes and structure) and individual components (encoding everything including slashes). Supports UTF-8 Unicode encoding per the HTML5 specification.",
-      fr: "Convertissez les caractères spéciaux en forme percent-encodée pour une utilisation sûre dans les URL, ou décodez-les en texte lisible. Gère les URL complètes (en préservant les barres obliques et la structure) et les composants individuels (en encodant tout, y compris les barres obliques). Supporte l'encodage Unicode UTF-8 selon la spécification HTML5.",
+      en: "Convert special characters to percent-encoded form for safe use in URLs, or decode them back to readable text. It applies component encoding: every reserved character is escaped, slashes included. That is what you want for a query-string value, a path segment or a form field — and precisely what you must not run a whole URL through, since it would escape the separators that give the URL its structure. Non-ASCII input is encoded as UTF-8 bytes.",
+      fr: "Convertissez les caractères spéciaux en forme percent-encodée pour une utilisation sûre dans les URL, ou décodez-les en texte lisible. Il applique un encodage de composant : tout caractère réservé est échappé, barres obliques comprises. C'est ce qu'il faut pour une valeur de query string, un segment de chemin ou un champ de formulaire — et précisément ce qu'il ne faut pas appliquer à une URL entière, puisque cela échapperait les séparateurs qui lui donnent sa structure. Les caractères non ASCII sont encodés en octets UTF-8.",
     },
     useCases: {
-      en: ["Encoding a query string containing spaces, accents or special characters", "Decoding a percent-encoded URL to make it human-readable", "Encoding a path segment that contains Unicode or slash characters", "Debugging URL encoding mismatches in API requests or redirects"],
+      en: ["Encoding a query string containing spaces, accents or special characters", "Decoding a percent-encoded URL to make it human-readable", "Escaping a value that itself contains a slash, so it survives inside a path segment", "Debugging URL encoding mismatches in API requests or redirects"],
       fr: ["Encoder une chaîne de requête contenant des espaces, accents ou caractères spéciaux", "Décoder une URL percent-encodée pour la rendre lisible", "Encoder un segment de chemin contenant des caractères Unicode ou des barres obliques", "Déboguer des décalages d'encodage URL dans des requêtes API ou des redirections"],
     },
+    deepDive: [
+      {
+        h: { en: "Percent-encoding, byte by byte", fr: "Le percent-encoding, octet par octet" },
+        p: {
+          en: [
+          "Percent-encoding replaces a character with a percent sign followed by the hexadecimal value of each of its bytes. A space becomes %20. Non-ASCII characters are first encoded as UTF-8, which is why an accented letter produces two groups and an emoji four: é is %C3%A9, and a rocket is %F0%9F%9A%80.",
+          "A small set of characters is deliberately left alone — letters, digits, and the marks minus, underscore, dot, exclamation, tilde, asterisk, apostrophe and parentheses. They are safe everywhere in a URL, so encoding them would only add noise.",
+          ],
+          fr: [
+          "Le percent-encoding remplace un caractère par un signe pourcent suivi de la valeur hexadécimale de chacun de ses octets. Une espace devient %20. Les caractères non ASCII sont d'abord encodés en UTF-8, ce qui explique qu'une lettre accentuée produise deux groupes et un emoji quatre : é donne %C3%A9, et une fusée %F0%9F%9A%80.",
+          "Un petit ensemble de caractères est volontairement laissé intact — lettres, chiffres, et les signes moins, tiret bas, point, point d'exclamation, tilde, astérisque, apostrophe et parenthèses. Ils sont sûrs partout dans une URL : les encoder n'ajouterait que du bruit.",
+          ],
+        },
+      },
+      {
+        h: { en: "Never run a whole URL through this", fr: "N'y passez jamais une URL entière" },
+        p: {
+          en: [
+          "This tool encodes a component, meaning it escapes every reserved character including the slash, the question mark, the ampersand and the colon. Feed it a complete address and the result is a single opaque string in which the scheme, host and path separators have all been escaped — valid as a value, useless as a link.",
+          "That behaviour is the correct one for the job it is meant for: taking a value that may itself contain slashes or ampersands and making it survive inside a query parameter or a path segment. Encode the parts, then assemble the URL — not the other way round.",
+          ],
+          fr: [
+          "Cet outil encode un composant : il échappe donc tout caractère réservé, y compris la barre oblique, le point d'interrogation, l'esperluette et les deux-points. Donnez-lui une adresse complète et le résultat est une chaîne opaque unique où le schéma, l'hôte et les séparateurs de chemin ont tous été échappés — valide comme valeur, inutilisable comme lien.",
+          "Ce comportement est le bon pour l'usage visé : prendre une valeur pouvant elle-même contenir des barres obliques ou des esperluettes et la faire survivre dans un paramètre de requête ou un segment de chemin. Encodez les morceaux, puis assemblez l'URL — pas l'inverse.",
+          ],
+        },
+      },
+      {
+        h: { en: "Why a space is sometimes a plus sign", fr: "Pourquoi une espace devient parfois un plus" },
+        p: {
+          en: [
+          "You will meet spaces written both as %20 and as a plus sign. The plus form comes from HTML form submission, whose media type predates the modern URL specification and encodes spaces that way in a query string. It is valid there, and only there.",
+          "In a path segment a plus sign is a literal plus, not a space. Decoding a query string with a decoder that does not know the form convention therefore leaves stray plus signs in the text — and encoding a path with a form encoder corrupts any genuine plus it contains.",
+          ],
+          fr: [
+          "On rencontre les espaces écrites tantôt %20, tantôt sous forme de signe plus. La forme plus vient de la soumission de formulaire HTML, dont le type de média est antérieur à la spécification moderne des URL et qui encode ainsi les espaces dans une query string. Elle est valide là, et seulement là.",
+          "Dans un segment de chemin, un signe plus est un vrai plus, pas une espace. Décoder une query string avec un décodeur ignorant la convention des formulaires laisse donc des plus parasites dans le texte — et encoder un chemin avec un encodeur de formulaire corrompt tout plus légitime qu'il contient.",
+          ],
+        },
+      },
+    ],
   },
   "html-entities": {
     desc: {
@@ -205,6 +506,47 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
       en: ["Escaping user input before rendering it in an HTML template", "Preparing code snippets for display in a <pre> or <code> block without browser interpretation", "Decoding HTML entities found in scraped or exported web content", "Converting accented characters to named entities for legacy email clients"],
       fr: ["Échapper la saisie utilisateur avant de la rendre dans un template HTML", "Préparer des extraits de code pour affichage dans <pre> ou <code> sans interprétation par le navigateur", "Décoder les entités HTML dans du contenu web extrait ou exporté", "Convertir les caractères accentués en entités nommées pour des clients e-mail legacy"],
     },
+    deepDive: [
+      {
+        h: { en: "Named references or numeric references?", fr: "Références nommées ou numériques ?" },
+        p: {
+          en: [
+          "Every character can be written two ways: by name (&eacute;) or by code point (&#233; in decimal, &#xE9; in hexadecimal). Both produce the same é. Named references stay readable for a human editing the source; numeric references always work, because they depend on no lookup table.",
+          "This tool prefers the named form whenever HTML 4 defines one — the Latin-1 range, common punctuation, currency symbols and the Greek alphabet — and falls back to a decimal reference for everything else. That is why an emoji comes out as &#128512;: it simply has no name to use.",
+          ],
+          fr: [
+          "Chaque caractère peut s'écrire de deux façons : par son nom (&eacute;) ou par son point de code (&#233; en décimal, &#xE9; en hexadécimal). Les deux produisent le même é. La forme nommée reste lisible à l'œil nu dans le source ; la forme numérique fonctionne toujours, car elle ne dépend d'aucune table de correspondance.",
+          "Cet outil privilégie la forme nommée chaque fois que HTML 4 en définit une — plage Latin-1, ponctuation courante, symboles monétaires et alphabet grec — et bascule sur une référence décimale pour tout le reste. C'est pourquoi un emoji ressort en &#128512; : il n'a tout simplement pas de nom.",
+          ],
+        },
+      },
+      {
+        h: { en: "Escaping depends on where the text lands", fr: "L'échappement dépend de l'endroit où le texte atterrit" },
+        p: {
+          en: [
+          "HTML escaping is not a universal sanitizer. It is correct for text placed between tags, and for attribute values provided those values are quoted. It is the wrong tool everywhere else: inside a script block you need JavaScript string escaping, inside a URL percent-encoding, inside a CSS rule CSS escaping.",
+          "The classic failure is the unquoted attribute. When a value is dropped into markup without surrounding quotes, escaping angle brackets changes nothing — a single space is enough to append an attribute of one's choosing. Escaping protects you only when the surrounding syntax already delimits the value.",
+          ],
+          fr: [
+          "L'échappement HTML n'est pas un désinfectant universel. Il est correct pour du texte placé entre des balises, et pour des valeurs d'attribut à condition que ces valeurs soient entre guillemets. Il est inadapté partout ailleurs : dans un bloc script il faut un échappement de chaîne JavaScript, dans une URL un percent-encoding, dans une règle CSS un échappement CSS.",
+          "L'échec classique est l'attribut sans guillemets. Quand une valeur est insérée dans le balisage sans guillemets autour, échapper les chevrons ne change rien — une simple espace suffit à ajouter l'attribut de son choix. L'échappement ne vous protège que si la syntaxe environnante délimite déjà la valeur.",
+          ],
+        },
+      },
+      {
+        h: { en: "Where this tool stops", fr: "Où cet outil s'arrête" },
+        p: {
+          en: [
+          "Decoding covers the HTML 4 named references plus every numeric reference, decimal or hexadecimal. HTML 5 added around two thousand further names, many of them aliases; those are left untouched rather than mangled, so an unrecognised reference comes back exactly as you typed it.",
+          "A reference pointing outside the Unicode range, or at an unpaired surrogate, is returned as-is for the same reason. Silently emitting a replacement character would hide a real problem in your source data instead of surfacing it.",
+          ],
+          fr: [
+          "Le décodage couvre les références nommées de HTML 4 ainsi que toutes les références numériques, décimales ou hexadécimales. HTML 5 en a ajouté environ deux mille, souvent des alias ; celles-là sont laissées intactes plutôt que déformées, si bien qu'une référence non reconnue ressort exactement telle que saisie.",
+          "Une référence pointant hors de la plage Unicode, ou vers un substitut isolé, est restituée telle quelle pour la même raison. Émettre silencieusement un caractère de remplacement masquerait un vrai problème dans vos données source au lieu de le révéler.",
+          ],
+        },
+      },
+    ],
   },
   "palette-generator": {
     desc: {
@@ -275,6 +617,47 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
       en: ["Generating test JWTs to validate your backend authentication middleware", "Creating short-lived tokens for local API testing without spinning up an auth server", "Understanding the JWT format by modifying claims and observing the output", "Quickly signing a payload during a demo or code review without installing a library"],
       fr: ["Générer des JWT de test pour valider votre middleware d'authentification backend", "Créer des tokens de courte durée pour des tests d'API locaux sans démarrer un serveur d'auth", "Comprendre le format JWT en modifiant les claims et en observant le résultat", "Signer rapidement un payload lors d'une démo ou d'une revue de code sans installer de bibliothèque"],
     },
+    deepDive: [
+      {
+        h: { en: "Three parts, only one of them secret", fr: "Trois parties, une seule secrète" },
+        p: {
+          en: [
+          "A JWT is three Base64url segments joined by dots. The first is a header naming the algorithm, the second is the payload holding your claims, and the third is a signature over the first two. Header and payload are encoded, not encrypted: anyone holding the token can read them, so a JWT is never a place for confidential data.",
+          "The signature is what makes the token trustworthy. It proves the payload has not been altered since it was signed, and that whoever signed it held the key. Change a single character of the payload and the signature no longer matches.",
+          ],
+          fr: [
+          "Un JWT est fait de trois segments Base64url reliés par des points. Le premier est un en-tête nommant l'algorithme, le deuxième la charge utile contenant vos claims, le troisième une signature portant sur les deux premiers. En-tête et charge utile sont encodés, pas chiffrés : quiconque détient le token peut les lire, un JWT n'est donc jamais l'endroit où loger des données confidentielles.",
+          "C'est la signature qui rend le token digne de confiance. Elle prouve que la charge utile n'a pas été modifiée depuis sa signature, et que le signataire détenait la clé. Changez un seul caractère de la charge utile et la signature ne correspond plus.",
+          ],
+        },
+      },
+      {
+        h: { en: "HS256, and when it is the wrong choice", fr: "HS256, et quand c'est le mauvais choix" },
+        p: {
+          en: [
+          "HS256 is symmetric: the same secret both signs and verifies. That is simple and fast, and it fits a system where one service issues tokens and verifies them itself. It stops fitting as soon as a second party needs to verify, because verifying requires the very key that allows forging.",
+          "That is where the asymmetric algorithms come in — RS256 and ES256 sign with a private key and verify with a public one, so a token can be checked by services that could never mint it. This tool implements HS256 only, which covers local testing but not a multi-service architecture.",
+          ],
+          fr: [
+          "HS256 est symétrique : le même secret signe et vérifie. C'est simple et rapide, et cela convient à un système où un seul service émet les tokens et les vérifie lui-même. Cela cesse de convenir dès qu'un tiers doit vérifier, puisque vérifier exige la clé même qui permet de forger.",
+          "C'est là qu'interviennent les algorithmes asymétriques — RS256 et ES256 signent avec une clé privée et vérifient avec une clé publique, si bien qu'un token peut être contrôlé par des services incapables de l'émettre. Cet outil n'implémente que HS256, ce qui couvre les tests locaux mais pas une architecture multi-services.",
+          ],
+        },
+      },
+      {
+        h: { en: "The claims that decide whether a token is accepted", fr: "Les claims qui décident de l'acceptation d'un token" },
+        p: {
+          en: [
+          "Several payload fields have a standard meaning that libraries enforce automatically. The most common source of a token rejected as expired is exp: it is a Unix timestamp in seconds, and writing it in milliseconds — the unit JavaScript hands you — yields a date far enough in the future that some validators reject it outright.",
+          "Alongside it, iat records when the token was issued, nbf the moment before which it must not be accepted, and sub identifies the subject. A payload with no exp at all produces a token that never expires, which is rarely what you want outside a test.",
+          ],
+          fr: [
+          "Plusieurs champs de la charge utile ont une signification normalisée que les bibliothèques appliquent automatiquement. La cause la plus fréquente d'un token rejeté comme expiré est exp : c'est un timestamp Unix en secondes, et l'écrire en millisecondes — l'unité que JavaScript vous donne — produit une date assez lointaine pour que certains validateurs la refusent d'emblée.",
+          "À ses côtés, iat enregistre la date d'émission, nbf le moment avant lequel le token ne doit pas être accepté, et sub identifie le sujet. Une charge utile sans exp du tout produit un token qui n'expire jamais, ce qui est rarement souhaitable en dehors d'un test.",
+          ],
+        },
+      },
+    ],
   },
   "readability": {
     desc: {
@@ -295,6 +678,47 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
       en: ["Building comparison tables for README files without remembering pipe syntax", "Creating feature matrices for a product documentation site", "Generating Markdown tables from manually typed data to paste into GitHub issues or PRs", "Formatting data tables for blog posts or technical articles written in Markdown"],
       fr: ["Créer des tableaux comparatifs pour des README sans mémoriser la syntaxe pipe", "Générer des matrices de fonctionnalités pour un site de documentation produit", "Créer des tableaux Markdown depuis des données saisies manuellement pour les coller dans des issues ou PR GitHub", "Formater des tableaux de données pour des articles de blog ou des articles techniques en Markdown"],
     },
+    deepDive: [
+      {
+        h: { en: "Only the separator row is load-bearing", fr: "Seule la ligne de séparation porte le sens" },
+        p: {
+          en: [
+          "A Markdown table needs a header row, a separator row of dashes, and any number of body rows. Only the separator row carries structure: the number of segments it contains fixes the number of columns, and the colons placed inside it set each column's alignment.",
+          "Everything else is cosmetic. Pipes do not need to line up, cells do not need equal widths, and leading or trailing pipes are optional. Aligned source is pleasant to read in a diff, and this tool produces it, but a table with ragged pipes renders identically.",
+          ],
+          fr: [
+          "Un tableau Markdown demande une ligne d'en-tête, une ligne de séparation faite de tirets, et un nombre quelconque de lignes de corps. Seule la ligne de séparation porte la structure : le nombre de segments qu'elle contient fixe le nombre de colonnes, et les deux-points qu'on y place définissent l'alignement de chaque colonne.",
+          "Tout le reste est cosmétique. Les barres verticales n'ont pas besoin d'être alignées, les cellules pas besoin d'être de largeur égale, et les barres en début et fin de ligne sont facultatives. Un source aligné se lit agréablement dans un diff, et cet outil en produit un, mais un tableau aux barres irrégulières s'affiche à l'identique.",
+          ],
+        },
+      },
+      {
+        h: { en: "What a cell cannot contain", fr: "Ce qu'une cellule ne peut pas contenir" },
+        p: {
+          en: [
+          "A cell holds a single line. There is no syntax for a real line break inside one, and pressing return breaks the table apart — the usual workaround is an inline HTML break tag, which most renderers accept. Lists and code blocks are unavailable for the same reason; inline code spans work fine.",
+          "A pipe character inside a cell must be escaped with a backslash, otherwise it is read as a column separator and shifts every following cell by one. That single unescaped pipe is the most common cause of a table that renders with the wrong number of columns.",
+          ],
+          fr: [
+          "Une cellule tient sur une seule ligne. Il n'existe pas de syntaxe pour un vrai saut de ligne à l'intérieur, et appuyer sur entrée casse le tableau — le contournement habituel est une balise de saut HTML en ligne, que la plupart des moteurs de rendu acceptent. Listes et blocs de code sont indisponibles pour la même raison ; le code en ligne, lui, fonctionne.",
+          "Une barre verticale dans une cellule doit être échappée par un antislash, faute de quoi elle est lue comme un séparateur de colonne et décale d'un cran toutes les cellules suivantes. Cette unique barre non échappée est la cause la plus fréquente d'un tableau affiché avec le mauvais nombre de colonnes.",
+          ],
+        },
+      },
+      {
+        h: { en: "Tables are an extension, not core Markdown", fr: "Les tableaux sont une extension, pas du Markdown de base" },
+        p: {
+          en: [
+          "Tables are absent from the original Markdown specification and from CommonMark. They come from GitHub Flavored Markdown, which is why they work on GitHub, GitLab, Obsidian, Notion and most static site generators — but not in every renderer.",
+          "If a table shows up as raw pipes and dashes, the renderer is running plain CommonMark without the extension enabled. Most libraries offer it as a flag rather than a default, so the fix is usually configuration rather than a change to the table itself.",
+          ],
+          fr: [
+          "Les tableaux sont absents de la spécification Markdown d'origine comme de CommonMark. Ils viennent du GitHub Flavored Markdown — d'où leur fonctionnement sur GitHub, GitLab, Obsidian, Notion et la plupart des générateurs de sites statiques, mais pas dans tous les moteurs de rendu.",
+          "Si un tableau apparaît sous forme de barres et de tirets bruts, le moteur applique du CommonMark simple sans l'extension activée. La plupart des bibliothèques la proposent en option plutôt que par défaut : le correctif relève donc de la configuration, pas d'une modification du tableau.",
+          ],
+        },
+      },
+    ],
   },
   "toml-json": {
     desc: {

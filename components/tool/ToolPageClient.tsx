@@ -39,6 +39,30 @@ function ToolContentSection({ content, lang }: { content: ToolContent; lang: "fr
   );
 }
 
+function ToolDeepDive({ content, lang }: { content: ToolContent; lang: "fr" | "en" }) {
+  if (!content.deepDive?.length) return null;
+  return (
+    <section className="mb-10">
+      <SectionHead label={`// ${lang === "fr" ? "en détail" : "in depth"}`} />
+      <div className="flex flex-col gap-px bg-line border border-line">
+        {content.deepDive.map((section) => (
+          <article key={section.h.en} className="bg-bg-1 p-6">
+            <h3 className="font-mono text-[13px] text-fg font-medium mb-3">
+              <span className="text-brand mr-2">{"#"}</span>
+              {section.h[lang]}
+            </h3>
+            <div className="flex flex-col gap-3">
+              {section.p[lang].map((para) => (
+                <p key={para} className="text-[13px] text-fg-1 leading-relaxed">{para}</p>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function ToolFaqSection({ faqItems, lang }: { faqItems: FaqItem[]; lang: "fr" | "en" }) {
   const items = faqItems.map((item) => ({ q: item.q[lang], a: item.a[lang] }));
   return (
@@ -73,6 +97,8 @@ export function ToolPageClient({ tool, content, faqItems }: Props) {
       </ErrorBoundary>
 
       {content && <ToolContentSection content={content} lang={lang} />}
+
+      {content && <ToolDeepDive content={content} lang={lang} />}
 
       {/* Après le contenu rédactionnel, jamais entre l'outil et son résultat */}
       {adsAllowedOn(tool.slug) && <AdSlot slot={AD_SLOTS.toolContent} className="mb-10" />}

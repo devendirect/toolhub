@@ -7,24 +7,13 @@ import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/Options
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
 import { useBidirectionalConverter } from "@/hooks/useBidirectionalConverter";
 import { useTrackRun } from "@/hooks/useTrackRun";
+import { encodeEntities, decodeEntities } from "@/lib/html-entities";
 
 type Mode = "encode" | "decode";
 
 
 const SAMPLE_ENCODE = `<h1>Bonjour & bienvenue</h1>\n<p>Prix : "10€" — <strong>offre limitée</strong></p>`;
 const SAMPLE_DECODE = `&lt;h1&gt;Bonjour &amp; bienvenue&lt;/h1&gt;\n&lt;p&gt;Prix&nbsp;: &quot;10&euro;&quot; &mdash; &lt;strong&gt;offre limit&eacute;e&lt;/strong&gt;&lt;/p&gt;`;
-
-function encodeEntities(str: string): string {
-  const el = document.createElement("textarea");
-  el.textContent = str;
-  return el.innerHTML;
-}
-
-function decodeEntities(str: string): string {
-  const el = document.createElement("textarea");
-  el.innerHTML = str;
-  return el.value;
-}
 
 export function HtmlEntities() {
   const { lang } = useLang();

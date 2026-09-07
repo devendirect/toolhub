@@ -30,6 +30,8 @@ function lazy(load: () => Promise<{ [k: string]: unknown }>, name: string): WC {
  * (ffmpeg.wasm, pdf.js, Canvas). Ils conservent le squelette au premier
  * affichage — leur page reste portée par son contenu rédactionnel.
  */
+// Restent client-only : audio/video-converter (ffmpeg.wasm), pdf-converter
+// (pdf.js), image-converter, image-compressor et favicon-generator (Canvas).
 function lazyClient(load: () => Promise<{ [k: string]: unknown }>, name: string): WC {
   return dynamic(() => load().then((m) => ({ default: m[name] as WC })), {
     ssr: false,
@@ -53,7 +55,7 @@ export const WORKSPACE_REGISTRY: Partial<Record<string, WC>> = {
   "remove-linebreaks": lazy(() => import("@/components/workspaces/RemoveLineBreaks"), "RemoveLineBreaks"),
   "text-reverser":     lazy(() => import("@/components/workspaces/TextReverser"),     "TextReverser"),
   "url-encoder":       lazy(() => import("@/components/workspaces/UrlEncoder"),       "UrlEncoder"),
-  "html-entities":     lazyClient(() => import("@/components/workspaces/HtmlEntities"),     "HtmlEntities"),
+  "html-entities":     lazy(() => import("@/components/workspaces/HtmlEntities"),     "HtmlEntities"),
   "word-counter":      lazy(() => import("@/components/workspaces/WordCounter"),       "WordCounter"),
   "case-converter":    lazy(() => import("@/components/workspaces/CaseConverter"),    "CaseConverter"),
   "password-generator":lazy(() => import("@/components/workspaces/PasswordGenerator"),"PasswordGenerator"),

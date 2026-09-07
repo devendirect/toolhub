@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useLang } from "@/components/providers/I18nProvider";
 import { useCopy } from "@/hooks/useCopy";
 import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/OptionsBar";
@@ -18,13 +18,22 @@ export function UuidGenerator() {
   const { lang } = useLang();
   const i = t(lang);
   const [count, setCount] = useState<Count>(5);
-  const [uuids, setUuids] = useState<string[]>(() => Array.from({ length: 5 }, () => crypto.randomUUID()));
+  // Le premier lot ne peut pas être tiré pendant le rendu : la page est prérendue
+  // au build, et des identifiants aléatoires côté serveur ne correspondraient
+  // jamais à ceux tirés à l'hydratation. On part donc d'une liste vide et on
+  // génère une fois monté.
+  const [uuids, setUuids] = useState<string[]>([]);
   const { copy, copied } = useCopy();
   const trackRun = useTrackRun("uuid-generator", "dev");
 
   const generate = useCallback((n: Count) => {
     setUuids(Array.from({ length: n }, () => crypto.randomUUID()));
   }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    generate(5);
+  }, [generate]);
 
   const handleCopyAll = () => copy(uuids.join("\n"), "__all__");
 

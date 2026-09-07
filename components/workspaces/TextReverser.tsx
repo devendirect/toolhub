@@ -12,10 +12,36 @@ type Mode = "chars" | "words" | "lines";
 
 const SAMPLE = "Hello, World!\nUtilisio is fast.";
 
+type GraphemeSegment = { segment: string };
+type SegmenterCtor = new (
+  locale?: string,
+  opts?: { granularity: string },
+) => { segment(s: string): Iterable<GraphemeSegment> };
+
+/**
+ * Découpe en groupes de graphèmes — ce qu'un lecteur perçoit comme « un
+ * caractère ».
+ *
+ * `Array.from` découpe par point de code : suffisant pour un emoji simple, mais
+ * il sépare une lettre de son accent combinant (e + U+0301) et fait éclater les
+ * emojis composés par liaison (👨‍👩‍👧, un drapeau). Inverser dans ces conditions
+ * déplace l'accent sur la lettre voisine et transforme une famille en trois
+ * personnages isolés. `Intl.Segmenter` groupe correctement ; il est disponible
+ * partout depuis 2022, et on retombe sur les points de code à défaut.
+ */
+function graphemes(input: string): string[] {
+  if (typeof Intl !== "undefined" && "Segmenter" in Intl) {
+    const Seg = (Intl as unknown as { Segmenter: SegmenterCtor }).Segmenter;
+    return [...new Seg(undefined, { granularity: "grapheme" }).segment(input)]
+      .map((s) => s.segment);
+  }
+  return Array.from(input);
+}
+
 export function reverseText(input: string, mode: Mode): string {
   if (!input) return "";
   switch (mode) {
-    case "chars": return Array.from(input).reverse().join("");
+    case "chars": return graphemes(input).reverse().join("");
     case "words": return input.split(/\r?\n/).map((line) => line.split(" ").reverse().join(" ")).join("\n");
     case "lines": return input.split(/\r?\n/).reverse().join("\n");
   }
