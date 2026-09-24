@@ -2,6 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  async redirects() {
+    return [
+      // text-diff fusionné dans diff-viewer : même workspace, contenu en double
+      { source: "/:lang(en|fr)/t/text-diff", destination: "/:lang/t/diff-viewer", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

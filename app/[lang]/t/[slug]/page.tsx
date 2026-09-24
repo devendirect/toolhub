@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { TOOLS, CATEGORIES } from "@/lib/tools";
 import { SITE_URL } from "@/lib/brand";
 import { TOOLS_CONTENT } from "@/lib/tools-content";
+import { TOOLS_SEO } from "@/lib/tools-seo";
 import { toolFaqItems } from "@/lib/faq";
 import { ToolPageClient } from "@/components/tool/ToolPageClient";
 import { toolJsonLd, breadcrumbJsonLd, faqJsonLd, jsonLdString } from "@/lib/jsonld";
@@ -26,10 +27,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!tool) return { robots: { index: false } };
 
   const l = coerceLang(lang);
+  const seo = TOOLS_SEO[slug];
+  const title = seo?.title[l] ?? tool.name[l];
+  const description = seo?.description[l] ?? tool.desc[l];
 
   return {
-    title: tool.name[l],
-    description: tool.desc[l],
+    title,
+    description,
     keywords: tool.tags,
     alternates: {
       canonical: `${SITE_URL}/${l}/t/${slug}`,
@@ -40,14 +44,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     },
     openGraph: {
-      title: tool.name[l],
-      description: tool.desc[l],
+      title,
+      description,
       url: `${SITE_URL}/${l}/t/${slug}`,
     },
     twitter: {
       card: "summary",
-      title: tool.name[l],
-      description: tool.desc[l],
+      title,
+      description,
     },
     ...(tool.comingSoon ? { robots: { index: false } } : {}),
   };

@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: isEn ? "Privacy policy" : "Politique de confidentialité",
     description: isEn
-      ? `How ${BRAND_NAME} handles your data. Short version: almost nothing is collected.`
-      : `Comment ${BRAND_NAME} gère vos données. Version courte : presque rien n'est collecté.`,
+      ? `How ${BRAND_NAME} handles your data: most tools run entirely in your browser, analytics load only with your consent, and network tools don't store requests.`
+      : `Comment ${BRAND_NAME} traite vos données : la plupart des outils restent locaux, audience mesurée seulement avec votre accord, requêtes réseau non conservées.`,
     alternates: {
       canonical: `${SITE_URL}/${l}/privacy`,
       languages: {

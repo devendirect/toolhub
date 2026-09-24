@@ -91,10 +91,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const l = coerceLang(lang);
   const isEn = l === "en";
 
-  const title = isEn ? "FAQ" : "FAQ";
+  const title = isEn ? "FAQ: Frequently Asked Questions" : "Questions fréquentes";
   const description = isEn
-    ? `Frequently asked questions about ${BRAND_NAME} — free tools, privacy, browser support and more.`
-    : `Questions fréquentes sur ${BRAND_NAME} — outils gratuits, confidentialité, compatibilité navigateur et plus.`;
+    ? `Answers about ${BRAND_NAME}: are the tools free, do you need an account, are your files uploaded, which browsers work, is there a mobile version or an API.`
+    : `Les réponses sur ${BRAND_NAME} : outils gratuits ou non, compte requis, envoi de vos fichiers, navigateurs compatibles, usage sur mobile et existence d'une API.`;
 
   return {
     title,

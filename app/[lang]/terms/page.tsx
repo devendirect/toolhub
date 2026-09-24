@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: isEn ? "Terms of use" : "Conditions d'utilisation",
     description: isEn
-      ? `The terms governing your use of ${BRAND_NAME} — free tools, provided as is, with no account required.`
-      : `Les conditions qui régissent votre utilisation d'${BRAND_NAME} — outils gratuits, fournis en l'état, sans compte requis.`,
+      ? `The terms for using ${BRAND_NAME}: free online tools with no account required, provided as is, and the rules of use and limits of liability that apply.`
+      : `Les conditions d'utilisation d'${BRAND_NAME} : outils en ligne gratuits, sans compte, fournis en l'état, avec les règles d'usage et limites de responsabilité.`,
     alternates: {
       canonical: `${SITE_URL}/${l}/terms`,
       languages: {

@@ -111,6 +111,15 @@ Invoquer avec `/nom-du-skill` dans le chat.
 | `css-review` | `.claude/skills/css/review/SKILL.md` | Revue CSS / Tailwind |
 | `api-consumption` | `.claude/skills/react/api-consumption/SKILL.md` | Patterns fetch, Route Handlers |
 
+Skills tiers contenu/SEO (copiés tels quels, markdown seul, licence dans chaque dossier) — voir `docs/seo-geo/plan-adsense-bing.md` :
+
+| Skill | Source | Usage |
+|-------|--------|-------|
+| `copywriting`, `site-architecture`, `directory-submissions` | [coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills) @ `5b2c000` (MIT) | Titres/meta, hubs catégories & maillage, annuaires/backlinks |
+| `improve-content`, `content-brief`, `write-content`, `eeat-audit` | [inhouseseo/superseo-skills](https://github.com/inhouseseo/superseo-skills) @ `9cf22cc` (Apache-2.0) | Enrichir les pages outils, guides, audit E-E-A-T (règles anti-« AI slop ») |
+
+Ces skills sont écrits pour l'anglais : toujours préciser que le contenu est à produire en FR **et** EN.
+
 > Skills non pertinents pour ce projet : `auth-nextjs`, `forms`, `env-config`, `git-conventions`, `php-conventions`, `code-review-spa`, `performance-audit-spa`, `seo-react-spa`.
 
 ## Libs moteurs (hors UI)
