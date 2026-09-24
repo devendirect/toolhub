@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { CONVERT_PAIRS, FORMAT_LABEL, findPair, type ConvertPair, type TargetFormat } from "@/lib/convert-pairs";
 import { PDF_PAIRS, findPdfPair, type PdfPair } from "@/lib/pdf-pairs";
+import { CONVERT_META } from "@/lib/convert-seo";
 import { TOOLS } from "@/lib/tools";
 import { privacyFaqItem } from "@/lib/faq";
 import { jsonLdString } from "@/lib/jsonld";
@@ -55,8 +56,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const l = coerceLang(lang);
   const { pair } = resolved;
   const title = pairTitle(pair.from, pair.to, l);
-  // Description spécifique à la paire : la phrase-réponse, pas un gabarit
-  const description = pair.why[l];
+  // Meta dédiée (120–155 car.) ; `why` reste le texte d'ouverture de la page
+  const description = CONVERT_META[pair.slug]?.[l] ?? pair.why[l];
 
   return {
     title,

@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? "utilisio — Free web tools: JSON, file, text, generators."
     : "utilisio — Outils JSON, texte et fichiers pour développeurs.";
   const description = isEn
-    ? `${toolCount} free tools, no signup. JSON formatter, Base64 encoder, UUID generator, QR codes, PDF converter, SEO analyzer and more. Most tools run 100% in your browser.`
-    : `${toolCount} outils gratuits, sans inscription. Formateur JSON, encodeur Base64, générateur UUID, QR codes, convertisseur PDF, analyseur SEO et plus. La plupart fonctionnent 100% dans votre navigateur.`;
+    ? `${toolCount} free tools, no signup: JSON formatter, Base64, UUID and QR code generators, PDF converter, SEO analyzer and more. Most run 100% in your browser.`
+    : `${toolCount} outils gratuits, sans inscription : formateur JSON, Base64, UUID, QR code, PDF, analyseur SEO et plus. La plupart tournent dans votre navigateur.`;
 
   return {
     title: { absolute: title },

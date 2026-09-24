@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = isEn ? "All tools" : "Tous les outils";
   const description = isEn
-    ? "Browse all free tools: file converters, developer utilities, text processors, design helpers and SEO analyzers. No signup, most tools run locally in your browser."
+    ? "Browse every free tool: file converters, developer utilities, text tools, design helpers and SEO analyzers. No signup, most run in your browser."
     : "Parcourez tous les outils gratuits : convertisseurs de fichiers, utilitaires dev, traitement de texte, outils design et analyseurs SEO. Sans inscription.";
 
   return {
