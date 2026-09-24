@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { computeGrade, CRITICAL_HEADER_NAMES } from "@/app/api/headers/route";
+import { computeGrade, analyzeHeaders, NOTES, CRITICAL_HEADER_NAMES } from "@/app/api/headers/route";
 import type { HeaderCheck } from "@/app/api/headers/route";
 
 const check = (name: string, status: HeaderCheck["status"]): HeaderCheck => ({
@@ -63,5 +63,24 @@ describe("computeGrade", () => {
       ...CRITICAL_NAMES.slice(1).map((n) => check(n, "present")),
     ];
     expect(computeGrade(checks)).toBe("A");
+  });
+});
+
+describe("analyzeHeaders — HSTS jugé sur l'URL finale", () => {
+  const hsts = (url: string, headers: Record<string, string>) =>
+    analyzeHeaders(new Headers(headers), new URL(url), NOTES.en).find(
+      (c) => c.name === "Strict-Transport-Security"
+    )!;
+
+  it("origine HTTPS avec HSTS → present", () => {
+    expect(hsts("https://example.com/", { "strict-transport-security": "max-age=31536000" }).status).toBe("present");
+  });
+
+  it("origine HTTPS sans HSTS → missing", () => {
+    expect(hsts("https://example.com/", {}).status).toBe("missing");
+  });
+
+  it("origine HTTP → warn (HSTS ignoré hors HTTPS)", () => {
+    expect(hsts("http://example.com/", {}).status).toBe("warn");
   });
 });

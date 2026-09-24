@@ -58,7 +58,7 @@ export function SeoAnalyzer() {
   const analyze = () => {
     if (!url) return;
     trackRun();
-    run(`/api/seo?url=${encodeURIComponent(url)}`);
+    run(`/api/seo?url=${encodeURIComponent(url)}&lang=${lang}`);
   };
 
   const { pass: passCount, warn: warnCount, fail: failCount } = seoData?.checks.reduce(

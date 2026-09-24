@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useLang } from "@/components/providers/I18nProvider";
 import { localePath } from "@/lib/localePath";
-import { TOOLS } from "@/lib/tools";
+import { TOOLS, networkToolNames } from "@/lib/tools";
 
 interface Lib {
   name: string;
@@ -115,8 +115,8 @@ export function AboutClient() {
           </p>
           <p>
             {lang === "fr"
-              ? "C'est un projet indépendant, développé et maintenu activement : de nouveaux outils sont ajoutés régulièrement. La quasi-totalité des outils s'exécute directement dans votre navigateur — vos fichiers et vos textes ne quittent jamais votre appareil. Seuls trois outils (IP Lookup, Meta Preview, SEO Analyzer) passent par notre serveur pour interroger des données externes, sans rien conserver."
-              : "It is an independent project, actively developed and maintained: new tools are added regularly. Almost every tool runs directly in your browser — your files and text never leave your device. Only three tools (IP Lookup, Meta Preview, SEO Analyzer) go through our server to fetch external data, and nothing is stored."}
+              ? `C'est un projet indépendant, développé et maintenu activement : de nouveaux outils sont ajoutés régulièrement. La quasi-totalité des outils s'exécute directement dans votre navigateur — vos fichiers et vos textes ne quittent jamais votre appareil. Seuls quelques outils (${networkToolNames("fr").join(", ")}) passent par notre serveur pour interroger des données externes, sans rien conserver.`
+              : `It is an independent project, actively developed and maintained: new tools are added regularly. Almost every tool runs directly in your browser — your files and text never leave your device. Only a few tools (${networkToolNames("en").join(", ")}) go through our server to fetch external data, and nothing is stored.`}
           </p>
           <p className="text-dim">
             {lang === "fr" ? (

@@ -1,4 +1,4 @@
-import { TOOLS, CATEGORIES } from "@/lib/tools";
+import { TOOLS, CATEGORIES, networkToolNames } from "@/lib/tools";
 import { SITE_URL, BRAND_NAME } from "@/lib/brand";
 
 // llms.txt condensé, généré depuis le catalogue réel (l'ancien fichier statique
@@ -36,7 +36,7 @@ export function GET() {
     "## Privacy",
     "",
     "Most tools run locally in your browser — your files and inputs never leave your device.",
-    "Three tools use a server-side proxy to fetch external data: IP Lookup, Meta Preview and SEO Analyzer.",
+    `These tools use a server-side proxy to fetch external data: ${networkToolNames("en").join(", ")}.`,
     "Inputs are not stored. Standard HTTP access logs (IP, timestamp) are retained ~30 days for security.",
     "",
     "## Key URLs",

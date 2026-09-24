@@ -4,6 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Command } from "cmdk";
 import { useRouter } from "next/navigation";
 import { TOOLS, CATEGORIES } from "@/lib/tools";
+
+// Les outils « à venir » n'ont pas de workspace : inutile de les proposer
+const LIVE_TOOLS = TOOLS.filter((t) => !t.comingSoon);
 import type { Tool, Lang } from "@/lib/types";
 import { useLang } from "@/components/providers/I18nProvider";
 import { usePalette } from "@/components/providers/PaletteProvider";
@@ -80,17 +83,17 @@ export function CommandPalette() {
 
   const { flat, groups } = useMemo(() => {
     if (ql) {
-      const ranked = TOOLS
+      const ranked = LIVE_TOOLS
         .map((tool) => ({ tool, s: scoreTool(tool, ql, lang) }))
         .filter((x) => x.s > 0)
         .sort((a, b) => b.s - a.s)
         .map((x) => x.tool);
       return { flat: ranked, groups: null };
     }
-    const popular = [...TOOLS].sort((a, b) => b.runs - a.runs).slice(0, 4);
+    const popular = [...LIVE_TOOLS].sort((a, b) => b.runs - a.runs).slice(0, 4);
     const byCat = CATEGORIES.filter((c) => c.id !== "all").map((c) => ({
       cat: c,
-      tools: TOOLS.filter((t) => t.cat === c.id),
+      tools: LIVE_TOOLS.filter((t) => t.cat === c.id),
     }));
     return { flat: [...popular, ...byCat.flatMap((g) => g.tools)], groups: { popular, byCat } };
   }, [ql, lang]);

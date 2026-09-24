@@ -16,7 +16,9 @@ export interface HeadersData {
 }
 
 const rl    = makeRateLimiter(20, 60_000);
-const cache = makeCache<HeadersData>(30 * 60_000, 500);
+// Cache court : on reteste juste après avoir corrigé sa config, un résultat
+// vieux de 30 min contredisait la correction. Le rate limit protège déjà les cibles.
+const cache = makeCache<HeadersData>(60_000, 500);
 
 type Lang = "fr" | "en";
 
@@ -31,7 +33,7 @@ type NoteSet = {
   pp_warn:      string;
 };
 
-const NOTES: Record<Lang, NoteSet> = {
+export const NOTES: Record<Lang, NoteSet> = {
   fr: {
     csp_missing:  "Protège contre les injections XSS. Ajoutez `Content-Security-Policy: default-src 'self'` dans la configuration de votre serveur ou reverse proxy.",
     hsts_warn:    "HSTS ne s'applique qu'aux origines HTTPS. Activez d'abord HTTPS sur ce domaine.",
@@ -66,7 +68,8 @@ export function computeGrade(checks: HeaderCheck[]): HeadersData["grade"] {
   return "F";
 }
 
-function analyzeHeaders(headers: Headers, url: URL, n: NoteSet): HeaderCheck[] {
+/** `url` = URL finale après redirections : c'est elle qui a servi les en-têtes lus. */
+export function analyzeHeaders(headers: Headers, url: URL, n: NoteSet): HeaderCheck[] {
   const h   = (name: string) => headers.get(name);
   const csp  = h("content-security-policy");
   const hsts = h("strict-transport-security");
@@ -149,9 +152,11 @@ export async function GET(req: NextRequest) {
     });
     clearTimeout(timer);
 
-    const checks = analyzeHeaders(res.headers, safe.url, NOTES[lang]);
+    // HSTS se juge sur l'URL finale : http://site → https://site doit être noté en HTTPS
+    const finalUrl = new URL(res.url || safe.url.href);
+    const checks = analyzeHeaders(res.headers, finalUrl, NOTES[lang]);
     const data: HeadersData = {
-      url:    res.url || safe.url.href,
+      url:    finalUrl.href,
       grade:  computeGrade(checks),
       server: res.headers.get("server"),
       checks,

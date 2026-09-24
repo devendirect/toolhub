@@ -877,13 +877,73 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "seo-analyzer": {
     desc: {
-      en: "Fetch any public URL and evaluate its on-page SEO across key criteria: title length, meta description quality, H1–H6 heading structure, word count and image alt attributes. Each criterion comes with a score and specific, concrete feedback so you can act on the most impactful issues first.",
-      fr: "Analysez n'importe quelle URL publique et évaluez son SEO on-page selon des critères clés : longueur du titre, qualité de la meta description, structure des titres H1–H6, nombre de mots et attributs alt des images. Chaque critère inclut un score et des retours précis et concrets pour agir en priorité sur les points les plus impactants.",
+      en: "Paste a public URL and the analyzer downloads the page's HTML, runs eleven on-page checks and turns them into a score out of 100. It looks at the title, meta description, H1, H2 and H3 headings, word count, image alt attributes, canonical, robots meta, Open Graph and Twitter Card tags, and counts internal and external links. Every check shows what it found, so you know exactly which line to fix.",
+      fr: "Collez une URL publique : l'analyseur télécharge le HTML de la page, lance onze contrôles on-page et les convertit en un score sur 100. Il examine le titre, la meta description, le H1, les titres H2 et H3, le nombre de mots, les attributs alt des images, la balise canonical, la meta robots, les balises Open Graph et Twitter Card, et compte les liens internes et externes. Chaque contrôle affiche ce qu'il a trouvé : vous savez exactement quelle ligne corriger.",
     },
     useCases: {
-      en: ["Running a quick SEO audit on a newly published page before promoting it", "Comparing your page's on-page SEO against a competitor's equivalent page", "Identifying missing meta descriptions, duplicate H1 tags or empty alt attributes", "Checking minimum content requirements (word count, heading hierarchy) before indexing"],
-      fr: ["Effectuer un audit SEO rapide d'une page nouvellement publiée avant de la promouvoir", "Comparer le SEO on-page de votre page face à une page équivalente d'un concurrent", "Identifier les meta descriptions manquantes, les H1 dupliqués ou les attributs alt vides", "Vérifier les exigences minimales de contenu (nombre de mots, hiérarchie des titres) avant indexation"],
+      en: ["Checking a page you just wrote or edited before you publish it: title length, meta description, a single H1, no leftover noindex", "Showing a client or prospect, in two minutes, which basics are missing on their pages before proposing a full audit", "Catching a staging robots noindex that went to production with the rest of the release", "Spotting images without an alt attribute on a page before an accessibility or SEO review"],
+      fr: ["Contrôler une page qu'on vient d'écrire ou de modifier avant de la publier : longueur du titre, meta description, un seul H1, pas de noindex oublié", "Montrer en deux minutes à un client ou à un prospect ce qui manque sur ses pages, avant de proposer un audit complet", "Repérer un noindex de préproduction parti en production avec le reste de la mise à jour", "Trouver les images sans attribut alt d'une page avant une revue accessibilité ou SEO"],
     },
+    deepDive: [
+      {
+        h: { en: "How the score out of 100 is built", fr: "Comment le score sur 100 est construit" },
+        p: {
+          en: [
+            "Each check earns points, 96 in total, and the score is the share you collect. Title and meta description are worth 12 each: full marks when the title runs 30 to 65 characters and the description 100 to 165, partial when they exist but fall outside that range, zero when missing. A single H1 earns 10, several H1s earn 5.",
+            "Content length is worth 10 from 300 words, 4 between 150 and 299, nothing below. Image alt attributes are worth 10, and a canonical tag and a robots meta without noindex are worth 8 each. At least one H2 earns 8. Open Graph (6) and Twitter Card (4) close the list. The links line is informational: it always gives its 8 points and just shows the counts.",
+            "So a completely empty HTML page doesn't score 0. It scores 32, thanks to the checks that pass by default: no images means no missing alt, no robots meta means indexable, and so on. example.com, with its 17 words and no description, lands at 50. Keep those two numbers in mind before celebrating a 70.",
+          ],
+          fr: [
+            "Chaque contrôle rapporte des points, 96 au total, et le score est la part obtenue. Le titre et la meta description valent 12 chacun : la note pleine si le titre fait de 30 à 65 caractères et la description de 100 à 165, une partie s'ils existent hors de ces plages, zéro s'ils manquent. Un seul H1 rapporte 10, plusieurs H1 rapportent 5.",
+            "La longueur du contenu vaut 10 à partir de 300 mots, 4 entre 150 et 299, rien en dessous. Les attributs alt des images valent 10, la balise canonical et une meta robots sans noindex valent 8 chacune. Au moins un H2 rapporte 8. Open Graph (6) et Twitter Card (4) ferment la liste. La ligne des liens est informative : elle donne toujours ses 8 points et affiche simplement les comptes.",
+            "Une page HTML complètement vide n'obtient donc pas 0 mais 32, grâce aux contrôles réussis par défaut : pas d'image, donc pas d'alt manquant ; pas de meta robots, donc page indexable. example.com, avec ses 17 mots et sans description, arrive à 50. Gardez ces deux chiffres en tête avant de fêter un 70.",
+          ],
+        },
+      },
+      {
+        h: { en: "What it reads, and what it can't see", fr: "Ce qu'il lit, et ce qu'il ne voit pas" },
+        p: {
+          en: [
+            "The analyzer reads the HTML your server returns, without running JavaScript. On a site that builds its content in the browser, the title, headings or text may simply not be in that HTML, and the report will say they're missing even though you see them on screen. Google does render JavaScript, but in a later pass: what's already in the HTML doesn't have to wait for it.",
+            "The word count covers the visible text of the whole body, menus and footer included, and ignores scripts and styles. A thin article inside a big navigation can pass the 300-word bar. Treat the number as a floor, not as proof of depth.",
+            "Outside its scope entirely: keywords, the quality of the writing, page speed, mobile layout, structured data, backlinks and actual rankings. A 100 here means the basic tags are in place. It says nothing about whether the page deserves to rank.",
+          ],
+          fr: [
+            "L'analyseur lit le HTML renvoyé par le serveur, sans exécuter de JavaScript. Sur un site qui construit son contenu dans le navigateur, le titre, les titres de section ou le texte peuvent tout simplement être absents de ce HTML, et le rapport les dira manquants alors que vous les voyez à l'écran. Google exécute bien le JavaScript, mais lors d'un second passage : ce qui figure déjà dans le HTML n'a pas à l'attendre.",
+            "Le nombre de mots couvre le texte visible de tout le body, menus et pied de page compris, en ignorant scripts et styles. Un article maigre entouré d'une grosse navigation peut donc franchir la barre des 300 mots. Prenez ce chiffre comme un plancher, pas comme une preuve de profondeur.",
+            "Hors de son champ : les mots-clés, la qualité de la rédaction, la vitesse, l'affichage mobile, les données structurées, les backlinks et le classement réel. Un 100 ici veut dire que les balises de base sont en place. Il ne dit rien sur le fait que la page mérite d'être bien classée.",
+          ],
+        },
+      },
+      {
+        h: { en: "Titles and descriptions: what we fixed on this site", fr: "Titres et descriptions : ce que nous avons corrigé sur ce site" },
+        p: {
+          en: [
+            "Bing Webmaster Tools flagged this site for two things this analyzer checks page by page: many identical titles and many meta descriptions that were too short. The cause was mundane. Tool pages reused the one-line text written for the catalog cards as their meta description, and a few tools had the same name in English and French, so both language versions carried the same title.",
+            "The fix was a dedicated title and description for every page, in each language, with the lengths checked automatically before each release. The descriptions now sit between 125 and 155 characters. That's the kind of problem a single-page check shows on each page, and a site-wide crawl shows across all of them: run this on a few representative pages, not just the home page.",
+            "Two things the character counts don't capture. Google trims titles by pixel width, so a title full of wide capitals gets cut sooner than its length suggests. And Google may rewrite a title or description when it thinks another passage matches the search better, so a perfect tag is a strong suggestion, not a guarantee.",
+          ],
+          fr: [
+            "Bing Webmaster Tools a signalé sur ce site deux problèmes que cet analyseur contrôle page par page : beaucoup de titres identiques et beaucoup de meta descriptions trop courtes. La cause était banale. Les pages outils reprenaient comme meta description la phrase d'une ligne écrite pour les cartes du catalogue, et quelques outils portaient le même nom en anglais et en français, donc les deux versions linguistiques avaient le même titre.",
+            "La correction : un titre et une description dédiés pour chaque page, dans chaque langue, avec des longueurs vérifiées automatiquement avant chaque mise en ligne. Les descriptions font désormais entre 125 et 155 caractères. C'est le genre de défaut qu'un contrôle page par page montre sur chaque page, et qu'un crawl du site montre sur l'ensemble : lancez l'analyse sur quelques pages représentatives, pas seulement l'accueil.",
+            "Deux choses échappent au comptage de caractères. Google coupe les titres selon leur largeur en pixels : un titre plein de majuscules larges est tronqué plus tôt que sa longueur ne le laisse penser. Et Google peut réécrire un titre ou une description s'il juge qu'un autre passage répond mieux à la recherche. Une balise parfaite est une forte suggestion, pas une garantie.",
+          ],
+        },
+      },
+      {
+        h: { en: "Before publishing, and in front of a prospect", fr: "Avant de publier, et face à un prospect" },
+        p: {
+          en: [
+            "Before you publish, fix the red lines first. A missing title or description, no H1, or a noindex left over from staging cost far more than an Open Graph tag. Then look at the orange ones, starting with titles and descriptions outside their range. The score will follow; chasing it line by line in the other order wastes time.",
+            "With a client or prospect, show the checks rather than the number. A 64 invites an argument about what 64 means. \"Your service pages have no meta description and three H1s\" is concrete, verifiable in their own browser, and tells them what the work will be. Results are kept for one minute, so a page you've just corrected shows its new state almost immediately.",
+          ],
+          fr: [
+            "Avant de publier, corrigez d'abord les lignes rouges. Un titre ou une description absents, pas de H1, ou un noindex resté de la préproduction coûtent bien plus qu'une balise Open Graph. Passez ensuite aux lignes orange, en commençant par les titres et descriptions hors de leur plage. Le score suivra ; le poursuivre ligne par ligne dans l'autre ordre fait perdre du temps.",
+            "Face à un client ou à un prospect, montrez les contrôles plutôt que le chiffre. Un 64 appelle une discussion sur ce que vaut 64. « Vos pages services n'ont pas de meta description et comptent trois H1 » est concret, vérifiable dans son propre navigateur, et dit ce que sera le travail. Les résultats sont gardés une minute : une page tout juste corrigée affiche son nouvel état presque immédiatement.",
+          ],
+        },
+      },
+    ],
   },
   "utm-builder": {
     desc: {
@@ -1101,13 +1161,90 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "headers-checker": {
     desc: {
-      en: "Fetch the security headers returned by any public URL and grade them from A (all critical headers present) to F (most missing). Evaluates Content-Security-Policy, Strict-Transport-Security, X-Content-Type-Options, X-Frame-Options, Referrer-Policy and Permissions-Policy — the headers most commonly checked in security audits. Each header shows its current value alongside a specific recommendation when it is missing or misconfigured.",
-      fr: "Récupérez les headers de sécurité renvoyés par n'importe quelle URL publique et notez-les de A (tous les headers critiques présents) à F (la plupart absents). Évalue Content-Security-Policy, Strict-Transport-Security, X-Content-Type-Options, X-Frame-Options, Referrer-Policy et Permissions-Policy — les headers les plus souvent contrôlés lors d'audits de sécurité. Chaque header affiche sa valeur courante ainsi qu'une recommandation spécifique lorsqu'il est absent ou mal configuré.",
+      en: "Enter a public URL and the checker reads the HTTP response headers the server sends back, then reports on six security headers with a grade from A to F. Only four of them move the grade: Content-Security-Policy, Strict-Transport-Security, X-Content-Type-Options and X-Frame-Options. Each one missing costs a letter. Referrer-Policy and Permissions-Policy are still listed, with the line to add if they're absent, but they never change the letter.",
+      fr: "Saisissez une URL publique : l'outil lit les en-têtes HTTP renvoyés par le serveur et fait le point sur six en-têtes de sécurité, avec une note de A à F. Seuls quatre d'entre eux comptent dans la note : Content-Security-Policy, Strict-Transport-Security, X-Content-Type-Options et X-Frame-Options. Chaque absence coûte une lettre. Referrer-Policy et Permissions-Policy restent affichés, avec la ligne à ajouter s'ils manquent, mais ne changent jamais la note.",
     },
     useCases: {
-      en: ["Verifying that a newly deployed site has all required security headers before launch", "Comparing the security header configuration of your site against a competitor or benchmark", "Quickly checking whether a CSP or HSTS header was correctly deployed after a configuration change", "Auditing a client's website security posture as part of a web security review"],
-      fr: ["Vérifier qu'un site nouvellement déployé possède tous les headers de sécurité requis avant le lancement", "Comparer la configuration des headers de sécurité de votre site par rapport à un concurrent ou à une référence", "Vérifier rapidement si un header CSP ou HSTS a été correctement déployé après un changement de configuration", "Auditer la posture de sécurité du site d'un client dans le cadre d'une revue de sécurité web"],
+      en: ["Checking a site right after a deploy, before announcing it, to make sure the reverse proxy didn't silently drop a header", "Validating an Nginx or Plesk change: add the directive, reload the server, retest a minute later", "Running a quick first pass on a client's or prospect's site before a proper security audit", "Confirming that an http:// address redirects to HTTPS and that the final response actually carries HSTS"],
+      fr: ["Contrôler un site juste après une mise en production, avant de l'annoncer, pour vérifier que le reverse proxy n'a pas perdu un en-tête en route", "Valider une modification Nginx ou Plesk : ajouter la directive, recharger le serveur, retester une minute plus tard", "Faire un premier passage rapide sur le site d'un client ou d'un prospect avant un vrai audit de sécurité", "Vérifier qu'une adresse en http:// redirige bien vers HTTPS et que la réponse finale porte réellement HSTS"],
     },
+    deepDive: [
+      {
+        h: { en: "How the A to F grade is calculated", fr: "Comment la note de A à F est calculée" },
+        p: {
+          en: [
+            "The grade counts missing headers among four: Content-Security-Policy, Strict-Transport-Security, X-Content-Type-Options and X-Frame-Options. All four present gives A. One missing gives B, two give C, three give D, and a site with none of them gets F. That's the whole formula.",
+            "A header that is there but set wrong is flagged in orange rather than counted as missing. The typical case is X-Content-Type-Options with any value other than exactly nosniff. X-Frame-Options also counts as present when the Content-Security-Policy contains a frame-ancestors directive, since that directive does the same job in current browsers.",
+            "Other checkers grade differently. Some go up to A+ and also look at Cross-Origin-Opener-Policy or Cross-Origin-Resource-Policy, so the same site can get a B here and a C elsewhere. Don't compare letters between tools. Compare the list of headers each one found.",
+          ],
+          fr: [
+            "La note compte les absences parmi quatre en-têtes : Content-Security-Policy, Strict-Transport-Security, X-Content-Type-Options et X-Frame-Options. Les quatre présents, c'est A. Un manquant donne B, deux donnent C, trois donnent D, et un site qui n'en a aucun obtient F. C'est toute la formule.",
+            "Un en-tête présent mais mal réglé apparaît en orange au lieu d'être compté comme absent. Le cas le plus courant : X-Content-Type-Options avec une autre valeur que nosniff, écrit exactement ainsi. X-Frame-Options compte aussi comme présent quand la Content-Security-Policy contient une directive frame-ancestors, qui joue le même rôle dans les navigateurs actuels.",
+            "Les autres outils ne notent pas pareil. Certains montent jusqu'à A+ et regardent aussi Cross-Origin-Opener-Policy ou Cross-Origin-Resource-Policy : le même site peut avoir B ici et C ailleurs. Ne comparez pas les lettres d'un outil à l'autre, comparez la liste des en-têtes trouvés.",
+          ],
+        },
+      },
+      {
+        h: { en: "A real example: utilisio.com gets a B", fr: "Un exemple réel : utilisio.com obtient B" },
+        p: {
+          en: [
+            "This site's own headers grade B. HSTS is there (max-age=15768000, six months, with includeSubDomains), X-Frame-Options is DENY, X-Content-Type-Options is nosniff and Referrer-Policy is strict-origin-when-cross-origin. The missing one is Content-Security-Policy.",
+            "The reason is practical. These pages load Google's ad script, a consent platform and, once you accept, analytics, each pulling code from domains Google can change without notice. A strict policy would block some of them. A loose one full of wildcards and 'unsafe-inline' would earn the A while protecting very little. Until a policy that is both strict and working is written, the honest result is B.",
+            "Notice what the grade doesn't say. Our HSTS max-age is half the one-year value the tool suggests, and it still counts as present, because the check is about presence. The letter is where you start reading, not the conclusion.",
+          ],
+          fr: [
+            "Les en-têtes de ce site obtiennent B. HSTS est là (max-age=15768000, soit six mois, avec includeSubDomains), X-Frame-Options vaut DENY, X-Content-Type-Options vaut nosniff et Referrer-Policy vaut strict-origin-when-cross-origin. Celui qui manque, c'est Content-Security-Policy.",
+            "La raison est concrète. Ces pages chargent le script publicitaire de Google, une plateforme de consentement et, une fois votre accord donné, la mesure d'audience, chacun tirant du code de domaines que Google peut changer sans prévenir. Une politique stricte en bloquerait une partie. Une politique permissive, pleine de jokers et de 'unsafe-inline', décrocherait le A sans protéger grand-chose. Tant qu'une politique à la fois stricte et fonctionnelle n'est pas écrite, le résultat honnête est B.",
+            "Regardez aussi ce que la note ne dit pas. Notre max-age HSTS fait la moitié de l'année conseillée par l'outil, et il compte quand même comme présent, parce que le contrôle porte sur la présence. La lettre est un point de départ, pas une conclusion.",
+          ],
+        },
+      },
+      {
+        h: { en: "What the checker doesn't see", fr: "Ce que l'outil ne voit pas" },
+        p: {
+          en: [
+            "It checks that a header exists, not that it's strong. A Content-Security-Policy made of default-src * 'unsafe-inline' gets the same credit as a tight one. An HSTS header set to max-age=0, which actually tells browsers to forget HSTS, still counts as present. Read the values in the list, not just the colors.",
+            "It sends a single HEAD request to the address you enter, follows redirects and reads the headers of the final response, whatever its status code. Some servers answer HEAD differently from GET, and many set headers per path: your HTML pages may carry a CSP that your /api routes or static files don't. Test the pages that matter, not only the home page.",
+            "Private addresses are refused: localhost, internal IP ranges and private TLDs. That protects the server doing the fetch, but it means a staging site on your LAN has to be checked from your own machine, with curl.",
+          ],
+          fr: [
+            "Il vérifie qu'un en-tête existe, pas qu'il est solide. Une Content-Security-Policy réduite à default-src * 'unsafe-inline' reçoit le même crédit qu'une politique serrée. Un HSTS réglé à max-age=0, qui demande en réalité aux navigateurs d'oublier HSTS, compte quand même comme présent. Lisez les valeurs affichées, pas seulement les couleurs.",
+            "Il envoie une seule requête HEAD à l'adresse saisie, suit les redirections et lit les en-têtes de la réponse finale, quel que soit son code HTTP. Certains serveurs répondent différemment à HEAD et à GET, et beaucoup règlent les en-têtes par chemin : vos pages HTML peuvent porter une CSP que vos routes /api ou vos fichiers statiques n'ont pas. Testez les pages qui comptent, pas seulement l'accueil.",
+            "Les adresses privées sont refusées : localhost, plages d'IP internes et TLD privés. Cela protège le serveur qui fait la requête, mais un site de préproduction sur votre réseau local se vérifie depuis votre propre machine, avec curl.",
+          ],
+        },
+      },
+      {
+        h: { en: "Adding the missing headers on Nginx or Plesk", fr: "Ajouter les en-têtes manquants sous Nginx ou Plesk" },
+        p: {
+          en: [
+            "On Nginx, each header is one add_header line in the server block, for example add_header X-Content-Type-Options \"nosniff\" always; Keep the always keyword. Without it, Nginx only sends the header on successful and redirect responses, so your 404 and 500 pages go out unprotected.",
+            "The trap that catches almost everyone: add_header is inherited from the server block only if the location block defines no add_header of its own. Add a single Cache-Control header inside a location and every security header set higher up disappears for that path. After any change, reload Nginx and retest one of the affected URLs, not just the home page.",
+            "On Plesk, open the domain, go to Apache & nginx Settings and paste the same add_header lines into Additional nginx directives. If the site sits behind a CDN, the CDN may cache the old response headers: purge it before you retest, or you'll be checking yesterday's configuration.",
+            "On this site, three headers come from the application itself (Next.js headers() in next.config.ts), while HSTS is added by the server in front of it. Splitting headers between the app and the proxy works, as long as you remember which layer sets which one.",
+          ],
+          fr: [
+            "Sous Nginx, chaque en-tête tient en une ligne add_header dans le bloc server, par exemple add_header X-Content-Type-Options \"nosniff\" always; Gardez le mot-clé always. Sans lui, Nginx n'envoie l'en-tête que sur les réponses réussies et les redirections : vos pages 404 et 500 partent sans protection.",
+            "Le piège qui attrape presque tout le monde : add_header n'est hérité du bloc server que si le bloc location n'en définit aucun lui-même. Ajoutez un simple Cache-Control dans une location, et tous les en-têtes de sécurité définis plus haut disparaissent pour ce chemin. Après chaque modification, rechargez Nginx et retestez une des URL concernées, pas seulement l'accueil.",
+            "Sous Plesk, ouvrez le domaine, allez dans Paramètres d'Apache et de nginx, et collez les mêmes lignes add_header dans Directives nginx supplémentaires. Si le site passe par un CDN, celui-ci peut garder en cache les anciens en-têtes : purgez-le avant de retester, sinon vous vérifiez la configuration d'hier.",
+            "Sur ce site, trois en-têtes viennent de l'application elle-même (headers() de Next.js dans next.config.ts), tandis que HSTS est ajouté par le serveur placé devant. Répartir les en-têtes entre l'application et le proxy fonctionne très bien, à condition de savoir quelle couche pose lequel.",
+          ],
+        },
+      },
+      {
+        h: { en: "Doing the same check with curl", fr: "Faire le même contrôle avec curl" },
+        p: {
+          en: [
+            "curl -sIL https://example.com sends the same kind of HEAD request, follows redirects with -L and prints every header of each response in the chain. Pipe it through grep -i to keep only the security ones. It's the right tool for a staging server this page can't reach, or for a script that checks headers after every deploy.",
+            "What this page adds is the reading: which headers count, which value is wrong, and the exact line to add. Results are kept for one minute, so if a retest right after a change still shows the old values, wait a moment and run it again.",
+          ],
+          fr: [
+            "curl -sIL https://example.com envoie le même type de requête HEAD, suit les redirections grâce à -L et affiche tous les en-têtes de chaque réponse de la chaîne. Filtrez avec grep -i pour ne garder que ceux de sécurité. C'est le bon outil pour un serveur de préproduction que cette page ne peut pas joindre, ou pour un script qui vérifie les en-têtes après chaque déploiement.",
+            "Ce que cette page ajoute, c'est la lecture : quels en-têtes comptent, quelle valeur est fausse, et la ligne exacte à ajouter. Les résultats sont gardés une minute : si un nouveau test juste après une modification montre encore les anciennes valeurs, patientez un instant et relancez.",
+          ],
+        },
+      },
+    ],
   },
   "border-radius": {
     desc: {

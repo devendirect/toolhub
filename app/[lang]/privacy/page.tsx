@@ -37,7 +37,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
   en: {
     title: "Privacy policy",
     intro: `${BRAND_NAME} is designed to collect as little data as possible. Most tools run entirely in your browser — your files and inputs never leave your device. This page explains what we do and don't collect.`,
-    updated: "Last updated: June 2026",
+    updated: "Last updated: September 2026",
     sections: [
       {
         heading: "// what we collect",
@@ -56,13 +56,14 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// network tools",
         content: [
-          "Three tools require a server-side request to fetch external data:",
+          "Some tools require a server-side request to fetch external data:",
           {
             tag: "ul",
             items: [
-              "IP Address Lookup — sends the IP to look up to a geolocation API",
+              "HTTP Headers Checker — requests the target URL from our server to read its response headers",
               "Meta Tag Preview — fetches the target URL via our proxy to read its meta tags",
               "SEO Analyzer — fetches the target URL via our proxy to analyze its content",
+              "Open Graph Checker — fetches the target URL via our proxy to read its Open Graph tags",
             ],
           },
           "In these cases, the request passes through our proxy. We do not store the URLs you enter, the results returned, or any content of the fetched pages. Your IP address is visible to our server during the request (as with any HTTP request) but is not logged.",
@@ -91,7 +92,6 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// third-party services",
         content: [
-          "The IP Lookup tool queries a third-party geolocation API. The queried IP is sent to that API to retrieve location data. No other personal information is transmitted.",
           "Fonts are loaded from Google Fonts via Next.js, which downloads and self-hosts them at build time — no runtime request is made to Google's servers.",
         ],
       },
@@ -113,7 +113,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
   fr: {
     title: "Politique de confidentialité",
     intro: `${BRAND_NAME} est conçu pour collecter le moins de données possible. La plupart des outils s'exécutent entièrement dans votre navigateur — vos fichiers et saisies ne quittent jamais votre appareil. Cette page explique ce que nous collectons, et ce que nous ne collectons pas.`,
-    updated: "Dernière mise à jour : juin 2026",
+    updated: "Dernière mise à jour : septembre 2026",
     sections: [
       {
         heading: "// ce que nous collectons",
@@ -132,13 +132,14 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// outils réseau",
         content: [
-          "Trois outils nécessitent une requête côté serveur pour récupérer des données externes :",
+          "Certains outils nécessitent une requête côté serveur pour récupérer des données externes :",
           {
             tag: "ul",
             items: [
-              "Recherche d'adresse IP — envoie l'IP à consulter à une API de géolocalisation",
+              "Vérificateur de headers — interroge l'URL cible depuis notre serveur pour lire ses en-têtes de réponse",
               "Aperçu des balises meta — récupère l'URL cible via notre proxy pour lire ses balises meta",
               "Analyseur SEO — récupère l'URL cible via notre proxy pour analyser son contenu",
+              "Vérificateur Open Graph — récupère l'URL cible via notre proxy pour lire ses balises Open Graph",
             ],
           },
           "Dans ces cas, la requête transite par notre proxy. Nous ne stockons pas les URL que vous saisissez, les résultats retournés, ni le contenu des pages récupérées. Votre adresse IP est visible par notre serveur lors de la requête (comme pour toute requête HTTP) mais n'est pas journalisée.",
@@ -167,7 +168,6 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// services tiers",
         content: [
-          "L'outil Recherche IP interroge une API de géolocalisation tierce. L'IP consultée est envoyée à cette API pour récupérer les données de localisation. Aucune autre information personnelle n'est transmise.",
           "Les polices sont chargées depuis Google Fonts via Next.js, qui les télécharge et les auto-héberge au moment du build — aucune requête n'est effectuée vers les serveurs de Google à l'exécution.",
         ],
       },

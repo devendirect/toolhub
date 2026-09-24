@@ -14,7 +14,8 @@ export const TOOLS: Tool[] = [
   { slug: "markdown-html",    cat: "dev",    glyph: "md→",                    name: { fr: "Markdown → HTML",              en: "Markdown → HTML"            }, desc: { fr: "Écrivez du Markdown à gauche, voyez le HTML propre à droite. Copiez le résultat ou téléchargez-le.",                          en: "Write Markdown on the left, see clean HTML on the right. Copy the output or download as a file."                                    }, tags: ["markdown","html","convert"],         runs: 6340  },
   { slug: "hash-generator",   cat: "dev",    glyph: "#",                      name: { fr: "Générateur de hash",           en: "Hash Generator"             }, desc: { fr: "Collez du texte ou déposez un fichier — obtenez ses empreintes MD5, SHA-1 et SHA-256.",                                       en: "Paste text or drop a file and get its MD5, SHA-1 and SHA-256 fingerprints."                                                          }, tags: ["md5","sha256","hash"],               runs: 5120  },
   { slug: "regex-tester",     cat: "dev",    glyph: "/.*/",                   name: { fr: "Testeur de regex",             en: "Regex Tester"               }, desc: { fr: "Écrivez un pattern, voyez les correspondances surlignées en temps réel. Supporte les flags (g, i, m) et les groupes nommés.", en: "Write a pattern, see matches highlighted in real time. Supports flags (g, i, m) and named groups."                                   }, tags: ["regex","match","pattern"],           runs: 7880  },
-  { slug: "ip-lookup",        cat: "dev",    glyph: "ip",   privacy: "network", name: { fr: "Recherche d'adresse IP",     en: "IP Address Lookup"          }, desc: { fr: "Entrez une IP pour voir son pays, FAI, ASN et fuseau horaire. Laissez vide pour analyser la vôtre.",                         en: "Enter any IP to see its country, ISP, ASN and timezone. Leave blank to look up your own."                                            }, tags: ["ip","geo","network"],                runs: 4310  },
+  // Désactivé : l'offre gratuite d'ip-api.com interdit l'usage commercial — en attente d'un autre fournisseur
+  { slug: "ip-lookup",        cat: "dev",    glyph: "ip",   privacy: "network", comingSoon: true, name: { fr: "Recherche d'adresse IP",     en: "IP Address Lookup"          }, desc: { fr: "Entrez une IP pour voir son pays, FAI, ASN et fuseau horaire. Laissez vide pour analyser la vôtre.",                         en: "Enter any IP to see its country, ISP, ASN and timezone. Leave blank to look up your own."                                            }, tags: ["ip","geo","network"],                runs: 4310  },
   { slug: "uuid-generator",   cat: "dev",    glyph: "id",                     name: { fr: "Générateur UUID",              en: "UUID Generator"             }, desc: { fr: "Un clic génère un UUID v4 aléatoire. Besoin de plus ? Jusqu'à 25 d'un coup.",                             en: "One click generates a fresh random v4 UUID. Need more? Generate up to 25 at once."                                            }, tags: ["uuid","guid","id"],                  runs: 6090  },
   { slug: "cron-generator",   cat: "dev",    glyph: "* *",                    name: { fr: "Générateur d'expressions cron", en: "Cron Expression Generator" }, desc: { fr: "Tapez une expression cron, obtenez une explication en français clair. Ou construisez-la champ par champ.",                  en: "Type a cron expression, get a plain-English explanation. Or build one visually field by field."                                      }, tags: ["cron","schedule","crontab"],         runs: 3760  },
 
@@ -92,6 +93,14 @@ export const POPULAR_TAGS: readonly string[] = (() => {
   }
   return [...freq.entries()].sort((a, b) => b[1] - a[1]).slice(0, 7).map(([tag]) => tag);
 })();
+
+/**
+ * Noms des outils réseau actifs (requête côté serveur), pour les textes qui les
+ * énumèrent : FAQ, À propos, CGU, llms.txt. Calculé pour ne jamais dériver.
+ */
+export function networkToolNames(lang: "fr" | "en"): string[] {
+  return TOOLS.filter((t) => t.privacy === "network" && !t.comingSoon).map((t) => t.name[lang]);
+}
 
 export const CATEGORIES: Category[] = [
   { id: "all",    label: { fr: "Tous",        en: "All"       }, glyph: "*"   },

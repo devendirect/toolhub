@@ -3,7 +3,7 @@ import { BRAND_NAME, SITE_URL } from "@/lib/brand";
 import type { Lang } from "@/lib/types";
 import { coerceLang } from "@/lib/localePath";
 import { jsonLdString } from "@/lib/jsonld";
-import { TOOLS } from "@/lib/tools";
+import { TOOLS, networkToolNames } from "@/lib/tools";
 import { FaqList } from "@/components/FaqList";
 
 interface Props {
@@ -31,7 +31,7 @@ const FAQ: Record<Lang, FaqItem[]> = {
     },
     {
       q: "Are my files uploaded to a server?",
-      a: "Most tools run entirely in your browser — your files never leave your device. The exceptions are network tools (IP Lookup, Meta Preview, SEO Analyzer) which send a request through a proxy to fetch external data. None of your input is stored or logged.",
+      a: `Most tools run entirely in your browser — your files never leave your device. The exceptions are network tools (${networkToolNames("en").join(", ")}) which send a request through a proxy to fetch external data. None of your input is stored or logged.`,
     },
     {
       q: "Which browsers are supported?",
@@ -65,7 +65,7 @@ const FAQ: Record<Lang, FaqItem[]> = {
     },
     {
       q: "Mes fichiers sont-ils téléchargés sur un serveur ?",
-      a: "La plupart des outils s'exécutent entièrement dans votre navigateur — vos fichiers ne quittent jamais votre appareil. Les exceptions sont les outils réseau (Recherche IP, Aperçu Meta, Analyseur SEO) qui envoient une requête via un proxy pour récupérer des données externes. Aucune de vos données n'est stockée ni journalisée.",
+      a: `La plupart des outils s'exécutent entièrement dans votre navigateur — vos fichiers ne quittent jamais votre appareil. Les exceptions sont les outils réseau (${networkToolNames("fr").join(", ")}) qui envoient une requête via un proxy pour récupérer des données externes. Aucune de vos données n'est stockée ni journalisée.`,
     },
     {
       q: "Quels navigateurs sont supportés ?",

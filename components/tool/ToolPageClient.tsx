@@ -83,8 +83,9 @@ export function ToolPageClient({ tool, content, faqItems }: Props) {
   const { lang } = useLang();
   const i = t(lang);
 
-  const WorkspaceComp = WORKSPACE_REGISTRY[tool.slug];
-  const related = TOOLS.filter((t) => t.slug !== tool.slug && t.cat === tool.cat).slice(0, 3);
+  // Un outil « à venir » garde sa page (noindex) mais pas son workspace
+  const WorkspaceComp = tool.comingSoon ? undefined : WORKSPACE_REGISTRY[tool.slug];
+  const related = TOOLS.filter((t) => t.slug !== tool.slug && t.cat === tool.cat && !t.comingSoon).slice(0, 3);
 
   return (
     <div className="pt-9">
@@ -101,7 +102,7 @@ export function ToolPageClient({ tool, content, faqItems }: Props) {
       {content && <ToolDeepDive content={content} lang={lang} />}
 
       {/* Après le contenu rédactionnel, jamais entre l'outil et son résultat */}
-      {adsAllowedOn(tool.slug) && <AdSlot slot={AD_SLOTS.toolContent} className="mb-10" />}
+      {!tool.comingSoon && adsAllowedOn(tool.slug) && <AdSlot slot={AD_SLOTS.toolContent} className="mb-10" />}
 
       {faqItems.length > 0 && <ToolFaqSection faqItems={faqItems} lang={lang} />}
 

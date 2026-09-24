@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { BRAND_NAME, SITE_URL } from "@/lib/brand";
 import type { Lang } from "@/lib/types";
 import { coerceLang } from "@/lib/localePath";
+import { networkToolNames } from "@/lib/tools";
 
 interface Props {
   params: Promise<{ lang: string }>;
@@ -42,7 +43,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// the service",
         content: [
-          `${BRAND_NAME} provides free browser-based utilities — file converters, text tools, code formatters, design generators, SEO tools. No account, no signup, no payment. Most tools run entirely client-side; a few (IP Lookup, Meta Tag Preview, SEO Analyzer, Open Graph Checker) make a server-side request to fetch external data, as described in the privacy policy.`,
+          `${BRAND_NAME} provides free browser-based utilities — file converters, text tools, code formatters, design generators, SEO tools. No account, no signup, no payment. Most tools run entirely client-side; a few (${networkToolNames("en").join(", ")}) make a server-side request to fetch external data, as described in the privacy policy.`,
           "The service is provided free of charge and may change, be added to, or be discontinued at any time, including individual tools, without notice.",
         ],
       },
@@ -53,7 +54,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
           {
             tag: "ul",
             items: [
-              "Use the network-dependent tools (IP Lookup, Meta Preview, SEO Analyzer, Open Graph Checker) to send an automated or high-volume stream of requests intended to overload the service or the third-party endpoints it queries",
+              `Use the network-dependent tools (${networkToolNames("en").join(", ")}) to send an automated or high-volume stream of requests intended to overload the service or the third-party endpoints it queries`,
               "Attempt to bypass, disable or interfere with the site's security, rate limits, or normal operation",
               "Use the site to process, generate or distribute content that is illegal, infringes a third party's rights, or violates applicable law",
               "Scrape or systematically extract the site's content or catalog data for republication without permission",
@@ -121,7 +122,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// le service",
         content: [
-          `${BRAND_NAME} propose des utilitaires gratuits fonctionnant dans le navigateur — convertisseurs de fichiers, outils texte, formateurs de code, générateurs design, outils SEO. Aucun compte, aucune inscription, aucun paiement. La plupart des outils s'exécutent entièrement côté client ; quelques-uns (Recherche IP, Aperçu des balises meta, Analyseur SEO, Vérificateur Open Graph) effectuent une requête côté serveur pour récupérer des données externes, comme décrit dans la politique de confidentialité.`,
+          `${BRAND_NAME} propose des utilitaires gratuits fonctionnant dans le navigateur — convertisseurs de fichiers, outils texte, formateurs de code, générateurs design, outils SEO. Aucun compte, aucune inscription, aucun paiement. La plupart des outils s'exécutent entièrement côté client ; quelques-uns (${networkToolNames("fr").join(", ")}) effectuent une requête côté serveur pour récupérer des données externes, comme décrit dans la politique de confidentialité.`,
           "Le service est fourni gratuitement et peut évoluer, être complété ou interrompu à tout moment, y compris outil par outil, sans préavis.",
         ],
       },
@@ -132,7 +133,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
           {
             tag: "ul",
             items: [
-              "Utiliser les outils dépendant du réseau (Recherche IP, Aperçu meta, Analyseur SEO, Vérificateur Open Graph) pour envoyer un flux de requêtes automatisé ou massif visant à surcharger le service ou les serveurs tiers qu'il interroge",
+              `Utiliser les outils dépendant du réseau (${networkToolNames("fr").join(", ")}) pour envoyer un flux de requêtes automatisé ou massif visant à surcharger le service ou les serveurs tiers qu'il interroge`,
               "Tenter de contourner, désactiver ou perturber la sécurité, les limites de débit ou le fonctionnement normal du site",
               "Utiliser le site pour traiter, générer ou diffuser un contenu illégal, portant atteinte aux droits d'un tiers, ou contraire à la réglementation applicable",
               "Extraire ou répliquer systématiquement le contenu ou les données du catalogue du site en vue d'une republication sans autorisation",

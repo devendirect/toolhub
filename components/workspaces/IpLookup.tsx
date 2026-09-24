@@ -74,6 +74,7 @@ export function IpLookup() {
           TIMEOUT:        "Délai d'attente dépassé.",
           UPSTREAM_ERROR: "Erreur du service ip-api.com.",
           LOOKUP_FAILED:  "Adresse IP introuvable.",
+          DISABLED:       "Recherche d'IP temporairement indisponible.",
         };
         const frMsg = lang === "fr" && json.code ? FR[json.code] : undefined;
         throw new Error(frMsg ?? json.error ?? TR[lang].lookupFailed);
