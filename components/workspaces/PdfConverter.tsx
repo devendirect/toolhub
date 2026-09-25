@@ -26,6 +26,7 @@ const TR = {
     pagesExtracted:    "pages extraites",
     downloadAll:       "tout télécharger ↓",
     downloadArrow:     "télécharger ↓",
+    passwordProtected: "Ce PDF est protégé par un mot de passe. Ouvrez-le dans votre lecteur PDF et enregistrez une copie sans protection, puis réessayez.",
   },
   en: {
     dropPdf:           "drop a PDF or click",
@@ -38,6 +39,7 @@ const TR = {
     pagesExtracted:    "pages extracted",
     downloadAll:       "download all ↓",
     downloadArrow:     "download ↓",
+    passwordProtected: "This PDF is password-protected. Open it in your PDF reader, save a copy without protection, then try again.",
   },
 } as const;
 
@@ -86,8 +88,9 @@ export function PdfConverter({ initialMode, initialImgFormat }: PdfConverterProp
     setCurrent(0);
 
     try {
-      const { getDocument, GlobalWorkerOptions, version } = await import("pdfjs-dist");
-      GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${version}/build/pdf.worker.min.mjs`;
+      const { getDocument, GlobalWorkerOptions } = await import("pdfjs-dist");
+      // Servi par le site (copié au build par scripts/copy-pdf-worker.mjs), plus par unpkg.com
+      GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await getDocument({ data: arrayBuffer }).promise;
@@ -125,7 +128,8 @@ export function PdfConverter({ initialMode, initialImgFormat }: PdfConverterProp
       setPages(results);
       setStatus("done");
     } catch (e) {
-      fail(e);
+      // PDF.js lève une PasswordException en anglais : on la remplace par un message utile
+      fail(e instanceof Error && e.name === "PasswordException" ? new Error(TR[lang].passwordProtected) : e);
     }
   };
 

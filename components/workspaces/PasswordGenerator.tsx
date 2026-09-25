@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useCopy } from "@/hooks/useCopy";
 import { useLang } from "@/components/providers/I18nProvider";
 import { OptionsBar, OptBlock, SegControl, Toggle } from "@/components/workspace/OptionsBar";
@@ -39,22 +39,47 @@ const CHARS = {
   ambiguous: "l1IO0B8",
 };
 
-export function generate(length: number, opts: { upper: boolean; digits: boolean; symbols: boolean; noAmbiguous: boolean }): string {
-  let charset = CHARS.lower;
-  if (opts.upper) charset += CHARS.upper;
-  if (opts.digits) charset += CHARS.digits;
-  if (opts.symbols) charset += CHARS.symbols;
-  if (opts.noAmbiguous) charset = charset.split("").filter((c) => !CHARS.ambiguous.includes(c)).join("");
-  if (!charset) return "";
-  const arr = new Uint32Array(length);
-  crypto.getRandomValues(arr);
-  return Array.from(arr, (n) => charset[n % charset.length]).join("");
+export interface PwOptions { upper: boolean; digits: boolean; symbols: boolean; noAmbiguous: boolean }
+
+/** Familles de caractères actives, déjà privées des caractères ambigus si demandé. */
+function groups(opts: PwOptions): string[] {
+  const g = [CHARS.lower];
+  if (opts.upper) g.push(CHARS.upper);
+  if (opts.digits) g.push(CHARS.digits);
+  if (opts.symbols) g.push(CHARS.symbols);
+  return opts.noAmbiguous ? g.map((set) => [...set].filter((c) => !CHARS.ambiguous.includes(c)).join("")) : g;
 }
 
-export function entropy(pw: string): number {
-  const charsets = [/[a-z]/, /[A-Z]/, /[0-9]/, /[^a-zA-Z0-9]/];
-  const pool = charsets.reduce((s, r) => s + (r.test(pw) ? (r === charsets[0] || r === charsets[1] ? 26 : r === charsets[2] ? 10 : 32) : 0), 0);
-  return Math.floor(pw.length * Math.log2(pool || 1));
+/**
+ * Index uniforme dans [0, max) : tirage avec rejet. Un simple « n % max »
+ * favorisait légèrement les premiers caractères de l'alphabet.
+ */
+function randomIndex(max: number): number {
+  const limit = Math.floor(0x100000000 / max) * max;
+  const buf = new Uint32Array(1);
+  do crypto.getRandomValues(buf); while (buf[0]! >= limit);
+  return buf[0]! % max;
+}
+
+export function generate(length: number, opts: PwOptions): string {
+  const sets = groups(opts);
+  const charset = sets.join("");
+  if (!charset) return "";
+  // Chaque famille cochée doit apparaître (sinon « chiffres activés » pouvait
+  // donner un mot de passe sans chiffre, refusé par les formulaires). On retire
+  // jusqu'à obtenir un tirage conforme : la distribution reste uniforme parmi
+  // les mots de passe valides.
+  for (let attempt = 0; attempt < 1000; attempt++) {
+    const pw = Array.from({ length }, () => charset[randomIndex(charset.length)]).join("");
+    if (length < sets.length || sets.every((set) => [...pw].some((c) => set.includes(c)))) return pw;
+  }
+  return Array.from({ length }, () => charset[randomIndex(charset.length)]).join("");
+}
+
+/** Entropie réelle du générateur : longueur × log2(taille de l'alphabet utilisé). */
+export function entropyBits(length: number, opts: PwOptions): number {
+  const size = groups(opts).join("").length;
+  return size ? Math.floor(length * Math.log2(size)) : 0;
 }
 
 function strengthLabel(bits: number, lang: Lang): { label: string; color: string } {
@@ -76,15 +101,22 @@ export function PasswordGenerator() {
   const [digits, setDigits] = useState(true);
   const [symbols, setSymbols] = useState(false);
   const [noAmbiguous, setNoAmbiguous] = useState(false);
-  const [passwords, setPasswords] = useState<string[]>(() =>
-    Array.from({ length: COUNT }, () => generate(16, { upper: true, digits: true, symbols: false, noAmbiguous: false }))
-  );
+  // Jamais de tirage pendant le rendu : la page est prérendue au build, et des
+  // mots de passe générés côté serveur étaient figés dans le HTML en cache,
+  // identiques pour tous les visiteurs et lisibles dans le code source.
+  // Même schéma que UuidGenerator : liste vide, puis tirage une fois monté.
+  const [passwords, setPasswords] = useState<string[]>([]);
   const { copy, copied } = useCopy();
   const trackRun = useTrackRun("password-generator", "design");
 
-  const regen = useCallback((l: Length, opts: { upper: boolean; digits: boolean; symbols: boolean; noAmbiguous: boolean }) => {
+  const regen = useCallback((l: Length, opts: PwOptions) => {
     setPasswords(Array.from({ length: COUNT }, () => generate(l, opts)));
   }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    regen(16, { upper: true, digits: true, symbols: false, noAmbiguous: false });
+  }, [regen]);
 
   const opts = { upper, digits, symbols, noAmbiguous };
 
@@ -126,7 +158,7 @@ export function PasswordGenerator() {
       <div className="border border-line">
         <div className="flex items-center gap-4 px-[14px] py-[10px] border-b border-line bg-bg text-[12px]">
           <span className="font-mono">
-            <span className="text-dim">// </span>
+            <span className="text-dim">{"// "}</span>
             <span className="text-fg">{TR[lang].passwords}</span>
           </span>
           <span className="font-mono text-[11px] text-dim">{COUNT} suggestions</span>
@@ -134,7 +166,7 @@ export function PasswordGenerator() {
 
         <div className="bg-bg-code divide-y divide-line">
           {passwords.map((pw, idx) => {
-            const bits = entropy(pw);
+            const bits = entropyBits(pw.length, opts);
             const { label, color } = strengthLabel(bits, lang);
             return (
               <div

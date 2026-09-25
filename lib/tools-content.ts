@@ -22,33 +22,218 @@ export interface ToolContent {
 export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   "json-formatter": {
     desc: {
-      en: "Format and validate JSON in one click — no login, no upload, works offline once loaded. Paste any raw JSON payload and get it back properly indented and validated. Whether you're reading a minified API response, cleaning up a config file, or inspecting a webhook body, syntax errors are flagged with the exact line number so you can fix them without hunting through minified output.",
-      fr: "Formatez et validez du JSON en un clic — sans compte, sans envoi de données, fonctionne hors ligne une fois chargé. Collez n'importe quel JSON brut et récupérez-le correctement indenté et validé. Que vous lisiez une réponse d'API minifiée, nettoyiez un fichier de configuration ou inspectiez une charge utile de webhook, les erreurs de syntaxe sont signalées avec le numéro de ligne exact.",
+      en: "Paste JSON and get it back indented and validated as you type. When the JSON is broken, the tool gives the line and column of the first error and names the likely cause: a trailing comma, single quotes, a comment, a key without quotes. Large integers such as API IDs are kept digit for digit, duplicate keys are flagged, and you can sort keys, minify or pick 2, 4 or 8 spaces or tabs. Nothing is sent anywhere.",
+      fr: "Collez du JSON et récupérez-le indenté et validé à mesure que vous tapez. Quand le JSON est cassé, l'outil donne la ligne et la colonne de la première erreur et nomme la cause probable : virgule finale, apostrophes, commentaire, clé sans guillemets. Les grands entiers comme les identifiants d'API sont conservés au chiffre près, les clés en double sont signalées, et vous pouvez trier les clés, minifier ou choisir 2, 4 ou 8 espaces ou des tabulations. Rien n'est envoyé nulle part.",
     },
     useCases: {
-      en: ["Debugging REST or GraphQL API responses", "Cleaning up minified JSON config files before editing", "Validating JSON before sending it to a webhook or database", "Inspecting a JWT payload mid-debug — without installing a library or opening a separate tool"],
-      fr: ["Déboguer des réponses d'API REST ou GraphQL", "Nettoyer des fichiers de config JSON minifiés avant édition", "Valider du JSON avant de l'envoyer à un webhook ou une base de données", "Inspecter un payload JWT en cours de débogage — sans installer de bibliothèque ni ouvrir un outil séparé"],
+      en: ["Reading a minified API response or webhook body without scrolling through a single 20,000-character line", "Finding the character that breaks a package.json, composer.json or config file after a manual edit", "Sorting keys before comparing two API responses, so the diff only shows real changes", "Checking that a payload is valid JSON before sending it to an API or storing it"],
+      fr: ["Lire une réponse d'API ou un corps de webhook minifié sans faire défiler une ligne unique de 20 000 caractères", "Trouver le caractère qui casse un package.json, un composer.json ou un fichier de config après une modification à la main", "Trier les clés avant de comparer deux réponses d'API, pour que le diff ne montre que les vrais changements", "Vérifier qu'un payload est du JSON valide avant de l'envoyer à une API ou de le stocker"],
     },
+    deepDive: [
+      {
+        h: { en: "Finding the error, and naming it", fr: "Trouver l'erreur, et la nommer" },
+        p: {
+          en: [
+            "Browsers don't agree on how to report a JSON error. Chrome gives a line and column for some mistakes and not for others: for [1, 2,] it only says \"Unexpected token ']'\". Safari usually gives no position at all. So the tool reads the text itself and reports the line and column of the first problem, in every browser, along with what it most likely is.",
+            "Nearly every broken JSON comes from something that's valid in JavaScript but not in JSON. A trailing comma after the last item. Single quotes instead of double quotes. A key without quotes, typical of an object copied from source code. A comment. Or undefined and NaN, which appear when a JavaScript object is copied from the console. Each has its own message, so you know what to change, not only where.",
+            "One subtle case: a line break typed inside a string. It looks harmless in an editor, but JSON strings can't contain raw line breaks or tabs; they must be written \\n and \\t.",
+          ],
+          fr: [
+            "Les navigateurs ne s'accordent pas sur la façon de signaler une erreur JSON. Chrome donne une ligne et une colonne pour certaines fautes et pas pour d'autres : pour [1, 2,], il dit seulement « Unexpected token ']' ». Safari ne donne en général aucune position. L'outil lit donc le texte lui-même et indique la ligne et la colonne du premier problème, dans tous les navigateurs, avec ce qu'il est le plus probablement.",
+            "Presque tous les JSON cassés viennent d'une chose valide en JavaScript mais pas en JSON. Une virgule après le dernier élément. Des apostrophes au lieu de guillemets doubles. Une clé sans guillemets, typique d'un objet copié depuis du code. Un commentaire. Ou undefined et NaN, qui apparaissent quand on copie un objet JavaScript depuis la console. Chacun a son propre message : vous savez quoi changer, pas seulement où.",
+            "Un cas plus discret : un retour à la ligne tapé à l'intérieur d'une chaîne. Il paraît anodin dans un éditeur, mais une chaîne JSON ne peut pas contenir de retour à la ligne ni de tabulation bruts ; il faut les écrire \\n et \\t.",
+          ],
+        },
+      },
+      {
+        h: { en: "Long IDs: the number that silently changes", fr: "Les longs identifiants : le nombre qui change en silence" },
+        p: {
+          en: [
+            "JavaScript stores every number as a 64-bit float, which holds integers exactly only up to 9,007,199,254,740,991. Beyond that, JSON.parse rounds. Paste {\"id\": 1234567890123456789} into most online formatters, or into your browser's console, and you get back 1234567890123456800. The formatting worked; the data didn't survive.",
+            "That matters because many APIs hand out 64-bit IDs: social networks, chat platforms, databases with large sequences. This formatter reads those numbers as text before parsing and puts the original digits back in the output, then tells you how many it protected.",
+            "It can't fix your own code, though. Any JavaScript that calls JSON.parse on that response will round the ID the same way. That's why some APIs send the ID twice, as a number and as a string, the way Twitter's API provides id_str next to id. If you design the API, send long IDs as strings.",
+          ],
+          fr: [
+            "JavaScript stocke tous les nombres en flottants 64 bits, qui ne représentent exactement les entiers que jusqu'à 9 007 199 254 740 991. Au-delà, JSON.parse arrondit. Collez {\"id\": 1234567890123456789} dans la plupart des formateurs en ligne, ou dans la console du navigateur, et vous récupérez 1234567890123456800. La mise en forme a marché ; la donnée, elle, n'a pas survécu.",
+            "C'est important parce que beaucoup d'API distribuent des identifiants 64 bits : réseaux sociaux, messageries, bases de données aux grandes séquences. Ce formateur lit ces nombres comme du texte avant l'analyse, remet les chiffres d'origine dans le résultat, puis indique combien il en a protégé.",
+            "Il ne peut pas corriger votre propre code pour autant. Tout JavaScript qui appelle JSON.parse sur cette réponse arrondira l'identifiant de la même façon. C'est pour ça que certaines API envoient l'identifiant deux fois, en nombre et en chaîne, comme l'API de Twitter fournit id_str à côté de id. Si vous concevez l'API, envoyez les longs identifiants en chaînes.",
+          ],
+        },
+      },
+      {
+        h: { en: "Duplicate keys and sorted keys", fr: "Clés en double et clés triées" },
+        p: {
+          en: [
+            "The JSON standard, RFC 8259, says keys in an object should be unique, but doesn't forbid duplicates, and parsers handle them differently. JavaScript keeps the last value and drops the others without a word. The formatter follows the same rule, so it lists each duplicate key with its path: a hand-edited config file with two \"port\" entries is exactly the bug you want to see.",
+            "Sort keys orders the keys of every object alphabetically, at every level, and leaves arrays in their original order, since the order of items in an array carries meaning. It's the quickest way to compare two responses from the same API: sort both, then any difference you see is a real one, not a key that moved.",
+          ],
+          fr: [
+            "Le standard JSON, la RFC 8259, dit que les clés d'un objet devraient être uniques, sans interdire les doublons, et les analyseurs ne les traitent pas tous pareil. JavaScript garde la dernière valeur et abandonne les autres sans un mot. Le formateur suit la même règle, donc il liste chaque clé en double avec son chemin : un fichier de config modifié à la main avec deux entrées \"port\" est exactement le bug qu'on veut voir.",
+            "Le tri des clés range par ordre alphabétique les clés de chaque objet, à tous les niveaux, et laisse les tableaux dans leur ordre d'origine, puisque l'ordre des éléments d'un tableau a un sens. C'est le moyen le plus rapide de comparer deux réponses d'une même API : triez les deux, et chaque différence visible est une vraie différence, pas une clé qui a changé de place.",
+          ],
+        },
+      },
+      {
+        h: { en: "Config files: package.json, composer.json, tsconfig.json", fr: "Fichiers de config : package.json, composer.json, tsconfig.json" },
+        p: {
+          en: [
+            "package.json and composer.json are strict JSON: a trailing comma left after deleting a dependency is enough for npm or Composer to refuse the whole file. Paste the file here and the error points at that comma.",
+            "tsconfig.json and VS Code's settings.json are different. They accept comments and trailing commas, a relaxed format often called JSONC. The formatter follows strict JSON, so it will flag a comment in them as an error. That's correct for JSON, not a problem in your tsconfig: don't strip comments from a file that is allowed to have them.",
+          ],
+          fr: [
+            "package.json et composer.json sont du JSON strict : une virgule oubliée après la suppression d'une dépendance suffit pour que npm ou Composer refusent le fichier entier. Collez-le ici, et l'erreur pointe cette virgule.",
+            "tsconfig.json et le settings.json de VS Code sont différents. Ils acceptent commentaires et virgules finales, un format assoupli souvent appelé JSONC. Le formateur suit le JSON strict et signalera donc un commentaire comme une erreur. C'est juste pour du JSON, et ce n'est pas un problème dans votre tsconfig : ne retirez pas les commentaires d'un fichier qui a le droit d'en avoir.",
+          ],
+        },
+      },
+      {
+        h: { en: "Size and privacy", fr: "Taille et confidentialité" },
+        p: {
+          en: [
+            "Everything happens in the page: the JSON never leaves your browser, which matters when a response carries tokens or customer data. In our test, a 4.6 MB file with 40,000 records and 40,000 long IDs was read, checked and formatted in under a tenth of a second on a recent laptop. The editor becomes the slower part on very large files, when scrolling through hundreds of thousands of lines.",
+          ],
+          fr: [
+            "Tout se passe dans la page : le JSON ne quitte jamais votre navigateur, ce qui compte quand une réponse contient des jetons ou des données clients. Lors de notre test, un fichier de 4,6 Mo avec 40 000 enregistrements et 40 000 longs identifiants a été lu, vérifié et mis en forme en moins d'un dixième de seconde sur un ordinateur portable récent. Sur de très gros fichiers, c'est l'éditeur qui devient la partie lente, quand on fait défiler des centaines de milliers de lignes.",
+          ],
+        },
+      },
+    ],
   },
   "image-converter": {
     desc: {
-      en: "Convert images between JPG, PNG, WebP and AVIF directly in your browser — no upload required. Drop an image, pick a target format, and download the result. You can also resize and adjust export quality at the same time to hit the exact file size you need for web optimization, social media or email.",
-      fr: "Convertissez des images entre JPG, PNG, WebP et AVIF directement dans votre navigateur, sans envoyer de fichier nulle part. Déposez une image, choisissez un format cible, et téléchargez le résultat. Redimensionnez et ajustez la qualité d'export en même temps pour atteindre exactement la taille de fichier voulue.",
+      en: "Drop an image, choose WebP, JPG or PNG, and download the converted file. You can cap the width at 1920, 1280 or 800 pixels, keeping the proportions, and set the quality to 80, 90 or 100 for JPG and WebP. The tool reads JPG, PNG, WebP, AVIF, GIF and BMP, shows the size gained or lost compared with the original, and does everything in your browser: the file is never uploaded.",
+      fr: "Déposez une image, choisissez WebP, JPG ou PNG, et téléchargez le fichier converti. Vous pouvez limiter la largeur à 1920, 1280 ou 800 pixels, proportions conservées, et régler la qualité à 80, 90 ou 100 pour le JPG et le WebP. L'outil lit le JPG, le PNG, le WebP, l'AVIF, le GIF et le BMP, affiche le poids gagné ou perdu par rapport à l'original, et fait tout dans votre navigateur : le fichier n'est jamais envoyé.",
     },
     useCases: {
-      en: ["Converting PNG screenshots to WebP for faster web page loading", "Resizing and compressing images to meet social media upload limits", "Converting AVIF files to JPG for compatibility with older software", "Generating multiple format variants of the same image for a <picture> element"],
-      fr: ["Convertir des captures d'écran PNG en WebP pour accélérer le chargement des pages", "Redimensionner et compresser des images pour les réseaux sociaux", "Convertir des fichiers AVIF en JPG pour la compatibilité avec des logiciels anciens", "Générer plusieurs variantes de format pour un élément <picture> HTML"],
+      en: ["Turning the images of a site you're building into WebP, at the width they're actually displayed, before uploading them", "Converting the heavy PNG photos a client sends into lighter JPG or WebP files", "Getting a JPG out of a WebP or AVIF image downloaded from the web, for software that can't open it", "Removing the location and camera data stored in a photo before publishing it"],
+      fr: ["Passer en WebP les images d'un site en cours de création, à la largeur où elles s'affichent vraiment, avant de les mettre en ligne", "Convertir en JPG ou WebP plus légers les photos PNG très lourdes envoyées par un client", "Obtenir un JPG à partir d'une image WebP ou AVIF téléchargée, pour un logiciel qui ne sait pas l'ouvrir", "Retirer les données de localisation et d'appareil photo contenues dans une photo avant de la publier"],
     },
+    deepDive: [
+      {
+        h: { en: "Which format to choose", fr: "Quel format choisir" },
+        p: {
+          en: [
+            "For photos on a website, WebP is the default choice: at quality 80 it's usually a good deal lighter than the same JPG and every current browser displays it. Keep JPG when the file will leave the web, attached to an email, dropped into an office document or sent to a print shop, because JPG opens everywhere.",
+            "PNG is for screenshots, logos, diagrams and anything with sharp edges, text or transparency. It's lossless, so there's no quality setting, and that's also its trap: converting a photo to PNG almost always makes the file bigger, sometimes several times bigger. The tool shows it honestly, with a +% in orange instead of a −% in green.",
+            "What the tool can't produce is AVIF. Browsers can read AVIF, so you can drop one in and get a JPG or PNG out, but they don't expose an AVIF encoder to web pages, so it isn't offered as an output.",
+          ],
+          fr: [
+            "Pour les photos d'un site web, le WebP est le choix par défaut : en qualité 80, il est en général nettement plus léger que le même JPG, et tous les navigateurs actuels l'affichent. Gardez le JPG quand le fichier sort du web, joint à un e-mail, glissé dans un document bureautique ou envoyé à un imprimeur, car le JPG s'ouvre partout.",
+            "Le PNG sert aux captures d'écran, logos, schémas et à tout ce qui a des bords nets, du texte ou de la transparence. Il est sans perte, donc sans réglage de qualité, et c'est aussi son piège : convertir une photo en PNG donne presque toujours un fichier plus lourd, parfois plusieurs fois plus lourd. L'outil l'affiche franchement, avec un +% en orange au lieu d'un −% en vert.",
+            "Ce que l'outil ne sait pas produire, c'est de l'AVIF. Les navigateurs savent lire l'AVIF, donc vous pouvez en déposer un et récupérer un JPG ou un PNG, mais ils ne donnent pas accès à un encodeur AVIF aux pages web : ce format n'est donc pas proposé en sortie.",
+          ],
+        },
+      },
+      {
+        h: { en: "Width first, quality second", fr: "La largeur d'abord, la qualité ensuite" },
+        p: {
+          en: [
+            "A 4000-pixel photo straight from a phone, displayed 800 pixels wide on a page, carries about 25 times more pixels than the page shows. No quality setting fixes that. Reduce the width first; the quality slider is for fine-tuning afterwards.",
+            "The rule of thumb for sharp images on high-density screens is twice the display width. An image shown 640 pixels wide in the layout wants a 1280-pixel file; a full-width hero on a large screen, 1920. The tool only ever scales down: a 700-pixel image stays at 700 even if you pick 1280, because enlarging adds weight without adding detail.",
+            "For quality, 80 is the sensible start for photos in WebP or JPG. Go to 90 for images with fine textures or gradients that show banding, and keep 100 for masters you'll edit again, not for publishing.",
+          ],
+          fr: [
+            "Une photo de 4000 pixels sortie d'un téléphone, affichée sur 800 pixels de large dans une page, porte environ 25 fois plus de pixels que ce que la page montre. Aucun réglage de qualité ne corrige ça. Réduisez d'abord la largeur ; la qualité sert ensuite à affiner.",
+            "La règle pour des images nettes sur les écrans haute densité : deux fois la largeur d'affichage. Une image affichée sur 640 pixels dans la mise en page demande un fichier de 1280 ; une image pleine largeur sur grand écran, 1920. L'outil ne fait que réduire : une image de 700 pixels reste à 700 même si vous choisissez 1280, car agrandir ajoute du poids sans ajouter de détail.",
+            "Côté qualité, 80 est le bon départ pour des photos en WebP ou en JPG. Montez à 90 pour les textures fines ou les dégradés qui font apparaître des bandes, et gardez 100 pour des originaux que vous retoucherez, pas pour publier.",
+          ],
+        },
+      },
+      {
+        h: { en: "What happens to the file along the way", fr: "Ce qui arrive au fichier en chemin" },
+        p: {
+          en: [
+            "The image is drawn onto a canvas in your browser and re-encoded from its pixels. Everything that isn't pixels stays behind, including the EXIF metadata: GPS position, phone model, date taken. That's a useful side effect before publishing a photo, and a reason to keep your original if you need that data later.",
+            "Transparent areas become white when you export to JPG, since JPG has no transparency. An animated GIF comes out as a single still image. Photos taken sideways keep the orientation you see on screen, because the browser applies the rotation stored in the file before drawing it.",
+          ],
+          fr: [
+            "L'image est dessinée sur un canvas dans votre navigateur puis réencodée à partir de ses pixels. Tout ce qui n'est pas pixel reste en route, y compris les métadonnées EXIF : position GPS, modèle de téléphone, date de prise de vue. C'est un effet utile avant de publier une photo, et une raison de garder l'original si vous avez besoin de ces données plus tard.",
+            "Les zones transparentes deviennent blanches à l'export en JPG, puisque le JPG n'a pas de transparence. Un GIF animé ressort en une seule image fixe. Les photos prises de côté gardent l'orientation que vous voyez à l'écran, car le navigateur applique la rotation enregistrée dans le fichier avant de la dessiner.",
+          ],
+        },
+      },
+      {
+        h: { en: "Files from clients: the HEIC case", fr: "Les fichiers de clients : le cas du HEIC" },
+        p: {
+          en: [
+            "Client folders are where the odd formats turn up: 12 MB PNG screenshots of photos, WebP images saved from a website, and iPhone photos in HEIC. The first two convert without trouble here. HEIC is different: the tool can only convert what the browser can decode, and apart from Safari, browsers don't read HEIC. You'll get a clear error rather than a corrupted file.",
+            "The simplest fix is upstream. Ask the client to send the photos from the iPhone as JPG, or to switch the camera to Most Compatible in the iPhone's Camera settings, under Formats. On a Mac, opening the HEIC file in Preview and exporting it as JPG works too.",
+          ],
+          fr: [
+            "C'est dans les dossiers des clients que surgissent les formats inattendus : captures PNG de 12 Mo qui sont en fait des photos, images WebP enregistrées depuis un site, et photos d'iPhone en HEIC. Les deux premiers se convertissent sans souci ici. Le HEIC est différent : l'outil ne convertit que ce que le navigateur sait décoder, et à part Safari, les navigateurs ne lisent pas le HEIC. Vous obtiendrez un message d'erreur clair plutôt qu'un fichier corrompu.",
+            "Le plus simple est de régler le problème en amont. Demandez au client d'envoyer les photos de l'iPhone en JPG, ou de passer l'appareil photo en « Le plus compatible » dans les réglages Appareil photo de l'iPhone, rubrique Formats. Sur Mac, ouvrir le HEIC dans Aperçu et l'exporter en JPG fonctionne aussi.",
+          ],
+        },
+      },
+    ],
   },
   "pdf-converter": {
     desc: {
-      en: "Two independent modes, both running entirely in your browser: PDF → images renders each page of a PDF to a standalone PNG or JPEG file, with a choice of 1×, 2× or 3× scale for resolution; images → PDF does the reverse, assembling any number of JPG, PNG or other browser-decodable images into a single downloadable PDF, one image per page. Page rendering uses PDF.js (the same engine behind Firefox's built-in PDF viewer); PDF assembly uses pdf-lib. One honest limit: there's no document-editing conversion here — this tool produces page images and PDFs, never an editable Word or Excel file. For extracting text you can actually edit, you need a dedicated PDF-to-Word converter that performs OCR or text extraction, which this isn't.",
-      fr: "Deux modes indépendants, tous deux exécutés entièrement dans votre navigateur : PDF → images restitue chaque page d'un PDF en fichier PNG ou JPEG autonome, avec un choix d'échelle 1×, 2× ou 3× pour la résolution ; images → PDF fait l'inverse, en assemblant n'importe quel nombre d'images JPG, PNG ou autres formats décodables par le navigateur en un seul PDF téléchargeable, une image par page. Le rendu des pages utilise PDF.js (le même moteur que la visionneuse PDF intégrée à Firefox) ; l'assemblage PDF utilise pdf-lib. Une limite honnête : il n'y a pas de conversion vers un document éditable ici — cet outil produit des images de page et des PDF, jamais un fichier Word ou Excel éditable. Pour extraire un texte réellement modifiable, il faut un convertisseur PDF vers Word dédié effectuant de l'OCR ou de l'extraction de texte, ce que cet outil n'est pas.",
+      en: "Two modes, both running entirely in your browser. PDF to images turns each page of a PDF into a PNG or JPEG file at 1×, 2× or 3× scale. Images to PDF does the reverse: it puts JPG, PNG or other images your browser can open into a single PDF, one image per page. Pages are rendered with PDF.js, the engine behind Firefox's built-in PDF viewer, and PDFs are assembled with pdf-lib. This tool makes page images and PDFs, not editable Word or Excel files.",
+      fr: "Deux modes, tous deux exécutés entièrement dans votre navigateur. PDF vers images transforme chaque page d'un PDF en fichier PNG ou JPEG, à l'échelle 1×, 2× ou 3×. Images vers PDF fait l'inverse : il place des JPG, des PNG ou d'autres images que votre navigateur sait ouvrir dans un seul PDF, une image par page. Les pages sont rendues avec PDF.js, le moteur de la visionneuse PDF intégrée à Firefox, et les PDF sont assemblés avec pdf-lib. L'outil produit des images de pages et des PDF, pas des fichiers Word ou Excel modifiables.",
     },
     useCases: {
-      en: ["Extracting pages from a PDF as images for a slide deck or website", "Turning a folder of scanned photo pages into a single shareable PDF", "Creating high-resolution page previews of a PDF for print or archival", "Assembling multiple JPG or PNG images into one PDF document to send as a single file"],
-      fr: ["Extraire des pages d'un PDF en images pour une présentation ou un site web", "Transformer un dossier de photos de pages scannées en un seul PDF partageable", "Créer des aperçus de page haute résolution d'un PDF pour l'impression ou l'archivage", "Assembler plusieurs images JPG ou PNG en un seul document PDF à envoyer en un seul fichier"],
+      en: ["Turning phone photos of a signed form, a receipt or an ID into one PDF to send", "Extracting a page of a PDF as an image for a presentation, a website or a social post", "Making a high-resolution image of a plan or a brochure page for printing", "Assembling several scanned pages saved as JPG into a single document"],
+      fr: ["Transformer des photos prises au téléphone d'un formulaire signé, d'un ticket ou d'une pièce d'identité en un seul PDF à envoyer", "Extraire une page d'un PDF en image pour une présentation, un site ou une publication sur les réseaux", "Obtenir une image haute résolution d'un plan ou d'une page de brochure pour l'impression", "Assembler plusieurs pages scannées enregistrées en JPG en un seul document"],
     },
+    deepDive: [
+      {
+        h: { en: "PDF to images: choosing the scale", fr: "PDF vers images : choisir l'échelle" },
+        p: {
+          en: [
+            "PDF pages are measured in points, 72 to the inch, so the scale sets the resolution. At 1× a page is rendered at 72 dots per inch, at 2× at 144 and at 3× at 216. An A4 page comes out at about 595 pixels wide at 1×, 1190 at 2× and 1786 at 3×.",
+            "2× suits screens, slides and web pages: sharp on high-density displays without huge files. 3× is the choice for printing or zooming into a plan. It stays below the 300 dots per inch of professional print, so for a large print run, ask for the original PDF rather than an image of it.",
+            "PNG keeps text and line drawings perfectly crisp and is the right format for documents. JPEG makes much lighter files for pages that are mostly photos, at the cost of slight blur around letters. The tool converts every page of the file; for a single page, download only that one from the list.",
+          ],
+          fr: [
+            "Les pages PDF se mesurent en points, 72 par pouce : l'échelle fixe donc la résolution. En 1×, une page est rendue à 72 points par pouce, en 2× à 144 et en 3× à 216. Une page A4 ressort à environ 595 pixels de large en 1×, 1190 en 2× et 1786 en 3×.",
+            "2× convient aux écrans, aux diapositives et aux pages web : net sur les écrans haute densité sans fichiers énormes. 3× est le choix pour imprimer ou zoomer dans un plan. Il reste sous les 300 points par pouce de l'impression professionnelle : pour un vrai tirage, demandez le PDF d'origine plutôt qu'une image.",
+            "Le PNG garde le texte et les traits parfaitement nets et convient aux documents. Le JPEG donne des fichiers bien plus légers pour les pages surtout composées de photos, au prix d'un léger flou autour des lettres. L'outil convertit toutes les pages du fichier ; pour une seule page, téléchargez seulement celle-ci dans la liste.",
+          ],
+        },
+      },
+      {
+        h: { en: "Images to PDF: photos of documents", fr: "Images vers PDF : les photos de documents" },
+        p: {
+          en: [
+            "Each image becomes one page, in the order you added the files, and the page takes the size of the image: one pixel becomes one point. A 4032-pixel-wide phone photo therefore makes a page about 142 cm wide. It prints correctly with fit to page, but it looks enormous in a viewer and weighs as much as the photo.",
+            "For documents photographed with a phone, crop and straighten the photos first, then reduce them to about 1600 pixels wide with the image converter: the text stays readable and the PDF becomes several times lighter, which matters when an administration's upload form caps files at a few megabytes.",
+            "JPG images are embedded as they are, without recompression. PNG images are embedded losslessly. Other formats your browser can open, such as WebP or AVIF, are converted to PNG before being added.",
+          ],
+          fr: [
+            "Chaque image devient une page, dans l'ordre où vous avez ajouté les fichiers, et la page prend la taille de l'image : un pixel devient un point. Une photo de téléphone de 4032 pixels de large donne donc une page d'environ 142 cm. Elle s'imprime correctement en ajustant à la page, mais paraît énorme dans une visionneuse et pèse autant que la photo.",
+            "Pour des documents photographiés au téléphone, recadrez et redressez d'abord les photos, puis réduisez-les à environ 1600 pixels de large avec le convertisseur d'images : le texte reste lisible et le PDF devient plusieurs fois plus léger, ce qui compte quand le formulaire d'envoi d'une administration limite les fichiers à quelques mégaoctets.",
+            "Les images JPG sont intégrées telles quelles, sans recompression. Les PNG sont intégrés sans perte. Les autres formats que votre navigateur sait ouvrir, comme le WebP ou l'AVIF, sont convertis en PNG avant d'être ajoutés.",
+          ],
+        },
+      },
+      {
+        h: { en: "What this tool doesn't do", fr: "Ce que cet outil ne fait pas" },
+        p: {
+          en: [
+            "It doesn't turn a PDF into an editable Word or Excel file. That requires extracting the text and rebuilding the layout, or recognizing it from the image with OCR for scans, which is a different kind of tool. The images produced here are pictures of the pages: you can't select or edit their text.",
+            "It can't open a PDF protected by a password. You'll get a clear message; if you're allowed to, open the file in your PDF reader with the password, save a copy without protection, and use that copy. To combine several existing PDFs, use the PDF merge tool, which copies pages without turning them into images.",
+          ],
+          fr: [
+            "Il ne transforme pas un PDF en fichier Word ou Excel modifiable. Cela demande d'extraire le texte et de reconstruire la mise en page, ou de le reconnaître sur l'image par OCR pour un scan : c'est un autre type d'outil. Les images produites ici sont des photos des pages : on ne peut ni sélectionner ni modifier leur texte.",
+            "Il ne peut pas ouvrir un PDF protégé par un mot de passe. Vous obtiendrez un message clair ; si vous en avez le droit, ouvrez le fichier dans votre lecteur PDF avec le mot de passe, enregistrez une copie sans protection et utilisez cette copie. Pour réunir plusieurs PDF existants, utilisez l'outil de fusion de PDF, qui copie les pages sans les transformer en images.",
+          ],
+        },
+      },
+      {
+        h: { en: "Nothing leaves your computer", fr: "Rien ne quitte votre ordinateur" },
+        p: {
+          en: [
+            "The PDF is read and rendered by code running in your tab, and the images or the PDF you download are created there too. The rendering engine is served by this site itself, so a conversion makes no request to any third party. That makes it suitable for payslips, tax notices or identity documents.",
+            "Download all saves one file per page. With a long document, your browser may ask once for permission to download several files: accept it, or download the pages you need one by one.",
+          ],
+          fr: [
+            "Le PDF est lu et rendu par du code qui tourne dans votre onglet, et les images ou le PDF téléchargés y sont créés aussi. Le moteur de rendu est servi par ce site lui-même : une conversion n'envoie aucune requête à un tiers. L'outil convient donc aux fiches de paie, avis d'imposition ou pièces d'identité.",
+            "Tout télécharger enregistre un fichier par page. Sur un long document, votre navigateur peut demander une fois l'autorisation de télécharger plusieurs fichiers : acceptez-la, ou téléchargez une à une les pages utiles.",
+          ],
+        },
+      },
+    ],
   },
   "audio-converter": {
     desc: {
@@ -154,23 +339,137 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "pdf-merge": {
     desc: {
-      en: "Combine multiple PDF files without sending them to a server — drop your files, drag to reorder, and download the merged result. Processing runs locally in your browser using pdf-lib, making it safe for confidential documents like contracts, invoices or medical records.",
-      fr: "Fusionnez plusieurs fichiers PDF sans les envoyer sur un serveur — déposez-les, réordonnez-les par glisser-déposer, et téléchargez le résultat fusionné. Le traitement s'effectue localement dans votre navigateur via pdf-lib, idéal pour les documents confidentiels comme des contrats, factures ou dossiers médicaux.",
+      en: "Drop two or more PDF files, set their order with the up and down arrows, and download a single merged PDF. The list shows each file's page count and size before you merge. Everything runs in your browser with the pdf-lib library, so invoices, contracts and ID documents never leave your computer.",
+      fr: "Déposez deux PDF ou plus, réglez leur ordre avec les flèches haut et bas, et téléchargez un seul PDF fusionné. La liste affiche le nombre de pages et le poids de chaque fichier avant la fusion. Tout se passe dans votre navigateur avec la bibliothèque pdf-lib : factures, contrats et pièces d'identité ne quittent jamais votre ordinateur.",
     },
     useCases: {
-      en: ["Combining monthly invoices into a single PDF for accounting", "Merging multiple contract pages or annexes into one document to sign", "Got the appendices as separate files? Drop them all at once and drag to set the order before merging", "Reordering pages by splitting PDFs and re-merging in the desired order"],
-      fr: ["Regrouper les factures mensuelles en un seul PDF pour la comptabilité", "Fusionner plusieurs pages d'un contrat ou ses annexes en un document à signer", "Les annexes sont dans des fichiers séparés ? Déposez-les tous d'un coup et glissez-les dans l'ordre avant de fusionner", "Réordonner des pages en scindant des PDF et en les refusionnant dans l'ordre souhaité"],
+      en: ["Putting together an application file (ID, payslips, proof of address) as one PDF, in the order the recipient asks for", "Grouping a month of invoices or receipts into a single file for your accountant", "Adding annexes and a cover page to a quote or a contract before sending it", "Combining scanned pages, once converted to PDF, into one document"],
+      fr: ["Constituer un dossier (pièce d'identité, fiches de paie, justificatif de domicile) en un seul PDF, dans l'ordre demandé par le destinataire", "Regrouper un mois de factures ou de justificatifs en un seul fichier pour le comptable", "Ajouter les annexes et une page de garde à un devis ou un contrat avant de l'envoyer", "Réunir des pages scannées, une fois converties en PDF, en un seul document"],
     },
+    deepDive: [
+      {
+        h: { en: "What merging keeps", fr: "Ce que la fusion conserve" },
+        p: {
+          en: [
+            "The pages are copied as they are, not redrawn. Text stays selectable and searchable, vector drawings stay sharp at any zoom, and images aren't compressed again, so there's no quality loss. The merged file weighs roughly the sum of the files you put in; merging doesn't make anything smaller.",
+            "The order is the order of the list. Files are added in the order you drop or select them, then the arrows move a file up or down. A habit that saves time on long files: name the documents 01-, 02-, 03- before adding them, so they arrive already sorted.",
+          ],
+          fr: [
+            "Les pages sont copiées telles quelles, pas redessinées. Le texte reste sélectionnable et consultable par recherche, les dessins vectoriels restent nets à tous les zooms, et les images ne sont pas recompressées : aucune perte de qualité. Le fichier fusionné pèse à peu près la somme des fichiers ajoutés ; la fusion ne réduit rien.",
+            "L'ordre est celui de la liste. Les fichiers s'ajoutent dans l'ordre où vous les déposez ou les sélectionnez, puis les flèches déplacent un fichier vers le haut ou le bas. Une habitude qui fait gagner du temps sur un gros dossier : nommez les documents 01-, 02-, 03- avant de les ajouter, pour qu'ils arrivent déjà triés.",
+          ],
+        },
+      },
+      {
+        h: { en: "What doesn't survive a merge", fr: "Ce qui ne survit pas à la fusion" },
+        p: {
+          en: [
+            "A digital signature. An electronically signed contract carries a signature tied to the exact bytes of that file. Once its pages are copied into a new document, the signature is no longer valid, even though the page still shows the signature image. If a signed document has to stay verifiable, send it as a separate attachment instead of merging it.",
+            "Bookmarks and fillable forms. The side-panel outline of each source file isn't carried over, and form fields may stop being editable in the merged file. Fill in and flatten forms before merging, or keep them apart. Document properties such as title and author aren't kept either.",
+          ],
+          fr: [
+            "La signature électronique. Un contrat signé électroniquement porte une signature liée aux octets exacts de ce fichier. Dès que ses pages sont copiées dans un nouveau document, la signature n'est plus valide, même si la page affiche toujours l'image de la signature. Si un document signé doit rester vérifiable, envoyez-le en pièce jointe séparée plutôt que de le fusionner.",
+            "Les signets et les formulaires à remplir. Le sommaire du panneau latéral de chaque fichier n'est pas repris, et les champs de formulaire peuvent ne plus être modifiables dans le fichier fusionné. Remplissez et aplatissez les formulaires avant la fusion, ou gardez-les à part. Les propriétés du document, comme le titre et l'auteur, ne sont pas conservées non plus.",
+          ],
+        },
+      },
+      {
+        h: { en: "Scans, photos and file size", fr: "Scans, photos et poids du fichier" },
+        p: {
+          en: [
+            "The tool merges PDFs only. For a photo of a document taken with a phone, or a scan saved as JPG or PNG, convert it to PDF first with the JPG to PDF or PNG to PDF converter, then add the result here.",
+            "Scans are where file size gets out of hand. A page scanned at high resolution in color can weigh several megabytes, and a twenty-page file quickly passes the 25 MB attachment limit of services like Gmail. Reduce the images before turning them into PDF (a width of about 1600 pixels keeps a printed A4 page readable), rather than trying to shrink the merged PDF afterwards.",
+          ],
+          fr: [
+            "L'outil fusionne uniquement des PDF. Pour la photo d'un document prise au téléphone, ou un scan enregistré en JPG ou en PNG, convertissez-le d'abord en PDF avec le convertisseur JPG vers PDF ou PNG vers PDF, puis ajoutez le résultat ici.",
+            "C'est avec les scans que le poids s'envole. Une page scannée en couleur à haute résolution peut peser plusieurs mégaoctets, et un dossier de vingt pages dépasse vite la limite de 25 Mo des pièces jointes de services comme Gmail. Réduisez les images avant d'en faire un PDF (une largeur d'environ 1600 pixels garde une page A4 imprimée lisible), plutôt que d'essayer d'alléger le PDF fusionné après coup.",
+          ],
+        },
+      },
+      {
+        h: { en: "Protected or damaged files", fr: "Fichiers protégés ou endommagés" },
+        p: {
+          en: [
+            "A PDF protected by a password can't be opened by the tool, and neither can a damaged file. It shows up in the list with a dash instead of a page count, and if you try to merge, the error names the file at fault so you can remove it and merge the rest.",
+            "If you're allowed to remove the protection, open the file with its password in your PDF reader and save or print it to a new PDF without a password, then add that copy. Bank and tax statements are often protected this way.",
+          ],
+          fr: [
+            "Un PDF protégé par mot de passe ne peut pas être ouvert par l'outil, pas plus qu'un fichier endommagé. Il apparaît dans la liste avec un tiret à la place du nombre de pages, et si vous lancez la fusion, le message d'erreur nomme le fichier en cause pour que vous puissiez le retirer et fusionner les autres.",
+            "Si vous avez le droit de retirer la protection, ouvrez le fichier avec son mot de passe dans votre lecteur PDF, puis enregistrez-le ou imprimez-le vers un nouveau PDF sans mot de passe, et ajoutez cette copie. Les relevés bancaires et les avis d'impôt sont souvent protégés de cette façon.",
+          ],
+        },
+      },
+    ],
   },
   "qr-generator": {
     desc: {
-      en: "Create a QR code from any URL or text in seconds — free, offline, no account required. The generator runs entirely in your browser so no QR code is ever stored or tracked. Export as SVG for crisp quality at any print size, or PNG for embedding in images and documents.",
-      fr: "Créez un QR code depuis n'importe quelle URL ou texte en quelques secondes — gratuit, hors ligne, sans compte. Le générateur s'exécute entièrement dans votre navigateur, aucun QR code n'est stocké ni tracé. Exportez en SVG pour une qualité parfaite à n'importe quelle taille d'impression, ou en PNG pour l'intégration dans des images et des documents.",
+      en: "Type a link or some text, or switch to Wi-Fi mode and enter a network name and password, and the QR code appears as you type. Download it as SVG for print or PNG for screens, at 128, 256 or 512 pixels, with one of the four error-correction levels. The code is generated in your browser, contains exactly what you typed, and has no tracking or expiry date.",
+      fr: "Tapez un lien ou un texte, ou passez en mode Wi-Fi et saisissez le nom du réseau et le mot de passe : le QR code apparaît à mesure que vous tapez. Téléchargez-le en SVG pour l'impression ou en PNG pour l'écran, en 128, 256 ou 512 pixels, avec l'un des quatre niveaux de correction d'erreur. Le code est généré dans votre navigateur, contient exactement ce que vous avez tapé, et n'a ni suivi ni date d'expiration.",
     },
     useCases: {
-      en: ["Creating QR codes for business cards, posters or product packaging", "Linking physical items to their online documentation or warranty page", "Generating a QR code to share Wi-Fi network credentials", "Adding a scannable link to a presentation slide or conference badge"],
-      fr: ["Créer des QR codes pour des cartes de visite, affiches ou emballages produit", "Lier des objets physiques à leur documentation ou page de garantie en ligne", "Générer un QR code pour partager des identifiants Wi-Fi", "Ajouter un lien scannable à une diapositive ou un badge de conférence"],
+      en: ["Printing a QR code on a business card, flyer, poster or restaurant menu that points to a website or a booking page", "Letting guests join the Wi-Fi by scanning a code on the wall instead of typing a long password", "Showing a link on a presentation slide or a screen so people can open it on their phone", "Putting a link to a manual or warranty page on product packaging"],
+      fr: ["Imprimer un QR code sur une carte de visite, un flyer, une affiche ou un menu de restaurant qui mène à un site ou à une page de réservation", "Permettre aux invités de se connecter au Wi-Fi en scannant un code au mur plutôt qu'en tapant un long mot de passe", "Afficher un lien sur une diapositive ou un écran pour que chacun l'ouvre sur son téléphone", "Placer sur un emballage un lien vers la notice ou la page de garantie"],
     },
+    deepDive: [
+      {
+        h: { en: "Printing a QR code that scans at first try", fr: "Imprimer un QR code qui se scanne du premier coup" },
+        p: {
+          en: [
+            "Use the SVG file for anything printed. It's a vector drawing, so the printer or your layout software can scale it to 2 cm or to a poster without blur. PNG is for screens, slides and documents, where 256 or 512 pixels is plenty.",
+            "Size depends on distance. A common rule of thumb is a code about one tenth of the scanning distance: 2 to 3 cm on a business card read at arm's length, 10 cm or more on a poster read from a metre away. Below about 2 cm, most phones start to struggle.",
+            "Keep the white border. The standard asks for a clear margin of four modules (the small squares) around the code, and the files here include it. When you place the code on a photo or a colored background, don't crop that margin away: it's how the phone finds where the code starts. And keep dark modules on a light background; inverted codes aren't read by every scanner.",
+            "Before sending anything to print, scan the final file with two different phones, from the real distance. It takes a minute and saves a print run.",
+          ],
+          fr: [
+            "Utilisez le fichier SVG pour tout ce qui est imprimé. C'est un dessin vectoriel : l'imprimeur ou votre logiciel de mise en page peut le passer à 2 cm ou à la taille d'une affiche sans flou. Le PNG est fait pour les écrans, les diapositives et les documents, où 256 ou 512 pixels suffisent largement.",
+            "La taille dépend de la distance. Une règle courante : un code d'environ un dixième de la distance de lecture. 2 à 3 cm sur une carte de visite lue à bout de bras, 10 cm ou plus sur une affiche lue à un mètre. En dessous d'environ 2 cm, la plupart des téléphones commencent à peiner.",
+            "Gardez la bordure blanche. La norme demande une marge libre de quatre modules (les petits carrés) autour du code, et les fichiers d'ici l'incluent. Quand vous posez le code sur une photo ou un fond coloré, ne rognez pas cette marge : c'est elle qui permet au téléphone de repérer où commence le code. Et gardez des modules foncés sur fond clair ; les codes inversés ne sont pas lus par tous les lecteurs.",
+            "Avant d'envoyer quoi que ce soit à l'impression, scannez le fichier final avec deux téléphones différents, à la vraie distance. Ça prend une minute et évite de refaire un tirage.",
+          ],
+        },
+      },
+      {
+        h: { en: "Short content, simpler code", fr: "Contenu court, code plus simple" },
+        p: {
+          en: [
+            "Every character you add makes the code denser: more, smaller modules for the same printed size, which are harder to read from a distance or on a crumpled flyer. A long URL full of tracking parameters can easily double the density of a short one. Where you can, point the code to a short, clean address.",
+            "Error correction works the other way. The four levels let a code survive damage: L recovers about 7% of the modules, M about 15%, Q about 25% and H about 30%. Higher levels add redundancy, so the code gets denser for the same content. M is a good default; use Q or H for codes printed on surfaces that get scratched or folded, and L when the content is long and the code must stay small. If the content is too long for any QR code, the tool tells you instead of producing an unreadable one.",
+          ],
+          fr: [
+            "Chaque caractère ajouté rend le code plus dense : plus de modules, plus petits, pour la même taille imprimée, donc plus difficiles à lire de loin ou sur un flyer froissé. Une longue URL pleine de paramètres de suivi peut facilement doubler la densité d'une adresse courte. Quand c'est possible, faites pointer le code vers une adresse courte et propre.",
+            "La correction d'erreur joue dans l'autre sens. Les quatre niveaux permettent à un code de survivre aux dégâts : L récupère environ 7 % des modules, M environ 15 %, Q environ 25 % et H environ 30 %. Les niveaux élevés ajoutent de la redondance, donc le code devient plus dense pour le même contenu. M est un bon choix par défaut ; prenez Q ou H pour un code imprimé sur une surface qui se raye ou se plie, et L quand le contenu est long et que le code doit rester petit. Si le contenu est trop long pour tout QR code, l'outil vous le dit au lieu de produire un code illisible.",
+          ],
+        },
+      },
+      {
+        h: { en: "Wi-Fi QR codes", fr: "Les QR codes Wi-Fi" },
+        p: {
+          en: [
+            "In Wi-Fi mode, the tool writes the text that phone cameras recognize as a network: WIFI:T:WPA;S:network name;P:password;;. The camera app on current iPhones and Android phones offers to join the network when it sees it, with no typing.",
+            "The detail that breaks homemade Wi-Fi codes is escaping. Semicolons, commas, colons, quotes and backslashes have a meaning in that format, so a password containing one of them must have it preceded by a backslash. Without it, the phone reads a truncated password and the connection fails for no visible reason. The tool adds those backslashes for you. Tick hidden network if your router doesn't broadcast the name.",
+            "Keep in mind that the password is written in plain text inside the code: anyone who scans it with a QR reader app can read it. For a waiting room or a rental, point the code at a guest network rather than your main one.",
+          ],
+          fr: [
+            "En mode Wi-Fi, l'outil écrit le texte que les appareils photo des téléphones reconnaissent comme un réseau : WIFI:T:WPA;S:nom du réseau;P:mot de passe;;. L'appareil photo des iPhone et des téléphones Android récents propose de rejoindre le réseau dès qu'il le voit, sans rien taper.",
+            "Le détail qui casse les codes Wi-Fi faits maison, c'est l'échappement. Points-virgules, virgules, deux-points, guillemets et antislashs ont un sens dans ce format : un mot de passe qui en contient doit les faire précéder d'un antislash. Sans ça, le téléphone lit un mot de passe tronqué et la connexion échoue sans raison visible. L'outil ajoute ces antislashs pour vous. Cochez réseau masqué si votre box ne diffuse pas le nom.",
+            "Gardez à l'esprit que le mot de passe est écrit en clair dans le code : n'importe qui peut le lire en le scannant avec une application de lecture de QR code. Pour une salle d'attente ou une location, faites pointer le code vers un réseau invité plutôt que vers votre réseau principal.",
+          ],
+        },
+      },
+      {
+        h: { en: "Static codes: what you print is what you get", fr: "Codes statiques : ce que vous imprimez est ce que vous obtenez" },
+        p: {
+          en: [
+            "The codes made here are static: the link or text is written inside the code itself. They don't pass through any server, can't be switched off, don't collect scan statistics and never expire. A code printed today will open the same address in ten years, as long as that address still exists.",
+            "Many QR services sell dynamic codes instead: the code contains a short link on their domain that redirects to yours. That lets you change the destination and count scans, but every scan depends on that company, and some deactivate the codes when a subscription ends. If you print thousands of flyers, know which kind you're printing. The flip side of a static code is that a typo in the URL is printed for good, so check the link before you export.",
+          ],
+          fr: [
+            "Les codes créés ici sont statiques : le lien ou le texte est écrit dans le code lui-même. Ils ne passent par aucun serveur, ne peuvent pas être désactivés, ne collectent aucune statistique de scan et n'expirent jamais. Un code imprimé aujourd'hui ouvrira la même adresse dans dix ans, tant que cette adresse existera.",
+            "Beaucoup de services de QR codes vendent plutôt des codes dynamiques : le code contient un lien court sur leur domaine, qui redirige vers le vôtre. Cela permet de changer la destination et de compter les scans, mais chaque scan dépend de cette société, et certaines désactivent les codes à la fin d'un abonnement. Si vous imprimez des milliers de flyers, sachez lequel des deux vous imprimez. Le revers d'un code statique : une faute dans l'URL est imprimée pour de bon, alors vérifiez le lien avant d'exporter.",
+          ],
+        },
+      },
+    ],
   },
   "base64": {
     desc: {
@@ -864,13 +1163,73 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "password-generator": {
     desc: {
-      en: "Generate a secure, random password on demand — runs entirely in your browser, never transmitted to any server. Uses the Web Crypto API to draw from your OS's cryptographically secure entropy source, not a predictable algorithm. Set the length and independently toggle uppercase, lowercase, numbers and symbols to match any password policy.",
-      fr: "Générez un mot de passe sécurisé et aléatoire en un clic — s'exécute entièrement dans votre navigateur, jamais transmis à un serveur. Utilise la Web Crypto API pour s'appuyer sur la source d'entropie cryptographiquement sécurisée de votre système d'exploitation, pas sur un algorithme prédictible. Définissez la longueur et activez indépendamment majuscules, minuscules, chiffres et symboles.",
+      en: "Pick a length from 8 to 32 characters, choose whether to add uppercase letters, digits and symbols, optionally leave out look-alike characters, and get five random passwords at once. Each one shows its strength in bits, calculated from the characters actually used. Passwords are drawn with the Web Crypto API in your browser after the page loads; they never go through a server and never appear in the page's source.",
+      fr: "Choisissez une longueur de 8 à 32 caractères, ajoutez ou non majuscules, chiffres et symboles, écartez si besoin les caractères qui se ressemblent, et obtenez cinq mots de passe aléatoires d'un coup. Chacun affiche sa force en bits, calculée sur les caractères réellement utilisés. Les mots de passe sont tirés avec la Web Crypto API dans votre navigateur, une fois la page chargée : ils ne passent par aucun serveur et n'apparaissent jamais dans le code source de la page.",
     },
     useCases: {
-      en: ["Generating a strong, unique password for a new account or service", "Creating multiple secure passwords for a batch of test accounts", "Generating a random API key, secret token or session ID", "Verifying that a password meets specific complexity requirements by generating examples"],
-      fr: ["Générer un mot de passe fort et unique pour un nouveau compte ou service", "Créer plusieurs mots de passe sécurisés pour un lot de comptes de test", "Générer une clé API aléatoire, un token secret ou un identifiant de session", "Vérifier qu'un mot de passe répond à des exigences de complexité spécifiques en générant des exemples"],
+      en: ["Creating a database password, an FTP or hosting-panel account, or an application secret for a new server", "Filling a .env file with secrets that won't break the connection string or the shell", "Getting a strong password for a new online account, to store straight into a password manager", "Producing several passwords at once for a batch of test or staff accounts"],
+      fr: ["Créer le mot de passe d'une base de données, d'un compte FTP ou d'un panneau d'hébergement, ou un secret d'application pour un nouveau serveur", "Remplir un fichier .env avec des secrets qui ne cassent ni la chaîne de connexion ni le shell", "Obtenir un mot de passe fort pour un nouveau compte en ligne, à enregistrer directement dans un gestionnaire de mots de passe", "Produire plusieurs mots de passe d'un coup pour un lot de comptes de test ou de collaborateurs"],
     },
+    deepDive: [
+      {
+        h: { en: "Length beats symbols", fr: "La longueur compte plus que les symboles" },
+        p: {
+          en: [
+            "The strength shown next to each password is its entropy: the length multiplied by log2 of the number of possible characters. Lowercase letters alone give 26 possibilities per character. Adding uppercase and digits brings it to 62, and the 26 symbols to 88.",
+            "Now compare. Sixteen letters and digits give 95 bits. Twelve characters with symbols give 77. Twenty-four letters and digits give 142, well beyond sixteen characters with every option on (103). Each extra character multiplies the number of possible passwords by 62 or more, while adding symbols only raises the per-character count from 62 to 88. When you can choose, add length before adding symbols.",
+            "The labels follow those numbers: under 40 bits is weak, 40 to 59 fair, 60 to 79 strong, and 80 or more very strong. The default here, sixteen letters and digits, lands at 95.",
+          ],
+          fr: [
+            "La force affichée à côté de chaque mot de passe est son entropie : la longueur multipliée par le log2 du nombre de caractères possibles. Les minuscules seules donnent 26 possibilités par caractère. Avec les majuscules et les chiffres, on passe à 62, et à 88 avec les 26 symboles.",
+            "Comparez. Seize lettres et chiffres donnent 95 bits. Douze caractères avec symboles en donnent 77. Vingt-quatre lettres et chiffres donnent 142, bien au-delà de seize caractères avec toutes les options (103). Chaque caractère en plus multiplie le nombre de mots de passe possibles par 62 ou davantage, alors qu'ajouter les symboles ne fait passer le nombre de choix par caractère que de 62 à 88. Quand vous avez le choix, allongez avant d'ajouter des symboles.",
+            "Les libellés suivent ces chiffres : moins de 40 bits, faible ; de 40 à 59, moyen ; de 60 à 79, fort ; 80 et plus, très fort. Le réglage par défaut, seize lettres et chiffres, arrive à 95.",
+          ],
+        },
+      },
+      {
+        h: { en: "Passwords for servers and .env files", fr: "Mots de passe pour serveurs et fichiers .env" },
+        p: {
+          en: [
+            "Symbols that are harmless in a website login form cause trouble in server configuration. An @ or a : in a database password breaks a connection string such as mysql://user:password@host/db unless it's percent-encoded. A $ gets expanded as a variable by the shell and by Docker Compose. A # can start a comment in a .env file when the value isn't quoted, silently cutting the password.",
+            "For those secrets, the simplest safe choice is 24 or 32 letters and digits, with symbols off: 142 or 190 bits, stronger than anything you'd type, and nothing to escape anywhere. Nobody types a database password by hand, so length costs nothing.",
+            "Leave out ambiguous characters when a password will be read or typed by a person: the option removes l, 1, I, O, 0, B and 8, which are easy to confuse on screen or on paper. It shortens the alphabet a little, so add a couple of characters to compensate.",
+          ],
+          fr: [
+            "Des symboles sans danger dans un formulaire de connexion posent problème dans la configuration d'un serveur. Un @ ou un : dans le mot de passe d'une base de données casse une chaîne de connexion comme mysql://utilisateur:motdepasse@hote/base, sauf encodage en pourcentage. Un $ est interprété comme une variable par le shell et par Docker Compose. Un # peut ouvrir un commentaire dans un fichier .env quand la valeur n'est pas entre guillemets, et couper le mot de passe sans prévenir.",
+            "Pour ces secrets, le choix sûr le plus simple est 24 ou 32 lettres et chiffres, symboles désactivés : 142 ou 190 bits, plus solide que tout ce qu'on taperait, et rien à échapper nulle part. Personne ne tape un mot de passe de base de données à la main, donc la longueur ne coûte rien.",
+            "Écartez les caractères ambigus quand un mot de passe sera lu ou tapé par une personne : l'option retire l, 1, I, O, 0, B et 8, faciles à confondre à l'écran ou sur papier. L'alphabet rétrécit un peu, alors ajoutez un ou deux caractères pour compenser.",
+          ],
+        },
+      },
+      {
+        h: { en: "How the passwords are drawn", fr: "Comment les mots de passe sont tirés" },
+        p: {
+          en: [
+            "Each character is picked with crypto.getRandomValues, the browser's cryptographic random source, not Math.random. The pick is uniform: values that would favor the first characters of the alphabet are thrown away and drawn again, so every character has exactly the same chance.",
+            "When you tick digits or symbols, each password is guaranteed to contain at least one of each ticked family, since many sign-up forms reject a password without a digit. Drafts that miss a family are discarded and redrawn, which keeps the result random among the passwords that satisfy the rule.",
+            "The passwords only exist in this browser tab. They're generated after the page has loaded, never on a server or when the site is built, so they can't end up in a cached copy of the page. A new batch replaces the previous one; nothing is kept.",
+          ],
+          fr: [
+            "Chaque caractère est choisi avec crypto.getRandomValues, la source aléatoire cryptographique du navigateur, et non Math.random. Le tirage est uniforme : les valeurs qui favoriseraient les premiers caractères de l'alphabet sont écartées et retirées, pour que chaque caractère ait exactement la même chance.",
+            "Quand vous cochez chiffres ou symboles, chaque mot de passe contient à coup sûr au moins un caractère de chaque famille cochée, car beaucoup de formulaires d'inscription refusent un mot de passe sans chiffre. Les brouillons auxquels il manque une famille sont écartés et retirés, ce qui garde le résultat aléatoire parmi les mots de passe conformes à la règle.",
+            "Les mots de passe n'existent que dans cet onglet. Ils sont générés une fois la page chargée, jamais sur un serveur ni au moment de la construction du site : ils ne peuvent donc pas se retrouver dans une copie en cache de la page. Un nouveau lot remplace le précédent ; rien n'est conservé.",
+          ],
+        },
+      },
+      {
+        h: { en: "After you copy it", fr: "Une fois copié" },
+        p: {
+          en: [
+            "Paste the password straight into a password manager or into the server's configuration, then generate a new batch so the one you used disappears from the screen. If clipboard history is turned on (Windows+V on Windows, many clipboard apps on macOS), the password stays there too; clear it for server secrets.",
+            "Use one password per service. A strong password reused in two places is only as safe as the weaker of the two sites, and leaked password lists are tried against every other service first.",
+          ],
+          fr: [
+            "Collez le mot de passe directement dans un gestionnaire de mots de passe ou dans la configuration du serveur, puis générez un nouveau lot pour que celui que vous avez utilisé disparaisse de l'écran. Si l'historique du presse-papiers est activé (Windows+V sous Windows, de nombreuses applications sous macOS), le mot de passe y reste aussi ; videz-le pour les secrets de serveur.",
+            "Un mot de passe par service. Un mot de passe fort réutilisé à deux endroits n'est pas plus sûr que le moins sûr des deux sites, et les listes de mots de passe dérobés sont d'abord essayées sur tous les autres services.",
+          ],
+        },
+      },
+    ],
   },
   "gradient-generator": {
     desc: {
@@ -1278,13 +1637,71 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "toml-json": {
     desc: {
-      en: "TOML ↔ JSON converts between the two formats in one click using smol-toml, a modern parser that supports the full TOML 1.0 specification. Paste a TOML config file and get clean JSON, or go the other way to generate TOML from a JSON object. No upload, no server — the conversion runs entirely in your browser.",
-      fr: "TOML ↔ JSON convertit entre les deux formats en un clic grâce à smol-toml, un parseur moderne supportant la spécification TOML 1.0 complète. Collez un fichier de configuration TOML et obtenez du JSON propre, ou faites l'inverse pour générer du TOML depuis un objet JSON. Aucun envoi, aucun serveur — la conversion s'effectue entièrement dans votre navigateur.",
+      en: "Paste a TOML file and get the equivalent JSON, or switch direction and turn a JSON object into TOML. The conversion uses smol-toml, a parser that follows the TOML 1.0 specification, and runs in your browser as you type. When a value can't make the trip unchanged, such as a JSON null or a TOML inf, the tool says so above the result instead of dropping it silently.",
+      fr: "Collez un fichier TOML et obtenez le JSON équivalent, ou inversez le sens pour transformer un objet JSON en TOML. La conversion s'appuie sur smol-toml, un parseur conforme à la spécification TOML 1.0, et se fait dans votre navigateur à mesure que vous tapez. Quand une valeur ne peut pas passer telle quelle, comme un null JSON ou un inf TOML, l'outil le signale au-dessus du résultat au lieu de la perdre sans rien dire.",
     },
     useCases: {
-      en: ["Converting a Cargo.toml or pyproject.toml to JSON for programmatic processing", "Translating a Hugo or Zola config file from TOML to JSON to use in a script", "Inspecting nested TOML structures in a familiar JSON format", "Generating a TOML config skeleton from an existing JSON settings file"],
-      fr: ["Convertir un Cargo.toml ou pyproject.toml en JSON pour un traitement programmatique", "Traduire un fichier de config Hugo ou Zola de TOML en JSON pour l'utiliser dans un script", "Inspecter des structures TOML imbriquées dans un format JSON familier", "Générer un squelette de config TOML depuis un fichier de paramètres JSON existant"],
+      en: ["Reading a Cargo.toml, pyproject.toml or Hugo config as JSON, to feed it to a script or a jq command", "Turning a JSON settings object from an API or a CMS into a TOML config file", "Finding the exact line where a TOML file breaks, with the error pointing at the column", "Checking what a TOML file really contains once inline tables and arrays of tables are expanded"],
+      fr: ["Lire un Cargo.toml, un pyproject.toml ou une config Hugo sous forme de JSON, pour l'envoyer à un script ou à une commande jq", "Transformer un objet de réglages JSON venu d'une API ou d'un CMS en fichier de configuration TOML", "Trouver la ligne exacte où un fichier TOML casse, avec une erreur qui pointe la colonne", "Vérifier ce que contient vraiment un fichier TOML une fois les tables en ligne et les tableaux de tables développés"],
     },
+    deepDive: [
+      {
+        h: { en: "What changes from TOML to JSON", fr: "Ce qui change du TOML au JSON" },
+        p: {
+          en: [
+            "Tables become nested objects and arrays stay arrays, so most config files convert without surprises. The differences come from types JSON doesn't have. TOML has real dates and times; JSON doesn't, so 1979-05-27T07:32:00Z comes out as the string \"1979-05-27T07:32:00.000Z\", with milliseconds added. A local date such as 1979-05-27 stays as written.",
+            "TOML separates integers from floats; JSON has a single number type. A value written 3.0 in TOML comes out as 3. And TOML's inf and nan have no JSON spelling at all: they become null, and the tool shows a warning naming the key.",
+            "Integers that JavaScript can't hold exactly, anything beyond 9,007,199,254,740,991, are refused with an error instead of being rounded. Better a clear stop than an ID that quietly changes its last digit.",
+          ],
+          fr: [
+            "Les tables deviennent des objets imbriqués et les tableaux restent des tableaux : la plupart des fichiers de config passent sans surprise. Les écarts viennent des types que le JSON n'a pas. Le TOML a de vraies dates et heures, pas le JSON : 1979-05-27T07:32:00Z ressort sous forme de chaîne \"1979-05-27T07:32:00.000Z\", millisecondes ajoutées. Une date locale comme 1979-05-27 reste telle qu'écrite.",
+            "Le TOML distingue entiers et décimaux ; le JSON n'a qu'un type de nombre. Une valeur écrite 3.0 en TOML ressort en 3. Quant à inf et nan, le JSON n'a aucune façon de les écrire : ils deviennent null, et l'outil affiche un avertissement qui nomme la clé.",
+            "Les entiers que JavaScript ne peut pas représenter exactement, au-delà de 9 007 199 254 740 991, sont refusés avec une erreur au lieu d'être arrondis. Mieux vaut un arrêt net qu'un identifiant dont le dernier chiffre change en silence.",
+          ],
+        },
+      },
+      {
+        h: { en: "From JSON to TOML: the three traps", fr: "Du JSON au TOML : les trois pièges" },
+        p: {
+          en: [
+            "TOML has no null. A key set to null in your JSON has no TOML equivalent, so it's left out of the result, and the tool lists every key concerned. A null inside an array can't be left out without shifting the other items, so that case stops with an error.",
+            "The JSON must be an object at the top. A TOML file is a set of keys, so a JSON array or a single value at the root has nothing to map to.",
+            "Two problems happen before the conversion even starts, inside the browser's JSON reader. A key that appears twice keeps only its last value, without warning. And a number with more than 15 or 16 significant digits, typically a database ID, is rounded as it's read: 9007199254740993 becomes 9007199254740992. If your JSON carries long IDs, they should be strings.",
+          ],
+          fr: [
+            "Le TOML n'a pas de null. Une clé qui vaut null dans votre JSON n'a pas d'équivalent TOML : elle est omise du résultat, et l'outil liste chaque clé concernée. Un null à l'intérieur d'un tableau ne peut pas être omis sans décaler les autres éléments : ce cas-là s'arrête sur une erreur.",
+            "Le JSON doit être un objet à la racine. Un fichier TOML est un ensemble de clés : un tableau JSON ou une valeur seule en racine n'a rien à quoi correspondre.",
+            "Deux problèmes surviennent avant même la conversion, dans le lecteur JSON du navigateur. Une clé présente deux fois ne garde que sa dernière valeur, sans avertissement. Et un nombre de plus de 15 ou 16 chiffres significatifs, typiquement un identifiant de base de données, est arrondi à la lecture : 9007199254740993 devient 9007199254740992. Si votre JSON contient de longs identifiants, ils doivent être des chaînes.",
+          ],
+        },
+      },
+      {
+        h: { en: "The round trip isn't neutral", fr: "L'aller-retour n'est pas neutre" },
+        p: {
+          en: [
+            "Convert a TOML file to JSON and back, and you get a valid file that no longer looks like the original. Comments are gone, since neither direction has anywhere to keep them. Dates come back as quoted strings rather than TOML dates, and 3.0 comes back as the integer 3, which a strictly typed program may reject.",
+            "The layout changes too. An inline table such as serde = { version = \"1.0\", features = [\"derive\"] } comes back as its own [dependencies.serde] section. It means the same thing, but the diff in your repository will be large. Use the conversion to read or generate a file, not to edit a TOML file you want to keep as it is.",
+          ],
+          fr: [
+            "Convertissez un fichier TOML en JSON puis revenez en TOML : vous obtenez un fichier valide qui ne ressemble plus à l'original. Les commentaires ont disparu, aucun des deux sens n'ayant où les garder. Les dates reviennent en chaînes entre guillemets et non en dates TOML, et 3.0 revient en entier 3, ce qu'un programme strictement typé peut refuser.",
+            "La mise en forme change aussi. Une table en ligne comme serde = { version = \"1.0\", features = [\"derive\"] } revient sous forme d'une section [dependencies.serde] à part. Le sens est le même, mais le diff dans votre dépôt sera gros. Servez-vous de la conversion pour lire ou générer un fichier, pas pour retoucher un fichier TOML que vous voulez garder tel quel.",
+          ],
+        },
+      },
+      {
+        h: { en: "When the file won't parse", fr: "Quand le fichier refuse de passer" },
+        p: {
+          en: [
+            "TOML errors come with the line and column, and a caret under the problem. The usual causes are a string without quotes (name = hello instead of name = \"hello\"), a key or table defined twice, which TOML forbids, and a table header repeated further down the file.",
+            "On the JSON side, the most frequent failure with config files isn't in your data: tsconfig.json and VS Code settings accept comments and trailing commas, which strict JSON doesn't. Remove them before pasting, or the conversion stops at the first // it meets.",
+          ],
+          fr: [
+            "Les erreurs TOML indiquent la ligne et la colonne, avec un accent circonflexe sous le problème. Les causes habituelles : une chaîne sans guillemets (name = hello au lieu de name = \"hello\"), une clé ou une table définie deux fois, ce que le TOML interdit, et un en-tête de table répété plus bas dans le fichier.",
+            "Côté JSON, l'échec le plus fréquent avec des fichiers de config ne vient pas de vos données : tsconfig.json et les réglages de VS Code acceptent les commentaires et les virgules finales, ce que le JSON strict refuse. Retirez-les avant de coller, sinon la conversion s'arrête au premier // rencontré.",
+          ],
+        },
+      },
+    ],
   },
   "headers-checker": {
     desc: {

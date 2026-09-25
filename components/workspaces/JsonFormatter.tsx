@@ -9,20 +9,9 @@ import { OptionsBar, OptBlock, SegControl, Toggle } from "@/components/workspace
 import { Pane, PaneBtn } from "@/components/workspace/Pane";
 import { Editor } from "@/components/workspace/Editor";
 import { useTrackRun } from "@/hooks/useTrackRun";
+import { formatJson, type JsonHint } from "@/lib/json-format";
 
 const SAMPLE = `{"user":{"id":42,"name":"Ada Lovelace","email":"ada@example.com","roles":["admin","engineer"],"meta":{"created_at":"2026-04-18T09:14:00Z","plan":"pro","seats":12}},"projects":[{"slug":"utilisio","status":"active"},{"slug":"engine","status":"archived"}]}`;
-
-function sortDeep(v: unknown): unknown {
-  if (Array.isArray(v)) return v.map(sortDeep);
-  if (v !== null && typeof v === "object") {
-    return Object.fromEntries(
-      Object.entries(v as Record<string, unknown>)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .map(([k, val]) => [k, sortDeep(val)])
-    );
-  }
-  return v;
-}
 
 function countKeys(v: unknown): number {
   if (Array.isArray(v)) return v.reduce<number>((s, i) => s + countKeys(i), 0);
@@ -33,6 +22,57 @@ function countKeys(v: unknown): number {
   return 0;
 }
 
+const TR = {
+  fr: {
+    lineCol: (l: number, c: number) => `ligne ${l}, colonne ${c}`,
+    lines:   (n: number) => `${n} lignes`,
+    bigInts: (n: number) => `${n} grand(s) entier(s) conservé(s) au chiffre près (JSON.parse les aurait arrondis)`,
+    dupKeys: (k: string) => `clé en double : « ${k} » — seule la dernière valeur est gardée`,
+    indentLabel: (v: number | "tab") => `indentation : ${v === "tab" ? "tabulation" : `${v} espaces`}`,
+    sorted:  (on: boolean) => `clés triées : ${on ? "oui" : "non"}`,
+    hints: {
+      trailingComma:      "virgule en trop avant } ou ] (interdite en JSON)",
+      singleQuote:        "apostrophes : le JSON exige des guillemets doubles \"",
+      comment:            "commentaire : le JSON strict n'en accepte pas (tsconfig et VS Code, si)",
+      unquotedKey:        "clé sans guillemets : écrivez \"cle\": valeur",
+      expectedColon:      "deux-points attendus après la clé",
+      expectedComma:      "virgule manquante entre deux éléments",
+      unterminatedString: "chaîne jamais refermée : guillemet manquant",
+      controlChar:        "retour à la ligne ou tabulation brute dans une chaîne : utilisez \\n ou \\t",
+      badEscape:          "séquence d'échappement invalide après \\",
+      badNumber:          "nombre mal formé",
+      notJson:            "undefined, NaN et Infinity sont du JavaScript, pas du JSON",
+      unexpectedEnd:      "fin du texte trop tôt : accolade, crochet ou guillemet manquant",
+      trailingContent:    "texte en trop après la fin du JSON",
+      unexpected:         "caractère inattendu",
+    } satisfies Record<JsonHint, string>,
+  },
+  en: {
+    lineCol: (l: number, c: number) => `line ${l}, column ${c}`,
+    lines:   (n: number) => `${n} lines`,
+    bigInts: (n: number) => `${n} large integer(s) kept digit for digit (JSON.parse would have rounded them)`,
+    dupKeys: (k: string) => `duplicate key: "${k}" — only the last value is kept`,
+    indentLabel: (v: number | "tab") => `indent: ${v === "tab" ? "tab" : `${v} spaces`}`,
+    sorted:  (on: boolean) => `sorted keys: ${on ? "yes" : "no"}`,
+    hints: {
+      trailingComma:      "extra comma before } or ] (not allowed in JSON)",
+      singleQuote:        "single quotes: JSON requires double quotes \"",
+      comment:            "comment: strict JSON doesn't allow them (tsconfig and VS Code do)",
+      unquotedKey:        "key without quotes: write \"key\": value",
+      expectedColon:      "colon expected after the key",
+      expectedComma:      "missing comma between two items",
+      unterminatedString: "string never closed: missing quote",
+      controlChar:        "raw line break or tab inside a string: use \\n or \\t",
+      badEscape:          "invalid escape sequence after \\",
+      badNumber:          "malformed number",
+      notJson:            "undefined, NaN and Infinity are JavaScript, not JSON",
+      unexpectedEnd:      "text ends too early: missing brace, bracket or quote",
+      trailingContent:    "extra text after the end of the JSON",
+      unexpected:         "unexpected character",
+    } satisfies Record<JsonHint, string>,
+  },
+};
+
 export function JsonFormatter() {
   const { lang } = useLang();
   const i = t(lang);
@@ -41,19 +81,16 @@ export function JsonFormatter() {
   const [sortKeys, setSortKeys] = useState(false);
   const [minify, setMinify] = useState(false);
 
-  const { output, error, parsed, inputBytes, outputBytes } = useMemo(() => {
+  const { output, error, parsed, inputBytes, outputBytes, bigIntCount, duplicateKeys } = useMemo(() => {
     const enc = new TextEncoder();
     const inB = enc.encode(input).length;
-    try {
-      const p = JSON.parse(input);
-      const val = sortKeys ? sortDeep(p) : p;
-      const spaces = indent === "tab" ? "\t" : indent;
-      const out = minify ? JSON.stringify(val) : JSON.stringify(val, null, spaces);
-      return { output: out, error: null, parsed: p, inputBytes: inB, outputBytes: enc.encode(out).length };
-    } catch (e) {
-      return { output: "", error: (e as Error).message, parsed: null, inputBytes: inB, outputBytes: 0 };
+    const r = formatJson(input, { indent, sortKeys, minify });
+    if (!r.ok) {
+      const err = `${TR[lang].lineCol(r.error.line, r.error.col)} — ${TR[lang].hints[r.error.hint]}`;
+      return { output: "", error: err, parsed: null, inputBytes: inB, outputBytes: 0, bigIntCount: 0, duplicateKeys: [] as string[] };
     }
-  }, [input, indent, sortKeys, minify]);
+    return { output: r.output, error: null, parsed: r.parsed, inputBytes: inB, outputBytes: enc.encode(r.output).length, bigIntCount: r.bigIntCount, duplicateKeys: r.duplicateKeys };
+  }, [input, indent, sortKeys, minify, lang]);
 
   const handlePasteSample = () => setInput(SAMPLE);
   const handleClear = () => setInput("");
@@ -74,7 +111,7 @@ export function JsonFormatter() {
         action={
           <button
             className="px-[18px] py-2 bg-brand text-bg font-mono text-[12px] font-semibold tracking-[0.04em] rounded-[3px] hover:brightness-110 transition-all"
-            onClick={() => setInput((v) => { try { return JSON.stringify(JSON.parse(v), null, indent === "tab" ? "\t" : indent); } catch { return v; } })}
+            onClick={() => setInput((v) => { const r = formatJson(v, { indent, sortKeys: false, minify: false }); return r.ok ? r.output : v; })}
           >
             format ⏎
           </button>
@@ -113,7 +150,7 @@ export function JsonFormatter() {
                   {i.valid}
                 </span>
                 <span>utf-8</span>
-                <span>ln 1, col {input.length}</span>
+                <span>{TR[lang].lines(input.split("\n").length)}</span>
               </>
             )
           }
@@ -136,13 +173,21 @@ export function JsonFormatter() {
           footer={
             output ? (
               <>
-                <span>indent: {indent === "tab" ? "tab" : `${indent} spaces`}</span>
-                <span>sorted: {sortKeys ? "yes" : "no"}</span>
+                <span>{TR[lang].indentLabel(indent)}</span>
+                <span>{TR[lang].sorted(sortKeys)}</span>
                 <span>{i.generated} ✓</span>
               </>
             ) : undefined
           }
         >
+          {(bigIntCount > 0 || duplicateKeys.length > 0) && (
+            <ul className="px-[14px] py-2 flex flex-col gap-1 border-b border-line bg-bg-1">
+              {bigIntCount > 0 && <li className="font-mono text-[11.5px] text-brand">✓ {TR[lang].bigInts(bigIntCount)}</li>}
+              {duplicateKeys.map((k) => (
+                <li key={k} className="font-mono text-[11.5px] text-hot">⚠ {TR[lang].dupKeys(k)}</li>
+              ))}
+            </ul>
+          )}
           <Editor value={output} readOnly />
         </Pane>
       </div>

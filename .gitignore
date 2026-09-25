@@ -47,3 +47,6 @@ CLAUDE.md
 
 # indexnow
 .indexnow-state.json
+
+# worker PDF.js copié depuis node_modules au build (scripts/copy-pdf-worker.mjs)
+/public/pdf.worker.min.mjs

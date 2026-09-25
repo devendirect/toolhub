@@ -24,6 +24,9 @@ const TR = {
     addTwoFiles:       "ajoutez au moins 2 fichiers",
     readyMerge:        "prêt à fusionner",
     dropPdfs:          "glisser des PDF ici ou cliquer pour sélectionner",
+    colName:           "fichier",
+    colSize:           "poids",
+    unreadable:        (name: string) => `Impossible de lire « ${name} » : PDF protégé par mot de passe ou endommagé. Retirez-le pour fusionner les autres.`,
   },
   en: {
     fileCount:         "file(s)",
@@ -32,8 +35,14 @@ const TR = {
     addTwoFiles:       "add at least 2 files",
     readyMerge:        "ready to merge",
     dropPdfs:          "drag PDFs here or click to select",
+    colName:           "filename",
+    colSize:           "size",
+    unreadable:        (name: string) => `Can't read "${name}": password-protected or damaged PDF. Remove it to merge the others.`,
   },
-} as const;
+};
+
+// Certains glisser-déposer (apps, anciens systèmes) arrivent sans type MIME
+const isPdf = (f: File) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf");
 
 export function PdfMerge() {
   const { lang } = useLang();
@@ -45,7 +54,7 @@ export function PdfMerge() {
   const trackRun = useTrackRun("pdf-merge", "file");
 
   const addFiles = async (incoming: FileList | File[]) => {
-    const arr = Array.from(incoming).filter((f) => f.type === "application/pdf");
+    const arr = Array.from(incoming).filter(isPdf);
     const { PDFDocument } = await import("pdf-lib");
     const entries: PdfFile[] = await Promise.all(
       arr.map(async (file) => {
@@ -101,7 +110,10 @@ export function PdfMerge() {
       const merged = await PDFDocument.create();
       for (const { file } of files) {
         const buf = await file.arrayBuffer();
-        const doc = await PDFDocument.load(buf);
+        // Nommer le fichier fautif : l'erreur brute de pdf-lib ne dit pas lequel
+        const doc = await PDFDocument.load(buf).catch(() => {
+          throw new Error(TR[lang].unreadable(file.name));
+        });
         const pages = await merged.copyPages(doc, doc.getPageIndices());
         pages.forEach((p) => merged.addPage(p));
       }
@@ -158,9 +170,9 @@ export function PdfMerge() {
             {/* Column header */}
             <div className="flex items-center gap-3 px-4 py-2 font-mono text-[10px] text-dim-2 uppercase tracking-[0.08em] bg-bg-1">
               <span className="w-6">#</span>
-              <span className="flex-1">filename</span>
+              <span className="flex-1">{TR[lang].colName}</span>
               <span className="w-16 text-right">pages</span>
-              <span className="w-20 text-right">size</span>
+              <span className="w-20 text-right">{TR[lang].colSize}</span>
               <span className="w-16" />
             </div>
             {files.map((f, idx) => (

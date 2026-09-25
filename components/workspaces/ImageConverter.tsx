@@ -31,7 +31,9 @@ const TR = {
     resultAfterConvert: "résultat après conversion",
     canvasNotSupported: "Canvas non supporté",
     conversionFailed:   "Échec de la conversion",
-    couldNotLoad:       "Impossible de charger l'image",
+    couldNotLoad:       "Impossible de charger l'image (format non lu par ce navigateur ?)",
+    maxWidth:           "largeur max",
+    original:           "originale",
   },
   en: {
     browse:             "browse",
@@ -42,9 +44,20 @@ const TR = {
     resultAfterConvert: "result after convert",
     canvasNotSupported: "Canvas not supported",
     conversionFailed:   "Conversion failed",
-    couldNotLoad:       "Could not load image",
+    couldNotLoad:       "Could not load image (format not readable by this browser?)",
+    maxWidth:           "max width",
+    original:           "original",
   },
 } as const;
+
+/** Largeurs cibles proposées ; 0 = taille d'origine. On réduit, on n'agrandit jamais. */
+const MAX_WIDTHS = [0, 1920, 1280, 800] as const;
+type MaxWidth = (typeof MAX_WIDTHS)[number];
+
+export function targetSize(w: number, h: number, maxWidth: number): { w: number; h: number } {
+  if (!maxWidth || w <= maxWidth) return { w, h };
+  return { w: maxWidth, h: Math.round((h * maxWidth) / w) };
+}
 
 interface ImageConverterProps {
   // Format cible pré-sélectionné (pages /convert/[pair])
@@ -64,17 +77,21 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
     (initialFormat && EXT_TO_FORMAT[initialFormat]) || "image/webp"
   );
   const [quality, setQuality] = useState<80 | 90 | 100>(80);
+  const [maxWidth, setMaxWidth] = useState<MaxWidth>(0);
+  const [outDims, setOutDims] = useState<{ w: number; h: number } | null>(null);
   const [converting, setConverting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const trackRun = useTrackRun("image-converter", "file");
 
   const loadFile = useCallback((f: File) => {
+    // Libère les images précédentes : chaque object URL garde le fichier en mémoire
+    setOriginalUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return URL.createObjectURL(f); });
+    setOutputUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return ""; });
     setFile(f);
-    setOutputUrl("");
+    setDims(null);
+    setOutDims(null);
     setError(null);
-    const url = URL.createObjectURL(f);
-    setOriginalUrl(url);
   }, []);
 
   const handleDrop = (e: React.DragEvent) => {
@@ -91,21 +108,24 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
     const img = new Image();
     img.onload = () => {
       setDims({ w: img.naturalWidth, h: img.naturalHeight });
+      const out = targetSize(img.naturalWidth, img.naturalHeight, maxWidth);
       const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
+      canvas.width = out.w;
+      canvas.height = out.h;
       const ctx = canvas.getContext("2d");
       if (!ctx) { setError(TR[lang].canvasNotSupported); setConverting(false); return; }
+      ctx.imageSmoothingQuality = "high";
       if (format === "image/jpeg") {
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
-      ctx.drawImage(img, 0, 0);
+      ctx.drawImage(img, 0, 0, out.w, out.h);
       canvas.toBlob(
         (blob) => {
           if (!blob) { setError(TR[lang].conversionFailed); setConverting(false); return; }
-          setOutputUrl(URL.createObjectURL(blob));
+          setOutputUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return URL.createObjectURL(blob); });
           setOutputSize(blob.size);
+          setOutDims(out);
           setConverting(false);
         },
         format,
@@ -146,6 +166,14 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
             options={[80, 90, 100]}
             value={quality}
             onChange={(v) => setQuality(v as 80 | 90 | 100)}
+          />
+        </OptBlock>
+        <OptBlock label={TR[lang].maxWidth}>
+          <SegControl
+            options={[...MAX_WIDTHS]}
+            value={maxWidth}
+            onChange={(v) => setMaxWidth(v as MaxWidth)}
+            labels={{ 0: TR[lang].original }}
           />
         </OptBlock>
       </OptionsBar>
@@ -190,7 +218,7 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
                 <span className="font-mono text-[12px] text-dim">
                   {TR[lang].dropImage}
                 </span>
-                <span className="font-mono text-[11px] text-dim-2">JPG · PNG · WebP · GIF · BMP</span>
+                <span className="font-mono text-[11px] text-dim-2">JPG · PNG · WebP · AVIF · GIF · BMP</span>
               </div>
             )}
           </div>
@@ -209,7 +237,8 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
               <span className="text-danger">✕ {error}</span>
             ) : outputUrl && file ? (
               <span>
-                {FORMAT_EXT[format].toUpperCase()} · {quality === 100 ? TR[lang].lossless : `q${quality}`} ·{" "}
+                {FORMAT_EXT[format].toUpperCase()} · {format === "image/png" ? TR[lang].lossless : `q${quality}`} ·{" "}
+                {outDims && <>{outDims.w} × {outDims.h}px · </>}
                 {outputSize < file.size
                   ? <span className="text-brand">-{(((file.size - outputSize) / file.size) * 100).toFixed(0)}%</span>
                   : <span className="text-hot">+{(((outputSize - file.size) / file.size) * 100).toFixed(0)}%</span>}

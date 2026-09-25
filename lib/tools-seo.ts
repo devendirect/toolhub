@@ -18,10 +18,10 @@ export interface ToolSeo {
 export const TOOLS_SEO: Record<string, ToolSeo> = {
   /* ── FILE ── */
   "image-converter": {
-    title: { en: "Image Converter: JPG, PNG, WebP, AVIF", fr: "Convertir une image en JPG, PNG, WebP ou AVIF" },
+    title: { en: "Image Converter to WebP, JPG or PNG", fr: "Convertir une image en WebP, JPG ou PNG" },
     description: {
-      en: "Convert images between JPG, PNG, WebP and AVIF in your browser. Resize and set export quality in the same step. Free, no upload, no signup.",
-      fr: "Convertissez vos images entre JPG, PNG, WebP et AVIF dans le navigateur, avec redimensionnement et réglage de qualité. Gratuit, sans envoi ni compte.",
+      en: "Convert JPG, PNG, WebP or AVIF images to WebP, JPG or PNG in your browser, resize them and set the quality in the same step. Free, nothing uploaded.",
+      fr: "Convertissez vos images JPG, PNG, WebP ou AVIF en WebP, JPG ou PNG dans le navigateur, redimensionnez-les et réglez la qualité. Gratuit, sans envoi.",
     },
   },
   "pdf-converter": {
@@ -48,8 +48,8 @@ export const TOOLS_SEO: Record<string, ToolSeo> = {
   "pdf-merge": {
     title: { en: "Merge PDF Files Online, Without Uploading", fr: "Fusionner des PDF en ligne, sans envoi" },
     description: {
-      en: "Combine several PDFs into one: drop the files, drag to reorder, download. Merging runs in your browser with pdf-lib, so contracts stay private.",
-      fr: "Combinez plusieurs PDF en un seul : déposez, réordonnez par glisser-déposer, téléchargez. Fusion dans le navigateur : vos contrats restent privés.",
+      en: "Combine several PDFs into one: drop the files, set the order, download. Merging runs in your browser with pdf-lib, so contracts stay private.",
+      fr: "Combinez plusieurs PDF en un seul : déposez, réglez l'ordre des fichiers, téléchargez. Fusion dans le navigateur : vos contrats restent privés.",
     },
   },
   "image-compressor": {
@@ -76,10 +76,10 @@ export const TOOLS_SEO: Record<string, ToolSeo> = {
 
   /* ── DEVELOPER ── */
   "qr-generator": {
-    title: { en: "Free QR Code Generator: SVG & PNG", fr: "Générateur de QR code gratuit en SVG et PNG" },
+    title: { en: "QR Code Generator for Links and Wi-Fi", fr: "Générateur de QR code : lien, Wi-Fi, SVG, PNG" },
     description: {
-      en: "Create a QR code from any URL or text and download it as SVG for print or PNG for screens. Free, no account, generated in your browser.",
-      fr: "Créez un QR code à partir d'une URL ou d'un texte, puis téléchargez-le en SVG pour l'impression ou en PNG pour l'écran. Gratuit, sans compte.",
+      en: "Create a QR code from a URL, some text or your Wi-Fi details and download it as SVG for print or PNG for screens. Free, no account, no expiry.",
+      fr: "Créez un QR code à partir d'une URL, d'un texte ou de votre Wi-Fi, puis téléchargez-le en SVG pour l'impression ou en PNG. Gratuit, sans expiration.",
     },
   },
   base64: {
