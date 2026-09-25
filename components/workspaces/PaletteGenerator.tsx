@@ -11,16 +11,22 @@ const TR = {
   fr: {
     harmony:  "harmonie",
     count:    "nombre",
+    export:   "export CSS",
+    copied:   "✓ copié",
+    harmonies: { analogous: "analogue", complementary: "complémentaire", triadic: "triadique", split: "compl. divisée", tetradic: "tétradique" },
   },
   en: {
     harmony:  "harmony",
     count:    "count",
+    export:   "export CSS",
+    copied:   "✓ copied",
+    harmonies: { analogous: "analogous", complementary: "complementary", triadic: "triadic", split: "split", tetradic: "tetradic" },
   },
 } as const;
 
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 
-type Harmony = "analogous" | "complementary" | "triadic" | "split" | "tetradic";
+export type Harmony = "analogous" | "complementary" | "triadic" | "split" | "tetradic";
 
 const HARMONY_ANGLES: Record<Harmony, number[]> = {
   analogous:       [0, 30, -30, 60, -60],
@@ -39,7 +45,7 @@ function hexToHsl(hex: string): [number, number, number] {
   if (max === min) return [0, 0, Math.round(l * 100)];
   const d = max - min;
   const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-  let h = max === r ? ((g - b) / d + (g < b ? 6 : 0)) / 6
+  const h = max === r ? ((g - b) / d + (g < b ? 6 : 0)) / 6
         : max === g ? ((b - r) / d + 2) / 6
         :             ((r - g) / d + 4) / 6;
   return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
@@ -55,6 +61,23 @@ function hslToHex(h: number, s: number, l: number): string {
     return Math.round(255 * color).toString(16).padStart(2, "0");
   };
   return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+/**
+ * Teintes de l'harmonie, complétées par des variantes plus claires puis plus
+ * foncées quand l'harmonie a moins de teintes que le nombre demandé
+ * (complémentaire = 2 teintes : « 5 couleurs » en donnait 2).
+ */
+export function buildPalette(baseHex: string, harmony: Harmony, count: number): string[] {
+  const [h, s, l] = hexToHsl(baseHex);
+  const hues = HARMONY_ANGLES[harmony].map((a) => h + a);
+  const clamp = (v: number) => Math.min(92, Math.max(8, v));
+  const candidates = [
+    ...hues.map((hue) => hslToHex(hue, s, l)),
+    ...hues.map((hue) => hslToHex(hue, s, clamp(l + 20))),
+    ...hues.map((hue) => hslToHex(hue, s, clamp(l - 20))),
+  ];
+  return [...new Set(candidates)].slice(0, count);
 }
 
 function hexToRgb(hex: string) {
@@ -75,16 +98,15 @@ export function PaletteGenerator() {
   const i = t(lang);
 
   const [baseColor, setBaseColor] = useState("#00e08a");
+  // Saisie libre : l'ancien champ contrôlé revenait à la valeur précédente à chaque caractère
+  const [hexInput, setHexInput] = useState("#00e08a");
   const [harmony, setHarmony] = useState<Harmony>("analogous");
   const [count, setCount] = useState<3 | 4 | 5>(5);
   const { copy, copied } = useCopy();
   const trackRun = useTrackRun("palette-generator", "design");
 
   const palette = useMemo(() => {
-    const [h, s, l] = hexToHsl(baseColor);
-    const angles = HARMONY_ANGLES[harmony].slice(0, count);
-    return angles.map((angle) => {
-      const hex = hslToHex(h + angle, s, l);
+    return buildPalette(baseColor, harmony, count).map((hex) => {
       const [ch, cs, cl] = hexToHsl(hex);
       const { r, g, b } = hexToRgb(hex);
       return {
@@ -112,7 +134,7 @@ export function PaletteGenerator() {
             onClick={handleExportCss}
             className="px-[18px] py-2 border border-line-2 bg-bg-1 font-mono text-[12px] text-fg-1 rounded-[3px] hover:border-brand-mid hover:text-fg transition-colors"
           >
-            {copied === "css" ? "✓ copié" : "export CSS"}
+            {copied === "__css__" ? TR[lang].copied : TR[lang].export}
           </button>
         }
       >
@@ -121,15 +143,17 @@ export function PaletteGenerator() {
             <input
               type="color"
               value={baseColor}
-              onChange={(e) => setBaseColor(e.target.value)}
+              onChange={(e) => { setBaseColor(e.target.value); setHexInput(e.target.value); }}
               className="w-7 h-7 rounded cursor-pointer border border-line-2 bg-transparent"
             />
             <input
               type="text"
-              value={baseColor}
+              value={hexInput}
               onChange={(e) => {
-                const v = e.target.value;
-                if (HEX_RE.test(v)) setBaseColor(v);
+                const v = e.target.value.trim();
+                setHexInput(v);
+                const hex = v.startsWith("#") ? v : `#${v}`;
+                if (HEX_RE.test(hex)) setBaseColor(hex.toLowerCase());
               }}
               className="w-[80px] font-mono text-[12px] bg-transparent text-fg border border-line px-2 py-[3px] outline-none focus:border-brand-mid"
               spellCheck={false}
@@ -141,6 +165,7 @@ export function PaletteGenerator() {
             options={["analogous", "complementary", "triadic", "split", "tetradic"]}
             value={harmony}
             onChange={(v) => setHarmony(v as Harmony)}
+            labels={TR[lang].harmonies}
           />
         </OptBlock>
         <OptBlock label={TR[lang].count}>

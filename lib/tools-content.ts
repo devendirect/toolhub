@@ -796,13 +796,71 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "palette-generator": {
     desc: {
-      en: "Generate harmonious color palettes from any base color using established color theory. Choose from complementary, triadic, analogous or split-complementary harmony modes to get a balanced set of colors for UI design, brand identity or illustration. Input any color in HEX, RGB or HSL and get all format values for each generated color.",
-      fr: "Générez des palettes de couleurs harmoniques depuis n'importe quelle couleur de base en appliquant la théorie des couleurs. Choisissez parmi les modes complémentaire, triadique, analogue ou complémentaire fractionnée pour obtenir un ensemble équilibré de couleurs pour votre interface, identité de marque ou illustration.",
+      en: "Pick a base color, with the color picker or a hex code, choose a harmony and the tool builds a palette of three to five colors. Five harmonies are available: analogous, complementary, triadic, split-complementary and tetradic. Each color comes with its HEX, HSL and RGB values, copied with one click, and the whole palette can be exported as CSS custom properties. Everything is calculated in your browser.",
+      fr: "Choisissez une couleur de base, au sélecteur ou en code hexadécimal, puis une harmonie, et l'outil construit une palette de trois à cinq couleurs. Cinq harmonies sont proposées : analogue, complémentaire, triadique, complémentaire divisée et tétradique. Chaque couleur est donnée en HEX, HSL et RGB, copiables d'un clic, et la palette entière s'exporte en variables CSS. Tout est calculé dans votre navigateur.",
     },
     useCases: {
-      en: ["Generating a full color palette for a new website or brand identity", "Finding complementary accent colors for a UI design system", "Exploring different color harmonies to pick the most visually balanced set", "Getting precise HEX, RGB and HSL values for design token documentation"],
-      fr: ["Générer une palette de couleurs complète pour un nouveau site ou une identité de marque", "Trouver des couleurs d'accent complémentaires pour un design system d'interface", "Explorer différentes harmonies chromatiques pour choisir l'ensemble le plus équilibré", "Obtenir les valeurs précises HEX, RGB et HSL pour la documentation des design tokens"],
+      en: ["Building a small set of accent colors around an existing brand color", "Picking distinct colors for chart series, categories or tags that still look related", "Getting ready-to-paste CSS custom properties for a prototype", "Comparing several harmonies from the same base color before settling on one"],
+      fr: ["Construire un petit jeu de couleurs d'accent autour d'une couleur de marque existante", "Choisir des couleurs distinctes pour les séries d'un graphique, des catégories ou des étiquettes, qui restent cohérentes entre elles", "Obtenir des variables CSS prêtes à coller pour un prototype", "Comparer plusieurs harmonies à partir de la même couleur avant d'en retenir une"],
     },
+    deepDive: [
+      {
+        h: { en: "How the palettes are calculated", fr: "Comment les palettes sont calculées" },
+        p: {
+          en: [
+            "The tool converts your base color to HSL (hue, saturation, lightness) and turns the hue around the color wheel, keeping saturation and lightness unchanged. Analogous takes the neighbors at 30 and 60 degrees on each side. Complementary adds the opposite hue at 180 degrees. Triadic splits the wheel in three (120 and 240), split-complementary takes the two hues on either side of the opposite (150 and 210), and tetradic splits it in four (90, 180, 270).",
+            "Some harmonies have fewer hues than the number of colors you ask for: complementary only has two. In that case the remaining slots are filled with lighter, then darker versions of the same hues, 20 points of lightness apart. Ask for five complementary colors and you get the two hues plus three variants, not two colors and three empty slots.",
+            "One case where harmonies can't help: a grey, black or white base. With zero saturation there is no hue to rotate, so every harmony returns the same grey, and only the lighter and darker variants differ. Start from a color that has some saturation.",
+          ],
+          fr: [
+            "L'outil convertit la couleur de base en HSL (teinte, saturation, luminosité) et fait tourner la teinte sur le cercle chromatique, sans toucher à la saturation ni à la luminosité. Analogue prend les voisines à 30 et 60 degrés de chaque côté. Complémentaire ajoute la teinte opposée, à 180 degrés. Triadique partage le cercle en trois (120 et 240), complémentaire divisée prend les deux teintes de part et d'autre de l'opposée (150 et 210), et tétradique le partage en quatre (90, 180, 270).",
+            "Certaines harmonies ont moins de teintes que le nombre de couleurs demandé : la complémentaire n'en a que deux. Les emplacements restants sont alors remplis par des versions plus claires, puis plus foncées, des mêmes teintes, à 20 points de luminosité d'écart. Demandez cinq couleurs complémentaires : vous obtenez les deux teintes et trois variantes, pas deux couleurs et trois cases vides.",
+            "Un cas où les harmonies ne peuvent rien : une base grise, noire ou blanche. Sans saturation, il n'y a pas de teinte à faire tourner, donc chaque harmonie renvoie le même gris et seules les variantes claires et foncées diffèrent. Partez d'une couleur qui a un peu de saturation.",
+          ],
+        },
+      },
+      {
+        h: { en: "Same lightness on paper, not to the eye", fr: "Même luminosité sur le papier, pas pour l'œil" },
+        p: {
+          en: [
+            "Take this site's green, #00e08a, and ask for a triadic palette. You get a violet, #8a00e0, and an orange, #e08a00. All three have exactly the same HSL lightness, 44%. Put them side by side and the green looks far brighter than the violet.",
+            "That's because HSL lightness is a formula, not a measure of what the eye sees. Using the relative luminance formula from the WCAG accessibility guidelines, the green scores 0.55, the orange 0.34 and the violet 0.11: the green is about five times brighter than the violet. Yellows and greens always come out lighter than blues and violets at the same HSL value.",
+            "In practice, the same white text can be readable on one color of the palette and unreadable on another. Before putting text on any of these colors, check the pair with the color contrast checker instead of trusting the matching numbers.",
+          ],
+          fr: [
+            "Prenez le vert de ce site, #00e08a, et demandez une palette triadique. Vous obtenez un violet, #8a00e0, et un orange, #e08a00. Les trois ont exactement la même luminosité HSL, 44 %. Mettez-les côte à côte : le vert paraît bien plus clair que le violet.",
+            "C'est que la luminosité HSL est une formule, pas une mesure de ce que voit l'œil. Avec la formule de luminance relative des règles d'accessibilité WCAG, le vert obtient 0,55, l'orange 0,34 et le violet 0,11 : le vert est environ cinq fois plus lumineux que le violet. À valeur HSL égale, les jaunes et les verts sortent toujours plus clairs que les bleus et les violets.",
+            "Concrètement, le même texte blanc peut être lisible sur une couleur de la palette et illisible sur une autre. Avant de poser du texte sur l'une d'elles, vérifiez le couple avec le vérificateur de contraste plutôt que de vous fier aux chiffres identiques.",
+          ],
+        },
+      },
+      {
+        h: { en: "What this site does with its own color", fr: "Ce que ce site fait de sa propre couleur" },
+        p: {
+          en: [
+            "The default base color here, #00e08a, is this site's accent. The interface doesn't use five hues around it. It uses that single green and two transparent versions of it, one at about 13% opacity for soft backgrounds and one at about 33% for borders and hover states, on top of neutral greys. The other accents you can switch to (amber, violet, cyan) replace the green; they're never shown together.",
+            "That's a common pattern for interfaces, and a useful way to read this tool. For a UI, one accent plus neutrals and a few functional colors (error, success) usually works better than a full harmony. Harmonies earn their place where you need several colors to be told apart: chart series, categories, tags, illustrations.",
+          ],
+          fr: [
+            "La couleur de base proposée ici, #00e08a, est l'accent de ce site. L'interface n'utilise pas cinq teintes autour d'elle. Elle utilise ce seul vert et deux versions transparentes, l'une à environ 13 % d'opacité pour les fonds doux, l'autre à environ 33 % pour les bordures et les survols, sur des gris neutres. Les autres accents que l'on peut choisir (ambre, violet, cyan) remplacent le vert ; ils ne sont jamais affichés ensemble.",
+            "C'est un schéma courant pour une interface, et une bonne façon de lire cet outil. Pour une UI, un accent, des neutres et quelques couleurs fonctionnelles (erreur, succès) fonctionnent en général mieux qu'une harmonie complète. Les harmonies trouvent leur place là où plusieurs couleurs doivent se distinguer : séries d'un graphique, catégories, étiquettes, illustrations.",
+          ],
+        },
+      },
+      {
+        h: { en: "Copying and exporting the palette", fr: "Copier et exporter la palette" },
+        p: {
+          en: [
+            "Click any HEX, HSL or RGB value under a swatch to copy it. Export CSS copies the whole palette as custom properties in a :root block, named --color-1 to --color-5 in the order shown, the base color first.",
+            "Rename them before they reach a real codebase. --color-3 means nothing to the next person reading the stylesheet; --accent, --chart-2 or --tag-warning says what the color is for, and lets you change the value later without hunting for every place it's used.",
+          ],
+          fr: [
+            "Cliquez sur une valeur HEX, HSL ou RGB sous une couleur pour la copier. Export CSS copie toute la palette sous forme de variables CSS dans un bloc :root, nommées de --color-1 à --color-5 dans l'ordre affiché, la couleur de base en premier.",
+            "Renommez-les avant qu'elles n'arrivent dans un vrai projet. --color-3 ne dit rien à la personne qui lira la feuille de style ensuite ; --accent, --graphique-2 ou --tag-alerte dit à quoi sert la couleur, et permet d'en changer la valeur plus tard sans chercher chaque endroit où elle est utilisée.",
+          ],
+        },
+      },
+    ],
   },
   "password-generator": {
     desc: {

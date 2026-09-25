@@ -28,14 +28,17 @@ export function SegControl<T extends string | number>({
   options,
   value,
   onChange,
+  labels,
 }: {
   options: T[];
   value: T;
   onChange: (v: T) => void;
+  /** Libellé affiché par option (traduction) ; la valeur brute sinon */
+  labels?: Partial<Record<T, string>>;
 }) {
   return (
     <div className="flex border border-line-2 rounded-[3px] overflow-hidden">
-      {options.map((o, i) => (
+      {options.map((o) => (
         <button
           key={o}
           onClick={() => onChange(o)}
@@ -43,7 +46,7 @@ export function SegControl<T extends string | number>({
             value === o ? "bg-brand-soft text-brand" : "text-fg-1 hover:bg-bg-2 hover:text-fg"
           }`}
         >
-          {o}
+          {labels?.[o] ?? o}
         </button>
       ))}
     </div>
