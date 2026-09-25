@@ -80,6 +80,32 @@ export function faqJsonLd(tool: Tool, lang: "en" | "fr") {
   };
 }
 
+/**
+ * Éditeur du site, référencé par son @id depuis les Article des guides et
+ * l'AboutPage : Google relie ainsi chaque contenu à la même entité, décrite
+ * une seule fois (logo, contact, page « à propos »).
+ */
+export const ORG_ID = `${SITE_URL}/#organization`;
+
+export function organizationJsonLd(lang: "en" | "fr") {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": ORG_ID,
+    name: BRAND_NAME,
+    url: SITE_URL,
+    logo: `${SITE_URL}/icon.svg`,
+    email: "contact@utilisio.com",
+    contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: "contact@utilisio.com", availableLanguage: ["French", "English"] },
+    description: lang === "fr"
+      ? "Outils web gratuits qui tournent dans le navigateur, édités par un développeur indépendant."
+      : "Free web tools that run in the browser, published by an independent developer.",
+  };
+}
+
+/** Référence courte à l'éditeur, pour author / publisher. */
+export const ORG_REF = { "@type": "Organization", "@id": ORG_ID, name: BRAND_NAME, url: SITE_URL };
+
 export function websiteJsonLd(lang: "en" | "fr") {
   return [
     {
@@ -90,11 +116,6 @@ export function websiteJsonLd(lang: "en" | "fr") {
       description: BRAND_TAGLINE[lang],
       inLanguage: lang === "fr" ? "fr-FR" : "en",
     },
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      name: BRAND_NAME,
-      url: SITE_URL,
-    },
+    organizationJsonLd(lang),
   ];
 }

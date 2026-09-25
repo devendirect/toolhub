@@ -58,6 +58,14 @@ export function HomeAbout({ lang }: { lang: Lang }) {
             {text.p.map((para) => (
               <p key={para} className="text-[13px] text-fg-1 leading-relaxed">{para}</p>
             ))}
+            <p className="text-[13px] text-fg-1 leading-relaxed">
+              {lang === "fr" ? "Qui est derrière ? Un développeur indépendant, qui explique " : "Who's behind it? An independent developer, who explains "}
+              <Link href={`/${lang}/about#who`} className="text-brand underline hover:no-underline">
+                {lang === "fr" ? "comment les outils sont testés et comment le site est financé" : "how the tools are tested and how the site is funded"}
+              </Link>
+              {lang === "fr" ? ". Une question ou un bug : " : ". A question or a bug: "}
+              <Link href={`/${lang}/contact`} className="text-brand underline hover:no-underline">{lang === "fr" ? "écrivez-nous" : "write to us"}</Link>.
+            </p>
           </div>
         </article>
       </section>

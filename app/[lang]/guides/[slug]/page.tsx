@@ -5,7 +5,7 @@ import { GUIDES, findGuide, readingMinutes } from "@/lib/guides";
 import { TOOLS } from "@/lib/tools";
 import { SITE_URL, BRAND_NAME } from "@/lib/brand";
 import { coerceLang } from "@/lib/localePath";
-import { jsonLdString } from "@/lib/jsonld";
+import { jsonLdString, ORG_REF } from "@/lib/jsonld";
 import { GuideBody } from "@/components/guides/GuideBody";
 import { FaqList } from "@/components/FaqList";
 import { SectionHead } from "@/components/home/SectionHead";
@@ -61,8 +61,8 @@ export default async function GuidePage({ params }: Props) {
     datePublished: guide.published,
     dateModified: guide.updated,
     mainEntityOfPage: url,
-    author: { "@type": "Organization", name: BRAND_NAME, url: SITE_URL },
-    publisher: { "@type": "Organization", name: BRAND_NAME, url: SITE_URL },
+    author: ORG_REF,
+    publisher: ORG_REF,
   };
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -96,8 +96,14 @@ export default async function GuidePage({ params }: Props) {
       <article className="max-w-[72ch]">
         <header className="mb-10">
           <h1 className="text-[34px] sm:text-[40px] font-medium tracking-[-0.025em] leading-[1.15] mb-4">{text.title}</h1>
+          <p className="font-mono text-[12px] text-dim mb-2">
+            {fr ? "Mis à jour le" : "Updated"} {formatDate(guide.updated, l)} · {readingMinutes(text)} min {fr ? "de lecture" : "read"} ·{" "}
+            <Link href={`/${l}/about#who`} className="underline hover:text-fg">{BRAND_NAME}</Link>
+          </p>
+          {/* Transparence sur la méthode, liée à la section qui l'explique (signal de confiance) */}
           <p className="font-mono text-[12px] text-dim mb-6">
-            {fr ? "Mis à jour le" : "Updated"} {formatDate(guide.updated, l)} · {readingMinutes(text)} min {fr ? "de lecture" : "read"} · {BRAND_NAME}
+            {fr ? "Rédigé avec l'aide de Claude, vérifié contre le comportement réel des outils · " : "Written with help from Claude, checked against the tools' actual behaviour · "}
+            <Link href={`/${l}/about#how-built`} className="underline hover:text-fg">{fr ? "notre méthode" : "how we work"}</Link>
           </p>
           <p className="text-[17px] text-fg leading-[1.7] border-l-2 border-brand pl-4">{text.lead}</p>
         </header>
