@@ -24,6 +24,13 @@ const TEXT = {
       ],
     },
     {
+      h: "// comment le site est fait",
+      p: [
+        "Le site est développé avec l'aide de Claude, l'assistant d'IA d'Anthropic, utilisé comme un binôme de développement : écriture et relecture du code, tests automatiques, premières versions des textes des pages outils et des guides. Les décisions, la relecture et la mise en ligne restent celles du développeur.",
+        "Aucun texte n'est publié sur la seule foi de l'IA : chaque affirmation est vérifiée contre le comportement réel de l'outil, par un test ou une mesure, et retirée quand elle ne peut pas l'être. Plusieurs des corrections citées plus haut sont d'ailleurs nées de ces vérifications croisées.",
+      ],
+    },
+    {
       h: "// ce que le site ne fait pas",
       p: [
         "Pas de compte, pas d'inscription, pas de limite d'usage. Les outils locaux ne transmettent ni vos fichiers ni vos textes : tout se passe dans l'onglet. Les quelques outils réseau, signalés par un point orange, envoient seulement l'adresse de la page à analyser, et le résultat n'est gardé qu'une minute en mémoire. La mesure d'audience ne se charge qu'avec votre accord.",
@@ -49,6 +56,13 @@ const TEXT = {
       p: [
         "Every tool page explains what the tool does, its limits and the usual traps of the task. Those texts are written from the tool's actual behaviour, tested on real input, not from what it's supposed to do. When a test contradicts the page, either the tool gets fixed or the page states the limit.",
         "A few fixes that came out of those checks: the JSON formatter rounded IDs longer than 16 digits and now keeps them digit for digit; the password generator produced its first results when the site was built, and now draws them only in your browser; the SEO analyzer counted script code as text; an IP lookup tool was withdrawn because its data provider didn't allow commercial use. An automated test suite checks that behaviour, tool by tool.",
+      ],
+    },
+    {
+      h: "// how the site is built",
+      p: [
+        "The site is developed with the help of Claude, Anthropic's AI assistant, used as a pair-programming partner: writing and reviewing code, automated tests, and first drafts of the tool pages and guides. Decisions, review and releases remain the developer's.",
+        "No text is published on the AI's word alone: every claim is checked against the tool's actual behaviour, with a test or a measurement, and removed when it can't be. Several of the fixes listed above came out of those cross-checks.",
       ],
     },
     {

@@ -68,6 +68,9 @@ export function Footer() {
             <Link href={localePath(lang, "/privacy")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
               {i.privacy}
             </Link>
+            <Link href={localePath(lang, "/legal")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
+              {lang === "fr" ? "mentions légales" : "legal notice"}
+            </Link>
             <Link href={localePath(lang, "/terms")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
               {i.terms}
             </Link>

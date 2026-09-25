@@ -50,6 +50,8 @@ export function GET() {
     `- About (FR): ${SITE_URL}/fr/about`,
     `- Contact (EN): ${SITE_URL}/en/contact`,
     `- Contact (FR): ${SITE_URL}/fr/contact`,
+    `- Legal notice (EN): ${SITE_URL}/en/legal`,
+    `- Legal notice (FR): ${SITE_URL}/fr/legal`,
     `- Privacy policy (EN): ${SITE_URL}/en/privacy`,
     `- Privacy policy (FR): ${SITE_URL}/fr/privacy`,
     `- Terms of use (EN): ${SITE_URL}/en/terms`,

@@ -58,6 +58,7 @@ export function GET() {
     `- Guides: ${SITE_URL}/en/guides`,
     `- About: ${SITE_URL}/en/about`,
     `- Contact: ${SITE_URL}/en/contact (contact@utilisio.com)`,
+    `- Legal notice: ${SITE_URL}/en/legal`,
     `- Privacy policy: ${SITE_URL}/en/privacy`,
     `- Terms of use: ${SITE_URL}/en/terms`,
     `- FAQ: ${SITE_URL}/en/faq`,
