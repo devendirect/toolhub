@@ -31,7 +31,12 @@ export function proxy(req: NextRequest) {
 
   const newUrl = req.nextUrl.clone();
   newUrl.pathname = `/${preferred}${pathname === "/" ? "" : pathname}`;
-  return NextResponse.redirect(newUrl, { status: 302 });
+  // Vers la langue par défaut : redirection permanente. Les robots n'envoient pas
+  // de préférence de langue et atterrissent ici ; en 302, Bing gardait « / » comme
+  // une page distincte avec le contenu de /en (meta description signalée en double).
+  // Vers une autre langue détectée (cookie, Accept-Language) : 302, car ce choix
+  // dépend du visiteur et ne doit pas être mis en cache comme définitif.
+  return NextResponse.redirect(newUrl, { status: preferred === DEFAULT_LANG ? 308 : 302 });
 }
 
 export const config = {
