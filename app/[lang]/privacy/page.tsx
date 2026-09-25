@@ -65,13 +65,13 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
               "SEO Analyzer — fetches the target URL via our proxy to analyze its content",
             ],
           },
-          "In these cases, the request passes through our proxy. We do not store the URLs you enter, the results returned, or any content of the fetched pages. Your IP address is visible to our server during the request (as with any HTTP request) but is not logged.",
+          "In these cases, the request passes through our proxy. We don't keep the fetched pages, and the result stays in memory for one minute at most. The address you ask us to check travels in the request itself, so, like your IP address, it appears in the standard access logs described below, and nowhere else.",
         ],
       },
       {
         heading: "// server logs",
         content: [
-          `${BRAND_NAME} is hosted on a private VPS (Virtual Private Server) under our direct control. Like any web server, it retains standard HTTP access logs (IP address, URL, timestamp, response code) for operational and security purposes. These logs are retained for approximately 30 days, are stored on our server only, and are not shared with any third party or used for profiling.`,
+          `${BRAND_NAME} is hosted on a private VPS (Virtual Private Server) rented from IONOS and administered by us. Like any web server, it retains standard HTTP access logs (IP address, URL, timestamp, response code) for operational and security purposes. These logs are retained for approximately 30 days, are stored on our server only, and are not shared with any third party or used for profiling.`,
         ],
       },
       {
@@ -104,7 +104,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// contact",
         content: [
-          `For any privacy-related question or request, contact us at: hello@utilisio.com`,
+          `For any privacy-related question or request, contact us at: contact@utilisio.com (see also the contact page)`,
         ],
       },
     ],
@@ -140,13 +140,13 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
               "Analyseur SEO — récupère l'URL cible via notre proxy pour analyser son contenu",
             ],
           },
-          "Dans ces cas, la requête transite par notre proxy. Nous ne stockons pas les URL que vous saisissez, les résultats retournés, ni le contenu des pages récupérées. Votre adresse IP est visible par notre serveur lors de la requête (comme pour toute requête HTTP) mais n'est pas journalisée.",
+          "Dans ces cas, la requête transite par notre proxy. Nous ne conservons pas les pages récupérées, et le résultat reste au plus une minute en mémoire. L'adresse que vous nous demandez de vérifier voyage dans la requête elle-même : comme votre adresse IP, elle apparaît dans les logs d'accès standard décrits plus bas, et nulle part ailleurs.",
         ],
       },
       {
         heading: "// logs serveur",
         content: [
-          `${BRAND_NAME} est hébergé sur un serveur privé (VPS) sous notre contrôle direct. Comme tout serveur web, il conserve des logs d'accès HTTP standard (adresse IP, URL, horodatage, code de réponse) à des fins opérationnelles et de sécurité. Ces logs sont conservés environ 30 jours, stockés uniquement sur notre serveur, et ne sont ni partagés avec des tiers ni utilisés à des fins de profilage.`,
+          `${BRAND_NAME} est hébergé sur un serveur privé (VPS) loué chez IONOS et administré par nous. Comme tout serveur web, il conserve des logs d'accès HTTP standard (adresse IP, URL, horodatage, code de réponse) à des fins opérationnelles et de sécurité. Ces logs sont conservés environ 30 jours, stockés uniquement sur notre serveur, et ne sont ni partagés avec des tiers ni utilisés à des fins de profilage.`,
         ],
       },
       {
@@ -179,7 +179,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// contact",
         content: [
-          `Pour toute question ou demande relative à la vie privée, contactez-nous à : hello@utilisio.com`,
+          `Pour toute question ou demande relative à la vie privée, contactez-nous à : contact@utilisio.com (voir aussi la page contact)`,
         ],
       },
     ],

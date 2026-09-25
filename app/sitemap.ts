@@ -45,6 +45,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: alternates("/en/guides", "/fr/guides"),
     },
     {
+      url: `${SITE_URL}/${lang}/contact`,
+      changeFrequency: "yearly" as const,
+      priority: 0.4,
+      alternates: alternates("/en/contact", "/fr/contact"),
+    },
+    {
       url: `${SITE_URL}/${lang}/faq`,
       changeFrequency: "monthly" as const,
       priority: 0.6,

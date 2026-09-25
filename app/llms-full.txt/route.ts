@@ -31,7 +31,7 @@ export function GET() {
       lines.push(`URL: ${SITE_URL}/en/t/${tool.slug}`);
       lines.push(
         tool.privacy === "network"
-          ? "Privacy: fetches external data through a server-side proxy; inputs are not stored."
+          ? "Privacy: fetches external data through a server-side proxy; inputs are kept only in standard access logs (~30 days)."
           : "Privacy: runs entirely in the browser; files and inputs never leave the device.",
       );
       lines.push("", content?.desc.en ?? tool.desc.en, "");
@@ -57,6 +57,7 @@ export function GET() {
     `- Tool catalog: ${SITE_URL}/en/tools`,
     `- Guides: ${SITE_URL}/en/guides`,
     `- About: ${SITE_URL}/en/about`,
+    `- Contact: ${SITE_URL}/en/contact (contact@utilisio.com)`,
     `- Privacy policy: ${SITE_URL}/en/privacy`,
     `- Terms of use: ${SITE_URL}/en/terms`,
     `- FAQ: ${SITE_URL}/en/faq`,

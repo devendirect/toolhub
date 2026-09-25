@@ -34,7 +34,7 @@ export const dict = {
     viewAll:           "tout voir",
     popularTags:       "tags populaires",
     footerTagline:     "Outils web rapides, gratuits, sans inscription.",
-    footerNote:        "La plupart des outils sont traités dans votre navigateur. Les outils réseau (lookup, SEO) passent par un proxy — vos saisies ne sont pas stockées, les logs d'accès HTTP standard s'appliquent.",
+    footerNote:        "La plupart des outils sont traités dans votre navigateur. Les outils réseau (en-têtes, SEO, aperçu meta) passent par un proxy — vos saisies ne sont pas conservées, hors journaux d'accès HTTP standard.",
     sortBy:            "trier par",
     sortPop:           "popularité",
     sortName:          "nom",
@@ -55,7 +55,7 @@ export const dict = {
     privacyLocal:      "exécuté dans votre navigateur",
     privacyNoLog:      "aucun upload, aucun log",
     privacyNetwork:    "récupération via proxy (serveur)",
-    privacyNotStored:  "cache mémoire 30 min — non stocké en base de données",
+    privacyNotStored:  "résultat gardé 1 min en mémoire — jamais en base de données",
 
     // ── JsonFormatter (clés historiques, conservées à l'identique) ────────
     input:             "input",
@@ -108,8 +108,8 @@ export const dict = {
     generated:         "généré",
 
     // ── Notices de confidentialité ────────────────────────────────────────
-    proxiedCached:     "récupération via proxy — résultat gardé 1 min en mémoire, aucun log persistant",
-    proxied1h:         "récupération via proxy — résultat mis en cache 1h en mémoire, aucun log persistant",
+    proxiedCached:     "récupération via proxy — résultat gardé 1 min en mémoire, requête dans les journaux d'accès (30 j)",
+    proxied1h:         "récupération via proxy — résultat mis en cache 1h en mémoire, requête dans les journaux d'accès (30 j)",
     proxiedFetch:      "récupération via proxy",
     localConversion:   "conversion locale — aucun fichier envoyé au serveur",
     localCanvas:       "rendu local — Canvas API",
@@ -171,7 +171,7 @@ export const dict = {
     viewAll:           "view all",
     popularTags:       "popular tags",
     footerTagline:     "Fast, free web tools. No signup.",
-    footerNote:        "Most tools run in your browser. Network tools (lookup, SEO) go through a proxy — your inputs are not stored, though standard HTTP access logs apply.",
+    footerNote:        "Most tools run in your browser. Network tools (headers, SEO, meta preview) go through a proxy — your inputs aren't kept, apart from standard HTTP access logs.",
     sortBy:            "sort by",
     sortPop:           "popularity",
     sortName:          "name",
@@ -192,7 +192,7 @@ export const dict = {
     privacyLocal:      "runs in your browser",
     privacyNoLog:      "no upload, no logs",
     privacyNetwork:    "proxied fetch (server-side)",
-    privacyNotStored:  "memory cache 30 min — not stored in database",
+    privacyNotStored:  "result kept 1 min in memory — never in a database",
 
     // ── JsonFormatter (clés historiques, conservées à l'identique) ────────
     input:             "input",
@@ -245,8 +245,8 @@ export const dict = {
     generated:         "rendered",
 
     // ── Notices de confidentialité ────────────────────────────────────────
-    proxiedCached:     "proxied fetch — result kept 1 min in memory, no persistent log",
-    proxied1h:         "proxied fetch — result cached 1h in memory, no persistent log",
+    proxiedCached:     "proxied fetch — result kept 1 min in memory, request in access logs (30 days)",
+    proxied1h:         "proxied fetch — result cached 1h in memory, request in access logs (30 days)",
     proxiedFetch:      "proxied fetch",
     localConversion:   "local conversion — no file sent to server",
     localCanvas:       "local render — Canvas API",

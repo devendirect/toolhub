@@ -364,8 +364,8 @@ export const TOOLS_SEO: Record<string, ToolSeo> = {
   "meta-preview": {
     title: { en: "Meta Tag & Open Graph Preview and Checker", fr: "Aperçu et test des balises meta et Open Graph" },
     description: {
-      en: "Enter a URL and preview how its title, description and image will look on Google, Facebook and X before you share it. Fetched via proxy, not stored.",
-      fr: "Entrez une URL et voyez comment son titre, sa description et son image s'afficheront sur Google, Facebook et X avant de partager. Requête non conservée.",
+      en: "Enter a URL and preview how its title, description and image will look on Google, Facebook and X before you share it. Checked in real time via our server.",
+      fr: "Entrez une URL et voyez le rendu de son titre, sa description et son image sur Google, Facebook et X avant de partager. Vérifié en direct.",
     },
   },
   "seo-analyzer": {

@@ -109,7 +109,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// contact",
         content: [
-          `For any question about these terms, contact us at: hello@utilisio.com`,
+          `For any question about these terms, contact us at: contact@utilisio.com`,
         ],
       },
     ],
@@ -188,7 +188,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// contact",
         content: [
-          `Pour toute question relative à ces conditions, contactez-nous à : hello@utilisio.com`,
+          `Pour toute question relative à ces conditions, contactez-nous à : contact@utilisio.com`,
         ],
       },
     ],

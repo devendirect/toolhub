@@ -31,7 +31,7 @@ const FAQ: Record<Lang, FaqItem[]> = {
     },
     {
       q: "Are my files uploaded to a server?",
-      a: `Most tools run entirely in your browser — your files never leave your device. The exceptions are network tools (${networkToolNames("en").join(", ")}) which send a request through a proxy to fetch external data. None of your input is stored or logged.`,
+      a: `Most tools run entirely in your browser — your files never leave your device. The exceptions are network tools (${networkToolNames("en").join(", ")}) which send a request through a proxy to fetch external data. What you enter isn't kept, apart from the server's standard access logs (about 30 days).`,
     },
     {
       q: "Which browsers are supported?",
@@ -65,7 +65,7 @@ const FAQ: Record<Lang, FaqItem[]> = {
     },
     {
       q: "Mes fichiers sont-ils téléchargés sur un serveur ?",
-      a: `La plupart des outils s'exécutent entièrement dans votre navigateur — vos fichiers ne quittent jamais votre appareil. Les exceptions sont les outils réseau (${networkToolNames("fr").join(", ")}) qui envoient une requête via un proxy pour récupérer des données externes. Aucune de vos données n'est stockée ni journalisée.`,
+      a: `La plupart des outils s'exécutent entièrement dans votre navigateur — vos fichiers ne quittent jamais votre appareil. Les exceptions sont les outils réseau (${networkToolNames("fr").join(", ")}) qui envoient une requête via un proxy pour récupérer des données externes. Vos saisies ne sont pas conservées, en dehors des journaux d'accès standard du serveur (environ 30 jours).`,
     },
     {
       q: "Quels navigateurs sont supportés ?",

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLang } from "@/components/providers/I18nProvider";
 import { localePath } from "@/lib/localePath";
+import { AboutStory } from "./AboutStory";
 import { TOOLS, networkToolNames } from "@/lib/tools";
 
 interface Lib {
@@ -137,6 +138,8 @@ export function AboutClient() {
           </p>
         </div>
       </div>
+
+      <AboutStory lang={lang} />
 
       <div className="mb-10">
         <h2 className="font-mono text-[17px] font-semibold text-fg mb-2">
