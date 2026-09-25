@@ -166,7 +166,7 @@ export function SeoAnalyzer() {
 
         <div className="flex items-center gap-4 px-[14px] py-2 border-t border-line bg-bg font-mono text-[11px] text-dim">
           <span className="inline-block w-[6px] h-[6px] rounded-full bg-hot mr-1" />
-          {i.proxied30min}
+          {i.proxiedCached}
         </div>
       </div>
 

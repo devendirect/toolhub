@@ -131,7 +131,7 @@ export function SitemapGenerator() {
             <a
               href={affiliateUrl}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="sponsored noopener noreferrer"
               className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
             >
               {lang === "fr" ? "Trouver mon domaine →" : "Find my domain →"}

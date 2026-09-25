@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as cheerio from "cheerio";
-import { makeRateLimiter, makeCache, getRequesterIp } from "@/lib/route-security";
+import { makeRateLimiter, makeCache, getRequesterIp, isSafeUrl } from "@/lib/route-security";
 import { fetchPageHtml } from "@/lib/api-html-fetch";
 import { extractMeta } from "@/lib/api-html-parse";
 
@@ -13,7 +13,8 @@ export interface MetaData {
 }
 
 const checkRate = makeRateLimiter(10, 60_000);
-const cache     = makeCache<MetaData>(30 * 60 * 1000, 200); // 30 min, 200 URLs
+// 1 min : on revérifie juste après avoir corrigé ses balises
+const cache     = makeCache<MetaData>(60_000, 200);
 
 
 export async function GET(req: NextRequest) {
@@ -25,12 +26,13 @@ export async function GET(req: NextRequest) {
   const raw = req.nextUrl.searchParams.get("url")?.trim() ?? "";
   if (!raw) return NextResponse.json({ error: "missing url" }, { status: 400 });
 
+  // Cache consulté avant le fetch : sinon il ne protégeait pas la cible
+  const safe = isSafeUrl(raw);
+  const cached = safe.ok ? cache.get(safe.url.href) : undefined;
+  if (cached) return NextResponse.json(cached, { headers: { "X-Cache": "HIT" } });
+
   const fetched = await fetchPageHtml(raw);
   if (!fetched.ok) return fetched.response;
-
-  const cacheKey = fetched.url.href;
-  const cached = cache.get(cacheKey);
-  if (cached) return NextResponse.json(cached, { headers: { "X-Cache": "HIT" } });
 
   const $ = cheerio.load(fetched.html);
 
@@ -53,6 +55,6 @@ export async function GET(req: NextRequest) {
     favicon:       $('link[rel="icon"], link[rel="shortcut icon"]').first().attr("href") ?? "",
   };
 
-  cache.set(cacheKey, data);
+  cache.set(fetched.url.href, data);
   return NextResponse.json(data);
 }

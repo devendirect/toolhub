@@ -192,7 +192,7 @@ export function IpLookup() {
             <a
               href={AFFILIATE_NORDVPN}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="sponsored noopener noreferrer"
               className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
             >
               {lang === "fr" ? "Masquer mon IP avec NordVPN →" : "Hide my IP with NordVPN →"}

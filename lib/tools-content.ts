@@ -867,13 +867,82 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "meta-preview": {
     desc: {
-      en: "See how any URL will appear when shared on Google, Facebook and Twitter/X — before you post it publicly. Fetches the page via proxy and renders the title, description, image and URL display for all three platforms simultaneously. An essential check before publishing any page you plan to share on social media.",
-      fr: "Voyez comment n'importe quelle URL apparaîtra lors du partage sur Google, Facebook et Twitter/X — avant de la publier. Récupère la page via proxy et affiche le titre, la description, l'image et l'URL pour les trois plateformes simultanément. Une vérification essentielle avant de publier toute page destinée à être partagée sur les réseaux sociaux.",
+      en: "Paste a URL and see the three previews people will actually meet: the Google result, the Facebook or LinkedIn card and the X card. The tool downloads the page's HTML and reads the title, meta description, Open Graph and Twitter Card tags, canonical and robots, then lists every tag with its value so you can copy it in one click. Missing key tags are marked, and a relative og:image URL is flagged because social networks can't load it.",
+      fr: "Collez une URL et voyez les trois aperçus que les gens rencontreront vraiment : le résultat Google, la carte Facebook ou LinkedIn et la carte X. L'outil télécharge le HTML de la page, lit le titre, la meta description, les balises Open Graph et Twitter Card, la canonical et la meta robots, puis liste chaque balise avec sa valeur, copiable d'un clic. Les balises importantes absentes sont signalées, et une URL og:image relative est pointée, car les réseaux sociaux ne peuvent pas la charger.",
     },
     useCases: {
-      en: ["Verifying that a blog post's Open Graph image appears correctly before sharing", "Checking Twitter Card metadata after adding twitter: tags to a page", "Debugging why a shared link shows an unexpected title or image on social media", "Previewing how a product page renders in Google's mobile search snippet"],
-      fr: ["Vérifier qu'une image Open Graph de billet de blog s'affiche correctement avant le partage", "Contrôler les métadonnées Twitter Card après ajout des balises twitter: sur une page", "Déboguer pourquoi un lien partagé affiche un titre ou une image inattendu sur les réseaux sociaux", "Prévisualiser le rendu d'une page produit dans l'extrait de recherche mobile de Google"],
+      en: ["Checking the image, title and description before posting a link on LinkedIn, Facebook or X", "Reviewing a site you just delivered: each template (home, article, product) should carry its own og:title and og:image, not the home page's", "Finding out why a shared link shows an old title, a blank card or no image at all", "Copying the exact value of a tag to paste into a CMS field or a bug report"],
+      fr: ["Vérifier l'image, le titre et la description avant de publier un lien sur LinkedIn, Facebook ou X", "Relire un site qu'on vient de livrer : chaque gabarit (accueil, article, produit) doit porter son propre og:title et son og:image, pas ceux de l'accueil", "Comprendre pourquoi un lien partagé affiche un ancien titre, une carte vide ou aucune image", "Copier la valeur exacte d'une balise pour la coller dans un champ de CMS ou un ticket"],
     },
+    deepDive: [
+      {
+        h: { en: "Which tag each preview reads", fr: "Quelle balise lit chaque aperçu" },
+        p: {
+          en: [
+            "Google and the social networks don't read the same tags. The Google preview uses the title tag and the meta description, which is why it can show a different headline from the Facebook card on the same page. Google may also rewrite both when it finds a passage that fits the search better.",
+            "Facebook and LinkedIn read og:title, og:description and og:image first, and fall back to the title and description when the Open Graph tags are missing. X reads its own twitter: tags, then falls back to the Open Graph ones. The previews here follow those same fallbacks, so an empty og:title shows up as your page title, just as it would once shared.",
+            "The one tag without an equivalent is twitter:card. It picks the layout: summary gives a small square thumbnail next to the text, summary_large_image a wide image above it. If your X card looks cramped next to the Facebook one, that's usually the reason.",
+          ],
+          fr: [
+            "Google et les réseaux sociaux ne lisent pas les mêmes balises. L'aperçu Google utilise la balise title et la meta description, ce qui explique qu'il puisse afficher un autre titre que la carte Facebook pour la même page. Google peut aussi réécrire les deux s'il trouve un passage qui répond mieux à la recherche.",
+            "Facebook et LinkedIn lisent d'abord og:title, og:description et og:image, et se rabattent sur le titre et la description quand les balises Open Graph manquent. X lit ses propres balises twitter:, puis se rabat sur celles d'Open Graph. Les aperçus suivent ces mêmes replis : un og:title vide s'affiche avec le titre de la page, comme il le ferait une fois partagé.",
+            "La seule balise sans équivalent est twitter:card. Elle choisit la mise en page : summary donne une petite vignette carrée à côté du texte, summary_large_image une image large au-dessus. Si votre carte X paraît tassée à côté de la carte Facebook, la raison est presque toujours là.",
+          ],
+        },
+      },
+      {
+        h: { en: "What it showed on our own pages", fr: "Ce qu'il a montré sur nos propres pages" },
+        p: {
+          en: [
+            "Run on this site's tool pages, the tag list had two gaps. og:site_name and og:type, set once for the whole site, were missing on every tool page. The cause is a Next.js detail worth knowing: when a page defines its own openGraph metadata, it replaces the object set in the layout instead of merging with it, so any field the page doesn't repeat quietly disappears.",
+            "The second gap was og:image. With no image tag, a link to one of these pages shared on LinkedIn or Facebook shows as a plain text card. Nothing is broken on the page itself, which is exactly why this kind of omission survives for months: you only notice it when someone shares the link.",
+          ],
+          fr: [
+            "Lancé sur les pages outils de ce site, la liste des balises montrait deux trous. og:site_name et og:type, définis une fois pour tout le site, manquaient sur chaque page outil. La cause est un détail de Next.js bon à connaître : quand une page définit ses propres métadonnées openGraph, elles remplacent l'objet défini dans le layout au lieu de s'y ajouter, et tout champ que la page ne répète pas disparaît sans bruit.",
+            "Le second trou, c'était og:image. Sans balise image, un lien vers ces pages partagé sur LinkedIn ou Facebook s'affiche comme une simple carte de texte. Rien n'est cassé sur la page elle-même, et c'est précisément pour ça que ce genre d'oubli survit des mois : on ne le remarque que le jour où quelqu'un partage le lien.",
+          ],
+        },
+      },
+      {
+        h: { en: "og:image: the problems it catches, and the ones it doesn't", fr: "og:image : les problèmes détectés, et ceux qui échappent" },
+        p: {
+          en: [
+            "The most common fault is a relative path such as /images/cover.jpg. A browser resolves it without a second thought, but Facebook, LinkedIn and Slack expect a full https:// address and simply show no image. The tool flags a relative og:image or twitter:image instead of displaying it, because showing it would suggest it works.",
+            "What it doesn't do is download and measure the image. The size to aim for is 1200 × 630 pixels, a 1.91:1 ratio, which fills the wide card on every network; much smaller images get shown as a thumbnail or not at all. Also make sure the image is publicly reachable: an image behind a login, or on a server that blocks requests from other sites, loads for you and fails for the crawler.",
+          ],
+          fr: [
+            "Le défaut le plus courant est un chemin relatif comme /images/couverture.jpg. Un navigateur le résout sans broncher, mais Facebook, LinkedIn et Slack attendent une adresse complète en https:// et n'affichent tout simplement pas d'image. L'outil signale un og:image ou un twitter:image relatif au lieu de l'afficher, car l'afficher laisserait croire qu'il fonctionne.",
+            "Ce qu'il ne fait pas, c'est télécharger et mesurer l'image. La taille à viser est 1200 × 630 pixels, soit un ratio de 1,91:1, qui remplit la carte large sur tous les réseaux ; une image bien plus petite s'affiche en vignette ou pas du tout. Vérifiez aussi que l'image est accessible publiquement : une image derrière une connexion, ou sur un serveur qui bloque les requêtes venues d'autres sites, se charge chez vous et échoue pour le robot.",
+          ],
+        },
+      },
+      {
+        h: { en: "After a fix: the networks keep their own copy", fr: "Après une correction : les réseaux gardent leur propre copie" },
+        p: {
+          en: [
+            "Results here are kept for one minute, so a corrected page shows its new tags almost at once. The social networks are slower. Facebook and LinkedIn store the preview of a URL the first time someone shares it and keep serving that copy, which is why a link can still show last month's image after you've fixed it.",
+            "To force a refresh, paste the URL into Facebook's Sharing Debugger and click Scrape Again, or into LinkedIn's Post Inspector. Do it before you share the link again, not after, or the old card goes out one more time.",
+          ],
+          fr: [
+            "Ici, les résultats sont gardés une minute : une page corrigée affiche ses nouvelles balises presque tout de suite. Les réseaux sociaux sont plus lents. Facebook et LinkedIn enregistrent l'aperçu d'une URL la première fois qu'elle est partagée et continuent de servir cette copie, ce qui explique qu'un lien affiche encore l'image du mois dernier après correction.",
+            "Pour forcer la mise à jour, collez l'URL dans le Sharing Debugger de Facebook et cliquez sur Scrape Again, ou dans le Post Inspector de LinkedIn. Faites-le avant de repartager le lien, pas après, sinon l'ancienne carte part une fois de plus.",
+          ],
+        },
+      },
+      {
+        h: { en: "Why it reads the raw HTML", fr: "Pourquoi il lit le HTML brut" },
+        p: {
+          en: [
+            "The tool reads the HTML the server sends, without running JavaScript. That's deliberate: the crawlers that build link previews generally don't run it either. If your tags are added by a script after the page loads, they'll be missing here, and they'll be missing on the shared card too. Render them on the server.",
+            "The previews are close approximations, not screenshots. Each network cuts titles and descriptions by width and adjusts its layout from time to time, so the exact point where your text stops may differ by a few characters. What matters is what the check reliably tells you: which tags exist, what they contain and which one each network will pick.",
+          ],
+          fr: [
+            "L'outil lit le HTML envoyé par le serveur, sans exécuter de JavaScript. C'est voulu : les robots qui fabriquent les aperçus de liens ne l'exécutent généralement pas non plus. Si vos balises sont ajoutées par un script après le chargement, elles manqueront ici, et elles manqueront aussi sur la carte partagée. Générez-les côté serveur.",
+            "Les aperçus sont des approximations fidèles, pas des captures. Chaque réseau coupe titres et descriptions selon leur largeur et fait évoluer sa mise en page de temps en temps : l'endroit exact où le texte s'arrête peut varier de quelques caractères. Ce qui compte, c'est ce que le contrôle dit de façon fiable : quelles balises existent, ce qu'elles contiennent et laquelle chaque réseau retiendra.",
+          ],
+        },
+      },
+    ],
   },
   "seo-analyzer": {
     desc: {
@@ -1423,16 +1492,6 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
     useCases: {
       en: ["Filling a design mockup with realistic-length text before real copy is written", "Testing how a layout handles long vs short paragraphs by switching between word/sentence/paragraph modes", "Generating consistent placeholder text you can regenerate identically later for a style guide", "Quickly padding a component in development to check text overflow and wrapping behavior"],
       fr: ["Remplir une maquette de design avec du texte de longueur réaliste avant que le vrai contenu ne soit écrit", "Tester comment une mise en page gère des paragraphes longs ou courts en changeant entre les modes mot/phrase/paragraphe", "Générer un texte de remplissage cohérent, régénérable à l'identique plus tard pour un guide de style", "Remplir rapidement un composant en développement pour vérifier le débordement de texte et le retour à la ligne"],
-    },
-  },
-  "og-checker": {
-    desc: {
-      en: "Enter a URL and this fetches the page through a server-side proxy (necessary because browsers block cross-origin reads of another site's HTML) to pull every Open Graph tag, Twitter Card tag, and standard SEO tag — title, description, canonical, robots — into one readable list, with the og:image itself rendered so you can see exactly what a shared link preview will look like. This is a network tool, not a local one: the target URL is sent to our server to fetch, though nothing about the URL or the result is logged or stored afterward. The most common thing this catches: a site with correct <title> and meta description but a missing or relative og:image path, which silently breaks the preview image on Slack, Discord, and social shares even though the page itself looks completely normal in a browser.",
-      fr: "Entrez une URL et l'outil récupère la page via un proxy côté serveur (nécessaire car les navigateurs bloquent la lecture cross-origin du HTML d'un autre site) pour extraire chaque balise Open Graph, balise Twitter Card, et balise SEO standard — title, description, canonical, robots — dans une liste lisible, avec l'og:image lui-même affiché pour voir exactement à quoi ressemblera un aperçu de lien partagé. C'est un outil réseau, pas local : l'URL cible est envoyée à notre serveur pour être récupérée, même si rien concernant l'URL ou le résultat n'est journalisé ni stocké ensuite. Le cas le plus fréquent que ça détecte : un site avec un <title> et une meta description corrects mais un chemin og:image manquant ou relatif, ce qui casse silencieusement l'image d'aperçu sur Slack, Discord et les partages sociaux alors que la page elle-même paraît parfaitement normale dans un navigateur.",
-    },
-    useCases: {
-      en: ["Checking why a link preview looks broken or blank when shared on Slack, Discord or social media", "Verifying Open Graph tags were correctly deployed after a CMS or template change", "Auditing a competitor's or client's page for missing social sharing metadata", "Confirming the exact title and description Google or a chat app will pull for a page before it goes live"],
-      fr: ["Vérifier pourquoi un aperçu de lien apparaît cassé ou vide en partage sur Slack, Discord ou les réseaux sociaux", "Vérifier que les balises Open Graph ont été correctement déployées après un changement de CMS ou de template", "Auditer une page concurrente ou client pour des métadonnées de partage social manquantes", "Confirmer le titre et la description exacts que Google ou une app de chat récupéreront pour une page avant sa mise en ligne"],
     },
   },
   "schema-generator": {

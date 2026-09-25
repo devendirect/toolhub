@@ -362,7 +362,7 @@ export const TOOLS_SEO: Record<string, ToolSeo> = {
 
   /* ── SEO / MARKETING ── */
   "meta-preview": {
-    title: { en: "Meta Tag Preview: Google, Facebook, X", fr: "Aperçu des balises meta : Google, Facebook, X" },
+    title: { en: "Meta Tag & Open Graph Preview and Checker", fr: "Aperçu et test des balises meta et Open Graph" },
     description: {
       en: "Enter a URL and preview how its title, description and image will look on Google, Facebook and X before you share it. Fetched via proxy, not stored.",
       fr: "Entrez une URL et voyez comment son titre, sa description et son image s'afficheront sur Google, Facebook et X avant de partager. Requête non conservée.",
@@ -373,13 +373,6 @@ export const TOOLS_SEO: Record<string, ToolSeo> = {
     description: {
       en: "Analyze any public page's on-page SEO: title, meta description, heading structure, word count and image alt text, each with a score and a concrete fix.",
       fr: "Analysez le SEO on-page d'une page publique : titre, meta description, structure Hn, nombre de mots et attributs alt, avec un score et un conseil précis.",
-    },
-  },
-  "og-checker": {
-    title: { en: "Open Graph Checker: Test Link Previews", fr: "Tester les balises Open Graph d'une page" },
-    description: {
-      en: "Check a page's Open Graph and Twitter Card tags, canonical and robots in one list, with the og:image rendered so you see the real share preview.",
-      fr: "Vérifiez les balises Open Graph, Twitter Card, canonical et robots d'une page en une seule liste, avec l'og:image affichée comme dans un vrai partage.",
     },
   },
   "utm-builder": {

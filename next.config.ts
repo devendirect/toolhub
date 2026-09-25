@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
     return [
       // text-diff fusionné dans diff-viewer : même workspace, contenu en double
       { source: "/:lang(en|fr)/t/text-diff", destination: "/:lang/t/diff-viewer", permanent: true },
+      // og-checker fusionné dans meta-preview : même API, même données
+      { source: "/:lang(en|fr)/t/og-checker", destination: "/:lang/t/meta-preview", permanent: true },
     ];
   },
   async headers() {

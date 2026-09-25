@@ -105,7 +105,7 @@ export const dict = {
     generated:         "généré",
 
     // ── Notices de confidentialité ────────────────────────────────────────
-    proxied30min:      "récupération via proxy — résultat mis en cache 30 min en mémoire, aucun log persistant",
+    proxiedCached:     "récupération via proxy — résultat gardé 1 min en mémoire, aucun log persistant",
     proxied1h:         "récupération via proxy — résultat mis en cache 1h en mémoire, aucun log persistant",
     proxiedFetch:      "récupération via proxy",
     localConversion:   "conversion locale — aucun fichier envoyé au serveur",
@@ -239,7 +239,7 @@ export const dict = {
     generated:         "rendered",
 
     // ── Notices de confidentialité ────────────────────────────────────────
-    proxied30min:      "proxied fetch — result cached 30 min in memory, no persistent log",
+    proxiedCached:     "proxied fetch — result kept 1 min in memory, no persistent log",
     proxied1h:         "proxied fetch — result cached 1h in memory, no persistent log",
     proxiedFetch:      "proxied fetch",
     localConversion:   "local conversion — no file sent to server",

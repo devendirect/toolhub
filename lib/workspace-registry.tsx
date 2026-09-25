@@ -83,7 +83,6 @@ export const WORKSPACE_REGISTRY: Partial<Record<string, WC>> = {
   "contrast-checker":  lazy(() => import("@/components/workspaces/ContrastChecker"),  "ContrastChecker"),
   "robots-txt":        lazy(() => import("@/components/workspaces/RobotsTxt"),        "RobotsTxt"),
   "sitemap-generator": lazy(() => import("@/components/workspaces/SitemapGenerator"), "SitemapGenerator"),
-  "og-checker":        lazy(() => import("@/components/workspaces/OgChecker"),        "OgChecker"),
   "schema-generator":  lazy(() => import("@/components/workspaces/SchemaGenerator"),  "SchemaGenerator"),
   "diff-viewer":       lazyDiffViewer,
   "csv-json":          lazy(() => import("@/components/workspaces/CsvJson"),          "CsvJson"),
