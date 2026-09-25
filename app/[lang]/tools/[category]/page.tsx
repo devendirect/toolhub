@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { CATEGORIES, TOOLS } from "@/lib/tools";
 import { SITE_URL } from "@/lib/brand";
 import { CatalogPageClient } from "@/components/catalog/CatalogPageClient";
+import { CategoryHub } from "@/components/catalog/CategoryHub";
+import { CATEGORY_CONTENT } from "@/lib/category-content";
 import type { Metadata } from "next";
 import type { Lang } from "@/lib/types";
 import { coerceLang } from "@/lib/localePath";
@@ -26,16 +28,16 @@ const CATEGORY_DESCRIPTIONS: Record<string, Record<Lang, string>> = {
     fr: "Convertissez images, PDF, audio et vidéo, fusionnez des PDF, compressez des images ou ouvrez un ZIP. Tout tourne dans le navigateur, sans envoi de fichier.",
   },
   dev: {
-    en: "Decode JWTs, test regex, hash files, generate UUIDs and QR codes, convert timestamps, diff code and check HTTP security headers. Free, no signup.",
-    fr: "Décodez un JWT, testez une regex, hashez un fichier, générez UUID et QR codes, convertissez un timestamp, comparez du code, auditez des en-têtes HTTP.",
+    en: "Decode JWTs, test regex, hash files, generate UUIDs, passwords and QR codes, convert timestamps, diff code and check HTTP headers. Free, no signup.",
+    fr: "Décodez un JWT, testez une regex, hashez un fichier, générez UUID, mots de passe et QR codes, convertissez un timestamp, comparez du code.",
   },
   text: {
     en: "Format JSON, convert CSV, change case, count words, strip line breaks, remove duplicate lines, encode URLs and check readability. Free, in your browser.",
     fr: "Formatez du JSON, convertissez un CSV, changez la casse, comptez les mots, retirez sauts de ligne et doublons, encodez une URL, mesurez la lisibilité.",
   },
   design: {
-    en: "Build color palettes, CSS gradients, box shadows, border radius and grid layouts, check WCAG contrast, make a favicon or a strong password. Copy the CSS.",
-    fr: "Créez palettes, dégradés CSS, ombres, arrondis et grilles, vérifiez le contraste WCAG, fabriquez un favicon ou un mot de passe fort. CSS prêt à copier.",
+    en: "Build color palettes, CSS gradients, box shadows, border radius and grid layouts, pick colors in any format and check WCAG contrast. Copy the CSS.",
+    fr: "Créez palettes, dégradés CSS, ombres, arrondis et grilles, choisissez vos couleurs dans tous les formats et vérifiez le contraste WCAG. CSS à copier.",
   },
   seo: {
     en: "Preview meta tags on Google and social networks, audit on-page SEO, check Open Graph, build UTM links and generate robots.txt, sitemaps and JSON-LD.",
@@ -92,5 +94,12 @@ export default async function CategoryPage({ params }: Props) {
     : ` Les ${count} outils ci-dessous sont classés par utilisation, du plus utilisé au moins utilisé.`;
   const description = (CATEGORY_DESCRIPTIONS[category]?.[l] ?? "") + ranking;
 
-  return <CatalogPageClient initialCat={category} categoryDescription={description} />;
+  // key : un nouvel état de catalogue à chaque catégorie (navigation client entre hubs)
+  return (
+    <>
+      {/* key : un nouvel état de catalogue à chaque catégorie (navigation client entre hubs) */}
+      <CatalogPageClient key={category} initialCat={category} categoryDescription={description} />
+      {category in CATEGORY_CONTENT && <CategoryHub cat={category as keyof typeof CATEGORY_CONTENT} lang={l} />}
+    </>
+  );
 }

@@ -44,6 +44,9 @@ export function ToolHeader({ tool }: { tool: Tool }) {
           <span>/</span>
           <Link href={localePath(lang, "/tools")} className="hover:text-brand transition-colors">tools</Link>
           <span>/</span>
+          {/* Même chemin que le BreadcrumbList JSON-LD : accueil › catégorie › outil */}
+          <Link href={localePath(lang, `/tools/${tool.cat}`)} className="hover:text-brand transition-colors">{catLabel.toLowerCase()}</Link>
+          <span>/</span>
           <span className="text-brand">{tool.slug}</span>
         </div>
       </div>

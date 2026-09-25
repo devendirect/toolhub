@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { CONVERT_PAIRS, FORMAT_LABEL, findPair, type ConvertPair, type TargetFormat } from "@/lib/convert-pairs";
 import { PDF_PAIRS, findPdfPair, type PdfPair } from "@/lib/pdf-pairs";
 import { CONVERT_META } from "@/lib/convert-seo";
-import { TOOLS } from "@/lib/tools";
+import { TOOLS, CATEGORIES } from "@/lib/tools";
 import { privacyFaqItem } from "@/lib/faq";
 import { jsonLdString } from "@/lib/jsonld";
 import { SITE_URL, BRAND_NAME } from "@/lib/brand";
@@ -101,9 +101,11 @@ export default async function ConvertPairPage({ params }: Props) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
+      // Même chemin que le fil d'Ariane visible : accueil › catégorie › outil › paire
       { "@type": "ListItem", position: 1, name: BRAND_NAME, item: `${SITE_URL}/${l}` },
-      { "@type": "ListItem", position: 2, name: parentTool?.name[l] ?? parentSlug, item: `${SITE_URL}/${l}/t/${parentSlug}` },
-      { "@type": "ListItem", position: 3, name: title, item: `${SITE_URL}/${l}/convert/${pair.slug}` },
+      ...(parentTool ? [{ "@type": "ListItem", position: 2, name: CATEGORIES.find((c) => c.id === parentTool.cat)?.label[l] ?? parentTool.cat, item: `${SITE_URL}/${l}/tools/${parentTool.cat}` }] : []),
+      { "@type": "ListItem", position: parentTool ? 3 : 2, name: parentTool?.name[l] ?? parentSlug, item: `${SITE_URL}/${l}/t/${parentSlug}` },
+      { "@type": "ListItem", position: parentTool ? 4 : 3, name: title, item: `${SITE_URL}/${l}/convert/${pair.slug}` },
     ],
   };
 
@@ -126,6 +128,14 @@ export default async function ConvertPairPage({ params }: Props) {
       <div className="flex gap-[6px] font-mono text-[12px] text-dim mb-7">
         <Link href={`/${l}`} className="hover:text-brand transition-colors">~</Link>
         <span>/</span>
+        {parentTool && (
+          <>
+            <Link href={`/${l}/tools/${parentTool.cat}`} className="hover:text-brand transition-colors">
+              {CATEGORIES.find((c) => c.id === parentTool.cat)?.label[l].toLowerCase()}
+            </Link>
+            <span>/</span>
+          </>
+        )}
         <Link href={`/${l}/t/${parentSlug}`} className="hover:text-brand transition-colors">
           {parentTool?.name[l].toLowerCase() ?? parentSlug}
         </Link>

@@ -75,7 +75,7 @@ export function CatalogPageClient({ initialCat = "all", categoryDescription }: {
               ? i.catalogAll
               : i.catalogCat(catObj.label[lang].toLowerCase())}
           </p>
-          {categoryDescription && activeCat !== "all" && (
+          {categoryDescription && activeCat === initialCat && (
             <p className="text-fg-2 text-[14px] max-w-[60ch] mt-2 leading-relaxed">{categoryDescription}</p>
           )}
         </div>

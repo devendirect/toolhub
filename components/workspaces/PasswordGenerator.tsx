@@ -107,7 +107,7 @@ export function PasswordGenerator() {
   // Même schéma que UuidGenerator : liste vide, puis tirage une fois monté.
   const [passwords, setPasswords] = useState<string[]>([]);
   const { copy, copied } = useCopy();
-  const trackRun = useTrackRun("password-generator", "design");
+  const trackRun = useTrackRun("password-generator", "dev");
 
   const regen = useCallback((l: Length, opts: PwOptions) => {
     setPasswords(Array.from({ length: COUNT }, () => generate(l, opts)));

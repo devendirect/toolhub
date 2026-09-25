@@ -50,7 +50,7 @@ export function ColorPicker() {
   const [hex, setHex] = useState("#00e08a");
   const [hexInput, setHexInput] = useState("#00e08a");
   const { copy, copied } = useCopy();
-  const trackRun = useTrackRun("color-picker", "dev");
+  const trackRun = useTrackRun("color-picker", "design");
 
   const isValidHex = (h: string) => /^#[0-9A-Fa-f]{6}$/.test(h);
 

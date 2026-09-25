@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { TOOLS, CATEGORIES, POPULAR_TAGS } from "@/lib/tools";
+import { localePath } from "@/lib/localePath";
 import type { Lang } from "@/lib/types";
 import type { Dict } from "@/lib/i18n";
 
@@ -65,12 +67,16 @@ export function CatalogSidebar({
             </li>
           )}
           {CATEGORIES.map((c) => {
-            const count = c.id === "all" ? TOOLS.length : TOOLS.filter((x) => x.cat === c.id).length;
+            const live  = TOOLS.filter((x) => !x.comingSoon);
+            const count = c.id === "all" ? live.length : live.filter((x) => x.cat === c.id).length;
             const isOn  = activeCat === c.id;
             return (
               <li key={c.id} className="border-b border-line last:border-b-0">
-                <button
+                {/* Vrai lien : l'URL suit la catégorie et les robots voient le maillage entre hubs */}
+                <Link
+                  href={localePath(lang, c.id === "all" ? "/tools" : `/tools/${c.id}`)}
                   onClick={() => setActiveCat(c.id)}
+                  aria-current={isOn ? "page" : undefined}
                   className={`w-full flex items-center gap-[10px] px-3 py-[9px] font-mono text-[12px] transition-colors duration-150 border-l-2 ${
                     isOn
                       ? "border-brand bg-brand-soft text-brand"
@@ -80,7 +86,7 @@ export function CatalogSidebar({
                   <span className="w-7 text-[11px] shrink-0">{c.glyph}</span>
                   <span className="flex-1 text-left">{c.label[lang]}</span>
                   <span className={isOn ? "text-brand" : "text-dim-2"}>{count}</span>
-                </button>
+                </Link>
               </li>
             );
           })}
