@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BRAND_NAME } from "@/lib/brand";
+import { BRAND_NAME, REPO_URL } from "@/lib/brand";
 import { t } from "@/lib/i18n";
 import { useLang } from "@/components/providers/I18nProvider";
 import { LogoMark } from "@/components/brand/LogoMark";
@@ -88,7 +88,7 @@ export function Footer() {
           <div className="flex flex-col gap-3">
             <div className="font-mono text-[11px] text-dim">{"// stack"}</div>
             <span className="font-mono text-[12px] text-dim">Next.js + Tailwind v4</span>
-            <span className="font-mono text-[12px] text-dim">open-source / MIT</span>
+            <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="font-mono text-[12px] text-dim hover:text-fg transition-colors duration-150">open-source / MIT ↗</a>
             <span className="font-mono text-[12px] text-dim" suppressHydrationWarning>© {new Date().getFullYear()} {BRAND_NAME}</span>
           </div>
 

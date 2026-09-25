@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { localePath } from "@/lib/localePath";
+import { REPO_URL } from "@/lib/brand";
 import type { Lang } from "@/lib/types";
 
 /**
@@ -30,7 +31,7 @@ const TEXT = {
       h: "// comment le site est fait",
       p: [
         "Le site est développé avec l'aide de Claude, l'assistant d'IA d'Anthropic, utilisé comme un binôme de développement : écriture et relecture du code, tests automatiques, premières versions des textes des pages outils et des guides. Les décisions, la relecture et la mise en ligne restent celles du développeur.",
-        "Aucun texte n'est publié sur la seule foi de l'IA : chaque affirmation est vérifiée contre le comportement réel de l'outil, par un test ou une mesure, et retirée quand elle ne peut pas l'être. Plusieurs des corrections citées plus haut sont d'ailleurs nées de ces vérifications croisées.",
+        "Aucun texte n'est publié sur la seule foi de l'IA : chaque affirmation est vérifiée contre le comportement réel de l'outil, par un test ou une mesure, et retirée quand elle ne peut pas l'être. Plusieurs des corrections citées plus haut sont d'ailleurs nées de ces vérifications croisées. Le code source et la suite de tests sont publics sur GitHub, sous licence MIT.",
       ],
     },
     {
@@ -70,7 +71,7 @@ const TEXT = {
       h: "// how the site is built",
       p: [
         "The site is developed with the help of Claude, Anthropic's AI assistant, used as a pair-programming partner: writing and reviewing code, automated tests, and first drafts of the tool pages and guides. Decisions, review and releases remain the developer's.",
-        "No text is published on the AI's word alone: every claim is checked against the tool's actual behaviour, with a test or a measurement, and removed when it can't be. Several of the fixes listed above came out of those cross-checks.",
+        "No text is published on the AI's word alone: every claim is checked against the tool's actual behaviour, with a test or a measurement, and removed when it can't be. Several of the fixes listed above came out of those cross-checks. The source code and the test suite are public on GitHub, under the MIT license.",
       ],
     },
     {
@@ -108,6 +109,8 @@ export function AboutStory({ lang }: { lang: Lang }) {
         </Link>
         {lang === "fr" ? " — ou directement à " : ", or directly to "}
         <a href="mailto:contact@utilisio.com" className="text-brand underline hover:no-underline">contact@utilisio.com</a>.
+        {lang === "fr" ? " Le code source est sur " : " The source code is on "}
+        <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="text-brand underline hover:no-underline">GitHub</a>.
       </p>
     </div>
   );

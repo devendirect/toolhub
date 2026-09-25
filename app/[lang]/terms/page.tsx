@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BRAND_NAME, SITE_URL } from "@/lib/brand";
+import { BRAND_NAME, SITE_URL, REPO_URL } from "@/lib/brand";
 import type { Lang } from "@/lib/types";
 import { coerceLang } from "@/lib/localePath";
 import { networkToolNames } from "@/lib/tools";
@@ -85,7 +85,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// intellectual property",
         content: [
-          `The ${BRAND_NAME} name, design and underlying code are the property of their respective owners; the site's source is open-source under the MIT license, as noted in the footer. This does not extend to third-party trademarks, fonts, or libraries used under their own licenses, nor to any content you generate using the tools, which remains yours.`,
+          `The ${BRAND_NAME} name, design and underlying code are the property of their respective owners; the site's source code is open source under the MIT license and published on GitHub (${REPO_URL}). This does not extend to third-party trademarks, fonts, or libraries used under their own licenses, nor to any content you generate using the tools, which remains yours.`,
         ],
       },
       {
@@ -164,7 +164,7 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// propriété intellectuelle",
         content: [
-          `Le nom ${BRAND_NAME}, le design et le code sous-jacent sont la propriété de leurs détenteurs respectifs ; le code source du site est open-source sous licence MIT, comme indiqué en pied de page. Cela ne s'étend pas aux marques, polices ou bibliothèques tierces utilisées sous leurs propres licences, ni au contenu que vous générez à l'aide des outils, qui reste le vôtre.`,
+          `Le nom ${BRAND_NAME}, le design et le code sous-jacent sont la propriété de leurs détenteurs respectifs ; le code source du site est open source sous licence MIT et publié sur GitHub (${REPO_URL}). Cela ne s'étend pas aux marques, polices ou bibliothèques tierces utilisées sous leurs propres licences, ni au contenu que vous générez à l'aide des outils, qui reste le vôtre.`,
         ],
       },
       {

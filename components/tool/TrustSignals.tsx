@@ -1,5 +1,6 @@
 import type { Lang } from "@/lib/types";
 import { t } from "@/lib/i18n";
+import { REPO_URL } from "@/lib/brand";
 
 interface TrustSignalsProps {
   privacy?: "local" | "network";
@@ -32,16 +33,16 @@ export function TrustSignals({ privacy = "local", lang }: TrustSignalsProps) {
         <>
           <Row variant="network">{i.privacyNetwork}</Row>
           <Row>{i.privacyNotStored}</Row>
-          <Row>{i.openSource}</Row>
+          <Row><a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brand underline-offset-2 hover:underline">{i.openSource}</a></Row>
           <p className="font-mono text-[11px] text-dim leading-[1.5] mt-2 pt-2 border-t border-dashed border-line">
-            {"// "}{lang === "fr" ? "nécessite un appel réseau (CORS / base de données)" : "requires a network call (CORS / database)"}
+            {"// "}{lang === "fr" ? "passe par notre serveur : un navigateur ne peut pas lire un autre site directement (CORS)" : "goes through our server: a browser can't read another site directly (CORS)"}
           </p>
         </>
       ) : (
         <>
           <Row>{i.privacyLocal}</Row>
           <Row>{i.privacyNoLog}</Row>
-          <Row>{i.openSource}</Row>
+          <Row><a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brand underline-offset-2 hover:underline">{i.openSource}</a></Row>
         </>
       )}
     </div>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { SITE_URL, BRAND_NAME } from "@/lib/brand";
+import { SITE_URL, BRAND_NAME, REPO_URL } from "@/lib/brand";
 import { coerceLang } from "@/lib/localePath";
 
 /**
@@ -56,7 +56,7 @@ export default async function LegalPage({ params }: Props) {
           <p>{HOST.name}<br />{HOST.address}<br />Téléphone : {HOST.phone}<br />SIREN : {HOST.siren}</p>
         </> },
         { h: "// propriété intellectuelle", body: <>
-          <p>Les textes, guides et le code propre du site sont la propriété de l&apos;éditeur. Leur reproduction à l&apos;identique, totale ou partielle, sans autorisation n&apos;est pas permise ; une courte citation avec un lien vers la page d&apos;origine est bienvenue.</p>
+          <p>Le code source du site, y compris les textes des pages et des guides qu&apos;il contient, est publié sous licence MIT sur <a href={REPO_URL} className="text-brand underline" target="_blank" rel="noopener noreferrer">GitHub</a> : vous pouvez le réutiliser, à condition de conserver la mention de copyright et le texte de la licence. Le nom et le logo {BRAND_NAME} ne sont pas couverts par cette licence.</p>
           <p>Le site s&apos;appuie sur des bibliothèques open source, utilisées selon leurs licences respectives : la liste et les licences figurent sur la page <Link href={`/${l}/about`} className="text-brand underline">à propos</Link>.</p>
         </> },
         { h: "// données personnelles et cookies", body: <>
@@ -75,7 +75,7 @@ export default async function LegalPage({ params }: Props) {
           <p>{HOST.name}<br />{HOST.address}<br />Phone: +33 {HOST.phone.slice(1)}<br />SIREN: {HOST.siren}</p>
         </> },
         { h: "// intellectual property", body: <>
-          <p>The texts, guides and the site&apos;s own code belong to the publisher. Copying them in full or in part without permission is not allowed; a short quotation with a link to the original page is welcome.</p>
+          <p>The site&apos;s source code, including the page and guide texts it contains, is published under the MIT license on <a href={REPO_URL} className="text-brand underline" target="_blank" rel="noopener noreferrer">GitHub</a>: you may reuse it as long as you keep the copyright notice and the license text. The {BRAND_NAME} name and logo are not covered by that license.</p>
           <p>The site relies on open-source libraries, used under their respective licenses: the list and licenses are on the <Link href={`/${l}/about`} className="text-brand underline">about</Link> page.</p>
         </> },
         { h: "// personal data and cookies", body: <>
