@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { BRAND_NAME, BRAND_TAGLINE, SITE_URL } from "@/lib/brand";
 import { TOOLS } from "@/lib/tools";
 import { HomeClient } from "@/components/home/HomeClient";
+import { HomeAbout } from "@/components/home/HomeAbout";
 import { websiteJsonLd, jsonLdString } from "@/lib/jsonld";
 import { coerceLang } from "@/lib/localePath";
 
@@ -64,6 +65,7 @@ export default async function HomePage({ params }: Props) {
         />
       ))}
       <HomeClient />
+      <HomeAbout lang={l} />
     </>
   );
 }

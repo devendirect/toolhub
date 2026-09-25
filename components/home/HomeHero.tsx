@@ -19,6 +19,7 @@ const CORNERS = [
 export function HomeHero({ lang, i, onSearchClick }: HomeHeroProps) {
   const toolCount       = TOOLS.filter((t) => !t.comingSoon).length;
   const comingSoonCount = TOOLS.filter((t) => t.comingSoon).length;
+  const localCount      = TOOLS.filter((t) => !t.comingSoon && t.privacy !== "network").length;
 
   return (
     <section className="mb-14">
@@ -65,7 +66,9 @@ export function HomeHero({ lang, i, onSearchClick }: HomeHeroProps) {
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {[i.noServer, i.inBrowser, "open source"].map((label) => (
+          {/* Uniquement des affirmations vérifiables : « 0 serveur », « 100 % navigateur » et
+              « open source » étaient faux (outils réseau, dépôt privé) */}
+          {[i.freeChip, i.noSignup, i.localTools(localCount)].map((label) => (
             <span key={label} className="inline-flex items-center gap-[6px] px-[10px] py-1 border border-line-2 bg-bg rounded-full font-mono text-[11px] text-fg-1">
               <span className="w-[5px] h-[5px] rounded-full bg-brand shrink-0" />
               {label}

@@ -37,7 +37,7 @@ export function Footer() {
 
           {/* Outils par catégorie */}
           <div className="flex flex-col gap-3">
-            <div className="font-mono text-[11px] text-dim">// {i.navTools}</div>
+            <div className="font-mono text-[11px] text-dim">{"// "}{i.navTools}</div>
             {toolCats.map((c) => (
               <Link
                 key={c.id}
@@ -52,7 +52,10 @@ export function Footer() {
 
           {/* Légal & infos */}
           <div className="flex flex-col gap-3">
-            <div className="font-mono text-[11px] text-dim">// {lang === "fr" ? "infos" : "info"}</div>
+            <div className="font-mono text-[11px] text-dim">{"// "}{lang === "fr" ? "infos" : "info"}</div>
+            <Link href={localePath(lang, "/guides")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
+              guides
+            </Link>
             <Link href={localePath(lang, "/faq")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
               faq
             </Link>
@@ -77,7 +80,7 @@ export function Footer() {
 
           {/* Stack */}
           <div className="flex flex-col gap-3">
-            <div className="font-mono text-[11px] text-dim">// stack</div>
+            <div className="font-mono text-[11px] text-dim">{"// stack"}</div>
             <span className="font-mono text-[12px] text-dim">Next.js + Tailwind v4</span>
             <span className="font-mono text-[12px] text-dim">open-source / MIT</span>
             <span className="font-mono text-[12px] text-dim" suppressHydrationWarning>© {new Date().getFullYear()} {BRAND_NAME}</span>

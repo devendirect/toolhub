@@ -6,13 +6,14 @@ import { CATEGORY_CONTENT } from "@/lib/category-content";
 import { CONVERT_PAIRS, FORMAT_LABEL } from "@/lib/convert-pairs";
 import { PDF_PAIRS } from "@/lib/pdf-pairs";
 import { jsonLdString } from "@/lib/jsonld";
+import { guidesForCategory } from "@/lib/guides";
 import type { Lang } from "@/lib/types";
 
 type HubCat = keyof typeof CATEGORY_CONTENT;
 
 const TR = {
-  fr: { about: "// à propos de cette catégorie", guide: "// quel outil pour quel besoin", convert: "// conversions courantes", others: "// autres catégories", faq: "// questions fréquentes", tools: "outils" },
-  en: { about: "// about this category", guide: "// which tool for which job", convert: "// common conversions", others: "// other categories", faq: "// faq", tools: "tools" },
+  fr: { guides: "// guides", about: "// à propos de cette catégorie", guide: "// quel outil pour quel besoin", convert: "// conversions courantes", others: "// autres catégories", faq: "// questions fréquentes", tools: "outils" },
+  en: { guides: "// guides", about: "// about this category", guide: "// which tool for which job", convert: "// common conversions", others: "// other categories", faq: "// faq", tools: "tools" },
 };
 
 /**
@@ -27,6 +28,7 @@ export function CategoryHub({ cat, lang }: { cat: HubCat; lang: Lang }) {
   const toolBySlug = new Map(TOOLS.map((tool) => [tool.slug, tool]));
   const conversions = cat === "file" ? [...CONVERT_PAIRS, ...PDF_PAIRS] : [];
   const others = CATEGORIES.filter((c) => c.id !== "all" && c.id !== cat);
+  const guides = guidesForCategory(cat);
   const liveCount = (id: string) => TOOLS.filter((tool) => tool.cat === id && !tool.comingSoon).length;
 
   const faqLd = {
@@ -87,6 +89,22 @@ export function CategoryHub({ cat, lang }: { cat: HubCat; lang: Lang }) {
               <li key={p.slug} className="bg-bg">
                 <Link href={`/${lang}/convert/${p.slug}`} className="block px-4 py-3 font-mono text-[12px] text-fg-1 hover:text-brand hover:bg-bg-2 transition-colors">
                   {FORMAT_LABEL[p.from] ?? p.from.toUpperCase()} → {FORMAT_LABEL[p.to] ?? p.to.toUpperCase()}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {guides.length > 0 && (
+        <section className="mb-10">
+          <SectionHead label={t.guides} />
+          <ul className="flex flex-col divide-y divide-line border border-line">
+            {guides.map((g) => (
+              <li key={g.slug}>
+                <Link href={`/${lang}/guides/${g.slug}`} className="flex flex-col gap-1 px-4 py-3 hover:bg-bg-2 transition-colors">
+                  <span className="text-[14px] text-fg font-medium">{g[lang].title} →</span>
+                  <span className="text-[13px] text-fg-1">{g[lang].description}</span>
                 </Link>
               </li>
             ))}

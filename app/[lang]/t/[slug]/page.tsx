@@ -5,6 +5,7 @@ import { TOOLS_CONTENT } from "@/lib/tools-content";
 import { TOOLS_SEO } from "@/lib/tools-seo";
 import { toolFaqItems } from "@/lib/faq";
 import { ToolPageClient } from "@/components/tool/ToolPageClient";
+import { guidesForTool } from "@/lib/guides";
 import { toolJsonLd, breadcrumbJsonLd, faqJsonLd, jsonLdString } from "@/lib/jsonld";
 import { ConvertHub } from "@/components/convert/ConvertHub";
 import type { Metadata } from "next";
@@ -82,7 +83,7 @@ export default async function ToolPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdString(faqJsonLd(tool, l)) }}
       />
-      <ToolPageClient tool={tool} content={content} faqItems={faqItems} />
+      <ToolPageClient tool={tool} content={content} faqItems={faqItems} guides={guidesForTool(tool.slug).map((g) => ({ slug: g.slug, title: g[l].title }))} />
       {/* Hub pSEO : la page outil mère lie toutes les pages paires /convert/ de sa famille */}
       {tool.slug === "image-converter" && <ConvertHub lang={l} family="image" />}
       {tool.slug === "pdf-converter" && <ConvertHub lang={l} family="pdf" />}

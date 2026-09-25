@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/brand";
 import { CatalogPageClient } from "@/components/catalog/CatalogPageClient";
+import { CatalogGuide } from "@/components/catalog/CatalogGuide";
 import { coerceLang } from "@/lib/localePath";
 
 interface Props {
@@ -36,6 +37,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function ToolsPage() {
-  return <CatalogPageClient initialCat="all" />;
+export default async function ToolsPage({ params }: Props) {
+  const { lang } = await params;
+  return (
+    <>
+      <CatalogPageClient initialCat="all" />
+      <CatalogGuide lang={coerceLang(lang)} />
+    </>
+  );
 }

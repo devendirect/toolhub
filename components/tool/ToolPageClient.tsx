@@ -77,9 +77,11 @@ interface Props {
   tool: Tool;
   content?: ToolContent;
   faqItems: FaqItem[];
+  /** Guides qui citent cet outil (titres déjà dans la langue de la page) */
+  guides?: { slug: string; title: string }[];
 }
 
-export function ToolPageClient({ tool, content, faqItems }: Props) {
+export function ToolPageClient({ tool, content, faqItems, guides = [] }: Props) {
   const { lang } = useLang();
   const i = t(lang);
 
@@ -103,6 +105,21 @@ export function ToolPageClient({ tool, content, faqItems }: Props) {
 
       {/* Après le contenu rédactionnel, jamais entre l'outil et son résultat */}
       {!tool.comingSoon && adsAllowedOn(tool.slug) && <AdSlot slot={AD_SLOTS.toolContent} className="mb-10" />}
+
+      {guides.length > 0 && (
+        <section className="mb-10">
+          <SectionHead label={`// ${lang === "fr" ? "pour aller plus loin" : "further reading"}`} />
+          <ul className="flex flex-col divide-y divide-line border border-line">
+            {guides.map((g) => (
+              <li key={g.slug}>
+                <Link href={localePath(lang, `/guides/${g.slug}`)} className="block px-4 py-3 text-[14px] text-fg hover:bg-bg-2 hover:text-brand transition-colors">
+                  {g.title} →
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {faqItems.length > 0 && <ToolFaqSection faqItems={faqItems} lang={lang} />}
 

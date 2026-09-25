@@ -1,4 +1,5 @@
 import { TOOLS, CATEGORIES } from "@/lib/tools";
+import { GUIDES } from "@/lib/guides";
 import { TOOLS_CONTENT } from "@/lib/tools-content";
 import { toolFaqItems } from "@/lib/faq";
 import { SITE_URL, BRAND_NAME, BRAND_TAGLINE } from "@/lib/brand";
@@ -54,11 +55,15 @@ export function GET() {
     "## Key URLs",
     "",
     `- Tool catalog: ${SITE_URL}/en/tools`,
+    `- Guides: ${SITE_URL}/en/guides`,
     `- About: ${SITE_URL}/en/about`,
     `- Privacy policy: ${SITE_URL}/en/privacy`,
     `- Terms of use: ${SITE_URL}/en/terms`,
     `- FAQ: ${SITE_URL}/en/faq`,
     "",
+    "## Guides",
+    "",
+    ...GUIDES.flatMap((g) => [`### ${g.en.title}`, "", `URL: ${SITE_URL}/en/guides/${g.slug}`, "", g.en.lead, ""]),
   );
 
   return new Response(lines.join("\n"), {

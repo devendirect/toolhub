@@ -3,6 +3,7 @@ import { TOOLS } from "@/lib/tools";
 import { CONVERT_PAIRS } from "@/lib/convert-pairs";
 import { PDF_PAIRS } from "@/lib/pdf-pairs";
 import { SITE_URL } from "@/lib/brand";
+import { GUIDES } from "@/lib/guides";
 
 const LANGS = ["en", "fr"] as const;
 const CATEGORY_SLUGS = ["file", "dev", "text", "design", "seo"] as const;
@@ -36,6 +37,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.6,
       alternates: alternates("/en/about", "/fr/about"),
+    },
+    {
+      url: `${SITE_URL}/${lang}/guides`,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+      alternates: alternates("/en/guides", "/fr/guides"),
     },
     {
       url: `${SITE_URL}/${lang}/faq`,
@@ -84,5 +91,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }))
   );
 
-  return [...staticRoutes, ...toolRoutes, ...convertRoutes];
+  const guideRoutes: MetadataRoute.Sitemap = GUIDES.flatMap((g) =>
+    LANGS.map((lang) => ({
+      url: `${SITE_URL}/${lang}/guides/${g.slug}`,
+      lastModified: g.updated,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+      alternates: alternates(`/en/guides/${g.slug}`, `/fr/guides/${g.slug}`),
+    }))
+  );
+
+  return [...staticRoutes, ...toolRoutes, ...convertRoutes, ...guideRoutes];
 }

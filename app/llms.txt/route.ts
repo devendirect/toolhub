@@ -1,4 +1,5 @@
 import { TOOLS, CATEGORIES, networkToolNames } from "@/lib/tools";
+import { GUIDES } from "@/lib/guides";
 import { SITE_URL, BRAND_NAME } from "@/lib/brand";
 
 // llms.txt condensé, généré depuis le catalogue réel (l'ancien fichier statique
@@ -43,6 +44,8 @@ export function GET() {
     "",
     `- Tool catalog (EN): ${SITE_URL}/en/tools`,
     `- Tool catalog (FR): ${SITE_URL}/fr/tools`,
+    `- Guides (EN): ${SITE_URL}/en/guides`,
+    `- Guides (FR): ${SITE_URL}/fr/guides`,
     `- About (EN): ${SITE_URL}/en/about`,
     `- About (FR): ${SITE_URL}/fr/about`,
     `- Privacy policy (EN): ${SITE_URL}/en/privacy`,
@@ -51,6 +54,10 @@ export function GET() {
     `- Terms of use (FR): ${SITE_URL}/fr/terms`,
     `- FAQ (EN): ${SITE_URL}/en/faq`,
     `- FAQ (FR): ${SITE_URL}/fr/faq`,
+    "",
+    "## Guides",
+    "",
+    ...GUIDES.map((g) => `- ${g.en.title}: ${SITE_URL}/en/guides/${g.slug}`),
     "",
   );
 
