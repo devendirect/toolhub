@@ -29,7 +29,7 @@ const TR = {
   },
 } as const;
 
-const SAMPLE = `La boîte à outils du développeur moderne. Convertir, encoder, générer, formatter — une commande, un résultat. La plupart des outils tournent 100 % en local.`;
+const SAMPLE = `La boîte à outils du développeur moderne. Convertir, encoder, générer, formatter, une commande, un résultat. La plupart des outils tournent 100 % en local.`;
 
 const WPM = 238;
 

@@ -14,7 +14,7 @@ const TR = {
     tokenLabel:   "token JWT",
     invalidJson:  "JSON invalide dans le payload",
     signHint:     "remplissez le payload et le secret, puis signez",
-    localCrypto:  "signature locale — Web Crypto API, clé jamais transmise",
+    localCrypto:  "signature locale, Web Crypto API, clé jamais transmise",
   },
   en: {
     algorithm:    "algorithm",
@@ -23,7 +23,7 @@ const TR = {
     tokenLabel:   "JWT token",
     invalidJson:  "invalid JSON in payload",
     signHint:     "fill the payload and secret, then sign",
-    localCrypto:  "local signing — Web Crypto API, key never transmitted",
+    localCrypto:  "local signing, Web Crypto API, key never transmitted",
   },
 } as const;
 

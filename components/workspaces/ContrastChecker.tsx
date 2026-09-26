@@ -9,13 +9,13 @@ const TR = {
     textLabel:       "texte",
     background:      "fond",
     previewLarge:    "Texte grand (large)",
-    previewNormal:   "Texte normal — vérifier le contraste WCAG AA et AAA.",
+    previewNormal:   "Texte normal, vérifier le contraste WCAG AA et AAA.",
   },
   en: {
     textLabel:       "text",
     background:      "background",
     previewLarge:    "Large text sample",
-    previewNormal:   "Normal text — checking WCAG AA and AAA contrast compliance.",
+    previewNormal:   "Normal text, checking WCAG AA and AAA contrast compliance.",
   },
 } as const;
 

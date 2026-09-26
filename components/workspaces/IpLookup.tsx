@@ -69,7 +69,7 @@ export function IpLookup() {
       const json = await res.json() as { error?: string; code?: IpErrorCode } & Partial<IpData>;
       if (!res.ok || json.error) {
         const FR: Record<IpErrorCode, string> = {
-          RATE_LIMITED:   "Trop de requêtes — attendez une minute.",
+          RATE_LIMITED:   "Trop de requêtes, attendez une minute.",
           INVALID_IP:     "Format d'adresse IP invalide.",
           TIMEOUT:        "Délai d'attente dépassé.",
           UPSTREAM_ERROR: "Erreur du service ip-api.com.",

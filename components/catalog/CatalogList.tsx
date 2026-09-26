@@ -70,7 +70,7 @@ export function CatalogList({ filtered, lang, i }: CatalogListProps) {
 
       {filtered.length === 0 && (
         <div className="flex items-center justify-center py-16 font-mono text-[13px] text-dim">
-          {"// "}{lang === "fr" ? "aucun résultat — effacez les filtres." : "no match — try clearing filters."}
+          {"// "}{lang === "fr" ? "aucun résultat, effacez les filtres." : "no match, try clearing filters."}
         </div>
       )}
     </div>

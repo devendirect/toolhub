@@ -18,8 +18,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const toolCount = TOOLS.filter((t) => !t.comingSoon).length;
 
   const title = isEn
-    ? "utilisio — Free web tools: JSON, file, text, generators."
-    : "utilisio — Outils JSON, texte et fichiers pour développeurs.";
+    ? "utilisio: free web tools for JSON, files, text and generators."
+    : "utilisio : outils JSON, texte et fichiers pour développeurs.";
   const description = isEn
     ? `${toolCount} free tools, no signup: JSON formatter, Base64, UUID and QR code generators, PDF converter, SEO analyzer and more. Most run 100% in your browser.`
     : `${toolCount} outils gratuits, sans inscription : formateur JSON, Base64, UUID, QR code, PDF, analyseur SEO et plus. La plupart tournent dans votre navigateur.`;

@@ -12,7 +12,7 @@ import { encodeEntities, decodeEntities } from "@/lib/html-entities";
 type Mode = "encode" | "decode";
 
 
-const SAMPLE_ENCODE = `<h1>Bonjour & bienvenue</h1>\n<p>Prix : "10€" — <strong>offre limitée</strong></p>`;
+const SAMPLE_ENCODE = `<h1>Bonjour & bienvenue</h1>\n<p>Prix : "10€", <strong>offre limitée</strong></p>`;
 const SAMPLE_DECODE = `&lt;h1&gt;Bonjour &amp; bienvenue&lt;/h1&gt;\n&lt;p&gt;Prix&nbsp;: &quot;10&euro;&quot; &mdash; &lt;strong&gt;offre limit&eacute;e&lt;/strong&gt;&lt;/p&gt;`;
 
 export function HtmlEntities() {

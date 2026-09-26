@@ -128,7 +128,7 @@ export function ZipExtractor() {
               <span className="font-mono text-[12px] text-fg">{archiveName}</span>
               <div className="flex items-center gap-4">
                 <span className="font-mono text-[11px] text-dim">
-                  {entries.filter((e) => !e.isDir).length} {i.filesLabel} — {fmtSize(totalUncompressed)}
+                  {entries.filter((e) => !e.isDir).length} {i.filesLabel}, {fmtSize(totalUncompressed)}
                 </span>
                 <button
                   onClick={() => { setEntries([]); setArchiveName(""); if (inputRef.current) inputRef.current.value = ""; }}

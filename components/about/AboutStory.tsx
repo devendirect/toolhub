@@ -107,7 +107,7 @@ export function AboutStory({ lang }: { lang: Lang }) {
         <Link href={localePath(lang, "/contact")} className="text-brand underline hover:no-underline">
           {lang === "fr" ? "Écrivez-nous" : "Write to us"}
         </Link>
-        {lang === "fr" ? " — ou directement à " : ", or directly to "}
+        {lang === "fr" ? ", ou directement à " : ", or directly to "}
         <a href="mailto:contact@utilisio.com" className="text-brand underline hover:no-underline">contact@utilisio.com</a>.
         {lang === "fr" ? " Le code source est sur " : " The source code is on "}
         <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="text-brand underline hover:no-underline">GitHub</a>.

@@ -13,14 +13,14 @@ const TR = {
     textLabel:       "texte",
     slugPlaceholder: "titre ou texte à convertir…",
     slugHere:        "slug ici…",
-    defaultInput:    "Mon article de blog — Été 2025",
+    defaultInput:    "Mon article de blog, Été 2025",
   },
   en: {
     separator:       "separator",
     textLabel:       "text",
     slugPlaceholder: "title or text to convert…",
     slugHere:        "slug here…",
-    defaultInput:    "My Blog Post — Summer 2025",
+    defaultInput:    "My Blog Post, Summer 2025",
   },
 } as const;
 

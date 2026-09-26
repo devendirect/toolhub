@@ -27,7 +27,7 @@ const TR = {
     lineCol: (l: number, c: number) => `ligne ${l}, colonne ${c}`,
     lines:   (n: number) => `${n} lignes`,
     bigInts: (n: number) => `${n} grand(s) entier(s) conservé(s) au chiffre près (JSON.parse les aurait arrondis)`,
-    dupKeys: (k: string) => `clé en double : « ${k} » — seule la dernière valeur est gardée`,
+    dupKeys: (k: string) => `clé en double : « ${k} », seule la dernière valeur est gardée`,
     indentLabel: (v: number | "tab") => `indentation : ${v === "tab" ? "tabulation" : `${v} espaces`}`,
     sorted:  (on: boolean) => `clés triées : ${on ? "oui" : "non"}`,
     hints: {
@@ -51,7 +51,7 @@ const TR = {
     lineCol: (l: number, c: number) => `line ${l}, column ${c}`,
     lines:   (n: number) => `${n} lines`,
     bigInts: (n: number) => `${n} large integer(s) kept digit for digit (JSON.parse would have rounded them)`,
-    dupKeys: (k: string) => `duplicate key: "${k}" — only the last value is kept`,
+    dupKeys: (k: string) => `duplicate key: "${k}", only the last value is kept`,
     indentLabel: (v: number | "tab") => `indent: ${v === "tab" ? "tab" : `${v} spaces`}`,
     sorted:  (on: boolean) => `sorted keys: ${on ? "yes" : "no"}`,
     hints: {
@@ -86,7 +86,7 @@ export function JsonFormatter() {
     const inB = enc.encode(input).length;
     const r = formatJson(input, { indent, sortKeys, minify });
     if (!r.ok) {
-      const err = `${TR[lang].lineCol(r.error.line, r.error.col)} — ${TR[lang].hints[r.error.hint]}`;
+      const err = `${TR[lang].lineCol(r.error.line, r.error.col)} : ${TR[lang].hints[r.error.hint]}`;
       return { output: "", error: err, parsed: null, inputBytes: inB, outputBytes: 0, bigIntCount: 0, duplicateKeys: [] as string[] };
     }
     return { output: r.output, error: null, parsed: r.parsed, inputBytes: inB, outputBytes: enc.encode(r.output).length, bigIntCount: r.bigIntCount, duplicateKeys: r.duplicateKeys };

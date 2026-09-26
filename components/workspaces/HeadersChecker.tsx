@@ -17,9 +17,9 @@ const TR = {
     missing:    "absent",
     errors: {
       rate_limit:    { msg: "Trop de requêtes",                       action: "Réessayez dans 1 minute" },
-      invalid_url:   { msg: "URL invalide",                           action: "Vérifiez le format — ex : https://example.com" },
+      invalid_url:   { msg: "URL invalide",                           action: "Vérifiez le format, ex : https://example.com" },
       private_url:   { msg: "Adresse privée ou locale non autorisée", action: "Utilisez une URL publiquement accessible" },
-      timeout:       { msg: "Délai dépassé (10 s)",                   action: "Le serveur est trop lent ou inaccessible — vérifiez l'URL et réessayez" },
+      timeout:       { msg: "Délai dépassé (10 s)",                   action: "Le serveur est trop lent ou inaccessible, vérifiez l'URL et réessayez" },
       network_error: { msg: "Erreur réseau",                          action: "Vérifiez que l'URL est accessible publiquement, puis réessayez" },
     },
   },
@@ -32,9 +32,9 @@ const TR = {
     missing:    "missing",
     errors: {
       rate_limit:    { msg: "Too many requests",                      action: "Try again in 1 minute" },
-      invalid_url:   { msg: "Invalid URL",                            action: "Check the format — e.g. https://example.com" },
+      invalid_url:   { msg: "Invalid URL",                            action: "Check the format, e.g. https://example.com" },
       private_url:   { msg: "Private or local address not allowed",   action: "Use a publicly accessible URL" },
-      timeout:       { msg: "Request timed out (10s)",                action: "The server is too slow or unreachable — check the URL and try again" },
+      timeout:       { msg: "Request timed out (10s)",                action: "The server is too slow or unreachable, check the URL and try again" },
       network_error: { msg: "Network error",                          action: "Make sure the URL is publicly accessible, then try again" },
     },
   },

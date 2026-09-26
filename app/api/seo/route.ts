@@ -32,15 +32,15 @@ const L = {
     words: "Content length", images: "Image alt texts", canonical: "Canonical tag", robots: "Robots meta",
     og: "Open Graph tags", twitter: "Twitter Card", links: "Links",
     missing: "Missing",
-    chars: (n: number, ideal: string) => `${n} chars — ideal: ${ideal}`,
-    manyH1: (n: number) => `${n} H1 found — use exactly 1`,
-    wordsDetail: (n: number) => `${n} words — ideal: 300+`,
+    chars: (n: number, ideal: string) => `${n} chars, ideal: ${ideal}`,
+    manyH1: (n: number) => `${n} H1 found, use exactly 1`,
+    wordsDetail: (n: number) => `${n} words, ideal: 300+`,
     noImages: "No images",
     withAlt: (ok: number, total: number) => `${ok}/${total} have alt`,
-    canonicalMissing: "Missing — recommended to prevent duplicate content",
+    canonicalMissing: "Missing, recommended to prevent duplicate content",
     robotsDefault: "Not set (defaults to index, follow)",
     ogFound: "og:title detected",
-    ogMissing: "Missing — impacts social sharing",
+    ogMissing: "Missing, impacts social sharing",
     linksDetail: (i: number, e: number) => `${i} internal · ${e} external`,
   },
   fr: {
@@ -48,15 +48,15 @@ const L = {
     words: "Longueur du contenu", images: "Texte alt des images", canonical: "Balise canonical", robots: "Meta robots",
     og: "Balises Open Graph", twitter: "Twitter Card", links: "Liens",
     missing: "Absente",
-    chars: (n: number, ideal: string) => `${n} caractères — idéal : ${ideal}`,
-    manyH1: (n: number) => `${n} H1 trouvés — n'en garder qu'un`,
-    wordsDetail: (n: number) => `${n} mots — idéal : 300 et plus`,
+    chars: (n: number, ideal: string) => `${n} caractères, idéal : ${ideal}`,
+    manyH1: (n: number) => `${n} H1 trouvés, n'en garder qu'un`,
+    wordsDetail: (n: number) => `${n} mots, idéal : 300 et plus`,
     noImages: "Aucune image",
     withAlt: (ok: number, total: number) => `${ok}/${total} ont un attribut alt`,
-    canonicalMissing: "Absente — recommandée contre le contenu dupliqué",
+    canonicalMissing: "Absente, recommandée contre le contenu dupliqué",
     robotsDefault: "Non définie (index, follow par défaut)",
     ogFound: "og:title détecté",
-    ogMissing: "Absentes — pénalise les partages sur les réseaux",
+    ogMissing: "Absentes, pénalise les partages sur les réseaux",
     linksDetail: (i: number, e: number) => `${i} internes · ${e} externes`,
   },
 } as const;
@@ -167,7 +167,7 @@ export function analyzeHtml(html: string, pageUrl: URL, lang: Lang): SeoData {
 export async function GET(req: NextRequest) {
   const requesterIp = getRequesterIp(req);
   if (!checkRate(requesterIp)) {
-    return NextResponse.json({ error: "Too many requests — please wait a minute." }, { status: 429 });
+    return NextResponse.json({ error: "Too many requests, please wait a minute." }, { status: 429 });
   }
 
   const raw = req.nextUrl.searchParams.get("url")?.trim() ?? "";

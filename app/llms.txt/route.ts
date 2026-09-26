@@ -13,7 +13,7 @@ export function GET() {
   const lines: string[] = [
     `# ${BRAND_NAME}`,
     "",
-    `> Free browser-based toolkit — ${live.length} tools for developers, designers and everyday users.`,
+    `> Free browser-based toolkit: ${live.length} tools for developers, designers and everyday users.`,
     "> Most tools run entirely in your browser with no file upload required.",
     "> No account, no signup, no tracking beyond an optional GA4 consent banner.",
     "",
@@ -36,7 +36,7 @@ export function GET() {
   lines.push(
     "## Privacy",
     "",
-    "Most tools run locally in your browser — your files and inputs never leave your device.",
+    "Most tools run locally in your browser: your files and inputs never leave your device.",
     `These tools use a server-side proxy to fetch external data: ${networkToolNames("en").join(", ")}.`,
     "Inputs are not stored beyond standard HTTP access logs (IP, requested URL, timestamp), retained ~30 days for security.",
     "",

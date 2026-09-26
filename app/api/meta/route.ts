@@ -20,7 +20,7 @@ const cache     = makeCache<MetaData>(60_000, 200);
 export async function GET(req: NextRequest) {
   const requesterIp = getRequesterIp(req);
   if (!checkRate(requesterIp)) {
-    return NextResponse.json({ error: "Too many requests — please wait a minute." }, { status: 429 });
+    return NextResponse.json({ error: "Too many requests, please wait a minute." }, { status: 429 });
   }
 
   const raw = req.nextUrl.searchParams.get("url")?.trim() ?? "";

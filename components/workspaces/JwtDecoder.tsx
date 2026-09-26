@@ -35,7 +35,7 @@ function b64decode(str: string): string {
 
 function decodeJwt(token: string) {
   const parts = token.trim().split(".");
-  if (parts.length !== 3) throw new Error("Not a valid JWT — expected 3 parts separated by '.'");
+  if (parts.length !== 3) throw new Error("Not a valid JWT, expected 3 parts separated by '.'");
   const header = JSON.parse(b64decode(parts[0]!));
   const payload = JSON.parse(b64decode(parts[1]!));
   return { header, payload, signature: parts[2]! };

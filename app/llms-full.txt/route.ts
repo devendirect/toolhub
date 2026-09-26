@@ -10,9 +10,9 @@ export const dynamic = "force-static";
 
 export function GET() {
   const lines: string[] = [
-    `# ${BRAND_NAME} — full tool reference`,
+    `# ${BRAND_NAME}: full tool reference`,
     "",
-    `> ${BRAND_TAGLINE.en} Free browser-based toolkit for developers, designers and everyday users — no account, no signup.`,
+    `> ${BRAND_TAGLINE.en} Free browser-based toolkit for developers, designers and everyday users. No account, no signup.`,
     "> This file is generated from the live tool catalog. Every page listed below also exists in French: swap /en/ for /fr/ in any URL.",
     "",
     `A condensed overview is available at ${SITE_URL}/llms.txt`,

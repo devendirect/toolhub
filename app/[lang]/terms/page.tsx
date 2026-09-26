@@ -37,13 +37,13 @@ interface Section {
 const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sections: Section[] }> = {
   en: {
     title: "Terms of use",
-    intro: `These terms govern your use of ${BRAND_NAME}. By using the site, you accept them. There's no account to create and nothing to sign — using a tool here is enough to mean you agree.`,
+    intro: `These terms govern your use of ${BRAND_NAME}. By using the site, you accept them. There's no account to create and nothing to sign, using a tool here is enough to mean you agree.`,
     updated: "Last updated: July 2026",
     sections: [
       {
         heading: "// the service",
         content: [
-          `${BRAND_NAME} provides free browser-based utilities — file converters, text tools, code formatters, design generators, SEO tools. No account, no signup, no payment. Most tools run entirely client-side; a few (${networkToolNames("en").join(", ")}) make a server-side request to fetch external data, as described in the privacy policy.`,
+          `${BRAND_NAME} provides free browser-based utilities, file converters, text tools, code formatters, design generators, SEO tools. No account, no signup, no payment. Most tools run entirely client-side; a few (${networkToolNames("en").join(", ")}) make a server-side request to fetch external data, as described in the privacy policy.`,
           "The service is provided free of charge and may change, be added to, or be discontinued at any time, including individual tools, without notice.",
         ],
       },
@@ -65,21 +65,21 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// no account, your data stays yours",
         content: [
-          "There is no user account system. For tools that run locally in your browser, your files and inputs are never transmitted anywhere and remain entirely under your control — we have no access to them and no way to retrieve them.",
+          "There is no user account system. For tools that run locally in your browser, your files and inputs are never transmitted anywhere and remain entirely under your control: we have no access to them and no way to retrieve them.",
           "For the three network tools, the request passes through our server as described in the privacy policy; we do not claim any ownership over the content you submit or the results you generate with any tool.",
         ],
       },
       {
         heading: "// no warranty",
         content: [
-          `${BRAND_NAME} is provided "as is" and "as available," without warranty of any kind, express or implied. We do not guarantee that any tool's output is accurate, complete, or fit for a particular purpose — for example, a generated password's strength, a hash's correctness, an SEO score, or a contrast ratio calculation should be independently verified before being relied on for anything security-critical, legally significant, or otherwise consequential.`,
+          `${BRAND_NAME} is provided "as is" and "as available," without warranty of any kind, express or implied. We do not guarantee that any tool's output is accurate, complete, or fit for a particular purpose, for example, a generated password's strength, a hash's correctness, an SEO score, or a contrast ratio calculation should be independently verified before being relied on for anything security-critical, legally significant, or otherwise consequential.`,
           "We do not guarantee uninterrupted or error-free operation. The service can go down, change, or be temporarily unavailable without notice.",
         ],
       },
       {
         heading: "// limitation of liability",
         content: [
-          `To the fullest extent permitted by law, ${BRAND_NAME} and its operator shall not be liable for any indirect, incidental, or consequential damages arising from your use of, or inability to use, the service — including but not limited to data loss, business interruption, or reliance on a tool's output. Because most tools process data entirely in your browser, we have no visibility into and no responsibility for the files or text you process locally.`,
+          `To the fullest extent permitted by law, ${BRAND_NAME} and its operator shall not be liable for any indirect, incidental, or consequential damages arising from your use of, or inability to use, the service, including but not limited to data loss, business interruption, or reliance on a tool's output. Because most tools process data entirely in your browser, we have no visibility into and no responsibility for the files or text you process locally.`,
         ],
       },
       {
@@ -116,13 +116,13 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
   },
   fr: {
     title: "Conditions d'utilisation",
-    intro: `Ces conditions régissent votre utilisation d'${BRAND_NAME}. En utilisant le site, vous les acceptez. Il n'y a aucun compte à créer ni rien à signer — utiliser un outil ici suffit à valoir acceptation.`,
+    intro: `Ces conditions régissent votre utilisation d'${BRAND_NAME}. En utilisant le site, vous les acceptez. Il n'y a aucun compte à créer ni rien à signer, utiliser un outil ici suffit à valoir acceptation.`,
     updated: "Dernière mise à jour : juillet 2026",
     sections: [
       {
         heading: "// le service",
         content: [
-          `${BRAND_NAME} propose des utilitaires gratuits fonctionnant dans le navigateur — convertisseurs de fichiers, outils texte, formateurs de code, générateurs design, outils SEO. Aucun compte, aucune inscription, aucun paiement. La plupart des outils s'exécutent entièrement côté client ; quelques-uns (${networkToolNames("fr").join(", ")}) effectuent une requête côté serveur pour récupérer des données externes, comme décrit dans la politique de confidentialité.`,
+          `${BRAND_NAME} propose des utilitaires gratuits fonctionnant dans le navigateur, convertisseurs de fichiers, outils texte, formateurs de code, générateurs design, outils SEO. Aucun compte, aucune inscription, aucun paiement. La plupart des outils s'exécutent entièrement côté client ; quelques-uns (${networkToolNames("fr").join(", ")}) effectuent une requête côté serveur pour récupérer des données externes, comme décrit dans la politique de confidentialité.`,
           "Le service est fourni gratuitement et peut évoluer, être complété ou interrompu à tout moment, y compris outil par outil, sans préavis.",
         ],
       },
@@ -144,21 +144,21 @@ const CONTENT: Record<Lang, { title: string; intro: string; updated: string; sec
       {
         heading: "// pas de compte, vos données restent les vôtres",
         content: [
-          "Il n'existe aucun système de compte utilisateur. Pour les outils qui s'exécutent localement dans votre navigateur, vos fichiers et saisies ne sont jamais transmis nulle part et restent entièrement sous votre contrôle — nous n'y avons aucun accès et aucun moyen de les récupérer.",
+          "Il n'existe aucun système de compte utilisateur. Pour les outils qui s'exécutent localement dans votre navigateur, vos fichiers et saisies ne sont jamais transmis nulle part et restent entièrement sous votre contrôle : nous n'y avons aucun accès et aucun moyen de les récupérer.",
           "Pour les trois outils réseau, la requête transite par notre serveur comme décrit dans la politique de confidentialité ; nous ne revendiquons aucun droit de propriété sur le contenu que vous soumettez ou les résultats que vous générez avec un outil.",
         ],
       },
       {
         heading: "// aucune garantie",
         content: [
-          `${BRAND_NAME} est fourni « en l'état » et « selon disponibilité », sans garantie d'aucune sorte, expresse ou implicite. Nous ne garantissons pas que le résultat d'un outil soit exact, complet, ou adapté à un usage particulier — par exemple, la robustesse d'un mot de passe généré, l'exactitude d'un hash, un score SEO, ou un calcul de ratio de contraste devraient être vérifiés indépendamment avant d'être utilisés pour quoi que ce soit de critique en matière de sécurité, de portée juridique, ou aux conséquences significatives.`,
+          `${BRAND_NAME} est fourni « en l'état » et « selon disponibilité », sans garantie d'aucune sorte, expresse ou implicite. Nous ne garantissons pas que le résultat d'un outil soit exact, complet, ou adapté à un usage particulier, par exemple, la robustesse d'un mot de passe généré, l'exactitude d'un hash, un score SEO, ou un calcul de ratio de contraste devraient être vérifiés indépendamment avant d'être utilisés pour quoi que ce soit de critique en matière de sécurité, de portée juridique, ou aux conséquences significatives.`,
           "Nous ne garantissons pas un fonctionnement ininterrompu ou sans erreur. Le service peut être interrompu, modifié, ou temporairement indisponible sans préavis.",
         ],
       },
       {
         heading: "// limitation de responsabilité",
         content: [
-          `Dans toute la mesure permise par la loi, ${BRAND_NAME} et son exploitant ne pourront être tenus responsables de dommages indirects, accessoires ou consécutifs découlant de votre utilisation du service, ou de votre incapacité à l'utiliser — y compris, sans s'y limiter, la perte de données, l'interruption d'activité, ou le fait de s'être fié au résultat d'un outil. La plupart des outils traitant les données entièrement dans votre navigateur, nous n'avons aucune visibilité sur les fichiers ou textes que vous traitez localement, et aucune responsabilité à leur égard.`,
+          `Dans toute la mesure permise par la loi, ${BRAND_NAME} et son exploitant ne pourront être tenus responsables de dommages indirects, accessoires ou consécutifs découlant de votre utilisation du service, ou de votre incapacité à l'utiliser, y compris, sans s'y limiter, la perte de données, l'interruption d'activité, ou le fait de s'être fié au résultat d'un outil. La plupart des outils traitant les données entièrement dans votre navigateur, nous n'avons aucune visibilité sur les fichiers ou textes que vous traitez localement, et aucune responsabilité à leur égard.`,
         ],
       },
       {

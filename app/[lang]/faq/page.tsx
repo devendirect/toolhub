@@ -19,7 +19,7 @@ const FAQ: Record<Lang, FaqItem[]> = {
   en: [
     {
       q: `What is ${BRAND_NAME}?`,
-      a: `${BRAND_NAME} is a free, no-signup collection of ${LIVE_TOOLS} browser-based micro-tools for developers, designers and everyday users. Convert files, generate codes, format data, analyze SEO — all from one place.`,
+      a: `${BRAND_NAME} is a free, no-signup collection of ${LIVE_TOOLS} browser-based micro-tools for developers, designers and everyday users. Convert files, generate codes, format data, analyze SEO, all from one place.`,
     },
     {
       q: "Are all the tools free?",
@@ -31,11 +31,11 @@ const FAQ: Record<Lang, FaqItem[]> = {
     },
     {
       q: "Are my files uploaded to a server?",
-      a: `Most tools run entirely in your browser — your files never leave your device. The exceptions are network tools (${networkToolNames("en").join(", ")}) which send a request through a proxy to fetch external data. What you enter isn't kept, apart from the server's standard access logs (about 30 days).`,
+      a: `Most tools run entirely in your browser, your files never leave your device. The exceptions are network tools (${networkToolNames("en").join(", ")}) which send a request through a proxy to fetch external data. What you enter isn't kept, apart from the server's standard access logs (about 30 days).`,
     },
     {
       q: "Which browsers are supported?",
-      a: "Any modern browser: Chrome, Firefox, Safari, Edge. Some tools (audio/video conversion) use WebAssembly and require a recent browser version — Chrome 90+ or Firefox 89+ recommended.",
+      a: "Any modern browser: Chrome, Firefox, Safari, Edge. Some tools (audio/video conversion) use WebAssembly and require a recent browser version, Chrome 90+ or Firefox 89+ recommended.",
     },
     {
       q: "How many tools are available?",
@@ -43,7 +43,7 @@ const FAQ: Record<Lang, FaqItem[]> = {
     },
     {
       q: `Do the tools work on mobile?`,
-      a: "Yes — the interface is responsive and works on phones and tablets. Some tools with complex workspaces (code editors, split-pane layouts) are better experienced on a desktop.",
+      a: "Yes, the interface is responsive and works on phones and tablets. Some tools with complex workspaces (code editors, split-pane layouts) are better experienced on a desktop.",
     },
     {
       q: "Is there an API?",
@@ -53,7 +53,7 @@ const FAQ: Record<Lang, FaqItem[]> = {
   fr: [
     {
       q: `Qu'est-ce qu'utilisio ?`,
-      a: `${BRAND_NAME} est une collection gratuite et sans inscription de ${LIVE_TOOLS} micro-outils en ligne pour les développeurs, designers et utilisateurs du quotidien. Convertissez des fichiers, générez des codes, formatez des données, analysez le SEO — depuis un seul endroit.`,
+      a: `${BRAND_NAME} est une collection gratuite et sans inscription de ${LIVE_TOOLS} micro-outils en ligne pour les développeurs, designers et utilisateurs du quotidien. Convertissez des fichiers, générez des codes, formatez des données, analysez le SEO, depuis un seul endroit.`,
     },
     {
       q: "Tous les outils sont-ils gratuits ?",
@@ -65,11 +65,11 @@ const FAQ: Record<Lang, FaqItem[]> = {
     },
     {
       q: "Mes fichiers sont-ils téléchargés sur un serveur ?",
-      a: `La plupart des outils s'exécutent entièrement dans votre navigateur — vos fichiers ne quittent jamais votre appareil. Les exceptions sont les outils réseau (${networkToolNames("fr").join(", ")}) qui envoient une requête via un proxy pour récupérer des données externes. Vos saisies ne sont pas conservées, en dehors des journaux d'accès standard du serveur (environ 30 jours).`,
+      a: `La plupart des outils s'exécutent entièrement dans votre navigateur, vos fichiers ne quittent jamais votre appareil. Les exceptions sont les outils réseau (${networkToolNames("fr").join(", ")}) qui envoient une requête via un proxy pour récupérer des données externes. Vos saisies ne sont pas conservées, en dehors des journaux d'accès standard du serveur (environ 30 jours).`,
     },
     {
       q: "Quels navigateurs sont supportés ?",
-      a: "Tout navigateur moderne : Chrome, Firefox, Safari, Edge. Certains outils (conversion audio/vidéo) utilisent WebAssembly et nécessitent une version récente — Chrome 90+ ou Firefox 89+ recommandés.",
+      a: "Tout navigateur moderne : Chrome, Firefox, Safari, Edge. Certains outils (conversion audio/vidéo) utilisent WebAssembly et nécessitent une version récente, Chrome 90+ ou Firefox 89+ recommandés.",
     },
     {
       q: "Combien d'outils sont disponibles ?",
@@ -77,7 +77,7 @@ const FAQ: Record<Lang, FaqItem[]> = {
     },
     {
       q: "Les outils fonctionnent-ils sur mobile ?",
-      a: "Oui — l'interface est responsive et fonctionne sur téléphones et tablettes. Certains outils avec des espaces de travail complexes (éditeurs de code, mises en page en volets) sont mieux utilisés sur ordinateur.",
+      a: "Oui, l'interface est responsive et fonctionne sur téléphones et tablettes. Certains outils avec des espaces de travail complexes (éditeurs de code, mises en page en volets) sont mieux utilisés sur ordinateur.",
     },
     {
       q: "Y a-t-il une API ?",

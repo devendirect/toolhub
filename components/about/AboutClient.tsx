@@ -67,7 +67,7 @@ const SECTIONS: Section[] = [
         version: "0.12.x",
         license: "LGPL 2.1",
         url: "https://ffmpegwasm.netlify.app",
-        note: "LGPL — source : ffmpeg.org",
+        note: "LGPL, source : ffmpeg.org",
       },
       {
         name: "FFmpeg core (WASM)",
@@ -111,13 +111,13 @@ export function AboutClient() {
         <div className="flex flex-col gap-3 font-mono text-[13px] text-fg-1 leading-relaxed">
           <p>
             {lang === "fr"
-              ? `utilisio est une boîte à outils web gratuite : ${toolCount} outils pour développeurs, designers et rédacteurs — conversion de fichiers, formatage de code, générateurs, analyse SEO — sans compte, sans inscription et sans limite d'usage.`
-              : `utilisio is a free web toolkit: ${toolCount} tools for developers, designers and writers — file conversion, code formatting, generators, SEO analysis — with no account, no signup and no usage limit.`}
+              ? `utilisio est une boîte à outils web gratuite : ${toolCount} outils pour développeurs, designers et rédacteurs (conversion de fichiers, formatage de code, générateurs, analyse SEO), sans compte, sans inscription et sans limite d'usage.`
+              : `utilisio is a free web toolkit: ${toolCount} tools for developers, designers and writers (file conversion, code formatting, generators, SEO analysis), with no account, no signup and no usage limit.`}
           </p>
           <p>
             {lang === "fr"
-              ? `C'est un projet indépendant, développé et maintenu activement : de nouveaux outils sont ajoutés régulièrement. La quasi-totalité des outils s'exécute directement dans votre navigateur — vos fichiers et vos textes ne quittent jamais votre appareil. Seuls quelques outils (${networkToolNames("fr").join(", ")}) passent par notre serveur pour interroger des données externes, sans rien conserver.`
-              : `It is an independent project, actively developed and maintained: new tools are added regularly. Almost every tool runs directly in your browser — your files and text never leave your device. Only a few tools (${networkToolNames("en").join(", ")}) go through our server to fetch external data, and nothing is stored.`}
+              ? `C'est un projet indépendant, développé et maintenu activement : de nouveaux outils sont ajoutés régulièrement. La quasi-totalité des outils s'exécute directement dans votre navigateur, vos fichiers et vos textes ne quittent jamais votre appareil. Seuls quelques outils (${networkToolNames("fr").join(", ")}) passent par notre serveur pour interroger des données externes, sans rien conserver.`
+              : `It is an independent project, actively developed and maintained: new tools are added regularly. Almost every tool runs directly in your browser, your files and text never leave your device. Only a few tools (${networkToolNames("en").join(", ")}) go through our server to fetch external data, and nothing is stored.`}
           </p>
           <p className="text-dim">
             {lang === "fr" ? (
@@ -188,7 +188,7 @@ export function AboutClient() {
       {/* LGPL notice */}
       <div className="mt-10 border border-line px-4 py-4 font-mono text-[11px] text-dim leading-relaxed">
         <span className="text-hot font-semibold">FFmpeg / LGPL</span>
-        {" — "}
+        {" : "}
         {lang === "fr"
           ? <>
               Ce site utilise FFmpeg compilé en WebAssembly (

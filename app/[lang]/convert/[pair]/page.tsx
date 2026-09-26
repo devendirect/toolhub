@@ -148,7 +148,7 @@ export default async function ConvertPairPage({ params }: Props) {
         <h1 className="text-[36px] font-medium tracking-[-0.025em] leading-none mb-3">
           {title}
           <span className="text-dim text-[20px] font-normal ml-3">
-            {l === "fr" ? "— gratuit, dans votre navigateur" : "— free, in your browser"}
+            {l === "fr" ? "gratuit, dans votre navigateur" : "free, in your browser"}
           </span>
         </h1>
         <p className="text-fg-1 text-[15px] leading-relaxed max-w-[72ch]">{pair.why[l]}</p>
