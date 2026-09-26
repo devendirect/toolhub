@@ -7,4 +7,4 @@ export const BRAND_TAGLINE = {
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://utilisio.com").replace(/\/$/, "");
 
 /** Dépôt public du site (licence MIT). À mettre à jour si le dépôt est transféré. */
-export const REPO_URL = "https://github.com/stan97351/toolhub";
+export const REPO_URL = "https://github.com/devendirect/toolhub";
