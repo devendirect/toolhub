@@ -1959,6 +1959,70 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
       fr: ["Réduire une photo avant de l'envoyer quelque part avec une limite de taille de fichier stricte", "Comparer à quel point le WebP est plus léger que le JPG d'origine à qualité visuelle équivalente", "Préparer des images pour une page web où le temps de chargement et les Core Web Vitals comptent", "Vérifier honnêtement si convertir en PNG aide ou nuit réellement au poids d'une photo avant de s'y engager"],
     },
   },
+  "compress-to-kb": {
+    desc: {
+      en: "Drop an image, pick a target such as 50, 100 or 200 KB, and the tool finds the highest quality that fits under it. It first lowers the JPEG or WebP quality, down to a floor of 40%; only if that isn't enough does it reduce the dimensions, keeping the proportions. The result shows the final size, the quality used and the new dimensions if they changed. Everything runs on a canvas in your browser, and the image is never uploaded.",
+      fr: "Déposez une image, choisissez une cible comme 50, 100 ou 200 Ko, et l'outil trouve la meilleure qualité qui tient dessous. Il baisse d'abord la qualité JPEG ou WebP, jusqu'à un plancher de 40 % ; seulement si ça ne suffit pas, il réduit les dimensions en gardant les proportions. Le résultat affiche le poids final, la qualité retenue et les nouvelles dimensions si elles ont changé. Tout se passe sur un canvas dans votre navigateur, l'image n'est jamais envoyée.",
+    },
+    useCases: {
+      en: ["Getting an ID photo or a scanned document under the size limit of an online administrative form", "Attaching a CV photo or a portfolio image to a job application platform that caps files at 100 or 200 KB", "Uploading a profile picture to a forum, school platform or intranet with a strict limit", "Sending a photo by email to someone whose mailbox refuses large attachments"],
+      fr: ["Faire passer une photo d'identité ou un document scanné sous la limite d'un formulaire administratif en ligne", "Joindre une photo de CV ou une image de portfolio à une plateforme de candidature qui plafonne les fichiers à 100 ou 200 Ko", "Envoyer une photo de profil sur un forum, un ENT ou un intranet à la limite stricte", "Envoyer une photo par e-mail à quelqu'un dont la messagerie refuse les grosses pièces jointes"],
+    },
+    deepDive: [
+      {
+        h: { en: "How the tool reaches the target", fr: "Comment l'outil atteint la cible" },
+        p: {
+          en: [
+            "File size doesn't follow the quality setting in a straight line, and it depends heavily on the picture: a blue sky compresses far better than foliage or fabric. So instead of guessing, the tool encodes the image several times and narrows down the quality by dichotomy, about ten attempts, keeping the highest value whose file stays under the target.",
+            "Quality never goes below 40%. Under that threshold JPEG blocks and WebP smearing become obvious, and a slightly smaller image with clean detail is more useful than a full-size one covered in artefacts. When 40% still weighs too much, the tool reduces the width and height together, aiming at the right ratio from the measured size, then searches the quality again at the new size.",
+          ],
+          fr: [
+            "Le poids d'un fichier ne suit pas le réglage de qualité en ligne droite, et il dépend beaucoup de l'image : un ciel bleu se compresse bien mieux qu'un feuillage ou un tissu. Plutôt que de deviner, l'outil encode donc l'image plusieurs fois et resserre la qualité par dichotomie, une dizaine d'essais, en gardant la valeur la plus haute dont le fichier reste sous la cible.",
+            "La qualité ne descend jamais sous 40 %. En dessous, les blocs du JPEG et le flou du WebP deviennent visibles, et une image un peu plus petite mais nette sert davantage qu'une image pleine taille couverte d'artefacts. Quand 40 % pèse encore trop, l'outil réduit largeur et hauteur ensemble, en visant le bon rapport d'après le poids mesuré, puis recherche à nouveau la qualité à la nouvelle taille.",
+          ],
+        },
+      },
+      {
+        h: { en: "KB, KiB and the limit on the form", fr: "Ko, Kio et la limite du formulaire" },
+        p: {
+          en: [
+            "A \"100 KB\" limit can mean 100,000 bytes or 102,400 bytes, depending on who wrote the form. Windows shows file sizes in units of 1024 while labelling them KB; macOS counts in units of 1000. The tool always counts 1 KB as 1000 bytes, the stricter of the two, so a file it declares under 100 KB passes both readings.",
+            "That's also why the size shown by your file explorer may look slightly smaller than the one shown here. Both are right; they don't use the same unit.",
+          ],
+          fr: [
+            "Une limite de « 100 Ko » peut vouloir dire 100 000 octets ou 102 400 octets, selon qui a écrit le formulaire. Windows affiche les tailles en unités de 1024 tout en les appelant Ko ; macOS compte par 1000. L'outil compte toujours 1 Ko pour 1000 octets, la lecture la plus stricte des deux : un fichier qu'il annonce sous 100 Ko passe donc dans les deux cas.",
+            "C'est aussi pourquoi le poids affiché par votre explorateur de fichiers peut sembler un peu plus faible que celui affiché ici. Les deux sont justes ; ils n'utilisent pas la même unité.",
+          ],
+        },
+      },
+      {
+        h: { en: "Before you compress: crop, and check the minimum size", fr: "Avant de compresser : recadrer, et vérifier la taille minimale" },
+        p: {
+          en: [
+            "The cheapest bytes to save are the ones outside the subject. A phone photo of a document includes the table around it; an ID photo taken at arm's length includes half the room. Cropping first leaves the whole weight budget to the part that matters, and the tool will need less quality reduction to reach the target.",
+            "Some forms also set a minimum resolution, for example a photo of at least 600 pixels on each side. The dimensions of the result are shown next to its size: if the tool had to shrink the image below what the form requires, crop tighter or choose a slightly higher target rather than sending a file that will be rejected for the opposite reason.",
+          ],
+          fr: [
+            "Les octets les moins chers à gagner sont ceux qui sont hors du sujet. Une photo de document prise au téléphone inclut la table autour ; une photo d'identité prise à bout de bras inclut la moitié de la pièce. Recadrer d'abord laisse tout le budget de poids à la partie utile, et l'outil aura moins besoin de baisser la qualité pour atteindre la cible.",
+            "Certains formulaires imposent aussi une résolution minimale, par exemple une photo d'au moins 600 pixels de côté. Les dimensions du résultat s'affichent à côté de son poids : si l'outil a dû réduire l'image en dessous de ce que demande le formulaire, recadrez davantage ou choisissez une cible un peu plus haute plutôt que d'envoyer un fichier refusé pour la raison inverse.",
+          ],
+        },
+      },
+      {
+        h: { en: "JPG or WebP, and what disappears on the way", fr: "JPG ou WebP, et ce qui disparaît en route" },
+        p: {
+          en: [
+            "WebP is typically 25 to 35% lighter than JPEG at the same visual quality, so it reaches a small target with less damage. But upload forms very often accept only JPG, and that's the tool's default for this reason. Choose WebP when you know the destination accepts it, such as a website or a modern chat app.",
+            "Redrawing the image on a canvas drops its EXIF metadata: camera model, date, and GPS position if the phone recorded it. On a photo sent to a stranger or an administration, that's a welcome side effect, and it saves a few kilobytes. Transparent areas, in a PNG logo for instance, become white in JPG since the format has no transparency.",
+          ],
+          fr: [
+            "Le WebP pèse en général 25 à 35 % de moins que le JPEG à qualité visuelle égale : il atteint donc une petite cible avec moins de dégâts. Mais les formulaires d'envoi n'acceptent très souvent que le JPG, et c'est pour cette raison le format par défaut de l'outil. Choisissez le WebP quand vous savez que la destination l'accepte, comme un site web ou une messagerie récente.",
+            "Redessiner l'image sur un canvas supprime ses métadonnées EXIF : modèle d'appareil, date, et position GPS si le téléphone l'a enregistrée. Sur une photo envoyée à un inconnu ou à une administration, c'est un effet secondaire bienvenu, qui fait en plus gagner quelques kilo-octets. Les zones transparentes, celles d'un logo PNG par exemple, deviennent blanches en JPG, ce format n'ayant pas de transparence.",
+          ],
+        },
+      },
+    ],
+  },
   "lorem-ipsum": {
     desc: {
       en: "Generate placeholder text by word count, sentence count, or paragraph count, pulled from the classical Lorem Ipsum word list (the scrambled Latin passage that's been the default filler text in publishing since the 1960s, derived from Cicero's De Finibus). One thing worth knowing: the output is deterministic, not random, asking for '3 paragraphs' twice in a row produces the exact same text both times, because words are cycled through the source list in a fixed pattern rather than picked randomly. That's actually useful for reproducible mockups you'll revisit later, but it means this isn't the right tool if you need visibly varied dummy text across many separate elements on the same page, for that, you'd need to vary the count or paragraph type per element to get different output.",

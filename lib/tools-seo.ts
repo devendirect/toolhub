@@ -52,6 +52,13 @@ export const TOOLS_SEO: Record<string, ToolSeo> = {
       fr: "Combinez plusieurs PDF en un seul : déposez, réglez l'ordre des fichiers, téléchargez. Fusion dans le navigateur : vos contrats restent privés.",
     },
   },
+  "compress-to-kb": {
+    title: { en: "Compress Image to 20, 50, 100 or 200 KB", fr: "Réduire une image à 50, 100 ou 200 Ko" },
+    description: {
+      en: "Pick a size in KB and the image is compressed, and resized only if needed, to fit under it: ideal for forms with an upload limit. Free, no upload.",
+      fr: "Choisissez un poids en Ko : l'image est compressée, et redimensionnée si besoin, pour passer sous la limite d'un formulaire. Gratuit, sans envoi.",
+    },
+  },
   "image-compressor": {
     title: { en: "Image Compressor: Shrink JPG, PNG, WebP", fr: "Compresser une image JPG, PNG ou WebP" },
     description: {

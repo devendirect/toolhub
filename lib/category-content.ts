@@ -30,6 +30,7 @@ export const CATEGORY_CONTENT: Record<"file" | "dev" | "text" | "design" | "seo"
     guide: [
       { need: { en: "Make a photo lighter for a website, or change its format", fr: "Alléger une photo pour un site, ou changer son format" }, slug: "image-converter" },
       { need: { en: "Shrink an image while keeping its format, and see the bytes saved", fr: "Réduire le poids d'une image en gardant son format, et voir le gain" }, slug: "image-compressor" },
+      { need: { en: "Get an image under a size limit, such as 100 KB for a form", fr: "Faire passer une image sous une limite de poids, comme 100 Ko pour un formulaire" }, slug: "compress-to-kb" },
       { need: { en: "Clean up an SVG exported from Figma or Illustrator", fr: "Nettoyer un SVG exporté de Figma ou d'Illustrator" }, slug: "svg-optimizer" },
       { need: { en: "Combine several PDFs into one file", fr: "Réunir plusieurs PDF en un seul fichier" }, slug: "pdf-merge" },
       { need: { en: "Turn PDF pages into images, or photos of documents into a PDF", fr: "Transformer des pages PDF en images, ou des photos de documents en PDF" }, slug: "pdf-converter" },

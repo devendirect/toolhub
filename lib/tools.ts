@@ -39,6 +39,7 @@ export const TOOLS: Tool[] = [
 
   /* ── FILE — coming soon ── */
   { slug: "image-compressor",  cat: "file",   glyph: "▣↓",  name: { fr: "Compresseur d'images",         en: "Image Compressor"           }, desc: { fr: "Réduire le poids d'une image sans perte visible. JPG, PNG, WebP.",         en: "Reduce image file size with minimal quality loss. JPG, PNG, WebP."         }, tags: ["compress","image","optimize"],       runs: 0 },
+  { slug: "compress-to-kb",    cat: "file",   glyph: "▣≤",  name: { fr: "Réduire une image à X Ko",     en: "Compress Image to KB"       }, desc: { fr: "Choisissez un poids cible (20, 50, 100 Ko…), l'image est ajustée pour passer dessous.", en: "Pick a target size (20, 50, 100 KB…) and the image is adjusted to fit under it."   }, tags: ["compress","image","kb","resize"],  runs: 0 },
 { slug: "svg-optimizer",     cat: "file",   glyph: "~svg", name: { fr: "Optimiseur SVG",               en: "SVG Optimizer"              }, desc: { fr: "Nettoyer et minifier un fichier SVG. Réduction de taille sans perte.",     en: "Clean and minify SVG files. Lossless size reduction."                      }, tags: ["svg","minify","optimize"],           runs: 0 },
   { slug: "zip-extractor",     cat: "file",   glyph: "▤↓",  name: { fr: "Extracteur ZIP",               en: "ZIP Extractor"              }, desc: { fr: "Extraire et prévisualiser le contenu d'une archive ZIP.",                  en: "Extract and preview the contents of a ZIP archive."                        }, tags: ["zip","archive","extract"],           runs: 0 },
 

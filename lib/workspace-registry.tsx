@@ -31,7 +31,7 @@ function lazy(load: () => Promise<{ [k: string]: unknown }>, name: string): WC {
  * affichage — leur page reste portée par son contenu rédactionnel.
  */
 // Restent client-only : audio/video-converter (ffmpeg.wasm), pdf-converter
-// (pdf.js), image-converter, image-compressor et favicon-generator (Canvas).
+// (pdf.js), image-converter, image-compressor, compress-to-kb et favicon-generator (Canvas).
 function lazyClient(load: () => Promise<{ [k: string]: unknown }>, name: string): WC {
   return dynamic(() => load().then((m) => ({ default: m[name] as WC })), {
     ssr: false,
@@ -90,6 +90,7 @@ export const WORKSPACE_REGISTRY: Partial<Record<string, WC>> = {
   "css-minifier":      lazy(() => import("@/components/workspaces/CssMinifier"),      "CssMinifier"),
   "favicon-generator": lazyClient(() => import("@/components/workspaces/FaviconGenerator"), "FaviconGenerator"),
   "image-compressor":  lazyClient(() => import("@/components/workspaces/ImageCompressor"),  "ImageCompressor"),
+  "compress-to-kb":    lazyClient(() => import("@/components/workspaces/CompressToKb"),     "CompressToKb"),
   "css-grid":          lazy(() => import("@/components/workspaces/CssGrid"),          "CssGrid"),
   "zip-extractor":     lazy(() => import("@/components/workspaces/ZipExtractor"),     "ZipExtractor"),
   "svg-optimizer":     lazy(() => import("@/components/workspaces/SvgOptimizer"),     "SvgOptimizer"),
