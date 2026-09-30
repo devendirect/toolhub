@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { TOOLS } from "@/lib/tools";
 import { GUIDES, guideWords } from "@/lib/guides";
+import { CONVERT_PAIRS } from "@/lib/convert-pairs";
+import { PDF_PAIRS } from "@/lib/pdf-pairs";
 
 const LANGS = ["en", "fr"] as const;
 const LINK = /\[[^\]]+\]\(([^)]+)\)/g;
@@ -33,11 +35,13 @@ describe("GUIDES — données éditoriales", () => {
     expect(short).toEqual([]);
   });
 
-  it("les liens internes du texte pointent vers des outils ou guides existants", () => {
+  it("les liens internes du texte pointent vers des outils, guides ou paires de conversion existants", () => {
     const text = (g: (typeof GUIDES)[number]) => JSON.stringify([g.en, g.fr]);
     const bad = GUIDES.flatMap((g) => [...text(g).matchAll(LINK)].map((m) => m[1]!).filter((href) => {
       const tool = /^\/t\/([a-z0-9-]+)$/.exec(href);
       const guide = /^\/guides\/([a-z0-9-]+)$/.exec(href);
+      const pair = /^\/convert\/([a-z0-9-]+)$/.exec(href);
+      if (pair) return ![...CONVERT_PAIRS, ...PDF_PAIRS].some((p) => p.slug === pair[1]);
       if (tool) return !TOOLS.some((t) => t.slug === tool[1] && !t.comingSoon);
       if (guide) return !GUIDES.some((x) => x.slug === guide[1]);
       return href.startsWith("/");

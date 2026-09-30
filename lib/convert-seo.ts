@@ -28,8 +28,8 @@ export const CONVERT_META: Record<string, Localized> = {
     fr: "Convertissez un WebP en JPG quand un logiciel, un client mail ou un formulaire refuse le WebP. Le JPG s'ouvre partout. Gratuit, dans votre navigateur.",
   },
   "webp-to-png": {
-    en: "Convert WebP to PNG for a lossless, universally readable file that keeps transparency, ready for any editor, document or print workflow.",
-    fr: "Convertissez un WebP en PNG : fichier sans perte, lisible partout, transparence conservée. Prêt pour un éditeur, un document ou l'impression.",
+    en: "Convert WebP to PNG online, free: a lossless file that keeps transparency and opens in any editor or document. Nothing uploaded, runs in your browser.",
+    fr: "Convertir un WebP en PNG en ligne, gratuitement : fichier sans perte, transparence conservée, lisible partout. Aucun envoi, tout reste dans le navigateur.",
   },
   "avif-to-jpg": {
     en: "Many apps still can't open AVIF. Convert AVIF to JPG in your browser and get a file that works everywhere, without installing any software.",
@@ -64,5 +64,17 @@ export const CONVERT_META: Record<string, Localized> = {
   "avif-to-pdf": {
     en: "Convert AVIF images straight into one shareable PDF using your browser's built-in AVIF decoder. Free, no software to install, nothing uploaded.",
     fr: "Convertissez des images AVIF directement en un seul PDF partageable grâce au décodeur AVIF du navigateur. Gratuit, rien à installer, aucun envoi.",
+  },
+};
+
+/**
+ * Balises <title> dédiées, pour les paires dont Search Console montre des
+ * requêtes plus longues que « Convertir X en Y » (« … en ligne », « gratuit »).
+ * Le H1 reste pairTitle() ; sans entrée ici, le <title> aussi.
+ */
+export const CONVERT_TITLE: Record<string, Localized> = {
+  "webp-to-png": {
+    en: "Convert WebP to PNG online, free, no upload",
+    fr: "Convertir WebP en PNG en ligne, gratuit et sans envoi",
   },
 };

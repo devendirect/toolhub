@@ -38,7 +38,7 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
         blocks: [
           { p: "WebP has been displayed by every major browser since Safari added it in 2020. For photos, it's typically 25 to 35% lighter than a JPEG of comparable quality, it handles transparency (which JPEG can't), and it encodes fast enough to convert images in the browser, as our converter does." },
           { p: "Quality 80 is a good starting point for photos: in most cases you won't see the difference with the original, and the file is a fraction of the size. Go to 90 for images with smooth gradients, like skies or studio backgrounds, where lower settings can make visible bands appear." },
-          { p: "Its weak spot is outside the browser. Some email clients, older office suites and upload forms still reject .webp files, which is why a WebP downloaded from a site sometimes has to be converted back to JPEG before it can be attached somewhere." },
+          { p: "Its weak spot is outside the browser. Some email clients, older office suites and upload forms still reject .webp files, which is why a WebP downloaded from a site sometimes has to be converted before it can be attached somewhere: [WebP to JPG](/convert/webp-to-jpg) for a photo, [WebP to PNG](/convert/webp-to-png) when it has transparency or will be edited again." },
         ],
       },
       {
@@ -107,7 +107,7 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
         blocks: [
           { p: "Le WebP est affiché par tous les grands navigateurs depuis que Safari l'a ajouté en 2020. Pour des photos, il pèse en général 25 à 35 % de moins qu'un JPEG de qualité comparable, il gère la transparence (ce que le JPEG ne sait pas faire), et il s'encode assez vite pour convertir des images directement dans le navigateur, comme le fait notre convertisseur." },
           { p: "La qualité 80 est un bon point de départ pour des photos : la plupart du temps, on ne voit pas la différence avec l'original, et le fichier ne pèse qu'une fraction de sa taille. Montez à 90 pour les images à dégradés doux, comme un ciel ou un fond de studio, où les réglages plus bas peuvent faire apparaître des bandes." },
-          { p: "Son point faible est hors du navigateur. Certains clients mail, de vieilles suites bureautiques et des formulaires d'envoi refusent encore les fichiers .webp : c'est pourquoi un WebP téléchargé sur un site doit parfois être reconverti en JPEG avant de pouvoir être joint quelque part." },
+          { p: "Son point faible est hors du navigateur. Certains clients mail, de vieilles suites bureautiques et des formulaires d'envoi refusent encore les fichiers .webp : c'est pourquoi un WebP téléchargé sur un site doit parfois être converti avant de pouvoir être joint quelque part : [WebP en JPG](/convert/webp-to-jpg) pour une photo, [WebP en PNG](/convert/webp-to-png) si l'image a de la transparence ou doit être retouchée." },
         ],
       },
       {

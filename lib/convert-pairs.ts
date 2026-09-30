@@ -466,8 +466,35 @@ export const CONVERT_PAIRS: ConvertPair[] = [
           fr: "Non, le PNG est sans perte : il contient exactement ce que votre navigateur a décodé du WebP. La perte déjà présente dans le WebP, elle, reste évidemment.",
         },
       },
+      {
+        q: { en: "How do I convert WebP to PNG on Windows or Mac without installing anything?", fr: "Comment convertir un WebP en PNG sur Windows ou Mac sans rien installer ?" },
+        a: {
+          en: "This page is the quickest route: drop the file, download the PNG, nothing is uploaded. Recent systems can also do it on their own: on Windows 11, open the image in Paint and choose Save as › PNG; on a Mac, open it in Preview and use File › Export with PNG as the format.",
+          fr: "Cette page est le chemin le plus court : déposez le fichier, téléchargez le PNG, rien n'est envoyé. Les systèmes récents savent aussi le faire seuls : sur Windows 11, ouvrez l'image dans Paint puis Enregistrer sous › PNG ; sur Mac, ouvrez-la dans Aperçu puis Fichier › Exporter, format PNG.",
+        },
+      },
+      {
+        q: { en: "Why did my image download as a .webp file?", fr: "Pourquoi mon image s'est-elle téléchargée en .webp ?" },
+        a: {
+          en: "Because the site served it that way. Most large sites and image CDNs send WebP to browsers that support it, so \"Save image as\" keeps the format the browser received, even when the original on the server was a JPG or PNG.",
+          fr: "Parce que le site l'a servie ainsi. La plupart des grands sites et des CDN d'images envoient du WebP aux navigateurs qui le gèrent : « Enregistrer l'image sous » garde donc le format reçu par le navigateur, même si l'original sur le serveur était un JPG ou un PNG.",
+        },
+      },
     ],
     deepDive: [
+      {
+        h: { en: "Where all these WebP files come from", fr: "D'où viennent tous ces fichiers WebP" },
+        p: {
+          en: [
+          "Most people looking to convert WebP to PNG didn't choose WebP in the first place. Images saved from a website, a Google Images result or a social network increasingly arrive as .webp because the server picks that format for any browser able to display it. The file on your disk is simply what the browser received.",
+          "Browsers open it without a second thought; the trouble starts afterwards. An older image editor, a slide deck, a form that only accepts JPG or PNG, a print shop: that's when the file needs converting, and when keeping transparency and avoiding a second round of compression matters, PNG is the format to ask for.",
+          ],
+          fr: [
+          "La plupart des gens qui cherchent à convertir un WebP en PNG n'ont jamais choisi le WebP. Une image enregistrée depuis un site, un résultat Google Images ou un réseau social arrive de plus en plus souvent en .webp, parce que le serveur choisit ce format pour tout navigateur capable de l'afficher. Le fichier sur votre disque est simplement ce que le navigateur a reçu.",
+          "Le navigateur l'ouvre sans broncher ; c'est après que les ennuis commencent. Un ancien logiciel de retouche, une présentation, un formulaire qui n'accepte que JPG ou PNG, un imprimeur : c'est là qu'il faut convertir, et quand il s'agit de garder la transparence et d'éviter une nouvelle compression, c'est le PNG qu'il faut demander.",
+          ],
+        },
+      },
       {
         h: { en: "Lossless in, lossless out, with a caveat", fr: "Sans perte en entrée, sans perte en sortie, avec une réserve" },
         p: {
