@@ -28,6 +28,7 @@
   --brand-mid:  #00e08a55;
 
   /* Sémantique */
+  --ok:     #00e08a;
   --hot:    #ffb454;
   --danger: #ff5c5c;
 
@@ -104,6 +105,7 @@
 
   /* Sémantique */
   --color-hot:    var(--hot);
+  --color-ok:     var(--ok);
   --color-danger: var(--danger);
 
   /* Syntaxe */

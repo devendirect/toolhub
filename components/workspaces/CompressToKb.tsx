@@ -238,11 +238,11 @@ export function CompressToKb() {
 
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-[14px] py-[10px] bg-bg-1 font-mono text-[12px]">
               {loading && <span className="text-dim">{tr.working}</span>}
-              {!loading && output?.kind === "original" && <span className="text-brand">✓ {tr.already}</span>}
+              {!loading && output?.kind === "original" && <span className="text-ok">✓ {tr.already}</span>}
               {!loading && output?.kind === "error" && <span className="text-danger">{tr.error}</span>}
               {!loading && fit && (
                 <>
-                  <span className={fit.reached ? "text-brand font-semibold" : "text-hot font-semibold"}>
+                  <span className={fit.reached ? "text-ok font-semibold" : "text-hot font-semibold"}>
                     {fit.reached ? `✓ ${kb(fit.blob.size)} ≤ ${targetKb} ${tr.unit}` : `! ${tr.missed}`}
                   </span>
                   <span className="text-dim">{tr.quality} {Math.round(fit.quality * 100)} %</span>
