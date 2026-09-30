@@ -232,8 +232,28 @@ export const CONVERT_PAIRS: ConvertPair[] = [
           fr: "Pour des captures contenant du texte, choisissez 90 ou 100, la compression à 80 peut légèrement flouter les petits caractères. Pour des photos, 80 suffit généralement.",
         },
       },
+      {
+        q: { en: "Can I upload WebP images to WordPress?", fr: "Peut-on envoyer des images WebP dans WordPress ?" },
+        a: {
+          en: "Yes, the media library has accepted WebP since WordPress 5.8 (2021), as long as the server's image library supports it. Converting before upload also means the site stores the lighter file from the start instead of relying on a plugin.",
+          fr: "Oui, la médiathèque accepte le WebP depuis WordPress 5.8 (2021), à condition que la bibliothèque d'images du serveur le gère. Convertir avant l'envoi permet aussi au site de stocker directement le fichier léger, sans dépendre d'une extension.",
+        },
+      },
     ],
     deepDive: [
+      {
+        h: { en: "The PageSpeed warning behind most conversions", fr: "L'alerte PageSpeed derrière la plupart des conversions" },
+        p: {
+          en: [
+          "Most PNGs converted to WebP come from a performance report. PageSpeed Insights and Lighthouse flag heavy images with an audit asking you to serve them in a modern format, and the PNG screenshots, illustrations and logos on a page are usually the first candidates: they weigh the most for what they show.",
+          "Converting fixes the format, not the dimensions. A 2,400-pixel screenshot displayed 800 pixels wide stays oversized in any format, and the same report will flag it again under image sizing. Resize first, around twice the displayed width, then convert: the full image converter does both in one pass.",
+          ],
+          fr: [
+          "La plupart des PNG convertis en WebP viennent d'un rapport de performance. PageSpeed Insights et Lighthouse signalent les images lourdes avec un audit qui demande de les servir dans un format moderne, et les captures, illustrations et logos en PNG d'une page sont en général les premiers visés : ce sont eux qui pèsent le plus pour ce qu'ils montrent.",
+          "Convertir règle le format, pas les dimensions. Une capture de 2 400 pixels affichée sur 800 reste surdimensionnée quel que soit le format, et le même rapport la signalera à nouveau au titre du dimensionnement des images. Redimensionnez d'abord, autour de deux fois la largeur affichée, puis convertissez : le convertisseur d'images complet fait les deux d'un coup.",
+          ],
+        },
+      },
       {
         h: { en: "Two different WebP modes, one big decision", fr: "Deux modes WebP différents, une décision importante" },
         p: {

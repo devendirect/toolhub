@@ -54,7 +54,7 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
         h: "JPEG and PNG: still the right answer, in their place",
         blocks: [
           { p: "JPEG opens everywhere, in every piece of software written in the last thirty years. That makes it the right format for anything that leaves the web: a photo attached to an email, inserted into a Word document, sent to a print shop. Its weakness is text and sharp lines, which pick up a faint halo of artefacts." },
-          { p: "PNG is lossless. For a screenshot, a logo or a diagram, that's perfect: every pixel stays exactly as captured. For a photo, it's the wrong tool. Converting a photographic JPEG to PNG routinely makes the file several times heavier with no visible gain, and our converter shows that honestly as a +% in orange rather than a saving." },
+          { p: "PNG is lossless. For a screenshot, a logo or a diagram, that's perfect: every pixel stays exactly as captured. For a photo, it's the wrong tool. Converting a photographic JPEG to PNG routinely makes the file several times heavier with no visible gain, and our converter shows that honestly as a +% in orange rather than a saving. The reverse trip is the useful one on a website: a screenshot or logo usually gets much lighter as WebP and keeps its transparency, see [PNG to WebP](/convert/png-to-webp)." },
           { p: "For icons and logos, the best format is often no bitmap at all. An SVG stays sharp at any size; just strip the editor data that Figma or Illustrator leave in the file with the [SVG optimizer](/t/svg-optimizer)." },
         ],
       },
@@ -123,7 +123,7 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
         h: "JPEG et PNG : toujours la bonne réponse, à leur place",
         blocks: [
           { p: "Le JPEG s'ouvre partout, dans tous les logiciels écrits depuis trente ans. C'est donc le bon format pour tout ce qui quitte le web : une photo jointe à un e-mail, insérée dans un document Word, envoyée à un imprimeur. Son point faible, c'est le texte et les traits fins, qui se couvrent d'un léger halo d'artefacts." },
-          { p: "Le PNG est sans perte. Pour une capture d'écran, un logo ou un schéma, c'est parfait : chaque pixel reste tel qu'il a été capturé. Pour une photo, c'est le mauvais outil. Convertir un JPEG photographique en PNG rend couramment le fichier plusieurs fois plus lourd, sans gain visible, et notre convertisseur l'affiche franchement, avec un +% en orange plutôt qu'un gain." },
+          { p: "Le PNG est sans perte. Pour une capture d'écran, un logo ou un schéma, c'est parfait : chaque pixel reste tel qu'il a été capturé. Pour une photo, c'est le mauvais outil. Convertir un JPEG photographique en PNG rend couramment le fichier plusieurs fois plus lourd, sans gain visible, et notre convertisseur l'affiche franchement, avec un +% en orange plutôt qu'un gain. Le chemin inverse est celui qui sert sur un site : une capture ou un logo s'allège en général nettement en WebP et garde sa transparence, voir [PNG en WebP](/convert/png-to-webp)." },
           { p: "Pour les icônes et les logos, le meilleur format n'est souvent pas une image matricielle du tout. Un SVG reste net à toutes les tailles ; retirez simplement les données d'éditeur que Figma ou Illustrator laissent dans le fichier, avec l'[optimiseur SVG](/t/svg-optimizer)." },
         ],
       },

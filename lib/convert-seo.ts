@@ -16,8 +16,8 @@ export const CONVERT_META: Record<string, Localized> = {
     fr: "Convertissez un JPG en PNG pour stopper la perte de qualité : le PNG est sans perte, retouchez et réenregistrez à volonté. Gratuit, dans le navigateur.",
   },
   "png-to-webp": {
-    en: "Convert PNG screenshots and graphics to WebP for much lighter files that keep transparency. An easy page-weight win, done in your browser.",
-    fr: "Convertissez captures d'écran et graphiques PNG en WebP : fichiers bien plus légers, transparence conservée. Un gain facile, dans le navigateur.",
+    en: "Convert PNG to WebP online, free: screenshots and graphics get much lighter and keep transparency. Nothing uploaded, it all runs in your browser.",
+    fr: "Convertir un PNG en WebP en ligne, gratuitement : captures et graphiques bien plus légers, transparence conservée. Aucun envoi, tout reste chez vous.",
   },
   "png-to-jpg": {
     en: "Convert a photo saved as PNG to JPG and shrink it several times over: JPG compression is built for photos. Free, no upload, in your browser.",
@@ -73,6 +73,10 @@ export const CONVERT_META: Record<string, Localized> = {
  * Le H1 reste pairTitle() ; sans entrée ici, le <title> aussi.
  */
 export const CONVERT_TITLE: Record<string, Localized> = {
+  "png-to-webp": {
+    en: "Convert PNG to WebP online, free, no upload",
+    fr: "Convertir PNG en WebP en ligne, gratuit et sans envoi",
+  },
   "webp-to-png": {
     en: "Convert WebP to PNG online, free, no upload",
     fr: "Convertir WebP en PNG en ligne, gratuit et sans envoi",

@@ -76,10 +76,10 @@ export const TOOLS_SEO: Record<string, ToolSeo> = {
 
   /* ── DEVELOPER ── */
   "qr-generator": {
-    title: { en: "QR Code Generator for Links and Wi-Fi", fr: "Générateur de QR code : lien, Wi-Fi, SVG, PNG" },
+    title: { en: "Free QR Code Generator: No Signup, No Expiry", fr: "Générateur de QR code gratuit, sans expiration" },
     description: {
-      en: "Create a QR code from a URL, some text or your Wi-Fi details and download it as SVG for print or PNG for screens. Free, no account, no expiry.",
-      fr: "Créez un QR code à partir d'une URL, d'un texte ou de votre Wi-Fi, puis téléchargez-le en SVG pour l'impression ou en PNG. Gratuit, sans expiration.",
+      en: "Free QR code generator for a link, text or Wi-Fi: download SVG for print or PNG for screens. No account, no tracking, and the code never expires.",
+      fr: "Générateur de QR code gratuit pour un lien, un texte ou le Wi-Fi : SVG pour l'impression, PNG pour l'écran. Sans compte, sans suivi, n'expire jamais.",
     },
   },
   base64: {
