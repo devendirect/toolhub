@@ -9,8 +9,12 @@ import { fmtSize } from "@/lib/format";
 import { downloadUrl } from "@/lib/download";
 import { useTrackRun } from "@/hooks/useTrackRun";
 import { IMAGE_ACCEPT, isHeicFile, isImageFile, decodeIfHeic } from "@/lib/heic";
+import { encodeImage, EncodeError, type ImageFormat } from "@/lib/image-encode";
+import { ImageBatch } from "./ImageBatch";
 
-type Format = "image/jpeg" | "image/png" | "image/webp";
+export { targetSize } from "@/lib/image-encode";
+
+type Format = ImageFormat;
 const FORMAT_EXT: Record<Format, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",
@@ -26,7 +30,7 @@ const TR = {
   fr: {
     browse:             "choisir",
     noFile:             "aucun fichier",
-    dropImage:          "glisser une image ou cliquer",
+    dropImage:          "glisser une ou plusieurs images, ou cliquer",
     converted:          "converti",
     lossless:           "sans perte",
     resultAfterConvert: "résultat après conversion",
@@ -41,7 +45,7 @@ const TR = {
   en: {
     browse:             "browse",
     noFile:             "no file",
-    dropImage:          "drag an image or click",
+    dropImage:          "drag one or more images, or click",
     converted:          "converted",
     lossless:           "lossless",
     resultAfterConvert: "result after convert",
@@ -58,11 +62,6 @@ const TR = {
 /** Largeurs cibles proposées ; 0 = taille d'origine. On réduit, on n'agrandit jamais. */
 const MAX_WIDTHS = [0, 1920, 1280, 800] as const;
 type MaxWidth = (typeof MAX_WIDTHS)[number];
-
-export function targetSize(w: number, h: number, maxWidth: number): { w: number; h: number } {
-  if (!maxWidth || w <= maxWidth) return { w, h };
-  return { w: maxWidth, h: Math.round((h * maxWidth) / w) };
-}
 
 interface ImageConverterProps {
   // Format cible pré-sélectionné (pages /convert/[pair])
@@ -92,6 +91,10 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const trackRun = useTrackRun("image-converter", "file");
+  // Mode lot : plusieurs fichiers déposés → liste + ZIP au lieu de l'aperçu
+  const [batchFiles, setBatchFiles] = useState<File[] | null>(null);
+  const [batchRunning, setBatchRunning] = useState(false);
+  const [batchId, setBatchId] = useState(0);
 
   const loadId = useRef(0);
   const loadFile = useCallback(async (picked: File) => {
@@ -121,46 +124,51 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
     setFile(f);
   }, [lang]);
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    const f = e.dataTransfer.files[0];
-    if (f && isImageFile(f)) loadFile(f);
+  const clearSingle = () => {
+    loadId.current++;
+    setSource(null);
+    setFile(null);
+    setDecoding(false);
+    setDims(null);
+    setOutDims(null);
+    setError(null);
+    setOutputUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return ""; });
+    setOriginalUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return ""; });
   };
 
-  const handleConvert = () => {
+  const pickFiles = (list: FileList | null) => {
+    const images = Array.from(list ?? []).filter(isImageFile);
+    if (images.length > 1) {
+      clearSingle();
+      setBatchFiles(images);
+      setBatchId((n) => n + 1);
+    } else if (images[0]) {
+      setBatchFiles(null);
+      loadFile(images[0]);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    pickFiles(e.dataTransfer.files);
+  };
+
+  const handleConvert = async () => {
     if (!file) return;
     trackRun();
     setConverting(true);
     setError(null);
-    const img = new Image();
-    img.onload = () => {
-      setDims({ w: img.naturalWidth, h: img.naturalHeight });
-      const out = targetSize(img.naturalWidth, img.naturalHeight, maxWidth);
-      const canvas = document.createElement("canvas");
-      canvas.width = out.w;
-      canvas.height = out.h;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) { setError(TR[lang].canvasNotSupported); setConverting(false); return; }
-      ctx.imageSmoothingQuality = "high";
-      if (format === "image/jpeg") {
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
-      ctx.drawImage(img, 0, 0, out.w, out.h);
-      canvas.toBlob(
-        (blob) => {
-          if (!blob) { setError(TR[lang].conversionFailed); setConverting(false); return; }
-          setOutputUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return URL.createObjectURL(blob); });
-          setOutputSize(blob.size);
-          setOutDims(out);
-          setConverting(false);
-        },
-        format,
-        quality / 100
-      );
-    };
-    img.onerror = () => { setError(TR[lang].couldNotLoad); setConverting(false); };
-    img.src = originalUrl;
+    try {
+      const { blob, src, out } = await encodeImage(file, format, quality / 100, maxWidth);
+      setDims(src);
+      setOutputUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return URL.createObjectURL(blob); });
+      setOutputSize(blob.size);
+      setOutDims(out);
+    } catch (e) {
+      const reason = e instanceof EncodeError ? e.reason : "encode";
+      setError(reason === "load" ? TR[lang].couldNotLoad : reason === "canvas" ? TR[lang].canvasNotSupported : TR[lang].conversionFailed);
+    }
+    setConverting(false);
   };
 
   const handleDownload = () => {
@@ -170,8 +178,9 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
 
   return (
     <section className="mb-10">
+      <div className={batchRunning ? "pointer-events-none opacity-50" : undefined}>
       <OptionsBar
-        action={
+        action={batchFiles ? undefined : (
           <button
             onClick={handleConvert}
             disabled={!file || converting}
@@ -179,7 +188,7 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
           >
             {converting ? i.converting : i.convertBtn}
           </button>
-        }
+        )}
       >
         <OptBlock label="format">
           <SegControl
@@ -204,7 +213,21 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
           />
         </OptBlock>
       </OptionsBar>
+      </div>
 
+      {batchFiles ? (
+        <ImageBatch
+          key={`${batchId}-${format}-${quality}-${maxWidth}`}
+          files={batchFiles}
+          format={format}
+          quality={quality / 100}
+          maxWidth={maxWidth}
+          lang={lang}
+          onStart={trackRun}
+          onRunningChange={setBatchRunning}
+          onReset={() => setBatchFiles(null)}
+        />
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 border border-line">
         {/* Input */}
         <Pane
@@ -229,8 +252,9 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
             ref={inputRef}
             type="file"
             accept={IMAGE_ACCEPT}
+            multiple
             className="hidden"
-            onChange={(e) => e.target.files?.[0] && loadFile(e.target.files[0])}
+            onChange={(e) => { pickFiles(e.target.files); e.target.value = ""; }}
           />
           <div
             className="flex-1 flex items-center justify-center bg-bg-code min-h-[320px] cursor-pointer"
@@ -287,6 +311,7 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
           </div>
         </Pane>
       </div>
+      )}
     </section>
   );
 }

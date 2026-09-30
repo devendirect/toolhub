@@ -41,8 +41,8 @@ export const CONVERT_META: Record<string, Localized> = {
   },
 
   "heic-to-jpg": {
-    en: "Convert iPhone HEIC photos to JPG that opens on Windows, Android and any form. Free, no limit, decoded in your browser: your photos are never uploaded.",
-    fr: "Convertissez les photos HEIC de l'iPhone en JPG lisible sur Windows, Android et tout formulaire. Gratuit, sans limite, décodé dans votre navigateur.",
+    en: "Convert one or many iPhone HEIC photos to JPG, downloaded as a single ZIP. Free, no limit, decoded in your browser: your photos are never uploaded.",
+    fr: "Convertissez une ou plusieurs photos HEIC d'iPhone en JPG, réunies dans un ZIP. Gratuit, sans limite, décodé dans le navigateur, sans aucun envoi.",
   },
   "heic-to-png": {
     en: "Convert an iPhone HEIC photo to a lossless PNG that any image editor can open, ready for retouching. Free, decoded in your browser, nothing uploaded.",

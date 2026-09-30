@@ -751,8 +751,8 @@ export const CONVERT_PAIRS: ConvertPair[] = [
       {
         q: { en: "Can I convert several HEIC photos at once?", fr: "Peut-on convertir plusieurs photos HEIC d'un coup ?" },
         a: {
-          en: "This page converts one photo at a time, with no limit on how many you convert. To gather many HEIC photos into a single file, the HEIC to PDF converter accepts a whole selection at once.",
-          fr: "Cette page convertit une photo à la fois, sans limite sur le nombre de conversions. Pour rassembler beaucoup de photos HEIC dans un seul fichier, le convertisseur HEIC vers PDF accepte toute une sélection d'un coup.",
+          en: "Yes, with no limit on the number. Select or drop all the photos at once: they are converted one after another in your browser, and you download a single ZIP of JPGs. A photo that can't be read is flagged and the rest of the batch carries on.",
+          fr: "Oui, sans limite de nombre. Sélectionnez ou déposez toutes les photos d'un coup : elles sont converties l'une après l'autre dans votre navigateur, et vous téléchargez un seul ZIP de JPG. Une photo illisible est signalée et le reste du lot continue.",
         },
       },
     ],
