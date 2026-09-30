@@ -8,6 +8,7 @@ import { Pane, PaneBtn } from "@/components/workspace/Pane";
 import { fmtSize } from "@/lib/format";
 import { downloadUrl } from "@/lib/download";
 import { useTrackRun } from "@/hooks/useTrackRun";
+import { IMAGE_ACCEPT, isHeicFile, isImageFile, decodeIfHeic } from "@/lib/heic";
 
 type Format = "image/jpeg" | "image/png" | "image/webp";
 const FORMAT_EXT: Record<Format, string> = {
@@ -32,6 +33,8 @@ const TR = {
     canvasNotSupported: "Canvas non supporté",
     conversionFailed:   "Échec de la conversion",
     couldNotLoad:       "Impossible de charger l'image (format non lu par ce navigateur ?)",
+    decodingHeic:       "lecture de la photo HEIC…",
+    heicFailed:         "Photo HEIC illisible (fichier endommagé ou variante non prise en charge)",
     maxWidth:           "largeur max",
     original:           "originale",
   },
@@ -45,6 +48,8 @@ const TR = {
     canvasNotSupported: "Canvas not supported",
     conversionFailed:   "Conversion failed",
     couldNotLoad:       "Could not load image (format not readable by this browser?)",
+    decodingHeic:       "reading the HEIC photo…",
+    heicFailed:         "Unreadable HEIC photo (damaged file or unsupported variant)",
     maxWidth:           "max width",
     original:           "original",
   },
@@ -68,7 +73,11 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
   const { lang } = useLang();
   const i = t(lang);
 
+  // `source` : le fichier déposé (nom, taille, extension affichés) ;
+  // `file` : ce que le canvas lit — le même, ou sa version décodée si HEIC.
+  const [source, setSource] = useState<File | null>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [decoding, setDecoding] = useState(false);
   const [originalUrl, setOriginalUrl] = useState<string>("");
   const [outputUrl, setOutputUrl] = useState<string>("");
   const [outputSize, setOutputSize] = useState<number>(0);
@@ -84,20 +93,38 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
   const inputRef = useRef<HTMLInputElement>(null);
   const trackRun = useTrackRun("image-converter", "file");
 
-  const loadFile = useCallback((f: File) => {
-    // Libère les images précédentes : chaque object URL garde le fichier en mémoire
-    setOriginalUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return URL.createObjectURL(f); });
-    setOutputUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return ""; });
-    setFile(f);
+  const loadId = useRef(0);
+  const loadFile = useCallback(async (picked: File) => {
+    const id = ++loadId.current;
+    setSource(picked);
+    setDecoding(false);
+    setFile(null);
     setDims(null);
     setOutDims(null);
     setError(null);
-  }, []);
+    // Libère les images précédentes : chaque object URL garde le fichier en mémoire
+    setOutputUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return ""; });
+    setOriginalUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return ""; });
+    let f = picked;
+    if (isHeicFile(picked)) {
+      setDecoding(true);
+      try {
+        f = await decodeIfHeic(picked);
+      } catch {
+        if (id === loadId.current) { setError(TR[lang].heicFailed); setDecoding(false); }
+        return;
+      }
+      if (id !== loadId.current) return;
+      setDecoding(false);
+    }
+    setOriginalUrl(URL.createObjectURL(f));
+    setFile(f);
+  }, [lang]);
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const f = e.dataTransfer.files[0];
-    if (f && f.type.startsWith("image/")) loadFile(f);
+    if (f && isImageFile(f)) loadFile(f);
   };
 
   const handleConvert = () => {
@@ -137,8 +164,8 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
   };
 
   const handleDownload = () => {
-    if (!outputUrl || !file) return;
-    downloadUrl(outputUrl, file.name.replace(/\.[^.]+$/, "") + "." + FORMAT_EXT[format]);
+    if (!outputUrl || !source) return;
+    downloadUrl(outputUrl, source.name.replace(/\.[^.]+$/, "") + "." + FORMAT_EXT[format]);
   };
 
   return (
@@ -182,24 +209,26 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
         {/* Input */}
         <Pane
           title="original"
-          ext={file ? file.name.split(".").pop() ?? "img" : "img"}
-          meta={file ? fmtSize(file.size) : undefined}
+          ext={source ? source.name.split(".").pop() ?? "img" : "img"}
+          meta={source ? fmtSize(source.size) : undefined}
           actions={
             <PaneBtn onClick={() => inputRef.current?.click()}>
               {TR[lang].browse}
             </PaneBtn>
           }
           footer={
-            dims
+            decoding
+              ? <span className="text-dim">{TR[lang].decodingHeic}</span>
+              : dims
               ? <span>{dims.w} × {dims.h}px</span>
-              : <span className="text-dim-2">{TR[lang].noFile}</span>
+              : <span className="text-dim-2">{source ? source.name : TR[lang].noFile}</span>
           }
           className="border-r border-line"
         >
           <input
             ref={inputRef}
             type="file"
-            accept="image/*"
+            accept={IMAGE_ACCEPT}
             className="hidden"
             onChange={(e) => e.target.files?.[0] && loadFile(e.target.files[0])}
           />
@@ -207,7 +236,7 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
             className="flex-1 flex items-center justify-center bg-bg-code min-h-[320px] cursor-pointer"
             onDrop={handleDrop}
             onDragOver={(e) => e.preventDefault()}
-            onClick={() => !file && inputRef.current?.click()}
+            onClick={() => !source && inputRef.current?.click()}
           >
             {originalUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -218,7 +247,7 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
                 <span className="font-mono text-[12px] text-dim">
                   {TR[lang].dropImage}
                 </span>
-                <span className="font-mono text-[11px] text-dim-2">JPG · PNG · WebP · AVIF · GIF · BMP</span>
+                <span className="font-mono text-[11px] text-dim-2">JPG · PNG · WebP · AVIF · HEIC · GIF · BMP</span>
               </div>
             )}
           </div>
@@ -235,13 +264,13 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
           footer={
             error ? (
               <span className="text-danger">✕ {error}</span>
-            ) : outputUrl && file ? (
+            ) : outputUrl && source ? (
               <span>
                 {FORMAT_EXT[format].toUpperCase()} · {format === "image/png" ? TR[lang].lossless : `q${quality}`} ·{" "}
                 {outDims && <>{outDims.w} × {outDims.h}px · </>}
-                {outputSize < file.size
-                  ? <span className="text-brand">-{(((file.size - outputSize) / file.size) * 100).toFixed(0)}%</span>
-                  : <span className="text-hot">+{(((outputSize - file.size) / file.size) * 100).toFixed(0)}%</span>}
+                {outputSize < source.size
+                  ? <span className="text-brand">-{(((source.size - outputSize) / source.size) * 100).toFixed(0)}%</span>
+                  : <span className="text-hot">+{(((outputSize - source.size) / source.size) * 100).toFixed(0)}%</span>}
               </span>
             ) : undefined
           }

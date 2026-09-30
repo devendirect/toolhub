@@ -40,6 +40,15 @@ export const CONVERT_META: Record<string, Localized> = {
     fr: "Convertissez un AVIF en PNG pour une copie sans perte qui garde la transparence et s'ouvre dans tout éditeur. Gratuit, sans envoi, dans le navigateur.",
   },
 
+  "heic-to-jpg": {
+    en: "Convert iPhone HEIC photos to JPG that opens on Windows, Android and any form. Free, no limit, decoded in your browser: your photos are never uploaded.",
+    fr: "Convertissez les photos HEIC de l'iPhone en JPG lisible sur Windows, Android et tout formulaire. Gratuit, sans limite, décodé dans votre navigateur.",
+  },
+  "heic-to-png": {
+    en: "Convert an iPhone HEIC photo to a lossless PNG that any image editor can open, ready for retouching. Free, decoded in your browser, nothing uploaded.",
+    fr: "Convertissez une photo HEIC d'iPhone en PNG sans perte, lisible par tout éditeur d'images et prêt à retoucher. Gratuit, décodé dans le navigateur.",
+  },
+
   /* ── Paires PDF ── */
   "pdf-to-png": {
     en: "Convert every page of a PDF to a sharp, lossless PNG, ideal for diagrams, screenshots and fine text. Choose 1×, 2× or 3× scale. No upload.",
@@ -65,6 +74,10 @@ export const CONVERT_META: Record<string, Localized> = {
     en: "Convert AVIF images straight into one shareable PDF using your browser's built-in AVIF decoder. Free, no software to install, nothing uploaded.",
     fr: "Convertissez des images AVIF directement en un seul PDF partageable grâce au décodeur AVIF du navigateur. Gratuit, rien à installer, aucun envoi.",
   },
+  "heic-to-pdf": {
+    en: "Gather several iPhone HEIC photos into a single PDF, one photo per page: ideal for photographed documents. Free, decoded in your browser, no upload.",
+    fr: "Rassemblez plusieurs photos HEIC d'iPhone en un seul PDF, une photo par page : idéal pour des documents photographiés. Gratuit, sans envoi.",
+  },
 };
 
 /**
@@ -73,6 +86,14 @@ export const CONVERT_META: Record<string, Localized> = {
  * Le H1 reste pairTitle() ; sans entrée ici, le <title> aussi.
  */
 export const CONVERT_TITLE: Record<string, Localized> = {
+  "heic-to-jpg": {
+    en: "Convert HEIC to JPG free, online, no upload",
+    fr: "Convertir HEIC en JPG gratuit, en ligne, sans envoi",
+  },
+  "heic-to-pdf": {
+    en: "Convert HEIC to PDF free: several photos, one file",
+    fr: "Convertir HEIC en PDF gratuit : plusieurs photos, un PDF",
+  },
   "png-to-webp": {
     en: "Convert PNG to WebP online, free, no upload",
     fr: "Convertir PNG en WebP en ligne, gratuit et sans envoi",

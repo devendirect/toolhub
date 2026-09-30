@@ -37,6 +37,7 @@ export const FORMAT_LABEL: Record<string, string> = {
   png: "PNG",
   webp: "WebP",
   avif: "AVIF",
+  heic: "HEIC",
   pdf: "PDF",
 };
 
@@ -707,6 +708,156 @@ export const CONVERT_PAIRS: ConvertPair[] = [
           fr: [
           "L'augmentation de poids est ici la plus forte de toutes les conversions de ce site. L'AVIF est le format le plus efficace d'usage courant et le PNG l'un des moins efficaces pour du contenu photographique : une photographie peut grossir d'un facteur dix ou davantage. Un AVIF de deux cents kilo-octets devenant un PNG de trois mégaoctets n'a rien d'anormal.",
           "C'est acceptable pour une image que vous allez retoucher ou confier à une autre application, et inacceptable pour une image destinée à la publication. Si la destination est une page web, gardez l'AVIF et ajoutez un repli JPEG plutôt que de livrer le PNG.",
+          ],
+        },
+      },
+    ],
+  },
+  {
+    slug: "heic-to-jpg",
+    from: "heic",
+    to: "jpg",
+    why: {
+      en: "HEIC is the format iPhones save photos in, and outside Apple devices most software can't open it: converting HEIC to JPG gives you a photo that opens everywhere, on Windows, Android, in any email or upload form, without installing anything.",
+      fr: "Le HEIC est le format dans lequel l'iPhone enregistre ses photos, et hors des appareils Apple la plupart des logiciels ne savent pas l'ouvrir : convertir un HEIC en JPG donne une photo lisible partout, sur Windows, Android, dans n'importe quel e-mail ou formulaire, sans rien installer.",
+    },
+    points: {
+      en: [
+        "The photo is decoded in your browser by libheif compiled to WebAssembly: nothing is uploaded, which matters for personal photos.",
+        "Expect the JPG to be larger than the HEIC, often around one and a half to two times: HEIC compresses better, JPG opens everywhere.",
+        "Location and camera metadata are not copied into the JPG, a useful side effect before sending a photo to someone.",
+      ],
+      fr: [
+        "La photo est décodée dans votre navigateur par libheif compilé en WebAssembly : rien n'est envoyé, ce qui compte pour des photos personnelles.",
+        "Attendez-vous à un JPG plus lourd que le HEIC, souvent d'une fois et demie à deux fois : le HEIC compresse mieux, le JPG s'ouvre partout.",
+        "La position et les métadonnées de l'appareil ne sont pas recopiées dans le JPG, un effet secondaire utile avant d'envoyer une photo.",
+      ],
+    },
+    faq: [
+      {
+        q: { en: "Why can't I open HEIC photos on my PC?", fr: "Pourquoi je n'arrive pas à ouvrir les photos HEIC sur mon PC ?" },
+        a: {
+          en: "Because HEIC images are compressed with HEVC, a codec Windows doesn't always include. Recent Windows versions need the HEIF Image Extensions and, depending on the machine, the HEVC Video Extensions from the Microsoft Store. Converting to JPG avoids the question entirely.",
+          fr: "Parce que les images HEIC sont compressées en HEVC, un codec que Windows n'inclut pas toujours. Les versions récentes de Windows ont besoin des Extensions d'image HEIF et, selon la machine, des Extensions vidéo HEVC du Microsoft Store. Convertir en JPG évite complètement la question.",
+        },
+      },
+      {
+        q: { en: "How do I stop my iPhone from taking photos in HEIC?", fr: "Comment empêcher l'iPhone de prendre les photos en HEIC ?" },
+        a: {
+          en: "In Settings › Camera › Formats, choose Most Compatible: new photos are then saved as JPG. To keep HEIC on the phone but get JPG on a computer, set Settings › Photos › Transfer to Mac or PC to Automatic, and photos are converted when copied over USB.",
+          fr: "Dans Réglages › Appareil photo › Formats, choisissez Le plus compatible : les nouvelles photos sont alors enregistrées en JPG. Pour garder le HEIC sur le téléphone mais obtenir du JPG sur l'ordinateur, réglez Réglages › Photos › Transférer sur Mac ou PC sur Automatique : les photos sont converties lors de la copie par câble.",
+        },
+      },
+      {
+        q: { en: "Can I convert several HEIC photos at once?", fr: "Peut-on convertir plusieurs photos HEIC d'un coup ?" },
+        a: {
+          en: "This page converts one photo at a time, with no limit on how many you convert. To gather many HEIC photos into a single file, the HEIC to PDF converter accepts a whole selection at once.",
+          fr: "Cette page convertit une photo à la fois, sans limite sur le nombre de conversions. Pour rassembler beaucoup de photos HEIC dans un seul fichier, le convertisseur HEIC vers PDF accepte toute une sélection d'un coup.",
+        },
+      },
+    ],
+    deepDive: [
+      {
+        h: { en: "What HEIC actually is", fr: "Ce qu'est vraiment le HEIC" },
+        p: {
+          en: [
+            "HEIC is a HEIF file whose images are compressed with HEVC, the codec also used for 4K video. Apple made it the iPhone's default photo format with iOS 11 in 2017, because it stores a photo in roughly half the space of a JPEG of similar quality, which adds up quickly across thousands of pictures.",
+            "The catch is support. Apple devices read HEIC natively, and so does Safari, but Chrome, Firefox and Edge can't display it, and many Windows programs, older Android apps and online forms refuse it. That's why a photo that looks fine on the phone becomes an unreadable attachment the moment it leaves the Apple world.",
+          ],
+          fr: [
+            "Le HEIC est un fichier HEIF dont les images sont compressées en HEVC, le codec qu'on retrouve aussi dans la vidéo 4K. Apple en a fait le format photo par défaut de l'iPhone avec iOS 11 en 2017, parce qu'il stocke une photo dans à peu près deux fois moins de place qu'un JPEG de qualité comparable, ce qui compte vite sur des milliers de clichés.",
+            "Le revers, c'est la compatibilité. Les appareils Apple lisent le HEIC nativement, Safari aussi, mais Chrome, Firefox et Edge ne savent pas l'afficher, et beaucoup de logiciels Windows, d'anciennes applis Android et de formulaires en ligne le refusent. C'est pour ça qu'une photo parfaite sur le téléphone devient une pièce jointe illisible dès qu'elle quitte l'univers Apple.",
+          ],
+        },
+      },
+      {
+        h: { en: "How the conversion runs without a server", fr: "Comment la conversion se fait sans serveur" },
+        p: {
+          en: [
+            "Since most browsers can't decode HEIC, this page brings its own decoder: libheif, the reference open-source HEIF library, compiled to WebAssembly. It's downloaded only when you drop a HEIC file, around 3 MB once, and then runs inside the tab. Safari, which reads HEIC on its own, skips that download.",
+            "The decoded photo is drawn on a canvas and re-encoded as JPG at the quality you choose. Quality 90 is a good default for photos you'll keep; 80 is plenty for sending by email or messaging. Because everything happens locally, family photos, documents and screenshots never pass through anyone's server.",
+          ],
+          fr: [
+            "Comme la plupart des navigateurs ne décodent pas le HEIC, cette page apporte son propre décodeur : libheif, la bibliothèque HEIF open source de référence, compilée en WebAssembly. Elle n'est téléchargée que lorsque vous déposez un fichier HEIC, environ 3 Mo une seule fois, puis tourne dans l'onglet. Safari, qui lit le HEIC tout seul, se passe de ce téléchargement.",
+            "La photo décodée est dessinée sur un canvas puis réencodée en JPG à la qualité choisie. La qualité 90 est un bon réglage pour des photos à conserver ; 80 suffit largement pour un envoi par e-mail ou messagerie. Comme tout se passe en local, photos de famille, documents et captures ne transitent par le serveur de personne.",
+          ],
+        },
+      },
+      {
+        h: { en: "What doesn't survive the trip", fr: "Ce qui ne survit pas au voyage" },
+        p: {
+          en: [
+            "A HEIC file can hold more than one picture: the depth map of a portrait photo, the frames of a burst, and on recent iPhones an HDR gain map that brightens highlights on compatible screens. JPG carries a single standard image, so the conversion keeps the main photo and drops the rest. Bright skies may look slightly flatter than on the phone; that's the HDR layer going away, not a loss of detail.",
+            "Live Photos are a HEIC still plus a short video stored separately. Only the still is converted. EXIF metadata, including the GPS position the camera may have recorded, isn't copied either: good news before sharing, less good if you rely on it to sort photos by date or place, in which case keep the HEIC originals.",
+          ],
+          fr: [
+            "Un fichier HEIC peut contenir plus d'une image : la carte de profondeur d'un portrait, les vues d'une rafale, et sur les iPhone récents une carte de gain HDR qui éclaircit les hautes lumières sur les écrans compatibles. Le JPG ne porte qu'une image standard : la conversion garde la photo principale et laisse le reste. Un ciel lumineux peut paraître un peu plus terne que sur le téléphone ; c'est la couche HDR qui disparaît, pas du détail perdu.",
+            "Les Live Photos sont une image HEIC accompagnée d'une courte vidéo stockée à part. Seule l'image est convertie. Les métadonnées EXIF, dont la position GPS que l'appareil a pu enregistrer, ne sont pas recopiées non plus : une bonne nouvelle avant un partage, moins bonne si vous comptez dessus pour trier vos photos par date ou par lieu, auquel cas gardez les originaux HEIC.",
+          ],
+        },
+      },
+    ],
+  },
+  {
+    slug: "heic-to-png",
+    from: "heic",
+    to: "png",
+    why: {
+      en: "Converting HEIC to PNG gives you a lossless copy of an iPhone photo that any editor can open: the right choice when the image will be retouched, cut out or reworked, because no compression is added on top of what the HEIC already contains.",
+      fr: "Convertir un HEIC en PNG donne une copie sans perte d'une photo d'iPhone que n'importe quel éditeur sait ouvrir : le bon choix quand l'image va être retouchée, détourée ou retravaillée, puisqu'aucune compression ne s'ajoute à celle que contient déjà le HEIC.",
+    },
+    points: {
+      en: [
+        "PNG adds no compression loss: what you get is exactly what the HEIC decoder produced, ready for editing.",
+        "The file will be much heavier than the HEIC, often five to ten times for a photo: PNG isn't built for continuous tone.",
+        "For sending or sharing a photo, JPG is almost always the better target; PNG is for the editing workflow.",
+      ],
+      fr: [
+        "Le PNG n'ajoute aucune perte de compression : vous obtenez exactement ce que le décodeur HEIC a produit, prêt à être retouché.",
+        "Le fichier sera bien plus lourd que le HEIC, souvent cinq à dix fois pour une photo : le PNG n'est pas fait pour le ton continu.",
+        "Pour envoyer ou partager une photo, le JPG est presque toujours la meilleure cible ; le PNG sert à la retouche.",
+      ],
+    },
+    faq: [
+      {
+        q: { en: "Should I convert HEIC to PNG or to JPG?", fr: "Convertir un HEIC en PNG ou en JPG ?" },
+        a: {
+          en: "JPG to share, send or upload a photo: it opens everywhere and stays reasonably light. PNG when the image is going into an editor and will be saved again several times, since each JPG save adds a little loss and PNG adds none.",
+          fr: "JPG pour partager, envoyer ou déposer une photo : il s'ouvre partout et reste raisonnablement léger. PNG quand l'image part dans un éditeur et sera réenregistrée plusieurs fois, puisque chaque enregistrement JPG ajoute un peu de perte et que le PNG n'en ajoute aucune.",
+        },
+      },
+      {
+        q: { en: "Does the PNG keep a transparent background?", fr: "Le PNG garde-t-il un fond transparent ?" },
+        a: {
+          en: "An iPhone photo has no transparency to keep: it's a full rectangle of pixels. PNG supports transparency, so you can cut out the subject in an editor afterwards, but the conversion itself produces an opaque image.",
+          fr: "Une photo d'iPhone n'a pas de transparence à conserver : c'est un rectangle de pixels complet. Le PNG gère la transparence, vous pourrez donc détourer le sujet dans un éditeur ensuite, mais la conversion elle-même produit une image opaque.",
+        },
+      },
+    ],
+    deepDive: [
+      {
+        h: { en: "Lossless output, not lossless source", fr: "Une sortie sans perte, pas une source sans perte" },
+        p: {
+          en: [
+            "HEIC photos from an iPhone are compressed with loss, like a JPEG, only more efficiently. Converting to PNG freezes the decoded pixels exactly as they are, which is the point: no second round of compression. It can't restore detail the HEIC encoder already discarded, and there's no reason to expect it to look sharper than the original.",
+            "What PNG buys you is stability. An image opened, edited and saved ten times as JPG accumulates artefacts at each save. As PNG, the tenth save is identical to the first. That's why PNG is the usual intermediate format when a photo goes through several tools before its final export.",
+          ],
+          fr: [
+            "Les photos HEIC d'un iPhone sont compressées avec perte, comme un JPEG, mais plus efficacement. Convertir en PNG fige les pixels décodés exactement tels quels, et c'est tout l'intérêt : pas de seconde compression. Cela ne peut pas restaurer le détail que l'encodeur HEIC a déjà écarté, et il n'y a aucune raison de s'attendre à une image plus nette que l'originale.",
+            "Ce que le PNG apporte, c'est la stabilité. Une image ouverte, retouchée et enregistrée dix fois en JPG accumule des artefacts à chaque enregistrement. En PNG, le dixième enregistrement est identique au premier. C'est pour ça que le PNG est le format intermédiaire habituel quand une photo passe par plusieurs outils avant son export final.",
+          ],
+        },
+      },
+      {
+        h: { en: "Why the file gets so big", fr: "Pourquoi le fichier devient si lourd" },
+        p: {
+          en: [
+            "A 12-megapixel iPhone photo is around 2 MB as HEIC. As PNG, the same photo commonly weighs 15 to 25 MB, because PNG's compression works well on flat colours and sharp edges and poorly on the grain and gradients of a real scene. That's normal, not a bug.",
+            "If the size is a problem, reduce the width in the same step: 1920 pixels is plenty for a screen or a presentation and divides the file size several times. And if the image is headed for the web rather than an editor, convert to JPG or WebP instead.",
+          ],
+          fr: [
+            "Une photo d'iPhone de 12 mégapixels pèse autour de 2 Mo en HEIC. En PNG, la même photo pèse couramment 15 à 25 Mo, parce que la compression du PNG fonctionne bien sur les aplats et les contours nets, et mal sur le grain et les dégradés d'une vraie scène. C'est normal, pas un bug.",
+            "Si le poids pose problème, réduisez la largeur dans la même étape : 1920 pixels suffisent largement pour un écran ou une présentation et divisent le poids par plusieurs fois. Et si l'image part sur le web plutôt que dans un éditeur, convertissez plutôt en JPG ou en WebP.",
           ],
         },
       },

@@ -20,8 +20,8 @@ export const TOOLS_SEO: Record<string, ToolSeo> = {
   "image-converter": {
     title: { en: "Image Converter to WebP, JPG or PNG", fr: "Convertir une image en WebP, JPG ou PNG" },
     description: {
-      en: "Convert JPG, PNG, WebP or AVIF images to WebP, JPG or PNG in your browser, resize them and set the quality in the same step. Free, nothing uploaded.",
-      fr: "Convertissez vos images JPG, PNG, WebP ou AVIF en WebP, JPG ou PNG dans le navigateur, redimensionnez-les et réglez la qualité. Gratuit, sans envoi.",
+      en: "Convert JPG, PNG, WebP, AVIF or iPhone HEIC images to WebP, JPG or PNG in your browser, resize them and set the quality. Free, nothing uploaded.",
+      fr: "Convertissez vos images JPG, PNG, WebP, AVIF ou HEIC d'iPhone en WebP, JPG ou PNG dans le navigateur, redimensionnez et réglez la qualité. Sans envoi.",
     },
   },
   "pdf-converter": {

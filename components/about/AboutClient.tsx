@@ -63,6 +63,13 @@ const SECTIONS: Section[] = [
       { name: "cheerio",    version: "1.x", license: "MIT",        url: "https://cheerio.js.org" },
       { name: "smol-toml",  version: "1.x", license: "MIT",        url: "https://github.com/nicolo-ribaudo/smol-toml" },
       {
+        name: "heic-to (libheif WASM)",
+        version: "1.5.x",
+        license: "LGPL 3.0",
+        url: "https://github.com/hoppergee/heic-to",
+        note: "LGPL, source : github.com/strukturag/libheif",
+      },
+      {
         name: "@ffmpeg/ffmpeg",
         version: "0.12.x",
         license: "LGPL 2.1",

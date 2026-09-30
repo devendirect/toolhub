@@ -7,6 +7,7 @@ import { fmtSize } from "@/lib/format";
 import { downloadUrl } from "@/lib/download";
 import { useConversionState } from "@/hooks/useConversionState";
 import { useTrackRun } from "@/hooks/useTrackRun";
+import { IMAGE_ACCEPT, isImageFile, decodeIfHeic } from "@/lib/heic";
 
 type Status = "idle" | "loading" | "converting" | "done" | "error";
 type Mode = "pdf-to-images" | "images-to-pdf";
@@ -75,7 +76,7 @@ export function PdfConverter({ initialMode, initialImgFormat }: PdfConverterProp
 
   const handleImages = (files: FileList | null) => {
     if (!files) return;
-    setImages(Array.from(files));
+    setImages(Array.from(files).filter(isImageFile));
     reset();
   };
 
@@ -145,8 +146,10 @@ export function PdfConverter({ initialMode, initialImgFormat }: PdfConverterProp
 
       const pdf = await PDFDocument.create();
 
-      for (const [idx, img] of images.entries()) {
+      for (const [idx, picked] of images.entries()) {
         setCurrent(idx + 1);
+        // HEIC → JPEG : un PNG de photo alourdirait inutilement le PDF
+        const img = await decodeIfHeic(picked, "image/jpeg");
         const bytes  = await img.arrayBuffer();
         const isJpeg = img.type === "image/jpeg" || img.name.match(/\.jpe?g$/i);
 
@@ -306,9 +309,9 @@ export function PdfConverter({ initialMode, initialImgFormat }: PdfConverterProp
                 ? `${images.length} ${TR[lang].imagesSelected}`
                 : TR[lang].dropImages}
             </span>
-            <span className="font-mono text-[11px] text-dim-2">PNG, JPEG, WEBP, GIF…</span>
+            <span className="font-mono text-[11px] text-dim-2">PNG, JPEG, WEBP, HEIC, GIF…</span>
           </div>
-          <input ref={imgRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleImages(e.target.files)} />
+          <input ref={imgRef} type="file" accept={IMAGE_ACCEPT} multiple className="hidden" onChange={(e) => handleImages(e.target.files)} />
 
           {images.length > 0 && (
             <div className="border border-line border-t-0 divide-y divide-line max-h-40 overflow-y-auto">

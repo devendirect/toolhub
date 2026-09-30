@@ -515,6 +515,72 @@ export const PDF_PAIRS: PdfPair[] = [
       },
     ],
   },
+  {
+    slug: "heic-to-pdf",
+    from: "heic",
+    to: "pdf",
+    mode: "images-to-pdf",
+    why: {
+      en: "Converting HEIC photos to PDF gathers iPhone pictures, such as photographed documents, receipts or forms, into one file that any computer opens: select several photos at once, each becomes a page, and the HEIC decoding happens in your browser.",
+      fr: "Convertir des photos HEIC en PDF rassemble des clichés d'iPhone, documents photographiés, justificatifs ou formulaires, dans un seul fichier que tout ordinateur sait ouvrir : sélectionnez plusieurs photos d'un coup, chacune devient une page, et le décodage HEIC se fait dans votre navigateur.",
+    },
+    points: {
+      en: [
+        "Several HEIC photos can be selected in one go; pages follow the order of the list.",
+        "Each photo is decoded then embedded as JPEG, which keeps the PDF far lighter than embedding lossless images.",
+        "Nothing is uploaded: identity documents and payslips photographed with a phone stay on your device.",
+      ],
+      fr: [
+        "Plusieurs photos HEIC peuvent être sélectionnées d'un coup ; les pages suivent l'ordre de la liste.",
+        "Chaque photo est décodée puis intégrée en JPEG, ce qui garde le PDF bien plus léger qu'avec des images sans perte.",
+        "Rien n'est envoyé : pièces d'identité et bulletins de paie photographiés au téléphone restent sur votre appareil.",
+      ],
+    },
+    faq: [
+      {
+        q: { en: "Can I put several HEIC photos in one PDF?", fr: "Peut-on mettre plusieurs photos HEIC dans un seul PDF ?" },
+        a: {
+          en: "Yes. Select or drop all the photos at once and each one becomes a page, in the order shown in the list. HEIC, JPG and PNG can be mixed in the same PDF.",
+          fr: "Oui. Sélectionnez ou déposez toutes les photos d'un coup, et chacune devient une page, dans l'ordre affiché dans la liste. HEIC, JPG et PNG peuvent être mélangés dans le même PDF.",
+        },
+      },
+      {
+        q: { en: "Why is my PDF so heavy?", fr: "Pourquoi mon PDF est-il si lourd ?" },
+        a: {
+          en: "Each page keeps the photo's full resolution, 12 megapixels or more on a recent iPhone. For a form with a size limit, first shrink the photos with the compress to KB tool, then build the PDF from the smaller JPGs.",
+          fr: "Chaque page garde la pleine résolution de la photo, 12 mégapixels ou plus sur un iPhone récent. Pour un formulaire avec une limite de poids, réduisez d'abord les photos avec l'outil de réduction à X Ko, puis construisez le PDF à partir des JPG allégés.",
+        },
+      },
+    ],
+    deepDive: [
+      {
+        h: { en: "From photographed pages to one document", fr: "Des pages photographiées à un seul document" },
+        p: {
+          en: [
+            "The most common reason to turn HEIC into PDF isn't photography at all: it's paperwork. A lease, a certificate or three pages of a form photographed with an iPhone arrive as HEIC files that the recipient often can't open, and that an administration asks for as a single PDF anyway.",
+            "Here the photos are decoded one after another by libheif running in the tab, converted to JPEG at quality 92, and each placed on its own page at the photo's exact size. There's no margin and no resampling, so text photographed sharply stays as sharp as it was in the original shot.",
+          ],
+          fr: [
+            "La raison la plus fréquente de transformer du HEIC en PDF n'a rien de photographique : c'est la paperasse. Un bail, une attestation ou les trois pages d'un formulaire photographiés à l'iPhone arrivent en fichiers HEIC que le destinataire ne sait souvent pas ouvrir, et qu'une administration demande de toute façon en un seul PDF.",
+            "Ici, les photos sont décodées l'une après l'autre par libheif dans l'onglet, converties en JPEG en qualité 92, puis placées chacune sur sa propre page aux dimensions exactes de la photo. Pas de marge ni de rééchantillonnage : un texte photographié net reste aussi net que sur le cliché d'origine.",
+          ],
+        },
+      },
+      {
+        h: { en: "Getting a readable, reasonably sized PDF", fr: "Obtenir un PDF lisible et d'un poids raisonnable" },
+        p: {
+          en: [
+            "Photograph documents in daylight, flat, filling the frame: the PDF can't be better than the photos. Crop the edges on the phone before converting, because the table under the sheet costs as many bytes as the sheet itself.",
+            "Page size follows photo size, so a 4032 × 3024 pixel photo produces a very large page that PDF readers simply zoom out to fit. That's harmless for reading and printing. If the recipient imposes a maximum file size, reduce the photos first; ten full-resolution pages can easily exceed 20 MB.",
+          ],
+          fr: [
+            "Photographiez les documents à la lumière du jour, bien à plat, en remplissant le cadre : le PDF ne peut pas être meilleur que les photos. Recadrez les bords sur le téléphone avant de convertir, car la table sous la feuille coûte autant d'octets que la feuille elle-même.",
+            "La taille de la page suit celle de la photo : une photo de 4032 × 3024 pixels donne une très grande page, que les lecteurs PDF réduisent simplement à l'affichage. C'est sans conséquence pour la lecture et l'impression. Si le destinataire impose un poids maximal, réduisez d'abord les photos ; dix pages en pleine résolution dépassent facilement 20 Mo.",
+          ],
+        },
+      },
+    ],
+  },
 ];
 
 export function findPdfPair(slug: string): PdfPair | undefined {

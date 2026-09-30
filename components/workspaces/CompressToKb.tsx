@@ -7,6 +7,7 @@ import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/Options
 import { downloadUrl } from "@/lib/download";
 import { useTrackRun } from "@/hooks/useTrackRun";
 import { fitToSize, KB, type FitResult } from "@/lib/target-size";
+import { IMAGE_ACCEPT, isImageFile, decodeIfHeic } from "@/lib/heic";
 
 type Format = "image/jpeg" | "image/webp";
 const PRESETS = [20, 50, 100, 200, 500, 1000] as const;
@@ -18,6 +19,7 @@ const TR = {
     unit:      "Ko",
     dropImage: "déposez une image ou cliquez",
     working:   "recherche du meilleur réglage…",
+    reading:   "lecture de l'image…",
     reached:   "sous la cible",
     missed:    "cible inatteignable, voici le plus petit fichier obtenu",
     already:   "déjà sous la cible : fichier d'origine conservé",
@@ -33,6 +35,7 @@ const TR = {
     unit:      "KB",
     dropImage: "drop an image or click",
     working:   "finding the best setting…",
+    reading:   "reading the image…",
     reached:   "under target",
     missed:    "target out of reach, here is the smallest file obtained",
     already:   "already under target: original file kept",
@@ -122,13 +125,17 @@ export function CompressToKb() {
   useEffect(() => () => { if (output?.kind === "fit") URL.revokeObjectURL(output.url); }, [output]);
 
   const handleFile = async (file: File) => {
-    const url = URL.createObjectURL(file);
+    setLoading(true);
     try {
+      // `file` reste le fichier déposé (nom, poids d'origine) ; l'aperçu et
+      // l'encodage lisent sa version décodée si c'est une photo HEIC.
+      const url = URL.createObjectURL(await decodeIfHeic(file));
       const img = await loadImage(url);
       setSource({ file, url, width: img.naturalWidth, height: img.naturalHeight });
     } catch {
       setSource(null);
       setOutput({ kind: "error" });
+      setLoading(false);
     }
   };
 
@@ -199,14 +206,15 @@ export function CompressToKb() {
       <div className="border border-line">
         {!source && (
           <div
-            onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleFile(f); }}
+            onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f && isImageFile(f)) handleFile(f); }}
             onDragOver={(e) => e.preventDefault()}
             onClick={() => inputRef.current?.click()}
             className="flex flex-col items-center justify-center gap-3 py-20 cursor-pointer hover:bg-bg-2 transition-colors"
           >
             <span className="font-mono text-[28px] text-dim">▣≤</span>
             <span className="font-mono text-[13px] text-fg">{tr.dropImage}</span>
-            <span className="font-mono text-[11px] text-dim">JPG · PNG · WebP · AVIF</span>
+            <span className="font-mono text-[11px] text-dim">JPG · PNG · WebP · AVIF · HEIC</span>
+            {loading && <span className="font-mono text-[12px] text-dim">{tr.reading}</span>}
             {output?.kind === "error" && <span className="font-mono text-[12px] text-danger">{tr.error}</span>}
           </div>
         )}
@@ -214,7 +222,7 @@ export function CompressToKb() {
         <input
           ref={inputRef}
           type="file"
-          accept="image/*"
+          accept={IMAGE_ACCEPT}
           className="hidden"
           onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
         />

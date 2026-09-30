@@ -62,7 +62,7 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
         h: "What converting does to your photos",
         blocks: [
           { p: "Converting in the browser redraws the image from its pixels, so everything that isn't a pixel stays behind. That includes EXIF metadata: GPS position, phone model, date taken. Before publishing a photo, that's a feature. If you need the location or the date later, keep the original." },
-          { p: "Two more details. Transparent areas turn white when you export to JPEG, since JPEG has no alpha channel. And iPhone photos in HEIC can only be decoded by Safari among browsers, so they need to be exported as JPEG first, from the phone or from Preview on a Mac." },
+          { p: "Two more details. Transparent areas turn white when you export to JPEG, since JPEG has no alpha channel. And iPhone photos in HEIC can only be decoded by Safari among browsers; elsewhere, our [HEIC to JPG](/convert/heic-to-jpg) page brings its own decoder and converts them in the tab." },
           { p: "When you only want a lighter file in the same format, use the [image compressor](/t/image-compressor) instead: it keeps the format, lets you set the quality from 10 to 100, and shows the exact number of bytes saved. If a form imposes a limit such as 100 KB, let the [compress to KB tool](/t/compress-to-kb) find the setting for you." },
         ],
       },
@@ -131,7 +131,7 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
         h: "Ce que la conversion fait à vos photos",
         blocks: [
           { p: "Convertir dans le navigateur redessine l'image à partir de ses pixels : tout ce qui n'est pas pixel reste en route. Y compris les métadonnées EXIF : position GPS, modèle de téléphone, date de prise de vue. Avant de publier une photo, c'est un avantage. Si vous avez besoin plus tard du lieu ou de la date, gardez l'original." },
-          { p: "Deux détails encore. Les zones transparentes deviennent blanches à l'export en JPEG, puisque le JPEG n'a pas de couche alpha. Et parmi les navigateurs, seul Safari sait décoder les photos d'iPhone en HEIC : elles doivent d'abord être exportées en JPEG, depuis le téléphone ou depuis Aperçu sur Mac." },
+          { p: "Deux détails encore. Les zones transparentes deviennent blanches à l'export en JPEG, puisque le JPEG n'a pas de couche alpha. Et parmi les navigateurs, seul Safari sait décoder les photos d'iPhone en HEIC ; ailleurs, notre page [HEIC en JPG](/convert/heic-to-jpg) apporte son propre décodeur et les convertit dans l'onglet." },
           { p: "Quand vous voulez seulement un fichier plus léger dans le même format, utilisez plutôt le [compresseur d'images](/t/image-compressor) : il garde le format, règle la qualité de 10 à 100 et affiche le nombre exact d'octets gagnés. Si un formulaire impose une limite comme 100 Ko, laissez l'outil [réduire une image à X Ko](/t/compress-to-kb) trouver le réglage à votre place." },
         ],
       },
