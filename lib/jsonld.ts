@@ -1,6 +1,6 @@
 import type { Tool } from "./types";
 import type { ToolContent } from "./tools-content";
-import { SITE_URL, BRAND_NAME, BRAND_TAGLINE } from "./brand";
+import { SITE_URL, BRAND_NAME, BRAND_TAGLINE, SAME_AS } from "./brand";
 import { toolFaqItems } from "./faq";
 
 // Échappe "<" pour empêcher un "</script>" contenu dans les données de casser la page
@@ -95,6 +95,7 @@ export function organizationJsonLd(lang: "en" | "fr") {
     name: BRAND_NAME,
     url: SITE_URL,
     logo: `${SITE_URL}/icon.svg`,
+    sameAs: SAME_AS,
     email: "contact@utilisio.com",
     contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: "contact@utilisio.com", availableLanguage: ["French", "English"] },
     description: lang === "fr"
