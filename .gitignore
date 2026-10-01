@@ -50,3 +50,4 @@ CLAUDE.md
 
 # worker PDF.js copié depuis node_modules au build (scripts/copy-pdf-worker.mjs)
 /public/pdf.worker.min.mjs
+brag-output*/
