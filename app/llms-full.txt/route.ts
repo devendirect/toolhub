@@ -3,7 +3,7 @@ import { GUIDES } from "@/lib/guides";
 import { CHANGELOG } from "@/lib/changelog";
 import { TOOLS_CONTENT } from "@/lib/tools-content";
 import { toolFaqItems } from "@/lib/faq";
-import { SITE_URL, BRAND_NAME, BRAND_TAGLINE } from "@/lib/brand";
+import { SITE_URL, BRAND_NAME, REPO_URL, YOUTUBE_URL, TIKTOK_URL, BRAND_TAGLINE } from "@/lib/brand";
 
 // Version détaillée de llms.txt, générée depuis le catalogue réel — jamais désynchronisée.
 // Pré-rendue au build (le catalogue ne change qu'au déploiement).
@@ -64,6 +64,9 @@ export function GET() {
     `- Privacy policy: ${SITE_URL}/en/privacy`,
     `- Terms of use: ${SITE_URL}/en/terms`,
     `- FAQ: ${SITE_URL}/en/faq`,
+    `- Source code (MIT): ${REPO_URL}`,
+    `- Video tutorials (YouTube): ${YOUTUBE_URL}`,
+    `- Short videos (TikTok): ${TIKTOK_URL}`,
     "",
     "## Guides",
     "",

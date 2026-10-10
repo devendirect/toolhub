@@ -1,6 +1,6 @@
 import { TOOLS, CATEGORIES, networkToolNames } from "@/lib/tools";
 import { GUIDES } from "@/lib/guides";
-import { SITE_URL, BRAND_NAME } from "@/lib/brand";
+import { SITE_URL, BRAND_NAME, REPO_URL, YOUTUBE_URL, TIKTOK_URL } from "@/lib/brand";
 
 // llms.txt condensé, généré depuis le catalogue réel (l'ancien fichier statique
 // dans public/ listait 28 outils sur 56 — plus jamais ça). Pré-rendu au build.
@@ -60,6 +60,12 @@ export function GET() {
     `- Terms of use (FR): ${SITE_URL}/fr/terms`,
     `- FAQ (EN): ${SITE_URL}/en/faq`,
     `- FAQ (FR): ${SITE_URL}/fr/faq`,
+    "",
+    "## Elsewhere",
+    "",
+    `- Source code (MIT): ${REPO_URL}`,
+    `- Video tutorials (YouTube): ${YOUTUBE_URL}`,
+    `- Short videos (TikTok): ${TIKTOK_URL}`,
     "",
     "## Guides",
     "",

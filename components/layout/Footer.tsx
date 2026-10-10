@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BRAND_NAME, REPO_URL } from "@/lib/brand";
+import { BRAND_NAME, REPO_URL, YOUTUBE_URL, TIKTOK_URL } from "@/lib/brand";
 import { t } from "@/lib/i18n";
 import { LogoMark } from "@/components/brand/LogoMark";
 import { CATEGORIES } from "@/lib/tools";
@@ -81,6 +81,9 @@ export function Footer({ lang }: { lang: Lang }) {
             <Link href={localePath(lang, "/about")} className={COL_LINK}>{i.about}</Link>
             <Link href={localePath(lang, "/contact")} className={COL_LINK}>contact</Link>
             <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className={COL_LINK}>open-source / MIT ↗</a>
+            {/* rel="me" : relie le site à ses profils officiels */}
+            <a href={YOUTUBE_URL} target="_blank" rel="me noopener noreferrer" className={COL_LINK}>{lang === "fr" ? "tutos" : "tutorials"} youtube ↗</a>
+            <a href={TIKTOK_URL} target="_blank" rel="me noopener noreferrer" className={COL_LINK}>tiktok ↗</a>
           </div>
 
         </div>

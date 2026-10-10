@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { localePath } from "@/lib/localePath";
-import { REPO_URL } from "@/lib/brand";
+import { REPO_URL, YOUTUBE_URL, TIKTOK_URL } from "@/lib/brand";
 import type { Lang } from "@/lib/types";
 
 /**
@@ -110,7 +110,11 @@ export function AboutStory({ lang }: { lang: Lang }) {
         {lang === "fr" ? ", ou directement à " : ", or directly to "}
         <a href="mailto:contact@utilisio.com" className="text-brand underline hover:no-underline">contact@utilisio.com</a>.
         {lang === "fr" ? " Le code source est sur " : " The source code is on "}
-        <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="text-brand underline hover:no-underline">GitHub</a>.
+        <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="text-brand underline hover:no-underline">GitHub</a>
+        {lang === "fr" ? ", et les tutoriels vidéo sur " : ", and the video tutorials are on "}
+        <a href={YOUTUBE_URL} target="_blank" rel="me noopener noreferrer" className="text-brand underline hover:no-underline">YouTube</a>
+        {lang === "fr" ? " et " : " and "}
+        <a href={TIKTOK_URL} target="_blank" rel="me noopener noreferrer" className="text-brand underline hover:no-underline">TikTok</a>.
       </p>
     </div>
   );
