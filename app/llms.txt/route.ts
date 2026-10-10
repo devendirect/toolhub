@@ -46,6 +46,8 @@ export function GET() {
     `- Tool catalog (FR): ${SITE_URL}/fr/tools`,
     `- Guides (EN): ${SITE_URL}/en/guides`,
     `- Guides (FR): ${SITE_URL}/fr/guides`,
+    `- What's new / changelog (EN): ${SITE_URL}/en/changelog`,
+    `- What's new / changelog (FR): ${SITE_URL}/fr/changelog`,
     `- About (EN): ${SITE_URL}/en/about`,
     `- About (FR): ${SITE_URL}/fr/about`,
     `- Contact (EN): ${SITE_URL}/en/contact`,

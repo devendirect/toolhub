@@ -56,6 +56,9 @@ export function Footer() {
             <Link href={localePath(lang, "/guides")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
               guides
             </Link>
+            <Link href={localePath(lang, "/changelog")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
+              {lang === "fr" ? "nouveautés" : "what's new"}
+            </Link>
             <Link href={localePath(lang, "/faq")} className="font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150">
               faq
             </Link>

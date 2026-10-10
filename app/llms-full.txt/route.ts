@@ -1,5 +1,6 @@
 import { TOOLS, CATEGORIES } from "@/lib/tools";
 import { GUIDES } from "@/lib/guides";
+import { CHANGELOG } from "@/lib/changelog";
 import { TOOLS_CONTENT } from "@/lib/tools-content";
 import { toolFaqItems } from "@/lib/faq";
 import { SITE_URL, BRAND_NAME, BRAND_TAGLINE } from "@/lib/brand";
@@ -56,6 +57,7 @@ export function GET() {
     "",
     `- Tool catalog: ${SITE_URL}/en/tools`,
     `- Guides: ${SITE_URL}/en/guides`,
+    `- What's new / changelog: ${SITE_URL}/en/changelog`,
     `- About: ${SITE_URL}/en/about`,
     `- Contact: ${SITE_URL}/en/contact (contact@utilisio.com)`,
     `- Legal notice: ${SITE_URL}/en/legal`,
@@ -66,6 +68,10 @@ export function GET() {
     "## Guides",
     "",
     ...GUIDES.flatMap((g) => [`### ${g.en.title}`, "", `URL: ${SITE_URL}/en/guides/${g.slug}`, "", g.en.lead, ""]),
+    "## Recent changes",
+    "",
+    ...CHANGELOG.slice(0, 10).map((e) => `- ${e.date}: ${e.text.en.title} (${SITE_URL}/en/changelog#${e.id})`),
+    "",
   );
 
   return new Response(lines.join("\n"), {

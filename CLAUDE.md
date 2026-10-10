@@ -33,6 +33,14 @@ FAQ, hub…) doit être ajoutée à la main dans le même commit : sections « K
 des deux routes llms + `staticRoutes` du sitemap. Jamais de compteur d'outils en dur
 dans l'UI ou les metadata : toujours calculé depuis `TOOLS` (cf. FAQ, home, About).
 
+### Page Nouveautés (`/[lang]/changelog`, données `lib/changelog.ts`)
+Tout commit `feat` ou `fix` **visible par un visiteur** ajoute son entrée dans
+`lib/changelog.ts`, dans le même commit, en FR et en EN (plus récente en premier,
+date du commit, `id` jamais modifié une fois publié). Pas de jargon interne, pas de
+tiret long, jamais « no logs » sur un outil `network` (vérifié par
+`__tests__/catalog/changelog.test.ts`). La page outil affiche « dernière évolution »
+depuis ces entrées.
+
 ### Design tokens → Tailwind
 Les tokens CSS vivent dans `app/globals.css`. Stack : Tailwind v4 — pas de `tailwind.config.ts`, tout est en CSS via `@theme inline`. **Les couleurs ne sont jamais écrites en dur**, toujours via les classes utilitaires (`bg-bg`, `text-fg`, `border-line`, `text-brand`, etc.).
 

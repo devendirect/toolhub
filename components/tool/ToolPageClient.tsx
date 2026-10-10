@@ -79,9 +79,11 @@ interface Props {
   faqItems: FaqItem[];
   /** Guides qui citent cet outil (titres déjà dans la langue de la page) */
   guides?: { slug: string; title: string }[];
+  /** Entrée la plus récente de la page Nouveautés qui cite cet outil */
+  lastChange?: { id: string; date: string };
 }
 
-export function ToolPageClient({ tool, content, faqItems, guides = [] }: Props) {
+export function ToolPageClient({ tool, content, faqItems, guides = [], lastChange }: Props) {
   const { lang } = useLang();
   const i = t(lang);
 
@@ -91,7 +93,7 @@ export function ToolPageClient({ tool, content, faqItems, guides = [] }: Props) 
 
   return (
     <div className="pt-9">
-      <ToolHeader tool={tool} />
+      <ToolHeader tool={tool} lastChange={lastChange} />
 
       <ErrorBoundary>
         {WorkspaceComp

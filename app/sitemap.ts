@@ -1,3 +1,4 @@
+import { latestChangeDate } from "@/lib/changelog";
 import type { MetadataRoute } from "next";
 import { TOOLS } from "@/lib/tools";
 import { CONVERT_PAIRS } from "@/lib/convert-pairs";
@@ -43,6 +44,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly" as const,
       priority: 0.7,
       alternates: alternates("/en/guides", "/fr/guides"),
+    },
+    {
+      url: `${SITE_URL}/${lang}/changelog`,
+      lastModified: latestChangeDate(),
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+      alternates: alternates("/en/changelog", "/fr/changelog"),
     },
     {
       url: `${SITE_URL}/${lang}/legal`,

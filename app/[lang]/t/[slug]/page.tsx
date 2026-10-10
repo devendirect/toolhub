@@ -1,3 +1,4 @@
+import { latestChangeForTool } from "@/lib/changelog";
 import { notFound } from "next/navigation";
 import { TOOLS, CATEGORIES } from "@/lib/tools";
 import { SITE_URL } from "@/lib/brand";
@@ -68,6 +69,7 @@ export default async function ToolPage({ params }: Props) {
   const catLabel = CATEGORIES.find((c) => c.id === tool.cat)?.label[l] ?? "";
   const content  = TOOLS_CONTENT[tool.slug];
   const faqItems = toolFaqItems(tool);
+  const change   = latestChangeForTool(tool.slug);
 
   return (
     <>
@@ -83,7 +85,7 @@ export default async function ToolPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdString(faqJsonLd(tool, l)) }}
       />
-      <ToolPageClient tool={tool} content={content} faqItems={faqItems} guides={guidesForTool(tool.slug).map((g) => ({ slug: g.slug, title: g[l].title }))} />
+      <ToolPageClient tool={tool} content={content} faqItems={faqItems} guides={guidesForTool(tool.slug).map((g) => ({ slug: g.slug, title: g[l].title }))} lastChange={change && { id: change.id, date: change.date }} />
       {/* Hub pSEO : la page outil mère lie toutes les pages paires /convert/ de sa famille */}
       {tool.slug === "image-converter" && <ConvertHub lang={l} family="image" />}
       {tool.slug === "pdf-converter" && <ConvertHub lang={l} family="pdf" />}

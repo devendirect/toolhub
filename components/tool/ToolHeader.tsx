@@ -11,7 +11,7 @@ import { TrustSignals } from "./TrustSignals";
 import { useFavorites } from "@/components/providers/FavoritesProvider";
 import type { Tool } from "@/lib/types";
 
-export function ToolHeader({ tool }: { tool: Tool }) {
+export function ToolHeader({ tool, lastChange }: { tool: Tool; lastChange?: { id: string; date: string } }) {
   const { lang } = useLang();
   const i = t(lang);
   const catLabel = CATEGORIES.find((c) => c.id === tool.cat)?.label[lang] ?? "";
@@ -57,10 +57,22 @@ export function ToolHeader({ tool }: { tool: Tool }) {
           <div className="font-mono text-[32px] text-brand tracking-[0.08em] leading-none mb-[10px]">
             {tool.glyph}
           </div>
-          <div className="flex items-center gap-2 font-mono text-[11px] text-dim mb-[14px]">
+          <div className="flex flex-wrap items-center gap-2 font-mono text-[11px] text-dim mb-[14px]">
             <span>{catLabel}</span>
             <span className="text-dim-2">·</span>
             <span className="text-hot tracking-[0.05em] text-[11px]">{i.fast}</span>
+            {lastChange && (
+              <>
+                <span className="text-dim-2">·</span>
+                {/* Date tirée d'une entrée publiée de la page Nouveautés, pas d'une date de build */}
+                <Link href={localePath(lang, `/changelog#${lastChange.id}`)} className="hover:text-brand transition-colors">
+                  {lang === "fr" ? "dernière évolution" : "last change"}{" "}
+                  <time dateTime={lastChange.date}>
+                    {new Intl.DateTimeFormat(lang === "fr" ? "fr-FR" : "en-US", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(`${lastChange.date}T00:00:00Z`))}
+                  </time>
+                </Link>
+              </>
+            )}
           </div>
           <h1 className="text-[36px] font-medium tracking-[-0.025em] leading-none mb-2">
             {tool.name[lang]}
