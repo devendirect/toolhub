@@ -75,7 +75,7 @@ export function VerifyBlock({ guide, lang, cites }: { guide: Guide; lang: Lang; 
                     <span className="block text-dim text-[12px]">
                       {t.source} :{" "}
                       {src ? (
-                        <a href={`#src-${src.id}`} className="text-syntax-key hover:underline">[{cites.get(src.id)}] {src.publisher}</a>
+                        <a href={`#src-${src.id}`} className="text-syntax-key underline underline-offset-2 hover:no-underline">[{cites.get(src.id)}] {src.publisher}</a>
                       ) : (
                         t.test
                       )}
@@ -97,7 +97,7 @@ export function VerifyBlock({ guide, lang, cites }: { guide: Guide; lang: Lang; 
                 <li key={s.id} id={`src-${s.id}`} className="grid grid-cols-[3.5ch_1fr] gap-x-2 scroll-mt-24 target:bg-brand-soft">
                   <span className="text-dim">[{cites.get(s.id)}]</span>
                   <span>
-                    <a href={s.url} target="_blank" rel="noopener" className="text-syntax-key hover:underline">{s.title}</a>
+                    <a href={s.url} target="_blank" rel="noopener" className="text-syntax-key underline underline-offset-2 hover:no-underline">{s.title}</a>
                     <span className="text-dim"> · {s.publisher} · {s.official ? t.official : t.secondary}</span>
                   </span>
                 </li>

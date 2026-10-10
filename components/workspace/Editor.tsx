@@ -44,15 +44,17 @@ interface EditorProps {
   onChange?: (value: string) => void;
   readOnly?: boolean;
   minHeight?: string;
+  /** Nom accessible de la zone d'édition (CodeMirror n'en donne pas). */
+  ariaLabel: string;
 }
 
-export function Editor({ value, onChange, readOnly = false, minHeight = "380px" }: EditorProps) {
+export function Editor({ value, onChange, readOnly = false, minHeight = "380px", ariaLabel }: EditorProps) {
   return (
     <CodeMirror
       value={value}
       onChange={onChange}
       readOnly={readOnly}
-      extensions={[json(), utilisioTheme]}
+      extensions={[json(), utilisioTheme, EditorView.contentAttributes.of({ "aria-label": ariaLabel })]}
       basicSetup={{
         lineNumbers: true,
         foldGutter: false,

@@ -53,13 +53,15 @@ export function SegControl<T extends string | number>({
   );
 }
 
-export function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void }) {
+/** `label` : nom accessible de l'interrupteur (lu par les lecteurs d'écran, la case est invisible). */
+export function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) => void; label: string }) {
   return (
     <label className="relative inline-block w-8 h-[18px] cursor-pointer">
       <input
         type="checkbox"
         checked={on}
         onChange={(e) => onChange(e.target.checked)}
+        aria-label={label}
         className="absolute opacity-0"
       />
       <span

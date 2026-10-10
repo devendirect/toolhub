@@ -93,7 +93,7 @@ export function SvgOptimizer() {
               { label: "editor NS", on: removeEditorsNS, set: setRemoveEditorsNS },
             ] as const).map(({ label, on, set }) => (
               <label key={label} className={`flex items-center gap-2 font-mono text-[11px] cursor-pointer transition-colors ${on ? "text-brand" : "text-dim"}`}>
-                <Toggle on={on} onChange={set} />
+                <Toggle on={on} onChange={set} label={label} />
                 {label}
               </label>
             ))}</div>

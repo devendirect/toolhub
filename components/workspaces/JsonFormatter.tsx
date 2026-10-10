@@ -121,10 +121,10 @@ export function JsonFormatter() {
           <SegControl options={[2, 4, 8, "tab"]} value={indent} onChange={(v) => setIndent(v as number | "tab")} />
         </OptBlock>
         <OptBlock label={i.sortKeys}>
-          <Toggle on={sortKeys} onChange={setSortKeys} />
+          <Toggle on={sortKeys} onChange={setSortKeys} label={i.sortKeys} />
         </OptBlock>
         <OptBlock label={i.minify}>
-          <Toggle on={minify} onChange={setMinify} />
+          <Toggle on={minify} onChange={setMinify} label={i.minify} />
         </OptBlock>
       </OptionsBar>
 
@@ -156,7 +156,7 @@ export function JsonFormatter() {
           }
           className="border-r border-line"
         >
-          <Editor value={input} onChange={setInput} />
+          <Editor value={input} onChange={setInput} ariaLabel={lang === "fr" ? "JSON à formater" : "JSON to format"} />
         </Pane>
 
         {/* Output pane */}
@@ -188,7 +188,7 @@ export function JsonFormatter() {
               ))}
             </ul>
           )}
-          <Editor value={output} readOnly />
+          <Editor value={output} readOnly ariaLabel={lang === "fr" ? "JSON formaté" : "Formatted JSON"} />
         </Pane>
       </div>
     </section>

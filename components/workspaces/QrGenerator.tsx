@@ -174,7 +174,7 @@ export function QrGenerator() {
                 <SegControl options={["WPA", "WEP", "nopass"]} value={wifiSec} onChange={(v) => setWifiSec(v as WifiSec)} labels={TR[lang].secs} />
               </div>
               <label className="flex items-center gap-3">
-                <Toggle on={wifiHidden} onChange={setWifiHidden} />
+                <Toggle on={wifiHidden} onChange={setWifiHidden} label={TR[lang].hidden} />
                 <span className="font-mono text-[11px] text-dim">{TR[lang].hidden}</span>
               </label>
             </div>

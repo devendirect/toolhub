@@ -49,6 +49,13 @@ function Support({ query, rows, lang }: { query: string; rows: SupportRow[]; lan
       <TerminalPrompt>support {query}</TerminalPrompt>
       <table className="w-full mt-2 text-[12.5px]">
         <caption className="sr-only">{lang === "fr" ? `Prise en charge : ${query}` : `Support: ${query}`}</caption>
+        <thead className="sr-only">
+          <tr>
+            <th scope="col">{lang === "fr" ? "état" : "status"}</th>
+            <th scope="col">{lang === "fr" ? "navigateur" : "browser"}</th>
+            <th scope="col">{lang === "fr" ? "détail" : "details"}</th>
+          </tr>
+        </thead>
         <tbody>
           {rows.map((r) => (
             <tr key={r.label} className="align-top">

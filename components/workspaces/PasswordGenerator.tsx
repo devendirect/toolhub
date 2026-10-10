@@ -142,16 +142,16 @@ export function PasswordGenerator() {
           />
         </OptBlock>
         <OptBlock label="A-Z">
-          <Toggle on={upper} onChange={(v) => { setUpper(v); regen(length, { ...opts, upper: v }); }} />
+          <Toggle label="A-Z" on={upper} onChange={(v) => { setUpper(v); regen(length, { ...opts, upper: v }); }} />
         </OptBlock>
         <OptBlock label="0-9">
-          <Toggle on={digits} onChange={(v) => { setDigits(v); regen(length, { ...opts, digits: v }); }} />
+          <Toggle label="0-9" on={digits} onChange={(v) => { setDigits(v); regen(length, { ...opts, digits: v }); }} />
         </OptBlock>
         <OptBlock label="!@#">
-          <Toggle on={symbols} onChange={(v) => { setSymbols(v); regen(length, { ...opts, symbols: v }); }} />
+          <Toggle label="!@#" on={symbols} onChange={(v) => { setSymbols(v); regen(length, { ...opts, symbols: v }); }} />
         </OptBlock>
         <OptBlock label={TR[lang].noAmbig}>
-          <Toggle on={noAmbiguous} onChange={(v) => { setNoAmbiguous(v); regen(length, { ...opts, noAmbiguous: v }); }} />
+          <Toggle label={TR[lang].noAmbig} on={noAmbiguous} onChange={(v) => { setNoAmbiguous(v); regen(length, { ...opts, noAmbiguous: v }); }} />
         </OptBlock>
       </OptionsBar>
 
