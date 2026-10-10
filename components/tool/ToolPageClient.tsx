@@ -29,7 +29,7 @@ function ToolContentSection({ content, lang }: { content: ToolContent; lang: "fr
         <ul className="flex flex-col gap-2">
           {content.useCases[lang].map((item) => (
             <li key={item} className="flex gap-3 text-[13px] text-fg-1 leading-relaxed">
-              <span className="text-dim shrink-0">—</span>
+              <span className="text-dim shrink-0">›</span>
               {item}
             </li>
           ))}

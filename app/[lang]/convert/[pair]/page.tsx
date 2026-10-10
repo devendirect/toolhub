@@ -168,7 +168,7 @@ export default async function ConvertPairPage({ params }: Props) {
         <ul className="flex flex-col gap-2 border border-line bg-bg-1 p-6">
           {pair.points[l].map((point) => (
             <li key={point} className="flex gap-3 text-[13px] text-fg-1 leading-relaxed">
-              <span className="text-dim shrink-0">—</span>
+              <span className="text-dim shrink-0">›</span>
               {point}
             </li>
           ))}

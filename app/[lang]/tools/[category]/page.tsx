@@ -12,7 +12,7 @@ interface Props {
   params: Promise<{ lang: string; category: string }>;
 }
 
-// <title> par catégorie (≤ 50 car., le layout ajoute « — utilisio ») — traduit, jamais concaténé
+// <title> par catégorie (≤ 50 car., le layout ajoute « | utilisio ») — traduit, jamais concaténé
 const CATEGORY_TITLES: Record<string, Record<Lang, string>> = {
   file:   { en: "File Tools: Images, PDF, Audio, Video",       fr: "Outils fichiers : image, PDF, audio, vidéo" },
   dev:    { en: "Developer Tools: JWT, Regex, Hash, UUID",      fr: "Outils développeur : JWT, regex, hash, UUID" },

@@ -95,7 +95,7 @@ export function AudioConverter() {
         accept="audio/*"
         glyph="♪"
         label={TR[lang].dropAudio}
-        current={file ? `${file.name} — ${fmtSize(file.size)}` : null}
+        current={file ? `${file.name} (${fmtSize(file.size)})` : null}
       />
 
       <div className="flex flex-wrap gap-0 border border-line border-t-0">

@@ -1812,13 +1812,45 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "favicon-generator": {
     desc: {
-      en: "Type one or two characters, pick a background and text color (or one of six presets), and the canvas renders a live preview at 16, 32, 48 and 64px simultaneously, useful for checking legibility at browser-tab size before committing to a design. One honest limitation: the '.ico' download in this tool is a PNG image saved with an .ico file extension, not a true multi-resolution ICO container. Every current browser (Chrome, Firefox, Edge, Safari) accepts this without complaint when referenced via a standard <link rel=\"icon\"> tag, but software that inspects the actual file signature (some older build tools or strict validators) will flag it as a mismatched format. This tool also tops out at 64px, which covers browser tabs and bookmarks but not the larger icons modern platforms expect: a 180×180 apple-touch-icon for iOS home screens or a 512×512 icon for a PWA manifest need to be generated separately at full size, ideally from a vector source rather than upscaled from a 64px canvas.",
-      fr: "Tapez un ou deux caractères, choisissez une couleur de fond et de texte (ou l'un des six presets), et le canvas affiche un aperçu en direct à 16, 32, 48 et 64px simultanément, utile pour vérifier la lisibilité à la taille d'un onglet de navigateur avant de valider un design. Une limite honnête : le téléchargement « .ico » de cet outil est en réalité une image PNG enregistrée avec l'extension .ico, pas un vrai conteneur ICO multi-résolution. Tous les navigateurs actuels (Chrome, Firefox, Edge, Safari) l'acceptent sans problème via une balise standard <link rel=\"icon\">, mais un logiciel qui inspecte la signature réelle du fichier (certains outils de build anciens ou validateurs stricts) le signalera comme un format incohérent. L'outil plafonne aussi à 64px, ce qui couvre les onglets et favoris de navigateur mais pas les icônes plus grandes attendues par les plateformes modernes : un apple-touch-icon 180×180 pour l'écran d'accueil iOS ou une icône 512×512 pour un manifest PWA doivent être générés séparément en pleine taille, idéalement depuis une source vectorielle plutôt qu'agrandis depuis un canvas de 64px.",
+      en: "Type one or two characters, choose a background and a text color (or one of six preset backgrounds), and see the icon at 16, 32, 48 and 64 pixels side by side. Download the selected size as a PNG, or as favicon.ico. The icon is drawn by your browser and nothing is sent.",
+      fr: "Tapez un ou deux caractères, choisissez une couleur de fond et de texte (ou l'un des six fonds proposés), et voyez l'icône en 16, 32, 48 et 64 pixels côte à côte. Téléchargez la taille choisie en PNG, ou en favicon.ico. L'icône est dessinée par votre navigateur et rien n'est envoyé.",
     },
     useCases: {
-      en: ["Quick placeholder favicon for a side project or local dev environment before a real logo exists", "Testing whether a two-letter monogram stays legible at 16px before finalizing brand colors", "Generating a favicon that matches an exact brand hex color without opening a design tool", "Producing the small browser-tab sizes only, pair with a separate 512px export for app icons and PWA manifests"],
-      fr: ["Favicon provisoire rapide pour un projet perso ou un environnement de dev local avant qu'un vrai logo existe", "Tester si un monogramme à deux lettres reste lisible à 16px avant de figer les couleurs de marque", "Générer un favicon qui correspond exactement à une couleur hexadécimale de marque sans ouvrir d'outil de design", "Produire uniquement les petites tailles d'onglet, à compléter par un export 512px séparé pour les icônes d'app et manifests PWA"],
+      en: ["A quick placeholder favicon for a side project or a local dev environment before a real logo exists", "Testing whether a two-letter monogram stays legible at 16px before settling on brand colors", "Generating a favicon in an exact brand hex color without opening a design tool", "Producing the small browser-tab sizes, alongside a separate 512px export for app icons and PWA manifests"],
+      fr: ["Un favicon provisoire pour un projet perso ou un environnement de dev local, en attendant un vrai logo", "Vérifier qu'un monogramme de deux lettres reste lisible en 16 px avant de fixer les couleurs de marque", "Générer un favicon dans une couleur hexadécimale de marque exacte sans ouvrir d'outil de design", "Produire les petites tailles d'onglet, en plus d'un export 512 px séparé pour les icônes d'application et les manifests PWA"],
     },
+    deepDive: [
+      {
+        h: { en: "Reading the preview", fr: "Lire l'aperçu" },
+        p: {
+          en: [
+            "16 pixels is the size that counts: it is what a browser tab shows on a standard screen. The text takes 60% of the icon's height, so at 16 px a letter is about 10 pixels tall. A normal weight, or two wide letters like MW, can turn into a smudge. Check the 16 px preview first, then compare bold and normal.",
+            "Contrast matters more than color. Pale text on a pale green looks fine at 64 px and disappears at 16 px. If in doubt, test the two colors in the Color Contrast Checker.",
+            "The letters use your system font: Segoe UI on Windows, San Francisco on a Mac. The same settings can give a slightly different shape on another computer. Once downloaded, the PNG no longer changes.",
+          ],
+          fr: [
+            "La taille qui compte, c'est 16 pixels : c'est ce qu'affiche un onglet de navigateur sur un écran standard. Le texte occupe 60 % de la hauteur de l'icône, donc en 16 px une lettre mesure environ 10 pixels. Une graisse normale, ou deux lettres larges comme MW, peuvent devenir une tache. Regardez d'abord l'aperçu 16 px, puis comparez gras et normal.",
+            "Le contraste compte plus que la couleur. Un texte pâle sur un vert pâle passe bien en 64 px et disparaît en 16 px. En cas de doute, testez les deux couleurs dans le vérificateur de contraste.",
+            "Les lettres utilisent la police de votre système : Segoe UI sous Windows, San Francisco sur Mac. Les mêmes réglages peuvent donc donner une forme un peu différente sur un autre ordinateur. Une fois téléchargé, le PNG ne change plus.",
+          ],
+        },
+      },
+      {
+        h: { en: "Which file to use", fr: "Quel fichier utiliser" },
+        p: {
+          en: [
+            "The .ico download is a PNG image saved under the name favicon.ico, not a multi-size ICO container. Current browsers accept it. A tool that checks the file signature may reject it.",
+            "For most sites, two things are enough: a line such as <link rel=\"icon\" href=\"/favicon-32x32.png\" type=\"image/png\"> in the page head, and a favicon.ico at the root of the site for software that requests that path directly.",
+            "The tool stops at 64 px. The icon on an iPhone home screen (apple-touch-icon, 180 × 180) and the icons of a web app manifest (192 and 512 px) need a larger source, ideally a vector logo.",
+          ],
+          fr: [
+            "Le téléchargement .ico est une image PNG enregistrée sous le nom favicon.ico, pas un vrai conteneur ICO multi-tailles. Les navigateurs actuels l'acceptent. Un outil qui vérifie la signature du fichier peut le refuser.",
+            "Pour la plupart des sites, deux choses suffisent : une ligne comme <link rel=\"icon\" href=\"/favicon-32x32.png\" type=\"image/png\"> dans le head de la page, et un favicon.ico à la racine du site pour les logiciels qui demandent directement ce chemin.",
+            "L'outil s'arrête à 64 px. L'icône d'écran d'accueil sur iPhone (apple-touch-icon, 180 × 180) et les icônes d'un manifest d'application web (192 et 512 px) demandent une source plus grande, idéalement un logo vectoriel.",
+          ],
+        },
+      },
+    ],
   },
   "jwt-decoder": {
     desc: {
@@ -1842,33 +1874,131 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "base-converter": {
     desc: {
-      en: "Type a number in one base (decimal, hexadecimal, octal or binary) and this converts it to all four simultaneously, using JavaScript's native parseInt/toString rather than a hand-rolled parser, so results match exactly what a script using the same functions would produce. Hex is the one you'll reach for most: colors (#00e08a), memory addresses, and MAC/UUID fragments are conventionally written in hex because two hex digits map cleanly onto one byte (00–FF). Binary matters when you're reading bitwise flags or subnet masks, where each digit corresponds to one bit rather than needing mental math from decimal. One limitation to know: the input is treated as an unsigned integer: there's no support for negative numbers or fractional values, so a two's-complement negative binary value won't convert the way it would in a language-specific integer type.",
-      fr: "Tapez un nombre dans une base (décimal, hexadécimal, octal ou binaire) et il se convertit simultanément dans les quatre, en utilisant parseInt/toString natifs de JavaScript plutôt qu'un parseur maison, donc les résultats correspondent exactement à ce que produirait un script utilisant les mêmes fonctions. Le hexadécimal est celui que vous utiliserez le plus souvent : couleurs (#00e08a), adresses mémoire, fragments de MAC/UUID s'écrivent conventionnellement en hexadécimal car deux chiffres hexadécimaux correspondent exactement à un octet (00 à FF). Le binaire compte quand vous lisez des flags bit à bit ou des masques de sous-réseau, où chaque chiffre correspond à un bit plutôt que de demander un calcul mental depuis le décimal. Une limite à connaître : la saisie est traitée comme un entier non signé, pas de support pour les nombres négatifs ou les valeurs à virgule, donc une valeur binaire négative en complément à deux ne se convertira pas comme elle le ferait dans un type entier spécifique à un langage.",
+      en: "Type a number in binary, octal, decimal or hexadecimal and read it in all four bases at once. Click a row to copy that value. The conversion uses JavaScript's own parseInt and toString, so the output is exactly what a script calling the same functions would print. Everything runs in your browser.",
+      fr: "Tapez un nombre en binaire, octal, décimal ou hexadécimal et lisez-le dans les quatre bases à la fois. Un clic sur une ligne copie la valeur. La conversion passe par parseInt et toString de JavaScript : le résultat est exactement celui qu'afficherait un script appelant les mêmes fonctions. Tout se passe dans votre navigateur.",
     },
     useCases: {
-      en: ["Converting a hex color code to its decimal RGB components for a config file that doesn't accept hex", "Reading bitwise permission flags or feature flags written in binary", "Translating old Unix file permission octal notation (like 755) to understand what it actually grants", "Checking a memory address or byte value across bases while debugging low-level code"],
-      fr: ["Convertir un code couleur hexadécimal en ses composantes RGB décimales pour un fichier de config qui n'accepte pas le hexadécimal", "Lire des flags de permission ou des feature flags écrits en binaire", "Traduire l'ancienne notation octale des permissions Unix (comme 755) pour comprendre ce qu'elle accorde réellement", "Vérifier une adresse mémoire ou une valeur d'octet dans différentes bases en déboguant du code bas niveau"],
+      en: ["Converting a hex color code to its decimal RGB components for a config file that doesn't accept hex", "Reading bitwise permission flags or feature flags written in binary", "Translating Unix file permissions in octal (like 755) to see which bits are set", "Checking a memory address or byte value across bases while debugging low-level code"],
+      fr: ["Convertir un code couleur hexadécimal en composantes RGB décimales pour un fichier de config qui n'accepte pas l'hexadécimal", "Lire des flags de permission ou des feature flags écrits en binaire", "Traduire des permissions Unix en octal (comme 755) pour voir quels bits sont activés", "Vérifier une adresse mémoire ou la valeur d'un octet dans plusieurs bases en déboguant du code bas niveau"],
     },
+    deepDive: [
+      {
+        h: { en: "Where each base shows up", fr: "Où l'on croise chaque base" },
+        p: {
+          en: [
+            "Hexadecimal is the one you meet most. Two hex digits cover exactly one byte, 00 to FF, which is why colors, MAC addresses and memory dumps are written in hex. The color #00E08A is three bytes: 00, E0 and 8A. Type FF in base 16 and you get 255 in decimal and 11111111 in binary, one full byte.",
+            "Octal survives mostly in Unix file permissions. In chmod 755, each digit stands for three bits: 7 is 111 (read, write, execute) for the owner, 5 is 101 (read, execute) for the group and for everyone else. Enter 755 in base 8 and the binary row shows 111101101, the nine permission bits in order.",
+            "Binary is for bit flags and masks, where each position is a yes or a no. A subnet mask of 255.255.255.0 is 24 ones followed by 8 zeros: convert 255 and 0 one byte at a time to see it.",
+          ],
+          fr: [
+            "L'hexadécimal est celle qu'on croise le plus. Deux chiffres hexadécimaux couvrent exactement un octet, de 00 à FF : c'est pour ça que les couleurs, les adresses MAC et les dumps mémoire s'écrivent en hexadécimal. La couleur #00E08A, ce sont trois octets : 00, E0 et 8A. Tapez FF en base 16 et vous obtenez 255 en décimal et 11111111 en binaire, un octet plein.",
+            "L'octal survit surtout dans les permissions de fichiers Unix. Dans chmod 755, chaque chiffre vaut trois bits : 7 donne 111 (lecture, écriture, exécution) pour le propriétaire, 5 donne 101 (lecture, exécution) pour le groupe et pour les autres. Saisissez 755 en base 8 et la ligne binaire affiche 111101101, les neuf bits de permission dans l'ordre.",
+            "Le binaire sert pour les flags et les masques, où chaque position vaut oui ou non. Un masque de sous-réseau 255.255.255.0, c'est 24 uns suivis de 8 zéros : convertissez 255 puis 0, un octet à la fois, pour le voir.",
+          ],
+        },
+      },
+      {
+        h: { en: "What the converter does with unusual input", fr: "Ce que fait le convertisseur d'une saisie inhabituelle" },
+        p: {
+          en: [
+            "parseInt reads as far as it can and stops at the first character that doesn't belong to the base. In base 10, 12abc gives 12 and 3.7 gives 3: the decimal part is dropped without a warning. If a result looks too small, look for a stray character in the input.",
+            "Prefixes don't all behave the same way. 0xFF is accepted in base 16, but 0b101 in base 2 returns 0, because parseInt stops at the b. Remove the 0b before pasting a binary value.",
+            "Negative numbers keep their sign: -5 becomes -101 in binary. That is not how a processor stores -5 in a byte (11111011, in two's complement), so don't use this row to read a signed register.",
+            "Above 9,007,199,254,740,991, JavaScript numbers lose precision. Enter 9007199254740993 and the tool works with 9007199254740992. For 64-bit IDs or hashes, keep the hex text as it is instead of converting it.",
+          ],
+          fr: [
+            "parseInt lit aussi loin que possible et s'arrête au premier caractère qui n'appartient pas à la base. En base 10, 12abc donne 12 et 3.7 donne 3 : la partie décimale disparaît sans avertissement. Si un résultat paraît trop petit, cherchez un caractère parasite dans la saisie.",
+            "Les préfixes ne se comportent pas tous pareil. 0xFF est accepté en base 16, mais 0b101 en base 2 renvoie 0, parce que parseInt s'arrête au b. Retirez le 0b avant de coller une valeur binaire.",
+            "Les nombres négatifs gardent leur signe : -5 devient -101 en binaire. Ce n'est pas la façon dont un processeur stocke -5 dans un octet (11111011, en complément à deux) : ne vous servez pas de cette ligne pour lire un registre signé.",
+            "Au-delà de 9 007 199 254 740 991, les nombres JavaScript perdent en précision. Saisissez 9007199254740993 et l'outil travaille sur 9007199254740992. Pour des identifiants 64 bits ou des empreintes, gardez le texte hexadécimal tel quel au lieu de le convertir.",
+          ],
+        },
+      },
+    ],
   },
   "box-shadow": {
     desc: {
-      en: "Five independent sliders (offset X, offset Y, blur, spread, and alpha) plus an inset toggle build a box-shadow value and preview it live against the panel background. Spread is the one people misunderstand: a positive value grows the shadow's box in every direction before blur softens the edges, while a negative spread shrinks it, useful for a tight shadow that hugs the element instead of ballooning past its edges. This generator produces one shadow at a time; layering multiple shadows (a common technique for a soft ambient shadow plus a sharp contact shadow underneath it) means generating each one separately here and combining them by hand with commas in your CSS. The alpha slider is what actually makes a shadow look natural, a shadow at 100% opacity black reads as a hard silhouette, while real-world shadows this tool defaults toward 25% alpha, closer to how light actually falls.",
-      fr: "Cinq curseurs indépendants (décalage X, décalage Y, flou, extension (spread), et alpha) plus un bouton inset construisent une valeur box-shadow et l'aperçoivent en direct sur le fond du panneau. Le spread est celui qu'on comprend souvent mal : une valeur positive agrandit la boîte de l'ombre dans toutes les directions avant que le flou n'adoucisse les bords, tandis qu'un spread négatif la réduit, utile pour une ombre resserrée qui colle à l'élément au lieu de déborder largement de ses bords. Ce générateur produit une seule ombre à la fois ; superposer plusieurs ombres (une technique courante pour une ombre ambiante douce plus une ombre de contact nette en dessous) demande de générer chacune séparément ici et de les combiner à la main avec des virgules dans votre CSS. Le curseur alpha est ce qui rend vraiment une ombre naturelle, une ombre noire à 100% d'opacité se lit comme une silhouette dure, alors que cet outil part par défaut sur 25% d'alpha, plus proche de la façon dont la lumière tombe réellement.",
+      en: "Set the horizontal and vertical offset, blur, spread and opacity of a shadow with sliders or number fields, switch it to inset if needed, and copy the box-shadow line. The preview follows each change. The starting values are 4px 8px 16px 0 in black at 25% opacity.",
+      fr: "Réglez le décalage horizontal et vertical, le flou, l'extension et l'opacité d'une ombre avec des curseurs ou des champs numériques, passez-la en inset si besoin, et copiez la ligne box-shadow. L'aperçu suit chaque changement. Les valeurs de départ sont 4px 8px 16px 0, en noir à 25 % d'opacité.",
     },
     useCases: {
-      en: ["Building a soft elevated-card shadow for a design system without guessing blur/spread values by hand", "Creating a tight 'contact shadow' with negative spread that hugs a button instead of ballooning outward", "Prototyping an inset shadow for a pressed-button or input-field state", "Fine-tuning shadow alpha to match a specific dark or light theme instead of reusing a default black"],
-      fr: ["Construire une ombre douce de carte surélevée pour un design system sans deviner les valeurs de flou/spread à la main", "Créer une « ombre de contact » resserrée avec un spread négatif qui colle à un bouton au lieu de déborder", "Prototyper une ombre inset pour un état de bouton pressé ou de champ de saisie", "Affiner l'alpha de l'ombre pour correspondre à un thème sombre ou clair spécifique plutôt que de réutiliser un noir par défaut"],
+      en: ["Building a soft card shadow for a design system without guessing blur and spread values", "Creating a tight contact shadow with a negative spread that stays under a button", "Prototyping an inset shadow for a pressed button or an input field", "Adjusting shadow opacity to suit a specific dark or light theme"],
+      fr: ["Construire une ombre de carte douce pour un design system sans deviner le flou et l'extension", "Créer une ombre de contact serrée avec une extension négative, qui reste sous un bouton", "Prototyper une ombre intérieure pour un bouton enfoncé ou un champ de saisie", "Ajuster l'opacité d'une ombre à un thème sombre ou clair précis"],
     },
+    deepDive: [
+      {
+        h: { en: "What each value does", fr: "Ce que fait chaque valeur" },
+        p: {
+          en: [
+            "x and y move the shadow. A positive y puts it below the element, as if the light came from above, which is how most interfaces draw it. Negative values move it up or to the left.",
+            "Blur softens the edge. At 0 the shadow is a sharp copy of the box; the higher the value, the wider and softer the fade.",
+            "Spread resizes the shadow before the blur: 4px makes it 4 pixels larger on every side, -4px makes it smaller. A negative spread combined with a positive y gives a shadow that shows under the element but not on its sides.",
+            "Alpha is the opacity of the color. A black shadow at 100% looks like a second, darker box rather than depth. Start low, around the default 25%, and raise it only if the shadow disappears on your background.",
+          ],
+          fr: [
+            "x et y déplacent l'ombre. Un y positif la place sous l'élément, comme si la lumière venait d'en haut, ce que font la plupart des interfaces. Des valeurs négatives la déplacent vers le haut ou vers la gauche.",
+            "Le flou adoucit le bord. À 0, l'ombre est une copie nette de la boîte ; plus la valeur monte, plus le fondu est large et doux.",
+            "L'extension (spread) redimensionne l'ombre avant le flou : 4px l'agrandit de 4 pixels de chaque côté, -4px la réduit. Une extension négative avec un y positif donne une ombre visible sous l'élément mais pas sur ses côtés.",
+            "L'alpha est l'opacité de la couleur. Une ombre noire à 100 % ressemble à une seconde boîte plus sombre plutôt qu'à du relief. Partez bas, vers les 25 % proposés au départ, et ne montez que si l'ombre disparaît sur votre fond.",
+          ],
+        },
+      },
+      {
+        h: { en: "Layered and inset shadows", fr: "Ombres superposées et intérieures" },
+        p: {
+          en: [
+            "The tool produces one shadow at a time. Many design systems stack two: a wide, faint one for ambient light and a small, darker one close to the element. Generate each one, then join them with a comma, for example box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.30), 0px 8px 24px 0px rgba(0, 0, 0, 0.12);",
+            "Inset draws the shadow inside the box, the usual way to show a pressed button or a sunken input field. With inset, positive x and y values put the shadow along the top and left inner edges.",
+            "On a dark background a black shadow barely shows. Dark themes often mark elevation with a slightly lighter surface or a border instead. If you keep a shadow there, raise its opacity.",
+          ],
+          fr: [
+            "L'outil produit une ombre à la fois. Beaucoup de design systems en empilent deux : une large et légère pour la lumière ambiante, une petite et plus sombre près de l'élément. Générez chacune, puis séparez-les par une virgule, par exemple box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.30), 0px 8px 24px 0px rgba(0, 0, 0, 0.12);",
+            "Inset dessine l'ombre à l'intérieur de la boîte : c'est la façon habituelle de montrer un bouton enfoncé ou un champ de saisie en creux. En inset, des x et y positifs placent l'ombre le long des bords intérieurs haut et gauche.",
+            "Sur un fond sombre, une ombre noire se voit à peine. Les thèmes sombres marquent souvent le relief par une surface un peu plus claire ou une bordure. Si vous gardez une ombre, augmentez son opacité.",
+          ],
+        },
+      },
+    ],
   },
   "color-picker": {
     desc: {
-      en: "Pick a color with the native browser picker or type a hex value directly, and every common format appears at once: HEX, RGB, HSL, HSV, plus the individual R/G/B channel values, click any row to copy just that one. HSL and HSV look similar but solve different problems: HSL's lightness runs from black through the pure hue to white, which is what CSS animations and design tokens usually want, while HSV's value/brightness axis (closer to how paint mixing or Photoshop's picker behaves) makes it easier to darken a color without washing it toward gray. One real constraint: the native <input type=\"color\"> this tool wraps doesn't support alpha/transparency, if you need a semi-transparent color, get the HEX or RGB here and add the alpha channel by hand (an 8-digit hex like #00e08a80, or rgba()).",
-      fr: "Choisissez une couleur avec le sélecteur natif du navigateur ou tapez directement une valeur hexadécimale, et tous les formats courants apparaissent en même temps : HEX, RGB, HSL, HSV, plus les valeurs individuelles des canaux R/G/B, cliquez sur une ligne pour ne copier que celle-ci. HSL et HSV se ressemblent mais résolvent des problèmes différents : la luminosité (lightness) de HSL va du noir à la teinte pure jusqu'au blanc, ce que les animations CSS et les tokens de design veulent généralement, tandis que l'axe valeur/luminosité de HSV (plus proche du mélange de peinture ou du sélecteur de Photoshop) facilite l'assombrissement d'une couleur sans la délaver vers le gris. Une vraie contrainte : le <input type=\"color\"> natif que cet outil encapsule ne supporte pas l'alpha/la transparence, si vous avez besoin d'une couleur semi-transparente, récupérez le HEX ou le RGB ici et ajoutez le canal alpha à la main (un hexadécimal à 8 chiffres comme #00e08a80, ou rgba()).",
+      en: "Pick a color with your browser's color picker or type a six-digit hex code, and read it as HEX, RGB, HSL and HSV, along with the separate red, green and blue values. Click any row to copy it. Everything is computed in your browser.",
+      fr: "Choisissez une couleur avec le sélecteur de votre navigateur ou tapez un code hexadécimal à six chiffres, et lisez-la en HEX, RGB, HSL et HSV, avec les valeurs séparées de rouge, vert et bleu. Un clic sur une ligne la copie. Tout est calculé dans votre navigateur.",
     },
     useCases: {
-      en: ["Converting a design tool's HEX swatch into the RGB or HSL syntax a specific CSS property expects", "Grabbing the individual R, G, B channel values needed for a canvas or shader calculation", "Understanding why an HSL lightness tweak looks duller than expected, compare it against the HSV value axis", "Quickly reading off a brand color's exact values to hand to a developer or design tool"],
-      fr: ["Convertir une teinte HEX d'un outil de design vers la syntaxe RGB ou HSL attendue par une propriété CSS spécifique", "Récupérer les valeurs individuelles des canaux R, G, B nécessaires pour un calcul canvas ou shader", "Comprendre pourquoi un ajustement de luminosité HSL paraît plus terne que prévu, comparer avec l'axe valeur de HSV", "Relever rapidement les valeurs exactes d'une couleur de marque à transmettre à un développeur ou un outil de design"],
+      en: ["Converting a HEX swatch from a design tool into the RGB or HSL syntax a CSS property expects", "Getting the separate R, G and B values needed for a canvas or shader calculation", "Understanding why lowering HSL lightness gives a duller color than lowering HSV brightness", "Reading the exact values of a brand color to pass on to a developer or a design tool"],
+      fr: ["Convertir une teinte HEX d'un outil de design dans la syntaxe RGB ou HSL attendue par une propriété CSS", "Récupérer les valeurs R, G et B séparées pour un calcul de canvas ou de shader", "Comprendre pourquoi baisser la luminosité HSL donne une couleur plus terne que baisser la valeur HSV", "Relever les valeurs exactes d'une couleur de marque pour un développeur ou un outil de design"],
     },
+    deepDive: [
+      {
+        h: { en: "Which format to paste where", fr: "Quel format coller où" },
+        p: {
+          en: [
+            "CSS accepts HEX, rgb() and hsl() as they are. HSV has no CSS syntax: a browser ignores hsv(157, 100%, 88%). That row is for design tools such as Photoshop, Figma or GIMP, whose pickers work with hue, saturation and brightness.",
+            "HSL is handy for variations of a single color. Keep the hue and saturation, change only the lightness, and you get lighter and darker shades of the same color. Many design token scales are built that way.",
+            "The hex field expects six digits with the #, such as #00E08A. The short form #FFF is not read: type #FFFFFF.",
+          ],
+          fr: [
+            "Le CSS accepte HEX, rgb() et hsl() tels quels. HSV n'a pas de syntaxe CSS : un navigateur ignore hsv(157, 100%, 88%). Cette ligne sert aux outils de design comme Photoshop, Figma ou GIMP, dont les sélecteurs travaillent en teinte, saturation et luminosité.",
+            "HSL est pratique pour décliner une couleur. Gardez la teinte et la saturation, changez seulement la luminosité, et vous obtenez des nuances plus claires et plus foncées de la même couleur. Beaucoup d'échelles de tokens de design sont construites ainsi.",
+            "Le champ hexadécimal attend six chiffres avec le #, comme #00E08A. La forme courte #FFF n'est pas lue : tapez #FFFFFF.",
+          ],
+        },
+      },
+      {
+        h: { en: "Rounding and transparency", fr: "Arrondis et transparence" },
+        p: {
+          en: [
+            "HSL and HSV values are rounded to whole numbers, as most tools display them. Converting back can therefore shift a channel by one unit. #3B82F6 gives hsl(217, 91%, 60%), and that HSL converts back to rgb(60, 131, 246), which is #3C83F6. When the exact color matters, for a brand color for instance, copy the HEX or RGB value.",
+            "The browser's color picker has no transparency setting. For a semi-transparent color, add the alpha yourself: an eight-digit hex such as #00E08A80 (about 50%), or rgb(0 224 138 / 0.5).",
+          ],
+          fr: [
+            "Les valeurs HSL et HSV sont arrondies à l'entier, comme les affichent la plupart des outils. La conversion inverse peut donc décaler un canal d'une unité. #3B82F6 donne hsl(217, 91%, 60%), et ce HSL redonne rgb(60, 131, 246), soit #3C83F6. Quand la couleur exacte compte, pour une couleur de marque par exemple, copiez la valeur HEX ou RGB.",
+            "Le sélecteur de couleur du navigateur n'a pas de réglage de transparence. Pour une couleur semi-transparente, ajoutez l'alpha vous-même : un hexadécimal à huit chiffres comme #00E08A80 (environ 50 %), ou rgb(0 224 138 / 0.5).",
+          ],
+        },
+      },
+    ],
   },
   "contrast-checker": {
     desc: {
@@ -1912,13 +2042,45 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "deduplicate-lines": {
     desc: {
-      en: "Paste a list and get back only the first occurrence of each line, in its original order, duplicates found later in the list are dropped, not the earlier ones, so the order you see in the output matches the order things first appeared in the input. The case-sensitive/insensitive toggle matters more than it looks: with case-sensitive matching on, \"Apple\" and \"apple\" count as two different lines and both survive, which is correct for things like variable names but usually wrong for a list of email addresses or tags where casing is incidental. One thing this tool won't catch: it compares lines exactly as typed, so \"apple\" and \"apple \" (with a trailing space) are treated as different lines and neither gets removed, trim trailing whitespace first if your source data has inconsistent spacing, which is common in copy-pasted spreadsheet columns.",
-      fr: "Collez une liste et récupérez uniquement la première occurrence de chaque ligne, dans son ordre d'origine, les doublons trouvés plus loin dans la liste sont supprimés, pas les premiers, donc l'ordre du résultat correspond à l'ordre d'apparition initial dans la saisie. Le bouton sensible/insensible à la casse compte plus qu'il n'y paraît : avec la casse sensible activée, \"Apple\" et \"apple\" comptent comme deux lignes différentes et survivent toutes les deux, ce qui est correct pour des noms de variables mais généralement faux pour une liste d'adresses e-mail ou de tags où la casse est accessoire. Une chose que cet outil ne détecte pas : il compare les lignes exactement telles que saisies, donc \"apple\" et \"apple \" (avec une espace en fin) sont traitées comme des lignes différentes et aucune n'est supprimée, retirez les espaces de fin d'abord si votre source a un espacement incohérent, ce qui arrive souvent avec des colonnes de tableur copiées-collées.",
+      en: "Paste a list and keep only the first occurrence of each line, in the original order. A counter shows how many duplicates were removed. Matching can be case-sensitive or not, and the list never leaves your browser.",
+      fr: "Collez une liste et gardez seulement la première occurrence de chaque ligne, dans l'ordre d'origine. Un compteur indique combien de doublons ont été retirés. La comparaison peut tenir compte de la casse ou non, et la liste ne quitte jamais votre navigateur.",
     },
     useCases: {
-      en: ["Cleaning a mailing list or contact export that accumulated duplicate entries over time", "Deduplicating a list of URLs or file paths before running a batch script against them", "Merging two lists of tags or categories without ending up with repeated entries", "Checking how many genuinely unique values a messy dataset actually contains"],
-      fr: ["Nettoyer une liste de diffusion ou un export de contacts qui a accumulé des doublons avec le temps", "Dédupliquer une liste d'URLs ou de chemins de fichiers avant de lancer un script batch dessus", "Fusionner deux listes de tags ou de catégories sans se retrouver avec des entrées répétées", "Vérifier combien de valeurs réellement uniques contient un jeu de données désordonné"],
+      en: ["Cleaning a mailing list or contact export that accumulated duplicate entries over time", "Deduplicating a list of URLs or file paths before running a batch script on them", "Merging two lists of tags or categories without repeated entries", "Counting how many distinct values a messy list really contains"],
+      fr: ["Nettoyer une liste de diffusion ou un export de contacts qui a accumulé des doublons", "Dédupliquer une liste d'URL ou de chemins de fichiers avant de lancer un script dessus", "Fusionner deux listes de tags ou de catégories sans entrées répétées", "Compter combien de valeurs distinctes contient vraiment une liste désordonnée"],
     },
+    deepDive: [
+      {
+        h: { en: "How lines are compared", fr: "Comment les lignes sont comparées" },
+        p: {
+          en: [
+            "Two lines are duplicates only if they match character for character. apple and apple followed by a space are two different lines. So are two copies of a cell pasted from a spreadsheet if one of them ends with a tab. Clean trailing spaces first when the list comes from Excel or Google Sheets.",
+            "With case-insensitive matching, Apple and apple count as one line, and the tool keeps the version it met first, with its casing. Use this mode for email addresses and tags. Keep case-sensitive matching for code identifiers, or for file paths on Linux, where Readme.md and README.md are two different files.",
+            "Blank lines are compared like any other: the first one stays, the following ones are removed.",
+          ],
+          fr: [
+            "Deux lignes ne sont des doublons que si elles sont identiques au caractère près. apple et apple suivi d'une espace sont deux lignes différentes. Deux copies d'une cellule collée depuis un tableur le sont aussi si l'une se termine par une tabulation. Retirez les espaces de fin d'abord quand la liste vient d'Excel ou de Google Sheets.",
+            "Sans tenir compte de la casse, Apple et apple comptent pour une seule ligne, et l'outil garde la version rencontrée en premier, avec sa casse. Ce mode convient aux adresses e-mail et aux tags. Gardez la comparaison sensible à la casse pour des identifiants de code, ou pour des chemins de fichiers sous Linux, où Readme.md et README.md sont deux fichiers distincts.",
+            "Les lignes vides sont comparées comme les autres : la première reste, les suivantes sont retirées.",
+          ],
+        },
+      },
+      {
+        h: { en: "Two quick checks on a list", fr: "Deux contrôles rapides sur une liste" },
+        p: {
+          en: [
+            "Counting distinct values: paste a column of 1,000 email addresses. If the counter says 37 duplicates removed and the list has no blank lines, it holds 963 distinct addresses. No pivot table, no formula.",
+            "Finding what two lists share: paste one list, then the other underneath. Every line of the second list that already appears in the first is removed, so the counter gives the number of shared entries. This only works if neither list contains duplicates on its own, so run each one through the tool first.",
+            "The order of the remaining lines never changes. If you also want them sorted, sort the result afterwards in your editor or spreadsheet.",
+          ],
+          fr: [
+            "Compter les valeurs distinctes : collez une colonne de 1 000 adresses e-mail. Si le compteur indique 37 doublons retirés et que la liste n'a pas de ligne vide, elle contient 963 adresses distinctes. Sans tableau croisé ni formule.",
+            "Trouver ce que deux listes ont en commun : collez une liste, puis l'autre en dessous. Chaque ligne de la seconde déjà présente dans la première est retirée, donc le compteur donne le nombre d'entrées communes. Cela ne marche que si aucune des deux listes ne contient de doublon à elle seule : passez d'abord chacune dans l'outil.",
+            "L'ordre des lignes restantes ne change jamais. Pour les trier en plus, triez le résultat ensuite dans votre éditeur ou votre tableur.",
+          ],
+        },
+      },
+    ],
   },
   "diff-viewer": {
     desc: {
@@ -1941,23 +2103,87 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "env-formatter": {
     desc: {
-      en: "Paste a .env file and sort keys alphabetically, remove duplicate keys (keeping the first occurrence, matching how most dotenv loaders resolve conflicts), and strip entries with empty values, each as an independent toggle. The one behavior worth knowing before you rely on this for a real project file: comments and blank lines are not preserved in the output. If your .env is organized into sections with # Database, # App-level config style headers, formatting it here will produce a flat list of KEY=value lines with those section comments gone, not reorganized underneath their original headers. For a file with meaningful comments you want to keep, sort and dedupe a copy here, then manually merge the reordered keys back into your commented original rather than replacing it outright.",
-      fr: "Collez un fichier .env pour trier les clés par ordre alphabétique, supprimer les clés en double (en gardant la première occurrence, comme la plupart des chargeurs dotenv résolvent les conflits), et retirer les entrées à valeur vide, chacun étant un bouton indépendant. Le comportement à connaître avant de s'en servir sur un vrai fichier de projet : les commentaires et lignes vides ne sont pas conservés dans le résultat. Si votre .env est organisé en sections avec des en-têtes style # Database, # App, le formater ici produira une liste plate de lignes KEY=valeur, ces commentaires de section ayant disparu, pas réorganisés sous leurs en-têtes d'origine. Pour un fichier avec des commentaires que vous voulez garder, triez et dédupliquez une copie ici, puis fusionnez manuellement les clés réordonnées dans votre original commenté plutôt que de le remplacer directement.",
+      en: "Paste a .env file to sort its keys, remove duplicate keys and drop keys with an empty value, each with its own switch. A counter shows how many keys the file holds and how many are repeated. The file is processed in your browser and never sent, which matters for a file that usually holds passwords and API keys.",
+      fr: "Collez un fichier .env pour trier ses clés, retirer les clés en double et supprimer celles qui n'ont pas de valeur, chaque option ayant son propre interrupteur. Un compteur indique combien de clés contient le fichier et combien sont répétées. Le fichier est traité dans votre navigateur et jamais envoyé, ce qui compte pour un fichier qui contient en général des mots de passe et des clés d'API.",
     },
     useCases: {
-      en: ["Spotting duplicate environment variable keys that accumulated after merging branches with conflicting .env changes", "Alphabetizing a growing .env file to make a specific key faster to find during debugging", "Stripping placeholder empty-value entries left over from a .env.example before committing a real config", "Quickly comparing which keys exist across two .env files by sorting both the same way first"],
-      fr: ["Repérer des clés de variables d'environnement en double accumulées après avoir fusionné des branches avec des changements .env conflictuels", "Trier alphabétiquement un fichier .env qui a grossi pour retrouver plus vite une clé précise en déboguant", "Retirer les entrées à valeur vide laissées par un .env.example avant de committer une vraie config", "Comparer rapidement quelles clés existent entre deux fichiers .env en les triant de la même façon d'abord"],
+      en: ["Spotting duplicate keys that piled up after merging branches that both edited the .env", "Sorting a long .env file alphabetically to find a key faster while debugging", "Removing empty placeholder keys copied from a .env.example before using the file", "Comparing which keys two .env files contain by sorting both the same way"],
+      fr: ["Repérer les clés en double accumulées après la fusion de branches qui modifiaient toutes deux le .env", "Trier par ordre alphabétique un long fichier .env pour retrouver plus vite une clé en déboguant", "Retirer les clés vides recopiées d'un .env.example avant d'utiliser le fichier", "Comparer les clés de deux fichiers .env en les triant de la même façon"],
     },
+    deepDive: [
+      {
+        h: { en: "Duplicate keys: the last one wins", fr: "Clés en double : la dernière l'emporte" },
+        p: {
+          en: [
+            "When a key appears twice, dotenv in Node.js and a shell running source .env both use the last value. The tool does the same: it keeps the last occurrence and removes the earlier ones. With DEBUG=true on line 3 and DEBUG=false on line 20, the cleaned file keeps DEBUG=false, the value your application already reads.",
+            "Duplicates usually appear after a merge, when two branches each added the same key with a different value. The tool can't know which one you meant. Before replacing your file, check that the value left is the one you want.",
+          ],
+          fr: [
+            "Quand une clé apparaît deux fois, dotenv sous Node.js et un shell qui exécute source .env utilisent tous deux la dernière valeur. L'outil fait de même : il garde la dernière occurrence et retire les précédentes. Avec DEBUG=true ligne 3 et DEBUG=false ligne 20, le fichier nettoyé garde DEBUG=false, la valeur que votre application lit déjà.",
+            "Les doublons apparaissent en général après une fusion, quand deux branches ont chacune ajouté la même clé avec une valeur différente. L'outil ne peut pas savoir laquelle vous vouliez. Avant de remplacer votre fichier, vérifiez que la valeur restante est la bonne.",
+          ],
+        },
+      },
+      {
+        h: { en: "What the formatter leaves out", fr: "Ce que le formateur laisse de côté" },
+        p: {
+          en: [
+            "Comments and blank lines are not kept. A file split into sections with # Database and # Mail headings comes out as one flat list. Work on a copy, then move the sorted keys back into your commented file.",
+            "Each line is read on its own. A quoted value that spans several lines, such as a private key in PEM format, gets split, and each of its lines is treated as a separate key. Leave those values out of what you paste.",
+            "A line with nothing after the equals sign, such as UNUSED=, counts as empty and the empty switch removes it. UNUSED=\"\" is not treated as empty by the tool, even though dotenv reads it as an empty string.",
+            "Sorting follows alphabetical order for your browser's language, so lowercase and uppercase keys are mixed rather than grouped.",
+          ],
+          fr: [
+            "Les commentaires et les lignes vides ne sont pas conservés. Un fichier découpé en sections avec des titres # Database et # Mail ressort en une seule liste. Travaillez sur une copie, puis replacez les clés triées dans votre fichier commenté.",
+            "Chaque ligne est lue séparément. Une valeur entre guillemets qui tient sur plusieurs lignes, comme une clé privée au format PEM, est coupée, et chacune de ses lignes est traitée comme une clé à part. Laissez ces valeurs hors du texte collé.",
+            "Une ligne sans rien après le signe égal, comme UNUSED=, est considérée comme vide, et l'interrupteur « vides » la retire. UNUSED=\"\" n'est pas considérée comme vide par l'outil, alors que dotenv la lit comme une chaîne vide.",
+            "Le tri suit l'ordre alphabétique de la langue de votre navigateur : les clés en minuscules et en majuscules sont mélangées, pas regroupées.",
+          ],
+        },
+      },
+    ],
   },
   "image-compressor": {
     desc: {
-      en: "Drop a JPG, PNG, WebP or AVIF image, pick an output format, and adjust the quality slider (10–100) to see the compressed result and the exact size saved compared to the original, everything runs through the Canvas API in your browser. The quality slider only applies to WebP and JPEG output: PNG is a lossless format, so there's no quality dial for it, and choosing PNG for a photo is usually the wrong move for file size, re-encoding a photographic JPG or WebP into lossless PNG can produce a larger file than the original, which shows up here as a red '+X% larger' result instead of the green savings you'd expect. WebP at quality 75–85 is the sweet spot for most web use: visually close to the original, with meaningfully smaller output than an equivalent-quality JPEG.",
-      fr: "Déposez une image JPG, PNG, WebP ou AVIF, choisissez un format de sortie, et ajustez le curseur de qualité (10 à 100) pour voir le résultat compressé et le poids exact économisé par rapport à l'original, tout passe par l'API Canvas dans votre navigateur. Le curseur de qualité ne s'applique qu'aux sorties WebP et JPEG : le PNG est un format sans perte, donc pas de réglage de qualité pour lui, et choisir le PNG pour une photo est généralement le mauvais choix côté poids de fichier, réencoder un JPG ou WebP photographique en PNG sans perte peut produire un fichier plus lourd que l'original, ce qui s'affiche ici en rouge « +X% plus lourd » au lieu de l'économie verte attendue. Le WebP à qualité 75-85 est le point d'équilibre pour la plupart des usages web : visuellement proche de l'original, avec un résultat nettement plus léger qu'un JPEG de qualité équivalente.",
+      en: "Drop a JPG, PNG, WebP or AVIF image (AVIF if your browser can display it), choose WebP, JPEG or PNG as output and set the quality from 10 to 100. The tool shows the new file size and the percentage saved, or the percentage gained if the file got heavier. The image is re-encoded by your browser's canvas and never uploaded.",
+      fr: "Déposez une image JPG, PNG, WebP ou AVIF (AVIF si votre navigateur sait l'afficher), choisissez WebP, JPEG ou PNG en sortie et réglez la qualité de 10 à 100. L'outil affiche le nouveau poids et le pourcentage gagné, ou le pourcentage en plus si le fichier s'est alourdi. L'image est réencodée par le canvas de votre navigateur, sans jamais être envoyée.",
     },
     useCases: {
-      en: ["Shrinking a photo before uploading it somewhere with a strict file-size limit", "Comparing how much smaller WebP is than the original JPG at the same visual quality", "Preparing images for a web page where load time and Core Web Vitals matter", "Checking honestly whether converting to PNG actually helps or hurts a photo's file size before committing to it"],
-      fr: ["Réduire une photo avant de l'envoyer quelque part avec une limite de taille de fichier stricte", "Comparer à quel point le WebP est plus léger que le JPG d'origine à qualité visuelle équivalente", "Préparer des images pour une page web où le temps de chargement et les Core Web Vitals comptent", "Vérifier honnêtement si convertir en PNG aide ou nuit réellement au poids d'une photo avant de s'y engager"],
+      en: ["Shrinking a photo before uploading it somewhere with a file-size limit", "Comparing how much lighter WebP is than the original JPG at a similar visual quality", "Preparing images for a web page where load time and Core Web Vitals matter", "Checking whether converting a photo to PNG makes it lighter or heavier before using it"],
+      fr: ["Alléger une photo avant de l'envoyer sur un site qui limite le poids des fichiers", "Comparer le gain du WebP par rapport au JPG d'origine à qualité visuelle proche", "Préparer des images pour une page web où le temps de chargement et les Core Web Vitals comptent", "Vérifier si convertir une photo en PNG l'allège ou l'alourdit avant de s'en servir"],
     },
+    deepDive: [
+      {
+        h: { en: "Which format for which image", fr: "Quel format pour quelle image" },
+        p: {
+          en: [
+            "For photos, WebP at quality 75 to 85 is a good starting point: the file is usually lighter than a JPEG of the same visual quality. JPEG remains the safe choice when the image goes to software that doesn't read WebP, such as some administrative portals or older email clients.",
+            "PNG has no quality setting because it is lossless. It suits screenshots, logos and flat graphics. For a photo it is often heavier than the original, and the tool then shows the result in red, as +X%.",
+            "The output keeps the original width and height. If the file must stay under a fixed size, for example 100 KB on an online form, use Compress Image to KB, which can also reduce the dimensions.",
+          ],
+          fr: [
+            "Pour une photo, le WebP en qualité 75 à 85 est un bon point de départ : le fichier est en général plus léger qu'un JPEG de qualité visuelle équivalente. Le JPEG reste le choix sûr quand l'image part vers un logiciel qui ne lit pas le WebP, comme certains portails administratifs ou d'anciens logiciels de messagerie.",
+            "Le PNG n'a pas de réglage de qualité, car il est sans perte. Il convient aux captures d'écran, aux logos et aux aplats. Pour une photo, il est souvent plus lourd que l'original, et l'outil affiche alors le résultat en rouge, en +X %.",
+            "Le résultat garde la largeur et la hauteur d'origine. Si le fichier doit rester sous un poids fixe, 100 Ko sur un formulaire en ligne par exemple, utilisez l'outil Réduire une image à X Ko, qui peut aussi réduire les dimensions.",
+          ],
+        },
+      },
+      {
+        h: { en: "What re-encoding changes", fr: "Ce que le réencodage change" },
+        p: {
+          en: [
+            "Transparency is lost in JPEG. A PNG logo with a transparent background, saved as JPEG, gets a black background, because JPEG has no alpha channel. Choose WebP or PNG for those images.",
+            "Metadata is not copied: camera model, date taken and GPS position are absent from the output, which is useful before posting a photo publicly. The browser applies the photo's rotation before drawing it, so a portrait shot stays upright.",
+            "Each setting is applied to the original file, not to the previous result. You can try quality 40, then go back to 85 without losing detail along the way.",
+          ],
+          fr: [
+            "La transparence disparaît en JPEG. Un logo PNG sur fond transparent, enregistré en JPEG, prend un fond noir, car le JPEG n'a pas de couche alpha. Choisissez le WebP ou le PNG pour ces images.",
+            "Les métadonnées ne sont pas recopiées : modèle d'appareil, date de prise de vue et position GPS sont absents du résultat, ce qui est utile avant de publier une photo. Le navigateur applique la rotation de la photo avant de la dessiner : une photo prise en portrait reste droite.",
+            "Chaque réglage repart du fichier d'origine, pas du résultat précédent. Vous pouvez essayer la qualité 40, puis revenir à 85 sans avoir perdu de détail en route.",
+          ],
+        },
+      },
+    ],
   },
   "compress-to-kb": {
     desc: {
@@ -2055,23 +2281,87 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "slug-generator": {
     desc: {
-      en: "Type a title and get a URL-safe slug back instantly: accented Latin characters are normalized and stripped (é, à, ü, ñ all convert to their plain-ASCII base letter), everything is lowercased, and any character that isn't a letter, number or your chosen separator gets removed before spaces collapse into hyphens or underscores. This handles Latin-alphabet diacritics well (French, Spanish, German, Portuguese titles convert cleanly) but it isn't a transliteration engine: a title written in Cyrillic, Arabic, Greek or CJK characters falls outside the regex's allowed range entirely and gets stripped rather than converted to a Latin equivalent, which can leave you with an empty or near-empty slug. For non-Latin-script content, a proper transliteration library (not simple character filtering) is the right tool, not this one.",
-      fr: "Tapez un titre et récupérez instantanément un slug compatible URL : les caractères latins accentués sont normalisés et retirés (é, à, ü, ñ se convertissent tous vers leur lettre ASCII de base), tout est mis en minuscules, et tout caractère qui n'est ni une lettre, ni un chiffre, ni le séparateur choisi est supprimé avant que les espaces ne se transforment en tirets ou underscores. Ça gère bien les diacritiques de l'alphabet latin (les titres français, espagnols, allemands, portugais se convertissent proprement) mais ce n'est pas un moteur de translittération : un titre écrit en cyrillique, arabe, grec ou caractères CJK sort entièrement de la plage autorisée par l'expression régulière et se voit supprimé plutôt que converti vers un équivalent latin, ce qui peut laisser un slug vide ou quasi vide. Pour du contenu en écriture non latine, une vraie bibliothèque de translittération (pas un simple filtrage de caractères) est le bon outil, pas celui-ci.",
+      en: "Type a title and get a URL slug as you type: lowercase, accents removed, spaces turned into hyphens or underscores. The character count under the slug helps when a CMS limits URL length. Click the result to copy it. Nothing is sent anywhere.",
+      fr: "Tapez un titre et obtenez son slug d'URL pendant la frappe : minuscules, accents retirés, espaces remplacées par des tirets ou des underscores. Le nombre de caractères affiché sous le slug aide quand un CMS limite la longueur des URL. Un clic sur le résultat le copie. Rien n'est envoyé.",
     },
     useCases: {
-      en: ["Generating a clean URL slug from a blog post title before publishing", "Converting a French or Spanish title with accents into an ASCII-safe URL path", "Creating consistent file names or IDs from user-submitted titles", "Quickly checking what a title will look like as a URL before committing to it in a CMS"],
-      fr: ["Générer un slug d'URL propre à partir d'un titre d'article de blog avant publication", "Convertir un titre français ou espagnol avec accents en chemin d'URL compatible ASCII", "Créer des noms de fichiers ou des IDs cohérents à partir de titres saisis par des utilisateurs", "Vérifier rapidement à quoi ressemblera un titre en URL avant de le valider dans un CMS"],
+      en: ["Generating a clean URL slug from a blog post title before publishing", "Converting a French or Spanish title with accents into an ASCII-safe URL path", "Creating consistent file names or IDs from user-submitted titles", "Checking what a title will look like as a URL before saving it in a CMS"],
+      fr: ["Générer un slug d'URL propre à partir du titre d'un article avant publication", "Convertir un titre français ou espagnol avec accents en chemin d'URL compatible ASCII", "Créer des noms de fichiers ou des identifiants cohérents à partir de titres saisis par des utilisateurs", "Voir à quoi ressemblera un titre en URL avant de l'enregistrer dans un CMS"],
     },
+    deepDive: [
+      {
+        h: { en: "Accents, ligatures and apostrophes", fr: "Accents, ligatures et apostrophes" },
+        p: {
+          en: [
+            "Accented letters are split into a base letter and an accent mark (Unicode NFD normalization), then the mark is dropped: Été becomes ete, Ça becomes ca, ñ becomes n.",
+            "Ligatures and special letters are not covered. The French œ is a single character with no accent to remove, so Le cœur de l'été becomes le-cur-de-lete. The German ß is dropped the same way: Straße & Café gives strae-cafe. If a title contains œ, æ or ß, write oe, ae or ss before converting.",
+            "The apostrophe is removed without leaving a space, so l'été becomes lete. Most French sites prefer l-ete: type a space in place of the apostrophe to get that.",
+          ],
+          fr: [
+            "Les lettres accentuées sont séparées en une lettre de base et un signe diacritique (normalisation Unicode NFD), puis le signe est supprimé : Été devient ete, Ça devient ca, ñ devient n.",
+            "Les ligatures et les lettres particulières ne sont pas prises en charge. Le œ est un caractère unique, sans accent à retirer : Le cœur de l'été donne le-cur-de-lete. Le ß allemand disparaît de la même façon : Straße & Café donne strae-cafe. Si un titre contient œ, æ ou ß, écrivez oe, ae ou ss avant de convertir.",
+            "L'apostrophe est supprimée sans laisser d'espace : l'été devient lete. La plupart des sites français préfèrent l-ete. Pour l'obtenir, tapez une espace à la place de l'apostrophe.",
+          ],
+        },
+      },
+      {
+        h: { en: "Punctuation, symbols and separators", fr: "Ponctuation, symboles et séparateurs" },
+        p: {
+          en: [
+            "Anything that isn't a letter from a to z, a digit, a space, a hyphen or an underscore is removed. C++ vs Node.js becomes c-vs-nodejs: the plus signs and the dot are gone. If the name matters for search, spell it out in the title first (cpp, node js).",
+            "Runs of spaces, hyphens and underscores collapse into a single separator, so a title with double spaces doesn't produce a double hyphen.",
+            "Hyphens are the default because Google's URL guidelines recommend them over underscores: a hyphen is read as a space between words. Use the underscore only when a system requires it, for file names or identifiers.",
+            "Non-Latin scripts are not transliterated. A title in Cyrillic, Greek, Arabic or Chinese gives an empty slug. Use a transliteration library for those.",
+          ],
+          fr: [
+            "Tout ce qui n'est pas une lettre de a à z, un chiffre, une espace, un tiret ou un underscore est supprimé. C++ vs Node.js donne c-vs-nodejs : les plus et le point ont disparu. Si le nom compte pour la recherche, écrivez-le en toutes lettres dans le titre avant (cpp, node js).",
+            "Les suites d'espaces, de tirets et d'underscores se réduisent à un seul séparateur : un titre avec des espaces doubles ne produit pas de tiret double.",
+            "Le tiret est le choix par défaut parce que les consignes de Google sur les URL le recommandent plutôt que l'underscore : un tiret se lit comme une espace entre deux mots. Réservez l'underscore aux systèmes qui l'exigent, pour des noms de fichiers ou des identifiants.",
+            "Les écritures non latines ne sont pas translittérées. Un titre en cyrillique, en grec, en arabe ou en chinois donne un slug vide. Pour celles-là, passez par une bibliothèque de translittération.",
+          ],
+        },
+      },
+    ],
   },
   "string-escape": {
     desc: {
-      en: "Three languages (JavaScript, SQL, Bash), each direction (escape or unescape), each with rules specific to that context rather than one generic escaping scheme: JS mode handles backslashes, quotes, and \\n/\\r/\\t control characters; SQL mode doubles single quotes ('') per the ANSI-SQL standard that MySQL, PostgreSQL and SQLite all honor; Bash mode escapes backslashes, double quotes, $ and backticks, the characters that trigger variable expansion or command substitution inside a double-quoted shell string. One important boundary: SQL escaping here makes a string literal safe to drop into a query you're writing by hand: it is not a substitute for parameterized queries or prepared statements in application code. Manual string escaping is a known-fragile defense against SQL injection precisely because it's easy to miss an edge case; use it for one-off scripts and ad hoc queries, never as the injection defense in a production codebase.",
-      fr: "Trois langages (JavaScript, SQL, Bash), chaque sens (échapper ou dé-échapper), chacun avec des règles spécifiques à son contexte plutôt qu'un schéma d'échappement générique unique : le mode JS gère les antislashs, les guillemets, et les caractères de contrôle \\n/\\r/\\t ; le mode SQL double les guillemets simples ('') selon le standard ANSI-SQL que respectent MySQL, PostgreSQL et SQLite ; le mode Bash échappe les antislashs, les guillemets doubles, le $ et les backticks, les caractères qui déclenchent l'expansion de variable ou la substitution de commande dans une chaîne shell entre guillemets doubles. Une frontière importante : l'échappement SQL ici rend une chaîne littérale sûre à insérer dans une requête écrite à la main, ce n'est pas un substitut aux requêtes paramétrées ou aux instructions préparées dans du code applicatif. L'échappement manuel de chaînes est une défense reconnue comme fragile contre l'injection SQL, précisément parce qu'il est facile de manquer un cas limite ; utilisez-le pour des scripts ponctuels et des requêtes ad hoc, jamais comme défense contre l'injection dans une base de code de production.",
+      en: "Paste text, choose JavaScript, SQL or Bash, then escape or unescape it. Each mode applies the rules of its language: backslashes, quotes and control characters for JavaScript, doubled single quotes for SQL, and $, backticks and double quotes for Bash. The text stays in your browser.",
+      fr: "Collez un texte, choisissez JavaScript, SQL ou Bash, puis échappez-le ou retirez l'échappement. Chaque mode applique les règles de son langage : antislashs, guillemets et caractères de contrôle en JavaScript, apostrophes doublées en SQL, et $, backticks et guillemets doubles en Bash. Le texte reste dans votre navigateur.",
     },
     useCases: {
-      en: ["Safely embedding a string containing quotes into a one-off SQL query run manually in a database console", "Escaping a variable value before dropping it into a bash script that shouldn't break on special characters", "Preparing a JSON string value that contains quotes and newlines for a JS source file or config", "Unescaping a string copied from a log file back into its original readable form"],
-      fr: ["Insérer en toute sécurité une chaîne contenant des guillemets dans une requête SQL ponctuelle exécutée manuellement dans une console de base de données", "Échapper une valeur de variable avant de l'insérer dans un script bash qui ne doit pas casser sur des caractères spéciaux", "Préparer une valeur de chaîne JSON contenant des guillemets et des sauts de ligne pour un fichier source JS ou une config", "Dé-échapper une chaîne copiée depuis un fichier de log pour retrouver sa forme lisible d'origine"],
+      en: ["Putting a string that contains quotes into a one-off SQL query typed in a database console", "Escaping a value before placing it in a Bash script that must not break on special characters", "Preparing a string with quotes and line breaks for a JavaScript source file or a config", "Unescaping a string copied from a log file to read it in its original form"],
+      fr: ["Insérer une chaîne qui contient des apostrophes dans une requête SQL ponctuelle tapée dans une console de base de données", "Échapper une valeur avant de la placer dans un script Bash qui ne doit pas casser sur des caractères spéciaux", "Préparer une chaîne avec guillemets et retours à la ligne pour un fichier source JavaScript ou une config", "Retirer l'échappement d'une chaîne copiée depuis un fichier de log pour la lire sous sa forme d'origine"],
     },
+    deepDive: [
+      {
+        h: { en: "What each mode changes", fr: "Ce que change chaque mode" },
+        p: {
+          en: [
+            "JavaScript: backslashes are doubled, both kinds of quote are escaped, and line breaks, carriage returns and tabs become \\n, \\r and \\t. The result can go between single or double quotes. The default example, two lines with quotes and a tab, comes out as one line: Hello \\\"world\\\"\\nIt\\'s a test\\tvalue.",
+            "SQL: each single quote is doubled, so O'Brien becomes O''Brien, the standard way to write a quote inside a SQL string. The mode also doubles backslashes. MySQL needs that in its default configuration, but PostgreSQL and SQLite treat the backslash as an ordinary character, so C:\\temp would be stored with two backslashes. For those two databases, remove the extra backslashes before running the query.",
+            "Bash: the output is meant to go between double quotes. Backslashes, double quotes, $ and backticks are escaped, so the shell doesn't expand a variable or run a command. The exclamation mark is left alone, and in an interactive terminal it can trigger history expansion inside double quotes. For text full of symbols, single quotes are often simpler in Bash, since nothing inside them is interpreted.",
+          ],
+          fr: [
+            "JavaScript : les antislashs sont doublés, les deux types de guillemets sont échappés, et les retours à la ligne, retours chariot et tabulations deviennent \\n, \\r et \\t. Le résultat peut se placer entre apostrophes ou entre guillemets. L'exemple de départ, deux lignes avec des guillemets et une tabulation, ressort sur une seule ligne : Hello \\\"world\\\"\\nIt\\'s a test\\tvalue.",
+            "SQL : chaque apostrophe est doublée, O'Brien devient O''Brien, la façon standard d'écrire une apostrophe dans une chaîne SQL. Le mode double aussi les antislashs. MySQL en a besoin dans sa configuration par défaut, mais PostgreSQL et SQLite traitent l'antislash comme un caractère ordinaire : C:\\temp serait enregistré avec deux antislashs. Pour ces deux bases, retirez les antislashs en trop avant d'exécuter la requête.",
+            "Bash : le résultat est prévu pour aller entre guillemets doubles. Les antislashs, guillemets doubles, $ et backticks sont échappés, pour que le shell ne remplace pas une variable et n'exécute pas de commande. Le point d'exclamation n'est pas touché, et dans un terminal interactif il peut déclencher l'expansion de l'historique entre guillemets doubles. Pour un texte plein de symboles, les apostrophes sont souvent plus simples en Bash, car rien n'y est interprété.",
+          ],
+        },
+      },
+      {
+        h: { en: "Limits", fr: "Limites" },
+        p: {
+          en: [
+            "Escaping a value by hand is fine for a query you type once in a console. In an application it does not protect against SQL injection: use parameterized queries there.",
+            "Unescaping assumes the text was escaped with the same rules. In JavaScript mode, sequences such as \\u00e9 or \\x41 are not decoded and stay as they are.",
+          ],
+          fr: [
+            "Échapper une valeur à la main convient pour une requête tapée une fois dans une console. Dans une application, cela ne protège pas contre l'injection SQL : utilisez des requêtes paramétrées.",
+            "Le retrait de l'échappement suppose que le texte a été échappé avec les mêmes règles. En mode JavaScript, les séquences comme \\u00e9 ou \\x41 ne sont pas décodées et restent telles quelles.",
+          ],
+        },
+      },
+    ],
   },
   "svg-optimizer": {
     desc: {
@@ -2085,12 +2375,42 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "zip-extractor": {
     desc: {
-      en: "Drop a .zip file and it's unpacked entirely in your browser using fflate, a WebAssembly-adjacent decompression library, no upload, and the archive is read into memory via the File API rather than sent anywhere. Folders sort to the top, each file shows its uncompressed size, and any entry can be downloaded individually without extracting the whole archive first. Two real constraints worth knowing before you rely on this for something important: it doesn't support password-protected or encrypted zip entries (fflate's unzip has no AES or ZipCrypto decryption), so an encrypted archive will fail to read rather than prompt for a password; and because the whole file is loaded into memory at once rather than streamed, a multi-gigabyte archive can hit your browser's memory limit on lower-end devices even though it would extract fine with a desktop archive manager.",
-      fr: "Déposez un fichier .zip et il est décompressé entièrement dans votre navigateur via fflate, une bibliothèque de décompression proche du WebAssembly, aucun envoi, l'archive est lue en mémoire via l'API File plutôt qu'envoyée où que ce soit. Les dossiers remontent en haut, chaque fichier affiche sa taille décompressée, et n'importe quelle entrée peut être téléchargée individuellement sans extraire toute l'archive d'abord. Deux vraies contraintes à connaître avant de s'y fier pour quelque chose d'important : pas de support des entrées zip protégées par mot de passe ou chiffrées (l'unzip de fflate n'a pas de déchiffrement AES ou ZipCrypto), donc une archive chiffrée échouera à la lecture plutôt que de demander un mot de passe ; et comme tout le fichier est chargé en mémoire d'un coup plutôt qu'en streaming, une archive de plusieurs gigaoctets peut atteindre la limite mémoire du navigateur sur des appareils moins puissants, même si elle s'extrairait sans problème avec un gestionnaire d'archives de bureau.",
+      en: "Drop a .zip file to see every folder and file it contains, with their uncompressed sizes, then download the files you need one by one. The archive is read and decompressed in your browser with fflate, a JavaScript library: it is never uploaded.",
+      fr: "Déposez un fichier .zip pour voir tous les dossiers et fichiers qu'il contient, avec leur taille décompressée, puis téléchargez un par un ceux dont vous avez besoin. L'archive est lue et décompressée dans votre navigateur par fflate, une bibliothèque JavaScript : elle n'est jamais envoyée.",
     },
     useCases: {
-      en: ["Peeking inside a .zip attachment or download without installing an archive manager", "Grabbing a single file out of a large archive without extracting everything to disk", "Checking the contents and folder structure of an archive before deciding whether to download it fully", "Quickly inspecting a zipped project export or backup on a machine without extraction software"],
-      fr: ["Jeter un œil dans une pièce jointe ou un téléchargement .zip sans installer de gestionnaire d'archives", "Récupérer un seul fichier dans une grosse archive sans tout extraire sur le disque", "Vérifier le contenu et la structure de dossiers d'une archive avant de décider de la télécharger en entier", "Inspecter rapidement un export de projet ou une sauvegarde zippée sur une machine sans logiciel d'extraction"],
+      en: ["Looking inside a .zip attachment or download without installing an archive manager", "Getting a single file out of a large archive", "Checking the contents and folder structure of an archive before keeping it", "Opening a zipped project export or backup on a computer with no extraction software"],
+      fr: ["Regarder dans une pièce jointe ou un téléchargement .zip sans installer de gestionnaire d'archives", "Récupérer un seul fichier dans une grosse archive", "Vérifier le contenu et l'arborescence d'une archive avant de la garder", "Ouvrir un export de projet ou une sauvegarde zippée sur un ordinateur sans logiciel d'extraction"],
     },
+    deepDive: [
+      {
+        h: { en: "How the archive is read", fr: "Comment l'archive est lue" },
+        p: {
+          en: [
+            "The whole archive is decompressed into memory as soon as you drop it, then listed. Each download is therefore instant, but memory use is roughly the uncompressed size of the content. A multi-gigabyte archive can exceed what a browser tab is allowed to use, especially on a phone; a desktop archive manager is better suited for those.",
+            "Each file downloads under its own name, without its folder path. Two files called index.html in different folders both download as index.html, and your browser renames the second one.",
+            "Archives made on a Mac often contain a __MACOSX folder and files whose names start with ._ (dot underscore). They hold Finder metadata, not your documents, and can be ignored.",
+          ],
+          fr: [
+            "Toute l'archive est décompressée en mémoire dès le dépôt, puis listée. Chaque téléchargement est donc immédiat, mais la mémoire utilisée correspond à peu près à la taille décompressée du contenu. Une archive de plusieurs gigaoctets peut dépasser ce qu'un onglet a le droit d'utiliser, surtout sur un téléphone : un gestionnaire d'archives de bureau convient mieux dans ce cas.",
+            "Chaque fichier se télécharge sous son propre nom, sans le chemin de son dossier. Deux fichiers index.html rangés dans des dossiers différents se téléchargent tous deux sous le nom index.html, et votre navigateur renomme le second.",
+            "Les archives créées sur Mac contiennent souvent un dossier __MACOSX et des fichiers dont le nom commence par ._ (point, underscore). Ils contiennent des métadonnées du Finder, pas vos documents : vous pouvez les ignorer.",
+          ],
+        },
+      },
+      {
+        h: { en: "What it doesn't open", fr: "Ce qu'il n'ouvre pas" },
+        p: {
+          en: [
+            "Password-protected archives: fflate has no decryption, so an encrypted zip returns an error instead of asking for the password.",
+            "Other formats: .rar, .7z and .tar.gz files are not ZIP archives and are not accepted. A .zip stored inside the archive appears as a file: download it, then drop it on the tool to open it in turn.",
+          ],
+          fr: [
+            "Les archives protégées par mot de passe : fflate ne sait pas déchiffrer, donc un zip chiffré renvoie une erreur au lieu de demander le mot de passe.",
+            "Les autres formats : les fichiers .rar, .7z et .tar.gz ne sont pas des archives ZIP et ne sont pas acceptés. Un .zip rangé dans l'archive apparaît comme un fichier : téléchargez-le, puis déposez-le sur l'outil pour l'ouvrir à son tour.",
+          ],
+        },
+      },
+    ],
   },
 };

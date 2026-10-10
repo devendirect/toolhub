@@ -118,7 +118,7 @@ export function SvgOptimizer() {
         </Pane>
 
         <Pane
-          title={`SVG output${saving !== null ? ` — −${saving}%` : ""}`}
+          title={`SVG output${saving !== null ? ` (−${saving}%)` : ""}`}
           ext="svg"
           actions={
             result && (

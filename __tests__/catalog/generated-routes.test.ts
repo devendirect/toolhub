@@ -42,7 +42,7 @@ describe("llms.txt — généré depuis le catalogue", () => {
   it("liste chaque outil actif et le compte exact", async () => {
     const text = await getLlms().text();
     expect(text).toContain(`${active.length} tools`);
-    const missing = active.filter((t) => !text.includes(`- ${t.name.en} — `)).map((t) => t.slug);
+    const missing = active.filter((t) => !text.includes(`- ${t.name.en}: `)).map((t) => t.slug);
     expect(missing).toEqual([]);
   });
 });

@@ -26,7 +26,7 @@ const indexing = process.env.INDEXING_ENABLED === "true";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { template: `%s — ${BRAND_NAME}`, default: BRAND_NAME },
+  title: { template: `%s | ${BRAND_NAME}`, default: BRAND_NAME },
   openGraph: { type: "website", siteName: BRAND_NAME },
   twitter: { card: "summary" },
   robots: { index: indexing, follow: indexing },

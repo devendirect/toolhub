@@ -228,7 +228,7 @@ export function CronGenerator() {
           ["L",   TR[lang].symLast],
         ].map(([sym, desc]) => (
           <span key={sym} className="font-mono text-[11px] text-dim">
-            <span className="text-brand">{sym}</span> — {desc}
+            <span className="text-brand">{sym}</span>{lang === "fr" ? " : " : ": "}{desc}
           </span>
         ))}
       </div>

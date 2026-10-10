@@ -28,7 +28,7 @@ export function GET() {
     if (tools.length === 0) continue;
     lines.push(`### ${cat.label.en} tools`, "");
     for (const tool of tools) {
-      lines.push(`- ${tool.name.en} — ${tool.desc.en}`);
+      lines.push(`- ${tool.name.en}: ${tool.desc.en}`);
     }
     lines.push("");
   }

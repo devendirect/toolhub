@@ -34,6 +34,9 @@ export function ImageCompressor() {
   const { lang } = useLang();
   const i = t(lang);
   const inputRef = useRef<HTMLInputElement>(null);
+  // Le fichier source, qu'il vienne du sélecteur ou d'un glisser-déposer :
+  // `inputRef.current.files` reste vide après un dépôt.
+  const fileRef = useRef<File | null>(null);
   const trackRun = useTrackRun("image-compressor", "file");
   const [format, setFormat] = useState<Format>("image/webp");
   const [quality, setQuality] = useState(80);
@@ -68,6 +71,7 @@ export function ImageCompressor() {
   }, []);
 
   const handleFile = (file: File) => {
+    fileRef.current = file;
     setOriginal({ name: file.name, size: file.size, url: URL.createObjectURL(file) });
     compress(file, format, quality);
   };
@@ -109,25 +113,19 @@ export function ImageCompressor() {
             onChange={(v) => {
               const f = v as Format;
               setFormat(f);
-              if (original) {
-                const input = inputRef.current;
-                if (input?.files?.[0]) compress(input.files[0], f, quality);
-              }
+              if (fileRef.current) compress(fileRef.current, f, quality);
             }}
           />
         </OptBlock>
         {format !== "image/png" && (
-          <OptBlock label={`${i.quality} — ${quality}%`}>
+          <OptBlock label={`${i.quality}${lang === "fr" ? " : " : ": "}${quality}%`}>
             <input
               type="range"
               min={10} max={100} value={quality}
               onChange={(e) => {
                 const q = Number(e.target.value);
                 setQuality(q);
-                if (original) {
-                  const input = inputRef.current;
-                  if (input?.files?.[0]) compress(input.files[0], format, q);
-                }
+                if (fileRef.current) compress(fileRef.current, format, q);
               }}
               className="w-[100px] accent-[var(--brand)]"
             />
@@ -195,7 +193,7 @@ export function ImageCompressor() {
                 </span>
               )}
               <button
-                onClick={() => { setOriginal(null); setResult(null); if (inputRef.current) inputRef.current.value = ""; }}
+                onClick={() => { fileRef.current = null; setOriginal(null); setResult(null); if (inputRef.current) inputRef.current.value = ""; }}
                 className="ml-auto font-mono text-[11px] text-dim hover:text-danger transition-colors"
               >
                 {TR[lang].reset}

@@ -86,7 +86,7 @@ export function GradientGenerator() {
           <SegControl options={["linear", "radial", "conic"] as GType[]} value={type} onChange={(v) => setType(v as GType)} />
         </OptBlock>
         {(type === "linear" || type === "conic") && (
-          <OptBlock label={`angle — ${angle}°`}>
+          <OptBlock label={`angle${lang === "fr" ? " : " : ": "}${angle}°`}>
             <div className="flex items-center gap-2">
               <input
                 type="range"

@@ -5,7 +5,7 @@ import type { Localized } from "./types";
  * `tool.name` / `tool.desc`, qui restent calibrés pour les cartes du catalogue.
  *
  * Contraintes (vérifiées par __tests__/catalog/tools-seo.test.ts) :
- * - title ≤ 50 caractères (le layout ajoute « — utilisio ») ;
+ * - title ≤ 50 caractères (le layout ajoute « | utilisio ») ;
  * - description entre 120 et 155 caractères ;
  * - tout unique, FR ≠ EN ;
  * - jamais « no logs / sans logs » sur un outil `privacy: 'network'`.

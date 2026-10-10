@@ -45,12 +45,14 @@ function format(text: string, opts: { sort: boolean; dedup: boolean; removeEmpty
   let entries = lines.filter((l): l is EnvLine & { type: "entry" } => l.type === "entry");
 
   if (opts.dedup) {
+    // Garde la DERNIÈRE occurrence : c'est celle que lisent dotenv, `source` en
+    // shell et Docker Compose. Garder la première supprimerait la valeur active.
     const seen = new Set<string>();
-    entries = entries.filter((l) => {
+    entries = entries.reverse().filter((l) => {
       if (seen.has(l.key!)) return false;
       seen.add(l.key!);
       return true;
-    });
+    }).reverse();
   }
 
   if (opts.removeEmpty) {

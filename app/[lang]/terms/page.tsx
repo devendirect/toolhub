@@ -220,7 +220,7 @@ export default async function TermsPage({ params }: Props) {
                 ) : (
                   <ul key={j} className="flex flex-col gap-1 pl-4">
                     {block.items.map((item, k) => (
-                      <li key={k} className="text-[13px] text-fg-1 leading-relaxed before:content-['—'] before:mr-2 before:text-dim">
+                      <li key={k} className="text-[13px] text-fg-1 leading-relaxed before:content-['›'] before:mr-2 before:text-dim">
                         {item}
                       </li>
                     ))}

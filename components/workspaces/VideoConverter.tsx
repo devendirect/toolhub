@@ -118,7 +118,7 @@ export function VideoConverter() {
         accept="video/*"
         glyph="▶"
         label={TR[lang].dropVideo}
-        current={file ? `${file.name} — ${fmtSize(file.size)}` : null}
+        current={file ? `${file.name} (${fmtSize(file.size)})` : null}
       />
 
       {/* Format */}

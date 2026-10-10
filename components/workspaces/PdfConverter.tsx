@@ -223,7 +223,7 @@ export function PdfConverter({ initialMode, initialImgFormat }: PdfConverterProp
           >
             <span className="font-mono text-[28px] text-dim">▣</span>
             <span className="font-mono text-[12px] text-dim">
-              {file ? `${file.name} — ${fmtSize(file.size)}` : TR[lang].dropPdf}
+              {file ? `${file.name} (${fmtSize(file.size)})` : TR[lang].dropPdf}
             </span>
           </div>
           <input ref={pdfRef} type="file" accept=".pdf,application/pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handlePdf(f); }} />

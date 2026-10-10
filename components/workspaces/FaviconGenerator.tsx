@@ -28,7 +28,8 @@ const TR = {
 export function FaviconGenerator() {
   const { lang } = useLang();
   const i = t(lang);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Une toile par taille : l'aperçu montre les quatre en même temps.
+  const canvasRefs = useRef<Partial<Record<Size, HTMLCanvasElement | null>>>({});
   const [text, setText] = useState("A");
   const [bg, setBg] = useState("#00e08a");
   const [fg, setFg] = useState("#ffffff");
@@ -37,30 +38,31 @@ export function FaviconGenerator() {
   const trackRun = useTrackRun("favicon-generator", "design");
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    canvas.width = size;
-    canvas.height = size;
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, size, size);
-    ctx.fillStyle = fg;
-    ctx.font = `${fontWeight} ${Math.round(size * 0.6)}px system-ui, sans-serif`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(text.slice(0, 2), size / 2, size / 2 + 1);
-  }, [text, bg, fg, size, fontWeight]);
+    for (const s of SIZES) {
+      const canvas = canvasRefs.current[s];
+      const ctx = canvas?.getContext("2d");
+      if (!canvas || !ctx) continue;
+      canvas.width = s;
+      canvas.height = s;
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, s, s);
+      ctx.fillStyle = fg;
+      ctx.font = `${fontWeight} ${Math.round(s * 0.6)}px system-ui, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(text.slice(0, 2), s / 2, s / 2 + 1);
+    }
+  }, [text, bg, fg, fontWeight]);
 
   const downloadPng = () => {
-    const canvas = canvasRef.current;
+    const canvas = canvasRefs.current[size];
     if (!canvas) return;
     trackRun();
     downloadUrl(canvas.toDataURL("image/png"), `favicon-${size}x${size}.png`);
   };
 
   const downloadIco = () => {
-    const canvas = canvasRef.current;
+    const canvas = canvasRefs.current[size];
     if (!canvas) return;
     trackRun();
     canvas.toBlob((blob) => {
@@ -160,7 +162,7 @@ export function FaviconGenerator() {
           {SIZES.map((s) => (
             <div key={s} className="flex flex-col items-center gap-2">
               <canvas
-                ref={s === size ? canvasRef : undefined}
+                ref={(el) => { canvasRefs.current[s] = el; }}
                 width={s}
                 height={s}
                 className="border border-line"

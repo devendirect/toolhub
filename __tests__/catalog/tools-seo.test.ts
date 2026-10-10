@@ -12,7 +12,7 @@ describe("TOOLS_SEO — titres et meta descriptions", () => {
     expect(entries.filter(([slug]) => !slugs.has(slug)).map(([slug]) => slug)).toEqual([]);
   });
 
-  it("title ≤ 50 caractères (le layout ajoute « — utilisio »)", () => {
+  it("title ≤ 50 caractères (le layout ajoute « | utilisio »)", () => {
     const tooLong = entries.flatMap(([slug, s]) =>
       LANGS.filter((l) => s.title[l].length > 50).map((l) => `${slug}/${l}: ${s.title[l].length}`)
     );
