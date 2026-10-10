@@ -114,7 +114,7 @@ export function ContrastChecker() {
               )}
             </div>
             <p className="font-mono text-[11px] text-dim mt-3">
-              WCAG 2.1 · AA ≥ 4.5 (text) / ≥ 3 (large) · AAA ≥ 7 (text) / ≥ 4.5 (large)
+              WCAG 2.2 · AA ≥ 4.5 (text) / ≥ 3 (large) · AAA ≥ 7 (text) / ≥ 4.5 (large)
             </p>
           </div>
         )}

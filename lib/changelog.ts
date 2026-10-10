@@ -29,6 +29,22 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-10-10-contrast-guide",
+    date: "2026-10-10",
+    kind: "improved",
+    tools: ["contrast-checker"],
+    text: {
+      fr: {
+        title: "Vérificateur de contraste : seuils WCAG 2.2 expliqués et exemples de corrections",
+        body: "La page explique ce qui compte comme grand texte, pourquoi un ratio ne s'arrondit jamais, comment corriger une couleur qui échoue avec des exemples chiffrés, et ce que le ratio ne couvre pas : contraste des éléments d'interface, daltonisme, état du WCAG 3. L'outil affiche désormais WCAG 2.2.",
+      },
+      en: {
+        title: "Contrast checker: WCAG 2.2 thresholds explained, with worked fixes",
+        body: "The page explains what counts as large text, why a ratio is never rounded, how to fix a failing color with worked examples, and what the ratio doesn't cover: interface component contrast, color blindness, the state of WCAG 3. The tool now shows WCAG 2.2.",
+      },
+    },
+  },
+  {
     id: "2026-10-10-lighter-pages",
     date: "2026-10-10",
     kind: "improved",

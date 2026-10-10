@@ -2002,13 +2002,60 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "contrast-checker": {
     desc: {
-      en: "Pick a text color and a background color and this computes the WCAG 2.1 contrast ratio using the actual spec formula, sRGB channels linearized with the standard gamma curve, relative luminance weighted 0.2126/0.7152/0.0722 for red/green/blue, then (L1+0.05)/(L2+0.05) between the lighter and darker color. The ratio is graded against all four WCAG thresholds at once: AA requires 4.5:1 for normal text and only 3:1 for large text, AAA requires 7:1 and 4.5:1 respectively. 'Large text' has a precise legal definition that trips people up, 18pt (24px) regular weight, or 14pt (roughly 18.66px) bold, not a vague 'looks big' judgment, so a 20px bold heading qualifies for the relaxed threshold but a 20px regular-weight one does not. A ratio can pass AA and still be genuinely hard to read for someone with low vision in bright sunlight; treat these thresholds as a legal minimum, not a design target to hit exactly.",
-      fr: "Choisissez une couleur de texte et une couleur de fond, et l'outil calcule le ratio de contraste WCAG 2.1 avec la formule exacte de la spec, canaux sRGB linéarisés selon la courbe gamma standard, luminance relative pondérée à 0,2126/0,7152/0,0722 pour rouge/vert/bleu, puis (L1+0,05)/(L2+0,05) entre la couleur claire et la couleur foncée. Le ratio est noté sur les quatre seuils WCAG à la fois : AA exige 4,5:1 pour le texte normal et seulement 3:1 pour le grand texte, AAA exige respectivement 7:1 et 4,5:1. Le « grand texte » a une définition légale précise qui piège souvent : 18pt (24px) en graisse normale, ou 14pt (environ 18,66px) en gras, pas un jugement vague de « ça paraît grand », donc un titre en 20px gras est éligible au seuil allégé, mais le même en 20px normal ne l'est pas. Un ratio peut passer AA et rester réellement difficile à lire pour une personne malvoyante en plein soleil ; considérez ces seuils comme un minimum légal, pas un objectif de design à viser exactement.",
+      en: "Pick a text color and a background color: the tool computes their contrast ratio with the WCAG formula (relative luminance of each color, then (L1 + 0.05) / (L2 + 0.05)) and checks it against the four WCAG 2.2 thresholds at once, AA and AAA, for normal and large text. The live preview shows both sizes on your background. Everything runs in your browser.",
+      fr: "Choisissez une couleur de texte et une couleur de fond : l'outil calcule leur ratio de contraste avec la formule du WCAG (luminance relative de chaque couleur, puis (L1 + 0,05) / (L2 + 0,05)) et le compare d'un coup aux quatre seuils du WCAG 2.2, AA et AAA, pour le texte normal et le grand texte. L'aperçu montre les deux tailles sur votre fond. Tout se passe dans votre navigateur.",
     },
     useCases: {
-      en: ["Verifying a brand color pairing meets WCAG AA before it becomes the default text/background combo in a design system", "Checking whether a heading can drop to the relaxed 'large text' threshold because of its exact font size and weight", "Auditing an existing site's color pairs for an accessibility compliance review", "Testing a color choice against both AA and AAA at once instead of looking up thresholds separately"],
-      fr: ["Vérifier qu'une association de couleurs de marque respecte le WCAG AA avant qu'elle ne devienne la combinaison texte/fond par défaut d'un design system", "Vérifier si un titre peut bénéficier du seuil allégé « grand texte » grâce à sa taille et sa graisse exactes", "Auditer les paires de couleurs d'un site existant dans le cadre d'une revue de conformité accessibilité", "Tester un choix de couleur contre AA et AAA en même temps plutôt que de chercher les seuils séparément"],
+      en: ["Verifying a brand color pairing meets WCAG AA before it becomes the default text and background in a design system", "Checking whether a heading can use the lower large-text threshold because of its exact size and weight", "Auditing the color pairs of an existing site during an accessibility review", "Finding the closest shade of a color that passes, by adjusting it until the AA badge turns green"],
+      fr: ["Vérifier qu'une association de couleurs de marque respecte le niveau AA avant d'en faire le texte et le fond par défaut d'un design system", "Savoir si un titre peut profiter du seuil allégé du grand texte, selon sa taille et sa graisse exactes", "Auditer les paires de couleurs d'un site existant lors d'une revue d'accessibilité", "Trouver la nuance la plus proche qui passe, en ajustant la couleur jusqu'à ce que le badge AA passe au vert"],
     },
+    deepDive: [
+      {
+        h: { en: "The thresholds, and what counts as large text", fr: "Les seuils, et ce qui compte comme grand texte" },
+        p: {
+          en: [
+            "WCAG 2.2, the current W3C recommendation, sets two levels. AA, the level most laws and audits refer to, asks for 4.5:1 for normal text and 3:1 for large text (criterion 1.4.3). AAA asks for 7:1 and 4.5:1 (criterion 1.4.6). The thresholds are the same as in WCAG 2.1.",
+            "Large text has a precise definition: at least 18 points, or 14 points in bold, which is about 24 px and 18.7 px in CSS. A 22 px paragraph in regular weight is not large text and still needs 4.5:1. A 20 px bold heading is, and can use 3:1.",
+            "The ratio is never rounded: 4.499:1 does not pass 4.5:1. The tool shows two decimals, but each badge compares the exact value, so a ratio displayed as 4.50 can still fail AA. Logos and purely decorative text have no contrast requirement.",
+          ],
+          fr: [
+            "Le WCAG 2.2, la recommandation actuelle du W3C, fixe deux niveaux. AA, celui auquel renvoient la plupart des lois et des audits, demande 4,5:1 pour le texte normal et 3:1 pour le grand texte (critère 1.4.3). AAA demande 7:1 et 4,5:1 (critère 1.4.6). Les seuils sont les mêmes qu'en WCAG 2.1.",
+            "Le grand texte a une définition précise : au moins 18 points, ou 14 points en gras, soit environ 24 px et 18,7 px en CSS. Un paragraphe de 22 px en graisse normale n'est pas du grand texte et doit atteindre 4,5:1. Un titre de 20 px en gras en est, et peut se contenter de 3:1.",
+            "Le ratio ne s'arrondit jamais : 4,499:1 ne passe pas 4,5:1. L'outil affiche deux décimales, mais chaque badge compare la valeur exacte, si bien qu'un ratio affiché 4,50 peut encore échouer en AA. Les logos et le texte purement décoratif n'ont pas d'exigence de contraste.",
+          ],
+        },
+      },
+      {
+        h: { en: "Fixing a color that fails", fr: "Corriger une couleur qui échoue" },
+        p: {
+          en: [
+            "Small changes are often enough. Gray #777777 on white gives 4.48:1 and fails AA; #767676, one step darker, gives 4.54:1 and passes. White text on the blue #3b82f6 reaches only 3.68:1, enough for large text but not for body text; on #2563eb it reaches 5.17:1.",
+            "To keep the same color, change only its lightness: keep the hue and saturation in HSL (the Color Picker shows them) and darken or lighten until the AA badge turns green.",
+            "This site went through it. Its secondary gray #6b7280 gave 3.94:1 on the dark card background, below 4.5:1. Moving it to #7d8592 brought the ratio to 5.12:1 with a difference that is barely visible.",
+          ],
+          fr: [
+            "De petits changements suffisent souvent. Le gris #777777 sur blanc donne 4,48:1 et échoue en AA ; #767676, un cran plus foncé, donne 4,54:1 et passe. Un texte blanc sur le bleu #3b82f6 n'atteint que 3,68:1, assez pour du grand texte mais pas pour du texte courant ; sur #2563eb, il atteint 5,17:1.",
+            "Pour garder la même couleur, ne changez que sa luminosité : gardez la teinte et la saturation en HSL (le sélecteur de couleur les affiche) et foncez ou éclaircissez jusqu'à ce que le badge AA passe au vert.",
+            "Ce site est passé par là. Son gris secondaire #6b7280 donnait 3,94:1 sur le fond sombre des cartes, sous les 4,5:1. Le passer en #7d8592 a porté le ratio à 5,12:1, avec une différence à peine visible.",
+          ],
+        },
+      },
+      {
+        h: { en: "What the ratio doesn't cover", fr: "Ce que le ratio ne couvre pas" },
+        p: {
+          en: [
+            "Text is not the only thing that needs contrast. Criterion 1.4.11, also level AA, asks for 3:1 between interface components and the colors next to them: the border of an input field, an icon that is the only label of a button, the focus outline. The tool doesn't test them separately, but the threshold is the same as the AA large text badge, so you can check those pairs with it.",
+            "A good ratio doesn't make a design accessible on its own: information carried only by color, such as a red error with no text, stays invisible to many color-blind people whatever the contrast.",
+            "WCAG 3, which may replace the ratio with a new contrast method (APCA is the best-known candidate), is still a W3C working draft in October 2026 and leaves its contrast algorithm undecided. WCAG 2.2 and its ratio remain the reference for audits.",
+          ],
+          fr: [
+            "Le texte n'est pas seul à devoir être contrasté. Le critère 1.4.11, lui aussi de niveau AA, demande 3:1 entre les éléments d'interface et les couleurs qui les entourent : la bordure d'un champ de saisie, une icône qui sert seule de libellé à un bouton, le contour de focus. L'outil ne les teste pas à part, mais le seuil est celui du badge AA grand texte : vous pouvez donc vérifier ces paires avec lui.",
+            "Un bon ratio ne rend pas un design accessible à lui seul : une information portée uniquement par la couleur, comme une erreur en rouge sans texte, reste invisible pour beaucoup de personnes daltoniennes, quel que soit le contraste.",
+            "Le WCAG 3, qui pourrait remplacer le ratio par une nouvelle méthode de contraste (APCA est la candidate la plus connue), reste un brouillon de travail du W3C en octobre 2026, et son algorithme de contraste n'est pas tranché. Le WCAG 2.2 et son ratio restent la référence des audits.",
+          ],
+        },
+      },
+    ],
   },
   "css-grid": {
     desc: {

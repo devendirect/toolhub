@@ -195,10 +195,10 @@ export const TOOLS_SEO: Record<string, ToolSeo> = {
     },
   },
   "md-table": {
-    title: { en: "Markdown Table Generator", fr: "Générateur de tableau Markdown" },
+    title: { en: "Create a Markdown Table Online (Visual Editor)", fr: "Créer un tableau Markdown en ligne (visuel)" },
     description: {
-      en: "Build a Markdown table visually: edit cells, add rows and columns, set left, center or right alignment. Copy the syntax into a README or GitHub issue.",
-      fr: "Construisez un tableau Markdown visuellement : cellules éditables, lignes et colonnes à ajouter, alignement par colonne. Copiez la syntaxe dans un README.",
+      en: "Create a Markdown table without typing the syntax: edit cells, add rows and columns, set alignment, then paste it into a README or any .md file.",
+      fr: "Créez et insérez un tableau Markdown sans écrire la syntaxe : cellules, lignes, colonnes et alignement, puis collez-le dans un README ou un fichier .md.",
     },
   },
   "toml-json": {
@@ -355,8 +355,8 @@ export const TOOLS_SEO: Record<string, ToolSeo> = {
   "contrast-checker": {
     title: { en: "WCAG Color Contrast Checker (AA, AAA)", fr: "Vérifier le contraste des couleurs (WCAG)" },
     description: {
-      en: "Check the WCAG 2.1 contrast ratio between text and background colors and see at a glance whether it passes AA and AAA for normal and large text.",
-      fr: "Calculez le ratio de contraste WCAG 2.1 entre la couleur du texte et du fond, et voyez s'il passe les niveaux AA et AAA pour le texte normal et large.",
+      en: "Check the WCAG 2.2 contrast ratio between text and background colors and see at a glance whether it passes AA and AAA for normal and large text.",
+      fr: "Calculez le ratio de contraste WCAG 2.2 entre la couleur du texte et du fond, et voyez s'il passe les niveaux AA et AAA pour le texte normal et large.",
     },
   },
   "css-grid": {
