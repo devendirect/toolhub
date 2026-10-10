@@ -178,10 +178,10 @@ export function AboutClient() {
                       {lib.name}
                     </a>
                     {lib.note && (
-                      <div className="font-mono text-[11px] text-dim-2 mt-[2px]">{lib.note}</div>
+                      <div className="font-mono text-[11px] text-dim mt-[2px]">{lib.note}</div>
                     )}
                   </div>
-                  <span className="font-mono text-[11px] text-dim-2 shrink-0">{lib.version}</span>
+                  <span className="font-mono text-[11px] text-dim shrink-0">{lib.version}</span>
                   <span className={`font-mono text-[11px] shrink-0 ${LICENSE_COLOR[lib.license] ?? "text-dim"}`}>
                     {lib.license}
                   </span>

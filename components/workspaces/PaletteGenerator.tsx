@@ -191,7 +191,7 @@ export function PaletteGenerator() {
           {palette.map((color, idx) => (
             <div key={idx} className="flex flex-col gap-[6px] p-[14px] border-r border-line last:border-r-0 bg-bg-1">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[11px] text-dim-2">
+                <span className="font-mono text-[11px] text-dim">
                   {String(idx + 1).padStart(2, "0")}
                   {idx === 0 && <span className="ml-1 text-brand">●</span>}
                 </span>
@@ -211,7 +211,7 @@ export function PaletteGenerator() {
               </button>
               <button
                 onClick={() => handleCopy(color.rgb)}
-                className="font-mono text-[11px] text-dim-2 text-left hover:text-fg-1 transition-colors truncate"
+                className="font-mono text-[11px] text-dim text-left hover:text-fg-1 transition-colors truncate"
               >
                 {copied === color.rgb ? "✓" : color.rgb}
               </button>

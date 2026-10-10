@@ -118,7 +118,7 @@ export function FaviconGenerator() {
             onChange={(e) => setText(e.target.value)}
             maxLength={2}
             placeholder="A"
-            className="flex-1 bg-transparent font-mono text-[16px] text-fg px-4 py-[9px] outline-none placeholder:text-dim-2"
+            className="flex-1 bg-transparent font-mono text-[16px] text-fg px-4 py-[9px] outline-none placeholder:text-dim"
           />
         </div>
 

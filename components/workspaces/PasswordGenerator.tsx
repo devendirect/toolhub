@@ -174,7 +174,7 @@ export function PasswordGenerator() {
                 className="group flex items-center gap-4 px-[18px] py-[13px] hover:bg-bg-2 transition-colors cursor-pointer"
                 onClick={() => handleCopy(pw, idx)}
               >
-                <span className="font-mono text-[11px] text-dim-2 w-6 shrink-0">{String(idx + 1).padStart(2, "0")}</span>
+                <span className="font-mono text-[11px] text-dim w-6 shrink-0">{String(idx + 1).padStart(2, "0")}</span>
                 <span className="font-mono text-[13px] text-fg tracking-[0.06em] flex-1 break-all">{pw}</span>
                 <span className={`font-mono text-[11px] ${color} shrink-0 w-16 text-right`}>{label}</span>
                 <span className="font-mono text-[11px] text-dim shrink-0 w-12 text-right">{bits}b</span>

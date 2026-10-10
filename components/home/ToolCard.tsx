@@ -58,7 +58,7 @@ export function ToolCard({ tool, lang, catLabel }: ToolCardProps) {
 
   if (soon) {
     return (
-      <div className="group relative flex flex-col p-[22px] border-r border-b border-line bg-bg-1 min-h-[180px] opacity-50 cursor-default">
+      <div className="group relative flex flex-col p-[22px] border-r border-b border-line bg-bg-1 min-h-[180px] cursor-default [&_*]:text-dim!">
         {inner}
       </div>
     );

@@ -168,7 +168,7 @@ export function PdfMerge() {
         {files.length > 0 ? (
           <div className="flex flex-col divide-y divide-line flex-1">
             {/* Column header */}
-            <div className="flex items-center gap-3 px-4 py-2 font-mono text-[10px] text-dim-2 uppercase tracking-[0.08em] bg-bg-1">
+            <div className="flex items-center gap-3 px-4 py-2 font-mono text-[10px] text-dim uppercase tracking-[0.08em] bg-bg-1">
               <span className="w-6">#</span>
               <span className="flex-1">{TR[lang].colName}</span>
               <span className="w-16 text-right">pages</span>
@@ -177,14 +177,14 @@ export function PdfMerge() {
             </div>
             {files.map((f, idx) => (
               <div key={f.id} className="flex items-center gap-3 px-4 py-[11px] hover:bg-bg-2 transition-colors">
-                <span className="w-6 font-mono text-[11px] text-dim-2 shrink-0">
+                <span className="w-6 font-mono text-[11px] text-dim shrink-0">
                   {String(idx + 1).padStart(2, "0")}
                 </span>
                 <span className="flex-1 font-mono text-[12px] text-fg truncate">{f.file.name}</span>
                 <span className="w-16 font-mono text-[12px] text-dim text-right shrink-0">
                   {f.pages !== null ? `${f.pages}p` : "—"}
                 </span>
-                <span className="w-20 font-mono text-[11px] text-dim-2 text-right shrink-0">
+                <span className="w-20 font-mono text-[11px] text-dim text-right shrink-0">
                   {fmtSize(f.file.size)}
                 </span>
                 <div className="flex items-center gap-1 w-16 justify-end shrink-0">
@@ -207,7 +207,7 @@ export function PdfMerge() {
             ))}
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center font-mono text-[12px] text-dim-2">
+          <div className="flex-1 flex items-center justify-center font-mono text-[12px] text-dim">
             {"// "}{TR[lang].noFilesSelected}
           </div>
         )}

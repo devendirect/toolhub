@@ -120,7 +120,7 @@ export function CategoryHub({ cat, lang }: { cat: HubCat; lang: Lang }) {
               <Link href={`/${lang}/tools/${c.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-bg-2 transition-colors">
                 <span className="font-mono text-[13px] text-brand w-7 shrink-0">{c.glyph}</span>
                 <span className="flex-1 text-[13px] text-fg">{c.label[lang]}</span>
-                <span className="font-mono text-[11px] text-dim-2">{liveCount(c.id)} {t.tools}</span>
+                <span className="font-mono text-[11px] text-dim">{liveCount(c.id)} {t.tools}</span>
               </Link>
             </li>
           ))}

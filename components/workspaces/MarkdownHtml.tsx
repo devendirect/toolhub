@@ -109,7 +109,7 @@ export function MarkdownHtml() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="# Your markdown here…"
-              className="w-full h-full min-h-[420px] bg-transparent font-mono text-[12.5px] text-fg leading-[1.65] outline-none resize-none placeholder:text-dim-2"
+              className="w-full h-full min-h-[420px] bg-transparent font-mono text-[12.5px] text-fg leading-[1.65] outline-none resize-none placeholder:text-dim"
               spellCheck={false}
             />
           </div>
@@ -131,7 +131,7 @@ export function MarkdownHtml() {
               />
             ) : (
               <pre className="p-[14px] font-mono text-[12px] text-fg-1 leading-[1.6] whitespace-pre-wrap break-all">
-                {html || <span className="text-dim-2">{i.resultHere}</span>}
+                {html || <span className="text-dim">{i.resultHere}</span>}
               </pre>
             )}
           </div>

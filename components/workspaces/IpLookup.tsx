@@ -99,7 +99,7 @@ export function IpLookup() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && lookup(input || undefined)}
           placeholder={TR[lang].leaveEmpty}
-          className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim-2"
+          className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim"
           spellCheck={false}
         />
         <button

@@ -82,7 +82,7 @@ export function JwtDecoder() {
             onChange={(e) => setInput(e.target.value)}
             rows={3}
             placeholder={TR[lang].placeholder}
-            className="flex-1 bg-transparent font-mono text-[11.5px] text-fg px-4 py-[11px] outline-none placeholder:text-dim-2 resize-none leading-[1.6]"
+            className="flex-1 bg-transparent font-mono text-[11.5px] text-fg px-4 py-[11px] outline-none placeholder:text-dim resize-none leading-[1.6]"
             spellCheck={false}
           />
         </div>
@@ -126,7 +126,7 @@ export function JwtDecoder() {
                 <span className="font-mono text-[11px] text-dim">// signature</span>
               </div>
               <div className="bg-bg-code px-[14px] py-[12px]">
-                <p className="font-mono text-[11px] text-dim-2 break-all">{result.data.signature}</p>
+                <p className="font-mono text-[11px] text-dim break-all">{result.data.signature}</p>
               </div>
             </div>
 

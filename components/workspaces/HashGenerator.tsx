@@ -102,7 +102,7 @@ export function HashGenerator() {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder={TR[lang].hashPlaceholder}
-                className="w-full min-h-[120px] bg-transparent font-mono text-[12.5px] text-fg leading-[1.65] outline-none resize-none placeholder:text-dim-2"
+                className="w-full min-h-[120px] bg-transparent font-mono text-[12.5px] text-fg leading-[1.65] outline-none resize-none placeholder:text-dim"
                 spellCheck={false}
               />
             </div>
@@ -136,7 +136,7 @@ export function HashGenerator() {
             />
           ))}
           {!computing && hashes.length === 0 && (
-            <div className="flex items-center justify-center py-8 font-mono text-[12px] text-dim-2">
+            <div className="flex items-center justify-center py-8 font-mono text-[12px] text-dim">
               {"// "}{TR[lang].hashesHere}
             </div>
           )}

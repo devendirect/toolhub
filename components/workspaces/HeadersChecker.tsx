@@ -94,7 +94,7 @@ export function HeadersChecker() {
           onChange={(e) => setUrl(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && analyze()}
           placeholder="https://example.com"
-          className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim-2"
+          className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim"
           spellCheck={false}
         />
         <button
@@ -147,7 +147,7 @@ export function HeadersChecker() {
               <div className="flex flex-col gap-1 font-mono text-[11px] min-w-0">
                 <span className="text-dim truncate">{data.url}</span>
                 {data.server && (
-                  <span className="text-dim-2">{TR[lang].server}: {data.server}</span>
+                  <span className="text-dim">{TR[lang].server}: {data.server}</span>
                 )}
               </div>
             </div>
@@ -166,7 +166,7 @@ export function HeadersChecker() {
                       </span>
                     </div>
                     {check.value && (
-                      <p className="font-mono text-[11px] text-dim-2 mt-[2px] truncate">{check.value}</p>
+                      <p className="font-mono text-[11px] text-dim mt-[2px] truncate">{check.value}</p>
                     )}
                     {check.note && (
                       <p className="font-mono text-[11px] text-dim mt-[2px]">{check.note}</p>

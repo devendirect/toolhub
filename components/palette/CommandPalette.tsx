@@ -45,7 +45,7 @@ function ToolRow({ tool, lang, onSelect }: { tool: Tool; lang: Lang; onSelect: (
       <span className="font-mono text-[12px] text-dim w-8 shrink-0 select-none">{tool.glyph}</span>
       <span className="flex-1 text-[14px] text-fg">{tool.name[lang]}</span>
       <span className="font-mono text-[11px] text-dim hidden sm:block">{catLabel}</span>
-      <span className="font-mono text-[11px] text-dim-2 hidden md:block">
+      <span className="font-mono text-[11px] text-dim hidden md:block">
         {tool.tags.slice(0, 2).map((t) => `#${t}`).join(" ")}
       </span>
       <span className="cp-arrow font-mono text-[11px] text-brand opacity-0 transition-opacity">↵</span>
@@ -159,7 +159,7 @@ export function CommandPalette() {
                     <GroupHead>
                       <span>{g.cat.glyph}</span>
                       <span className="ml-2">{"// "}{g.cat.label[lang].toLowerCase()}</span>
-                      <span className="ml-auto float-right text-dim-2">{g.tools.length}</span>
+                      <span className="ml-auto float-right text-dim">{g.tools.length}</span>
                     </GroupHead>
                     {g.tools.map((tool) => (
                       <ToolRow key={`cat-${tool.slug}`} tool={tool} lang={lang} onSelect={() => navigate(tool)} />

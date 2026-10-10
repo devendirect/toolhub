@@ -77,7 +77,7 @@ export function BaseConverter() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={fromBase === 16 ? "FF or ff…" : fromBase === 2 ? "11111111…" : "255…"}
-            className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim-2"
+            className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim"
             spellCheck={false}
           />
         </div>
@@ -95,11 +95,11 @@ export function BaseConverter() {
             lang={lang}
             labelClass="w-12"
             valueClass="text-[14px] text-fg"
-            extra={prefix ? <span className="font-mono text-[11px] text-dim-2 shrink-0">{prefix}</span> : undefined}
+            extra={prefix ? <span className="font-mono text-[11px] text-dim shrink-0">{prefix}</span> : undefined}
           />
         )) : (
           <div className="px-[14px] py-[14px]">
-            <span className="font-mono text-[12px] text-dim-2">
+            <span className="font-mono text-[12px] text-dim">
               {TR[lang].invalidBase}
             </span>
           </div>

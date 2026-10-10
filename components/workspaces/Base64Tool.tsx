@@ -87,7 +87,7 @@ export function Base64Tool() {
               placeholder={mode === "encode"
                 ? TR[lang].encodePlaceholder
                 : TR[lang].decodePlaceholder}
-              className="w-full h-full min-h-[320px] bg-transparent font-mono text-[12.5px] text-fg leading-[1.65] outline-none resize-none placeholder:text-dim-2"
+              className="w-full h-full min-h-[320px] bg-transparent font-mono text-[12.5px] text-fg leading-[1.65] outline-none resize-none placeholder:text-dim"
               spellCheck={false}
             />
           </div>
@@ -112,7 +112,7 @@ export function Base64Tool() {
             <pre className="font-mono text-[12.5px] text-fg-1 leading-[1.65] whitespace-pre-wrap break-all min-h-[320px]">
               {error
                 ? <span className="text-danger">{error}</span>
-                : output || <span className="text-dim-2">{i.resultHere}</span>}
+                : output || <span className="text-dim">{i.resultHere}</span>}
             </pre>
           </div>
         </Pane>

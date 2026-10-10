@@ -13,7 +13,7 @@ interface CatalogListProps {
 export function CatalogList({ filtered, lang, i }: CatalogListProps) {
   return (
     <div className="min-w-0">
-      <div className="hidden md:flex items-center gap-4 px-4 py-[8px] border-b-2 border-line font-mono text-[10px] text-dim-2 uppercase tracking-[0.1em]">
+      <div className="hidden md:flex items-center gap-4 px-4 py-[8px] border-b-2 border-line font-mono text-[10px] text-dim uppercase tracking-[0.1em]">
         <span className="w-7 shrink-0">#</span>
         <span className="w-10 shrink-0">icon</span>
         <span className="flex-[2]">name</span>
@@ -27,7 +27,7 @@ export function CatalogList({ filtered, lang, i }: CatalogListProps) {
 
         const row = (
           <>
-            <span className="w-7 font-mono text-[11px] text-dim-2 shrink-0">
+            <span className="w-7 font-mono text-[11px] text-dim shrink-0">
               {String(idx + 1).padStart(2, "0")}
             </span>
             <span className={`w-10 font-mono text-[18px] shrink-0 tracking-[0.05em] transition-colors duration-150 ${soon ? "text-dim" : "text-fg group-hover:text-brand"}`}>
@@ -55,7 +55,7 @@ export function CatalogList({ filtered, lang, i }: CatalogListProps) {
 
         if (soon) {
           return (
-            <div key={tool.slug} className="group flex items-center gap-4 px-4 py-[13px] border-b border-line opacity-50 cursor-default">
+            <div key={tool.slug} className="group flex items-center gap-4 px-4 py-[13px] border-b border-line cursor-default [&_*]:text-dim!">
               {row}
             </div>
           );

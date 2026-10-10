@@ -75,7 +75,7 @@ export function SeoAnalyzer() {
           onChange={(e) => setUrl(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && analyze()}
           placeholder="https://example.com"
-          className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim-2"
+          className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim"
           spellCheck={false}
         />
         <button
@@ -147,7 +147,7 @@ export function SeoAnalyzer() {
                         {check.points}/{check.max}pts
                       </span>
                     </div>
-                    <div className="font-mono text-[11px] text-dim-2 mt-[2px] truncate">{check.detail}</div>
+                    <div className="font-mono text-[11px] text-dim mt-[2px] truncate">{check.detail}</div>
                   </div>
                   <div className="w-20 h-1 bg-bg-2 rounded-full mt-2 shrink-0">
                     <div

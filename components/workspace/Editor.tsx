@@ -3,6 +3,8 @@
 import CodeMirror from "@uiw/react-codemirror";
 import { json } from "@codemirror/lang-json";
 import { EditorView } from "@codemirror/view";
+import { HighlightStyle, syntaxHighlighting } from "@codemirror/language";
+import { tags } from "@lezer/highlight";
 
 const utilisioTheme = EditorView.theme({
   "&": {
@@ -18,7 +20,7 @@ const utilisioTheme = EditorView.theme({
   ".cm-gutters": {
     background: "var(--bg-code)",
     borderRight: "1px solid var(--line)",
-    color: "var(--dim-2)",
+    color: "var(--dim)",
     minWidth: "44px",
   },
   ".cm-lineNumbers .cm-gutterElement": {
@@ -30,14 +32,19 @@ const utilisioTheme = EditorView.theme({
   ".cm-activeLineGutter": { background: "rgba(255,255,255,0.02)" },
   ".cm-selectionBackground, ::selection": { background: "var(--brand-soft) !important" },
   ".cm-cursor": { borderLeftColor: "var(--brand)" },
-  // JSON token colors
-  ".tok-propertyName": { color: "#7cc3ff" },
-  ".tok-string": { color: "var(--brand)" },
-  ".tok-number": { color: "var(--hot)" },
-  ".tok-bool": { color: "#c084fc" },
-  ".tok-null": { color: "#c084fc" },
-  ".tok-punctuation": { color: "var(--dim)" },
 }, { dark: true });
+
+// Couleurs de syntaxe JSON, mêmes tokens que le reste du site. Sans cette
+// déclaration, CodeMirror retombe sur son style par défaut, prévu pour un fond
+// clair (vert et rouge foncés, illisibles ici).
+const utilisioHighlight = syntaxHighlighting(HighlightStyle.define([
+  { tag: tags.propertyName, color: "var(--syntax-key)" },
+  { tag: tags.string, color: "var(--syntax-string)" },
+  { tag: tags.number, color: "var(--syntax-number)" },
+  { tag: [tags.bool, tags.null], color: "var(--syntax-bool)" },
+  { tag: [tags.punctuation, tags.separator, tags.squareBracket, tags.brace], color: "var(--dim)" },
+  { tag: tags.invalid, color: "var(--danger)" },
+]));
 
 interface EditorProps {
   value: string;
@@ -54,7 +61,7 @@ export function Editor({ value, onChange, readOnly = false, minHeight = "380px",
       value={value}
       onChange={onChange}
       readOnly={readOnly}
-      extensions={[json(), utilisioTheme, EditorView.contentAttributes.of({ "aria-label": ariaLabel })]}
+      extensions={[json(), utilisioTheme, utilisioHighlight, EditorView.contentAttributes.of({ "aria-label": ariaLabel })]}
       basicSetup={{
         lineNumbers: true,
         foldGutter: false,

@@ -79,7 +79,7 @@ export function HomeAbout({ lang }: { lang: Lang }) {
                 <span className="font-mono text-[13px] text-brand w-7 shrink-0">{c.glyph}</span>
                 <span className="text-[13px] text-fg font-medium sm:w-32 shrink-0">{c.label[lang]}</span>
                 <span className="flex-1 text-[13px] text-fg-1">{HUB_LINES[c.id]?.[lang]}</span>
-                <span className="font-mono text-[11px] text-dim-2 shrink-0">
+                <span className="font-mono text-[11px] text-dim shrink-0">
                   {live.filter((t) => t.cat === c.id).length} {lang === "fr" ? "outils" : "tools"} →
                 </span>
               </Link>

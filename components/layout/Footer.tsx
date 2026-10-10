@@ -45,8 +45,8 @@ export function Footer() {
               </span>
             </div>
             <p className="font-mono text-[12px] text-dim leading-relaxed">{i.footerTagline}</p>
-            <p className="font-mono text-[11px] text-dim-2 leading-relaxed max-w-[36ch]">{i.footerNote}</p>
-            <p className="font-mono text-[11px] text-dim-2" suppressHydrationWarning>
+            <p className="font-mono text-[11px] text-dim leading-relaxed max-w-[36ch]">{i.footerNote}</p>
+            <p className="font-mono text-[11px] text-dim" suppressHydrationWarning>
               © {new Date().getFullYear()} {BRAND_NAME} · Next.js + Tailwind v4
             </p>
           </div>
@@ -86,7 +86,7 @@ export function Footer() {
 
         {/* Bottom rule : session + liens légaux */}
         <div className="border-t border-line pt-5 flex flex-col-reverse gap-3 md:flex-row md:items-center md:justify-between">
-          <span className="font-mono text-[11px] text-dim-2" suppressHydrationWarning>
+          <span className="font-mono text-[11px] text-dim" suppressHydrationWarning>
             {`> session_end  ::  ${new Date().toISOString().slice(0, 19).replace("T", " ")}`}
           </span>
           <nav aria-label={lang === "fr" ? "informations légales" : "legal"} className="flex flex-wrap gap-x-4 gap-y-2">

@@ -109,7 +109,7 @@ export function RegexTester() {
           value={pattern}
           onChange={(e) => setPattern(e.target.value)}
           placeholder={TR[lang].regexPlaceholder}
-          className="flex-1 bg-transparent font-mono text-[13px] text-brand px-4 py-[11px] outline-none placeholder:text-dim-2"
+          className="flex-1 bg-transparent font-mono text-[13px] text-brand px-4 py-[11px] outline-none placeholder:text-dim"
           spellCheck={false}
         />
         <span className="font-mono text-[14px] text-dim px-2 border-l border-line py-[11px]">/</span>
@@ -141,7 +141,7 @@ export function RegexTester() {
       </div>
 
       <div className="flex items-center gap-2 px-[14px] py-[9px] border border-line border-b-0 bg-bg">
-        <span className="font-mono text-[10px] text-dim-2 uppercase tracking-[0.1em] mr-1">
+        <span className="font-mono text-[10px] text-dim uppercase tracking-[0.1em] mr-1">
           {i.samplesLabel}
         </span>
         {SAMPLES.map((s) => (
@@ -195,7 +195,7 @@ export function RegexTester() {
                       <span key={`${i}:t`} className="text-fg-1">{seg.text}</span>
                     )
                   )
-                : <span className="text-dim-2">{TR[lang].matchesHere}</span>}
+                : <span className="text-dim">{TR[lang].matchesHere}</span>}
             </div>
 
             {/* Match list */}
@@ -203,10 +203,10 @@ export function RegexTester() {
               <div className="overflow-auto flex-1 divide-y divide-line">
                 {matches.map((m, i) => (
                   <div key={`${m.index}:${m.value.slice(0, 8)}`} className="flex items-start gap-3 px-[14px] py-[8px]">
-                    <span className="font-mono text-[10px] text-dim-2 w-5 shrink-0 pt-[2px]">{i + 1}</span>
+                    <span className="font-mono text-[10px] text-dim w-5 shrink-0 pt-[2px]">{i + 1}</span>
                     <div className="flex-1 min-w-0">
                       <span className="font-mono text-[12px] text-brand break-all">{m.value || TR[lang].emptyMatch}</span>
-                      <span className="font-mono text-[11px] text-dim-2 ml-2">@{m.index}</span>
+                      <span className="font-mono text-[11px] text-dim ml-2">@{m.index}</span>
                       {m.groups.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-1">
                           {m.groups.map((g, gi) => (

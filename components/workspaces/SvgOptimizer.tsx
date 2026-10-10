@@ -134,7 +134,7 @@ export function SvgOptimizer() {
                 {result.output}
               </pre>
             ) : (
-              <span className="font-mono text-[12px] text-dim-2">
+              <span className="font-mono text-[12px] text-dim">
                 {i.resultHere}
               </span>
             )}

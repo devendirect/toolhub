@@ -102,7 +102,7 @@ export function ReadabilityScore() {
           </div>
           {!result ? (
             <div className="flex-1 flex items-center justify-center py-20">
-              <span className="font-mono text-[12px] text-dim-2">{TR[lang].tooShort}</span>
+              <span className="font-mono text-[12px] text-dim">{TR[lang].tooShort}</span>
             </div>
           ) : (
             <div className="flex-1 divide-y divide-line">
@@ -125,7 +125,7 @@ export function ReadabilityScore() {
                 <span className="font-mono text-[11px] text-dim">{TR[lang].fogLabel}</span>
                 <span className="font-mono text-[13px] text-fg">
                   {result.fog}
-                  <span className="text-[11px] text-dim-2 ml-2">≈ grade {Math.round(result.fog)}</span>
+                  <span className="text-[11px] text-dim ml-2">≈ grade {Math.round(result.fog)}</span>
                 </span>
               </div>
               <div className="flex items-center justify-between px-[14px] py-[10px] border-b border-line">

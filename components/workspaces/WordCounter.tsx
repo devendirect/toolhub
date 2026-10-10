@@ -101,7 +101,7 @@ export function WordCounter() {
               value={input}
               onChange={(e) => { const v = e.target.value; if (!tracked.current && v) { tracked.current = true; trackRun(); } setInput(v); }}
               placeholder={TR[lang].pastePlaceholder}
-              className="w-full h-full min-h-[380px] bg-transparent font-mono text-[12.5px] text-fg leading-[1.65] outline-none resize-none placeholder:text-dim-2"
+              className="w-full h-full min-h-[380px] bg-transparent font-mono text-[12.5px] text-fg leading-[1.65] outline-none resize-none placeholder:text-dim"
               spellCheck={false}
             />
           </div>

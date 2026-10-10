@@ -71,7 +71,7 @@ export function SlugGenerator() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={TR[lang].slugPlaceholder}
-            className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim-2"
+            className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim"
             spellCheck={false}
           />
         </div>
@@ -88,7 +88,7 @@ export function SlugGenerator() {
               </p>
             </>
           ) : (
-            <p className="font-mono text-[13px] text-dim-2">
+            <p className="font-mono text-[13px] text-dim">
               {TR[lang].slugHere}
             </p>
           )}

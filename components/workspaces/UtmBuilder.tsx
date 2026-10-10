@@ -55,7 +55,7 @@ function FieldRow({ label, value, onChange, placeholder }: FieldRowProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim-2"
+        className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim"
         spellCheck={false}
       />
     </div>
@@ -102,7 +102,7 @@ export function UtmBuilder() {
   return (
     <section className="mb-10">
       <div className="flex items-center gap-2 px-[14px] py-[9px] border border-line border-b-0 bg-bg">
-        <span className="font-mono text-[10px] text-dim-2 uppercase tracking-[0.1em] mr-1">
+        <span className="font-mono text-[10px] text-dim uppercase tracking-[0.1em] mr-1">
           {TR[lang].presets}
         </span>
         {PRESETS.map((p) => (
@@ -143,7 +143,7 @@ export function UtmBuilder() {
           {result ? (
             <p className="font-mono text-[12.5px] text-brand leading-[1.6] break-all">{result}</p>
           ) : (
-            <p className="font-mono text-[12px] text-dim-2">{TR[lang].fillFields}</p>
+            <p className="font-mono text-[12px] text-dim">{TR[lang].fillFields}</p>
           )}
         </div>
       </div>

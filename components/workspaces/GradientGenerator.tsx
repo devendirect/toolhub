@@ -127,7 +127,7 @@ export function GradientGenerator() {
         <div className="divide-y divide-line">
           {stops.map((stop, idx) => (
             <div key={idx} className="flex items-center gap-4 px-[14px] py-[10px]">
-              <span className="font-mono text-[11px] text-dim-2 w-5">{String(idx + 1).padStart(2, "0")}</span>
+              <span className="font-mono text-[11px] text-dim w-5">{String(idx + 1).padStart(2, "0")}</span>
               <input
                 type="color"
                 value={stop.color}
@@ -171,7 +171,7 @@ export function GradientGenerator() {
               <span className="text-dim">;</span>
             </pre>
           </div>
-          <div className="font-mono text-[11px] text-dim-2 mt-2">
+          <div className="font-mono text-[11px] text-dim mt-2">
             {TR[lang].copyValue} · {stops.length} stops
           </div>
         </div>

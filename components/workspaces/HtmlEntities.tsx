@@ -85,7 +85,7 @@ export function HtmlEntities() {
             <pre className="font-mono text-[12.5px] text-fg-1 leading-[1.65] whitespace-pre-wrap min-h-[320px]">
               {error
                 ? <span className="text-danger">{error}</span>
-                : output || <span className="text-dim-2">{i.resultHere}</span>}
+                : output || <span className="text-dim">{i.resultHere}</span>}
             </pre>
           </div>
         </Pane>

@@ -244,7 +244,7 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
               ? <span className="text-dim">{TR[lang].decodingHeic}</span>
               : dims
               ? <span>{dims.w} × {dims.h}px</span>
-              : <span className="text-dim-2">{source ? source.name : TR[lang].noFile}</span>
+              : <span className="text-dim">{source ? source.name : TR[lang].noFile}</span>
           }
           className="border-r border-line"
         >
@@ -271,7 +271,7 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
                 <span className="font-mono text-[12px] text-dim">
                   {TR[lang].dropImage}
                 </span>
-                <span className="font-mono text-[11px] text-dim-2">JPG · PNG · WebP · AVIF · HEIC · GIF · BMP</span>
+                <span className="font-mono text-[11px] text-dim">JPG · PNG · WebP · AVIF · HEIC · GIF · BMP</span>
               </div>
             )}
           </div>

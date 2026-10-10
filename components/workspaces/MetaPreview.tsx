@@ -98,7 +98,7 @@ export function MetaPreview() {
           onChange={(e) => setUrl(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && preview()}
           placeholder="https://example.com"
-          className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim-2"
+          className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim"
           spellCheck={false}
         />
         <button
@@ -214,7 +214,7 @@ export function MetaPreview() {
                     onClick={() => v && copy(v, name)}
                   >
                     <span className="font-mono text-dim w-36 shrink-0">{name}</span>
-                    <span className={`font-mono break-all flex-1 ${v ? "text-fg-1" : "text-dim-2"}`}>{v ? truncate(v, 120) : TR[lang].missing}</span>
+                    <span className={`font-mono break-all flex-1 ${v ? "text-fg-1" : "text-dim"}`}>{v ? truncate(v, 120) : TR[lang].missing}</span>
                     {v && (
                       <span className="font-mono text-[11px] text-dim opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                         {copied === name ? "✓" : i.copy}

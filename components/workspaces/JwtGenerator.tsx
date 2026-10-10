@@ -160,7 +160,7 @@ export function JwtGenerator() {
             </p>
           )}
           {!token && !error && (
-            <p className="font-mono text-[12px] text-dim-2">{TR[lang].signHint}</p>
+            <p className="font-mono text-[12px] text-dim">{TR[lang].signHint}</p>
           )}
         </div>
         <div className="flex items-center gap-2 px-[14px] py-2 border-t border-line bg-bg font-mono text-[11px] text-dim">

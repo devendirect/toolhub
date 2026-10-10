@@ -309,7 +309,7 @@ export function PdfConverter({ initialMode, initialImgFormat }: PdfConverterProp
                 ? `${images.length} ${TR[lang].imagesSelected}`
                 : TR[lang].dropImages}
             </span>
-            <span className="font-mono text-[11px] text-dim-2">PNG, JPEG, WEBP, HEIC, GIF…</span>
+            <span className="font-mono text-[11px] text-dim">PNG, JPEG, WEBP, HEIC, GIF…</span>
           </div>
           <input ref={imgRef} type="file" accept={IMAGE_ACCEPT} multiple className="hidden" onChange={(e) => handleImages(e.target.files)} />
 
@@ -319,7 +319,7 @@ export function PdfConverter({ initialMode, initialImgFormat }: PdfConverterProp
                 <div key={img.name + idx} className="flex items-center justify-between px-3 py-[7px] font-mono text-[11px]">
                   <span className="text-dim w-6 shrink-0">{idx + 1}</span>
                   <span className="text-fg flex-1 truncate">{img.name}</span>
-                  <span className="text-dim-2 ml-3">{fmtSize(img.size)}</span>
+                  <span className="text-dim ml-3">{fmtSize(img.size)}</span>
                 </div>
               ))}
             </div>

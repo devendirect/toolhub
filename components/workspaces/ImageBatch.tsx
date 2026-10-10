@@ -165,9 +165,9 @@ export function ImageBatch({ files, format, quality, maxWidth, lang, onStart, on
           const s = statuses[idx] ?? "pending";
           return (
             <li key={idx} className="flex items-center gap-3 px-[14px] py-[7px] font-mono text-[11px]">
-              <span className="text-dim-2 w-7 shrink-0 text-right">{idx + 1}</span>
+              <span className="text-dim w-7 shrink-0 text-right">{idx + 1}</span>
               <span className="text-fg flex-1 truncate">{f.name}</span>
-              <span className="text-dim-2 shrink-0">{fmtSize(f.size)}</span>
+              <span className="text-dim shrink-0">{fmtSize(f.size)}</span>
               <span className={`w-[110px] shrink-0 text-right ${s === "done" ? "text-ok" : s === "error" ? "text-danger" : "text-dim"}`}>
                 {s === "done" ? `✓ ${fmtSize(outSizes[idx] ?? 0)}` : s === "error" ? `✕ ${tr.failed}` : s === "working" ? tr.working : tr.pending}
               </span>

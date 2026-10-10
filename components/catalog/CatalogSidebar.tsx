@@ -32,7 +32,7 @@ export function CatalogSidebar({
         <div className="flex items-center gap-2 px-3 py-[9px] border border-line bg-bg-1">
           <span className="font-mono text-[12px] text-dim">{">"}</span>
           <input
-            className="flex-1 bg-transparent font-mono text-[12px] text-fg outline-none placeholder:text-dim-2"
+            className="flex-1 bg-transparent font-mono text-[12px] text-fg outline-none placeholder:text-dim"
             placeholder={i.searchPlaceholder}
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -62,7 +62,7 @@ export function CatalogSidebar({
               >
                 <span className="w-7 text-[11px] shrink-0">★</span>
                 <span className="flex-1 text-left">{i.favoritesSection}</span>
-                <span className={activeCat === "favorites" ? "text-brand" : "text-dim-2"}>{favoritesCount}</span>
+                <span className={activeCat === "favorites" ? "text-brand" : "text-dim"}>{favoritesCount}</span>
               </button>
             </li>
           )}
@@ -85,7 +85,7 @@ export function CatalogSidebar({
                 >
                   <span className="w-7 text-[11px] shrink-0">{c.glyph}</span>
                   <span className="flex-1 text-left">{c.label[lang]}</span>
-                  <span className={isOn ? "text-brand" : "text-dim-2"}>{count}</span>
+                  <span className={isOn ? "text-brand" : "text-dim"}>{count}</span>
                 </Link>
               </li>
             );

@@ -83,7 +83,7 @@ export function UuidGenerator() {
               className="group flex items-center justify-between px-[18px] py-[11px] hover:bg-bg-2 transition-colors cursor-pointer"
               onClick={() => copy(uuid)}
             >
-              <span className="font-mono text-[11px] text-dim-2 w-6 shrink-0">{String(idx + 1).padStart(2, "0")}</span>
+              <span className="font-mono text-[11px] text-dim w-6 shrink-0">{String(idx + 1).padStart(2, "0")}</span>
               <span className="font-mono text-[13px] text-fg tracking-[0.04em] flex-1 ml-4">{uuid}</span>
               <span className="font-mono text-[11px] text-dim opacity-0 group-hover:opacity-100 transition-opacity ml-4">
                 {i.copy}

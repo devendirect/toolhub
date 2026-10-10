@@ -40,7 +40,7 @@ function Field({ label, value, onChange, placeholder, type = "text" }: {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="flex-1 bg-transparent font-mono text-[12px] text-fg px-3 py-[9px] outline-none placeholder:text-dim-2"
+        className="flex-1 bg-transparent font-mono text-[12px] text-fg px-3 py-[9px] outline-none placeholder:text-dim"
         spellCheck={false}
       />
     </div>

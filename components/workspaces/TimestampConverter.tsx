@@ -64,7 +64,7 @@ export function TimestampConverter() {
             value={ts}
             onChange={(e) => setTs(e.target.value)}
             placeholder="1700000000"
-            className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim-2"
+            className="flex-1 bg-transparent font-mono text-[13px] text-fg px-4 py-[11px] outline-none placeholder:text-dim"
           />
           <button
             onClick={() => setTs(String(nowTs()))}
@@ -89,7 +89,7 @@ export function TimestampConverter() {
           />
         )) : (
           <div className="px-[14px] py-[14px]">
-            <span className="font-mono text-[12px] text-dim-2">
+            <span className="font-mono text-[12px] text-dim">
               {TR[lang].invalidTs}
             </span>
           </div>

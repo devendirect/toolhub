@@ -58,8 +58,8 @@ export function DropZone({ onFile, accept, glyph = "▣", label, sublabel, curre
     >
       <span className="font-mono text-[28px] text-dim">{glyph}</span>
       <span className="font-mono text-[12px] text-dim text-center px-4">{current ?? label}</span>
-      {sublabel && !current && <span className="font-mono text-[11px] text-dim-2">{sublabel}</span>}
-      {current && <span className="font-mono text-[11px] text-dim-2">{lang === "fr" ? "cliquer pour changer" : "click to change"}</span>}
+      {sublabel && !current && <span className="font-mono text-[11px] text-dim">{sublabel}</span>}
+      {current && <span className="font-mono text-[11px] text-dim">{lang === "fr" ? "cliquer pour changer" : "click to change"}</span>}
     </DropBase>
   );
 }
@@ -85,7 +85,7 @@ export function DropZoneMulti({ onFiles, accept, glyph = "≡+≡", label, subla
     >
       <span className="font-mono text-[24px] text-dim">{glyph}</span>
       <span className="font-mono text-[12px] text-dim text-center">{label}</span>
-      {sublabel && <span className="font-mono text-[11px] text-dim-2">{sublabel}</span>}
+      {sublabel && <span className="font-mono text-[11px] text-dim">{sublabel}</span>}
     </DropBase>
   );
 }

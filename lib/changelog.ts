@@ -29,6 +29,22 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-10-10-json-highlighting",
+    date: "2026-10-10",
+    kind: "fixed",
+    tools: ["json-formatter"],
+    text: {
+      fr: {
+        title: "Formateur JSON : une coloration syntaxique enfin lisible",
+        body: "Les couleurs prévues pour l'éditeur ne s'appliquaient pas : les chaînes s'affichaient en rouge sombre et les nombres en vert foncé, presque illisibles sur le fond noir. Les clés sont maintenant en bleu, les chaînes en vert, les nombres en ambre, et les numéros de ligne sont plus lisibles.",
+      },
+      en: {
+        title: "JSON formatter: syntax colors you can actually read",
+        body: "The colors meant for the editor weren't applied: strings showed in dark red and numbers in dark green, barely readable on the black background. Keys are now blue, strings green, numbers amber, and line numbers are easier to read.",
+      },
+    },
+  },
+  {
     id: "2026-10-10-guide-jpeg-xl",
     date: "2026-10-10",
     kind: "improved",

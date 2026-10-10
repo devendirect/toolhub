@@ -109,7 +109,7 @@ export function ColorPicker() {
           onChange={(e) => handleHexInput(e.target.value)}
           placeholder="#000000"
           maxLength={7}
-          className="flex-1 bg-transparent font-mono text-[14px] text-fg px-4 py-[11px] outline-none placeholder:text-dim-2 uppercase"
+          className="flex-1 bg-transparent font-mono text-[14px] text-fg px-4 py-[11px] outline-none placeholder:text-dim uppercase"
         />
       </div>
 
@@ -130,7 +130,7 @@ export function ColorPicker() {
 
         {!colors && (
           <div className="px-[14px] py-[14px]">
-            <span className="font-mono text-[12px] text-dim-2">
+            <span className="font-mono text-[12px] text-dim">
               {TR[lang].hexInvalid}
             </span>
           </div>

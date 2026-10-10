@@ -127,7 +127,7 @@ export function CronGenerator() {
   return (
     <section className="mb-10">
       <div className="flex flex-wrap items-center gap-2 px-[14px] py-[12px] border border-line border-b-0 bg-bg-1">
-        <span className="font-mono text-[10px] text-dim-2 uppercase tracking-[0.1em] mr-1 shrink-0">
+        <span className="font-mono text-[10px] text-dim uppercase tracking-[0.1em] mr-1 shrink-0">
           {TR[lang].presets}
         </span>
         {PRESETS.map((p) => (
@@ -164,14 +164,14 @@ export function CronGenerator() {
                       key={v}
                       onClick={() => setField(key, v)}
                       className={`font-mono text-[10px] px-[5px] py-[1px] border transition-colors ${
-                        f.value === v ? "border-brand text-brand" : "border-line text-dim-2 hover:text-fg-1 hover:border-line-2"
+                        f.value === v ? "border-brand text-brand" : "border-line text-dim hover:text-fg-1 hover:border-line-2"
                       }`}
                     >
                       {v}
                     </button>
                   ))}
                 </div>
-                <span className="font-mono text-[10px] text-dim-2">{f.hint}</span>
+                <span className="font-mono text-[10px] text-dim">{f.hint}</span>
               </div>
             </div>
           ))}
@@ -197,7 +197,7 @@ export function CronGenerator() {
               <span className="text-[15px] text-fg font-medium">{description}</span>
             </div>
           ) : (
-            <span className="font-mono text-[12px] text-dim-2">
+            <span className="font-mono text-[12px] text-dim">
               {TR[lang].loadingDesc}
             </span>
           )}
@@ -213,7 +213,7 @@ export function CronGenerator() {
           ].map(([label, range]) => (
             <div key={label} className="px-[10px] py-[8px] border-r border-line last:border-r-0 bg-bg">
               <div className="font-mono text-[10px] text-dim">{label}</div>
-              <div className="font-mono text-[10px] text-dim-2">{range}</div>
+              <div className="font-mono text-[10px] text-dim">{range}</div>
             </div>
           ))}
         </div>
