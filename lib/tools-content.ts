@@ -2172,12 +2172,12 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
         h: { en: "What re-encoding changes", fr: "Ce que le réencodage change" },
         p: {
           en: [
-            "Transparency is lost in JPEG. A PNG logo with a transparent background, saved as JPEG, gets a black background, because JPEG has no alpha channel. Choose WebP or PNG for those images.",
+            "Transparency is lost in JPEG, which has no alpha channel. A PNG logo with a transparent background, saved as JPEG, gets a white background, as in the site's other image tools. Choose WebP or PNG to keep the transparency.",
             "Metadata is not copied: camera model, date taken and GPS position are absent from the output, which is useful before posting a photo publicly. The browser applies the photo's rotation before drawing it, so a portrait shot stays upright.",
             "Each setting is applied to the original file, not to the previous result. You can try quality 40, then go back to 85 without losing detail along the way.",
           ],
           fr: [
-            "La transparence disparaît en JPEG. Un logo PNG sur fond transparent, enregistré en JPEG, prend un fond noir, car le JPEG n'a pas de couche alpha. Choisissez le WebP ou le PNG pour ces images.",
+            "La transparence disparaît en JPEG, qui n'a pas de couche alpha. Un logo PNG sur fond transparent, enregistré en JPEG, prend un fond blanc, comme dans les autres outils images du site. Choisissez le WebP ou le PNG pour garder la transparence.",
             "Les métadonnées ne sont pas recopiées : modèle d'appareil, date de prise de vue et position GPS sont absents du résultat, ce qui est utile avant de publier une photo. Le navigateur applique la rotation de la photo avant de la dessiner : une photo prise en portrait reste droite.",
             "Chaque réglage repart du fichier d'origine, pas du résultat précédent. Vous pouvez essayer la qualité 40, puis revenir à 85 sans avoir perdu de détail en route.",
           ],
@@ -2261,13 +2261,41 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
   },
   "schema-generator": {
     desc: {
-      en: "Fill in a form for one of four schema types (Article, Product, FAQPage, or BreadcrumbList) and get valid JSON-LD structured data back, ready to paste into a <script type=\"application/ld+json\"> tag. What this tool guarantees is syntactic correctness: the output is always valid JSON matching schema.org's vocabulary for that type. What it can't guarantee is rich-result eligibility, which is a separate, stricter bar Google sets per type, a Product schema here covers name, description and price/availability, but Google's Merchant rich snippet guidelines often also expect fields like aggregateRating or review to actually trigger a star-rating rich result in search. Always run the generated markup through Google's Rich Results Test before deploying it; valid JSON-LD and an eligible rich result are two different things, and only the second one changes how your page looks in search.",
-      fr: "Remplissez un formulaire pour l'un des quatre types de schema (Article, Product, FAQPage, ou BreadcrumbList) et récupérez des données structurées JSON-LD valides, prêtes à coller dans une balise <script type=\"application/ld+json\">. Ce que cet outil garantit, c'est la correction syntaxique : le résultat est toujours du JSON valide respectant le vocabulaire schema.org pour ce type. Ce qu'il ne peut pas garantir, c'est l'éligibilité aux résultats enrichis, une barre séparée et plus stricte que Google fixe par type, un schema Product ici couvre nom, description et prix/disponibilité, mais les consignes Google Merchant pour les extraits enrichis attendent souvent aussi des champs comme aggregateRating ou review pour réellement déclencher un résultat enrichi avec étoiles dans la recherche. Testez toujours le balisage généré avec le Rich Results Test de Google avant de le déployer ; un JSON-LD valide et un résultat enrichi éligible sont deux choses différentes, et seule la seconde change l'apparence de votre page dans les résultats de recherche.",
+      en: "Fill in a form for Article, Product, FAQPage or BreadcrumbList and get JSON-LD structured data, ready to paste into a <script type=\"application/ld+json\"> tag. The output is always valid JSON that follows schema.org's vocabulary for the chosen type. Whether Google turns it into a rich result is a separate question, decided per type and per page: check the markup with Google's Rich Results Test before publishing it.",
+      fr: "Remplissez un formulaire pour Article, Product, FAQPage ou BreadcrumbList et récupérez des données structurées JSON-LD, prêtes à coller dans une balise <script type=\"application/ld+json\">. Le résultat est toujours un JSON valide qui suit le vocabulaire schema.org du type choisi. Que Google en fasse un résultat enrichi est une autre question, tranchée par type et par page : testez le balisage avec le test des résultats enrichis de Google avant de le publier.",
     },
     useCases: {
-      en: ["Generating FAQPage JSON-LD from an existing list of questions and answers without hand-writing the nesting", "Building BreadcrumbList markup that matches a site's actual navigation hierarchy", "Creating a starting Article schema for a blog post, then extending it with fields this form doesn't cover", "Producing syntactically correct Product JSON-LD to test in Google's Rich Results Test before adding the extra fields it flags as missing"],
-      fr: ["Générer du JSON-LD FAQPage à partir d'une liste existante de questions-réponses sans écrire l'imbrication à la main", "Construire un balisage BreadcrumbList qui correspond à la hiérarchie de navigation réelle d'un site", "Créer un schema Article de départ pour un article de blog, puis l'étendre avec des champs que ce formulaire ne couvre pas", "Produire du JSON-LD Product syntaxiquement correct à tester dans le Rich Results Test de Google avant d'ajouter les champs manquants qu'il signale"],
+      en: ["Turning an existing list of questions and answers into FAQPage JSON-LD without hand-writing the nesting", "Building BreadcrumbList markup that matches a site's visible navigation", "Creating a starting Article schema for a blog post, then extending it with fields this form doesn't cover", "Producing Product JSON-LD to test in Google's Rich Results Test before adding the fields it reports as missing"],
+      fr: ["Transformer une liste de questions-réponses existante en JSON-LD FAQPage sans écrire l'imbrication à la main", "Construire un balisage BreadcrumbList qui correspond à la navigation visible d'un site", "Créer un schema Article de départ pour un article de blog, puis l'étendre avec des champs que ce formulaire ne couvre pas", "Produire du JSON-LD Product à passer dans le test des résultats enrichis de Google avant d'ajouter les champs qu'il signale comme manquants"],
     },
+    deepDive: [
+      {
+        h: { en: "FAQPage: valid markup, but no rich result in Google since May 2026", fr: "FAQPage : un balisage valide, mais plus de résultat enrichi chez Google depuis mai 2026" },
+        p: {
+          en: [
+            "Google stopped showing FAQ rich results on 7 May 2026 and removed the related documentation from Search Central in June. A page with FAQPage markup now appears in Google like any other page, without the expandable questions under the link. The feature had already been limited in 2023 to well-known government and health websites; the 2026 change ends it for everyone.",
+            "The markup itself is still valid schema.org vocabulary. It causes no error and there is no need to remove it from existing pages. Keep it when the page really is a list of questions and answers, but don't add it expecting a change in Google's results.",
+          ],
+          fr: [
+            "Google a cessé d'afficher les résultats enrichis FAQ le 7 mai 2026 et a retiré la documentation correspondante de Search Central en juin. Une page balisée en FAQPage apparaît désormais dans Google comme n'importe quelle autre page, sans les questions dépliables sous le lien. La fonction était déjà réservée depuis 2023 aux sites gouvernementaux et de santé reconnus ; le changement de 2026 la supprime pour tous.",
+            "Le balisage reste du vocabulaire schema.org valide. Il ne provoque aucune erreur et il n'y a pas lieu de le retirer des pages existantes. Gardez-le quand la page est vraiment une liste de questions-réponses, mais ne l'ajoutez pas en attendant un changement dans les résultats de Google.",
+          ],
+        },
+      },
+      {
+        h: { en: "What the other three forms cover", fr: "Ce que couvrent les trois autres formulaires" },
+        p: {
+          en: [
+            "Product fills in the name, description, price, currency and availability. Google's product results often expect more, such as review or aggregateRating, and only when real reviews are shown on the page. The Rich Results Test lists the missing fields; add them by hand.",
+            "Article covers the headline, description, author, publication date and URL, which helps Google read who wrote the page and when. BreadcrumbList describes the path from the home page to the current page: make it match the navigation visible on the page, not a structure that exists only in the markup.",
+          ],
+          fr: [
+            "Product remplit le nom, la description, le prix, la devise et la disponibilité. Les résultats produits de Google demandent souvent davantage, comme review ou aggregateRating, et seulement quand de vrais avis figurent sur la page. Le test des résultats enrichis liste les champs manquants : ajoutez-les à la main.",
+            "Article couvre le titre, la description, l'auteur, la date de publication et l'URL, ce qui aide Google à savoir qui a écrit la page et quand. BreadcrumbList décrit le chemin de l'accueil jusqu'à la page : faites-le correspondre à la navigation visible sur la page, pas à une structure qui n'existerait que dans le balisage.",
+          ],
+        },
+      },
+    ],
   },
   "sitemap-generator": {
     desc: {

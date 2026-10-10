@@ -55,6 +55,12 @@ export function ImageCompressor() {
       canvas.height = img.naturalHeight;
       const ctx = canvas.getContext("2d");
       if (!ctx) { setLoading(false); return; }
+      // Le JPEG n'a pas de couche alpha : sans fond, le canvas rend le transparent
+      // en noir. Fond blanc, comme le convertisseur et « Réduire à X Ko ».
+      if (fmt === "image/jpeg") {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
       ctx.drawImage(img, 0, 0);
       canvas.toBlob(
         (blob) => {

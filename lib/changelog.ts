@@ -29,6 +29,38 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-10-10-schema-faq",
+    date: "2026-10-10",
+    kind: "fixed",
+    tools: ["schema-generator"],
+    text: {
+      fr: {
+        title: "Générateur Schema : la page tient compte de la fin des résultats enrichis FAQ",
+        body: "Google n'affiche plus les résultats enrichis FAQ depuis le 7 mai 2026, alors que la page du générateur parlait encore d'éligibilité pour FAQPage. Elle explique maintenant ce changement : le balisage reste valide et peut rester en place, mais il ne modifie plus l'apparence de la page dans Google.",
+      },
+      en: {
+        title: "Schema generator: the page now reflects the end of FAQ rich results",
+        body: "Google has not shown FAQ rich results since 7 May 2026, yet the generator's page still talked about FAQPage eligibility. It now explains the change: the markup stays valid and can stay in place, but it no longer changes how the page looks in Google.",
+      },
+    },
+  },
+  {
+    id: "2026-10-10-compressor-jpeg-white",
+    date: "2026-10-10",
+    kind: "fixed",
+    tools: ["image-compressor"],
+    text: {
+      fr: {
+        title: "Compresseur d'images : fond blanc pour les images transparentes en JPEG",
+        body: "Un PNG transparent compressé en JPEG ressortait sur fond noir, alors que le convertisseur d'images et l'outil de réduction à X Ko posent un fond blanc. Le compresseur fait maintenant de même. Pour garder la transparence, choisissez le WebP ou le PNG.",
+      },
+      en: {
+        title: "Image compressor: white background for transparent images saved as JPEG",
+        body: "A transparent PNG compressed to JPEG came out on a black background, while the image converter and the compress-to-KB tool use white. The compressor now does the same. To keep transparency, choose WebP or PNG.",
+      },
+    },
+  },
+  {
     id: "2026-10-10-env-duplicates",
     date: "2026-10-10",
     kind: "fixed",
