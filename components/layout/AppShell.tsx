@@ -1,9 +1,10 @@
 import { type ReactNode } from "react";
+import type { Lang } from "@/lib/types";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import { CommandPalette } from "@/components/palette/CommandPalette";
+import { PaletteLauncher } from "@/components/palette/PaletteLauncher";
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({ children, lang }: { children: ReactNode; lang: Lang }) {
   return (
     <div className="relative min-h-screen flex flex-col">
       {/* Dot-grid background */}
@@ -32,8 +33,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         {children}
       </main>
 
-      <Footer />
-      <CommandPalette />
+      <Footer lang={lang} />
+      <PaletteLauncher />
     </div>
   );
 }

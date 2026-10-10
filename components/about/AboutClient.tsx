@@ -39,7 +39,6 @@ const SECTIONS: Section[] = [
       { name: "Radix UI",     version: "—",   license: "MIT", url: "https://www.radix-ui.com" },
       { name: "cmdk",         version: "1.x", license: "MIT", url: "https://cmdk.paco.me" },
       { name: "Lucide React", version: "—",   license: "ISC", url: "https://lucide.dev" },
-      { name: "Sonner",       version: "—",   license: "MIT", url: "https://sonner.emilkowal.ski" },
     ],
   },
   {

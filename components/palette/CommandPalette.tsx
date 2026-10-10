@@ -70,16 +70,8 @@ export function CommandPalette() {
 
   useEffect(() => { if (open) setQ(""); }, [open]);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        setOpen(!open);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, setOpen]);
+  // Le raccourci ⌘K / Ctrl+K est écouté par PaletteLauncher, toujours chargé :
+  // ce composant-ci (cmdk + catalogue) n'arrive qu'à la première ouverture.
 
   const { flat, groups } = useMemo(() => {
     if (ql) {

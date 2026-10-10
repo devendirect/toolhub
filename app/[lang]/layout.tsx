@@ -19,7 +19,7 @@ export default async function LangLayout({ children, params }: Props) {
 
   return (
     <Providers>
-      <AppShell>{children}</AppShell>
+      <AppShell lang={lang}>{children}</AppShell>
     </Providers>
   );
 }

@@ -5,7 +5,7 @@ import { ThemeProvider } from "./ThemeProvider";
 import { I18nProvider } from "./I18nProvider";
 import { PaletteProvider } from "./PaletteProvider";
 import { FavoritesProvider } from "./FavoritesProvider";
-import { Toaster } from "@/components/ui/sonner";
+import { MiniToaster } from "@/components/ui/MiniToaster";
 import { CookieBanner } from "@/components/analytics/CookieBanner";
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -15,7 +15,7 @@ export function Providers({ children }: { children: ReactNode }) {
         <FavoritesProvider>
           <PaletteProvider>{children}</PaletteProvider>
         </FavoritesProvider>
-        <Toaster />
+        <MiniToaster />
         <CookieBanner />
       </I18nProvider>
     </ThemeProvider>

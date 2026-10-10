@@ -1,6 +1,6 @@
 "use client";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useEffect, useRef } from "react";
 import { useTheme, type Accent, type Density, type UIFont } from "@/components/providers/ThemeProvider";
 import { useLang } from "@/components/providers/I18nProvider";
 import { SegControl } from "@/components/workspace/OptionsBar";
@@ -21,23 +21,56 @@ const ACCENT_DOTS: Record<Accent, string> = {
   cyan:   "#22d3ee",
 };
 
+const PANEL_ID = "tweaks-panel";
+
+/**
+ * Panneau « apparence » sur l'attribut HTML natif `popover` : fermeture par
+ * Échap et clic extérieur, premier plan et accessibilité fournis par le
+ * navigateur, sans bibliothèque de positionnement (Base UI + Floating UI
+ * pesaient ~130 Ko sur chaque page). Seul le placement sous le bouton est à nous.
+ */
 export function TweaksPopover() {
   const { accent, density, font, setAccent, setDensity, setFont } = useTheme();
   const { lang } = useLang();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const panel = panelRef.current;
+    const button = buttonRef.current;
+    if (!panel || !button) return;
+    // Aligné à droite du bouton, 8 px dessous, sans sortir de l'écran
+    const place = () => {
+      const r = button.getBoundingClientRect();
+      panel.style.top = `${r.bottom + 8}px`;
+      panel.style.left = `${Math.max(8, Math.min(r.right - panel.offsetWidth, window.innerWidth - panel.offsetWidth - 8))}px`;
+    };
+    const onToggle = (e: Event) => {
+      if ((e as ToggleEvent).newState === "open") { place(); window.addEventListener("resize", place); }
+      else window.removeEventListener("resize", place);
+    };
+    panel.addEventListener("toggle", onToggle);
+    return () => { panel.removeEventListener("toggle", onToggle); window.removeEventListener("resize", place); };
+  }, []);
 
   return (
-    <Popover>
-      <PopoverTrigger
+    <>
+      <button
+        ref={buttonRef}
+        type="button"
+        popoverTarget={PANEL_ID}
         className="inline-flex items-center justify-center w-8 h-8 font-mono text-[16px] text-dim border border-line-2 rounded bg-bg-1 transition-colors duration-150 hover:border-brand-mid hover:text-fg-1"
         aria-label={TR[lang].label}
       >
         ⊞
-      </PopoverTrigger>
+      </button>
 
-      <PopoverContent
-        align="end"
-        sideOffset={8}
-        className="w-[280px] p-0 border border-line bg-bg-1 rounded-none shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+      <div
+        ref={panelRef}
+        id={PANEL_ID}
+        popover="auto"
+        aria-label={TR[lang].label}
+        className="fixed inset-auto m-0 w-[280px] p-0 border border-line bg-bg-1 text-fg rounded-none shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
       >
         {/* Header */}
         <div className="flex items-center gap-2 px-4 py-3 border-b border-line">
@@ -101,7 +134,7 @@ export function TweaksPopover() {
             {TR[lang].reset}
           </button>
         </div>
-      </PopoverContent>
-    </Popover>
+      </div>
+    </>
   );
 }

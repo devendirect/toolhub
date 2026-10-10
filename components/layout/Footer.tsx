@@ -1,19 +1,20 @@
-"use client";
-
 import Link from "next/link";
 import { BRAND_NAME, REPO_URL } from "@/lib/brand";
 import { t } from "@/lib/i18n";
-import { useLang } from "@/components/providers/I18nProvider";
 import { LogoMark } from "@/components/brand/LogoMark";
 import { CATEGORIES } from "@/lib/tools";
 import { localePath } from "@/lib/localePath";
-import { resetConsent } from "@/components/analytics/CookieBanner";
+import type { Lang } from "@/lib/types";
+import { ManageCookiesButton, SessionClock } from "./FooterClient";
 
 const COL_LINK = "font-mono text-[13px] text-fg-1 hover:text-fg transition-colors duration-150";
 const LEGAL_LINK = "font-mono text-[11px] text-dim hover:text-fg transition-colors duration-150";
 
-export function Footer() {
-  const { lang } = useLang();
+/**
+ * Composant serveur : le catalogue (lib/tools) et le dictionnaire ne partent
+ * plus dans le JavaScript de chaque page pour afficher cinq liens.
+ */
+export function Footer({ lang }: { lang: Lang }) {
   const i = t(lang);
 
   const toolCats = CATEGORIES.filter((c) => c.id !== "all");
@@ -86,18 +87,12 @@ export function Footer() {
 
         {/* Bottom rule : session + liens légaux */}
         <div className="border-t border-line pt-5 flex flex-col-reverse gap-3 md:flex-row md:items-center md:justify-between">
-          <span className="font-mono text-[11px] text-dim" suppressHydrationWarning>
-            {`> session_end  ::  ${new Date().toISOString().slice(0, 19).replace("T", " ")}`}
-          </span>
+          <SessionClock className="font-mono text-[11px] text-dim" />
           <nav aria-label={lang === "fr" ? "informations légales" : "legal"} className="flex flex-wrap gap-x-4 gap-y-2">
             {legal.map((l) => (
               <Link key={l.href} href={localePath(lang, l.href)} className={LEGAL_LINK}>{l.label}</Link>
             ))}
-            {/* Quand une CMP certifiée pilote la page, resetConsent lui rend la
-                main et rouvre son écran : recharger effacerait cet écran. */}
-            <button onClick={() => { if (!resetConsent()) window.location.reload(); }} className={`${LEGAL_LINK} text-left`}>
-              {lang === "fr" ? "gérer les cookies" : "manage cookies"}
-            </button>
+            <ManageCookiesButton lang={lang} className={`${LEGAL_LINK} text-left`} />
           </nav>
         </div>
       </div>
