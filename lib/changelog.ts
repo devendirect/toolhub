@@ -29,6 +29,21 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-10-10-lighter-pages",
+    date: "2026-10-10",
+    kind: "improved",
+    text: {
+      fr: {
+        title: "Des pages plus légères : environ 220 Ko de code en moins au chargement",
+        body: "La recherche ⌘K et le panneau d'apparence ne se chargent plus qu'au moment où vous les ouvrez, et la bibliothèque qui affichait « Copié ! » a été remplacée par quelques lignes. Chaque page télécharge environ 220 Ko de JavaScript en moins, et s'affiche plus vite sur mobile.",
+      },
+      en: {
+        title: "Lighter pages: about 220 KB less code on load",
+        body: "The ⌘K search and the appearance panel now load only when you open them, and the library that showed \"Copied!\" was replaced by a few lines of code. Every page downloads about 220 KB less JavaScript and shows up faster on mobile.",
+      },
+    },
+  },
+  {
     id: "2026-10-10-json-highlighting",
     date: "2026-10-10",
     kind: "fixed",
