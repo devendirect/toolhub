@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
+import { preconnect } from "react-dom";
+import { Geist, Geist_Mono } from "next/font/google";
 import { BRAND_NAME } from "@/lib/brand";
 import { ADS_CLIENT } from "@/lib/ads";
 import "./globals.css";
@@ -15,12 +16,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-});
-
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 const indexing = process.env.INDEXING_ENABLED === "true";
 
@@ -33,10 +28,16 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Ouvrir tôt les connexions vers les deux origines Google chargées sur chaque
+  // page : le tag AdSense (chargé en CORS anonyme, d'où crossOrigin) et le
+  // message de consentement certifié (Funding Choices) qu'il appelle ensuite.
+  preconnect("https://pagead2.googlesyndication.com", { crossOrigin: "anonymous" });
+  preconnect("https://fundingchoicesmessages.google.com");
+
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${jetbrainsMono.variable} dark`}
+      className={`${geistSans.variable} ${geistMono.variable} dark`}
       data-accent="green"
       data-density="regular"
       data-font="geist"

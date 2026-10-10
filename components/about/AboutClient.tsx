@@ -90,7 +90,6 @@ const SECTIONS: Section[] = [
     titleEn: "Fonts",
     libs: [
       { name: "Geist",           version: "—", license: "OFL 1.1", url: "https://vercel.com/font" },
-      { name: "JetBrains Mono",  version: "—", license: "OFL 1.1", url: "https://www.jetbrains.com/lp/mono" },
     ],
   },
 ];
