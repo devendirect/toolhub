@@ -21,12 +21,14 @@ const TR = {
     saved:     "économisé",
     larger:    "plus lourd",
     reset:     "recommencer",
+    unreadable: "Impossible de lire l'image : ce navigateur ne connaît pas ce format.",
   },
   en: {
     dropImage: "drop an image or click",
     saved:     "saved",
     larger:    "larger",
     reset:     "reset",
+    unreadable: "Could not read the image: this browser doesn't support this format.",
   },
 } as const;
 
@@ -43,12 +45,20 @@ export function ImageCompressor() {
   const [original, setOriginal] = useState<{ name: string; size: number; url: string } | null>(null);
   const [result, setResult] = useState<{ size: number; url: string; blob: Blob } | null>(null);
   const [loading, setLoading] = useState(false);
+  // Image que le navigateur ne sait pas décoder (JPEG XL avant Chrome 155, HEIC hors Safari…)
+  const [unreadable, setUnreadable] = useState(false);
 
   const compress = useCallback((file: File, fmt: Format, q: number) => {
     setLoading(true);
     setResult(null);
+    setUnreadable(false);
     const img = new Image();
     const objectUrl = URL.createObjectURL(file);
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      setUnreadable(true);
+      setLoading(false);
+    };
     img.onload = () => {
       const canvas = document.createElement("canvas");
       canvas.width = img.naturalWidth;
@@ -190,6 +200,7 @@ export function ImageCompressor() {
 
             <div className="flex items-center gap-4 px-[14px] py-[10px] bg-bg-1">
               {loading && <span className="font-mono text-[12px] text-dim">{i.compressing}</span>}
+              {unreadable && <span role="alert" className="font-mono text-[12px] text-danger">✕ {TR[lang].unreadable}</span>}
               {saving !== null && !loading && (
                 <span className={`font-mono text-[13px] font-semibold ${saving > 0 ? "text-ok" : "text-danger"}`}>
                   {saving > 0 ? `−${saving}%` : `+${Math.abs(saving)}%`}
@@ -199,7 +210,7 @@ export function ImageCompressor() {
                 </span>
               )}
               <button
-                onClick={() => { fileRef.current = null; setOriginal(null); setResult(null); if (inputRef.current) inputRef.current.value = ""; }}
+                onClick={() => { fileRef.current = null; setUnreadable(false); setOriginal(null); setResult(null); if (inputRef.current) inputRef.current.value = ""; }}
                 className="ml-auto font-mono text-[11px] text-dim hover:text-danger transition-colors"
               >
                 {TR[lang].reset}
