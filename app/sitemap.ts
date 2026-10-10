@@ -1,4 +1,4 @@
-import { latestChangeDate } from "@/lib/changelog";
+import { latestChangeDate, latestChangeForTool, latestChangeForPath } from "@/lib/changelog";
 import type { MetadataRoute } from "next";
 import { TOOLS } from "@/lib/tools";
 import { CONVERT_PAIRS } from "@/lib/convert-pairs";
@@ -95,6 +95,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .flatMap((t) =>
       LANGS.map((lang) => ({
         url: `${SITE_URL}/${lang}/t/${t.slug}`,
+        // Date d'une entrée publiée de la page Nouveautés, jamais une date de build :
+        // un lastmod inexact pousse Google à l'ignorer pour tout le site.
+        ...(latestChangeForTool(t.slug) ? { lastModified: latestChangeForTool(t.slug)!.date } : {}),
         changeFrequency: "monthly" as const,
         priority: 0.8,
         alternates: alternates(`/en/t/${t.slug}`, `/fr/t/${t.slug}`),
@@ -105,6 +108,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const convertRoutes: MetadataRoute.Sitemap = [...CONVERT_PAIRS, ...PDF_PAIRS].flatMap((p) =>
     LANGS.map((lang) => ({
       url: `${SITE_URL}/${lang}/convert/${p.slug}`,
+      ...(latestChangeForPath(`/convert/${p.slug}`) ? { lastModified: latestChangeForPath(`/convert/${p.slug}`)!.date } : {}),
       changeFrequency: "monthly" as const,
       priority: 0.75,
       alternates: alternates(`/en/convert/${p.slug}`, `/fr/convert/${p.slug}`),

@@ -361,6 +361,11 @@ export function latestChangeDate(): string {
   return CHANGELOG[0]?.date ?? "";
 }
 
+/** Entrée la plus récente qui renvoie vers une page de conversion (`/convert/<slug>`). */
+export function latestChangeForPath(href: string): ChangeEntry | undefined {
+  return CHANGELOG.find((e) => e.links?.some((l) => l.href === href));
+}
+
 /** Entrée la plus récente qui cite l'outil (pour « dernière évolution » sur sa page). */
 export function latestChangeForTool(slug: string): ChangeEntry | undefined {
   return CHANGELOG.find((e) => e.tools?.includes(slug));
