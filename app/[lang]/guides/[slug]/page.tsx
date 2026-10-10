@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { GUIDES, findGuide, readingMinutes } from "@/lib/guides";
+import { GUIDES, findGuide, readingMinutes, sourceNumbers } from "@/lib/guides";
 import { TOOLS } from "@/lib/tools";
 import { SITE_URL, BRAND_NAME } from "@/lib/brand";
 import { coerceLang } from "@/lib/localePath";
 import { jsonLdString, ORG_REF } from "@/lib/jsonld";
 import { GuideBody } from "@/components/guides/GuideBody";
+import { VerifyBadge, VerifyBlock } from "@/components/guides/Verify";
 import { FaqList } from "@/components/FaqList";
 import { SectionHead } from "@/components/home/SectionHead";
 
@@ -51,6 +52,7 @@ export default async function GuidePage({ params }: Props) {
   const tools = guide.tools.map((s) => TOOLS.find((t) => t.slug === s)).filter((t) => t && !t.comingSoon);
   const others = GUIDES.filter((g) => g.slug !== slug);
   const fr = l === "fr";
+  const cites = sourceNumbers(guide, l);
 
   const articleLd = {
     "@context": "https://schema.org",
@@ -63,6 +65,10 @@ export default async function GuidePage({ params }: Props) {
     mainEntityOfPage: url,
     author: ORG_REF,
     publisher: ORG_REF,
+    // Description exacte des sources citées dans la page (aucun effet promis sur Google)
+    ...(guide.verified && guide.sources?.length
+      ? { citation: guide.sources.map((s) => ({ "@type": "CreativeWork", name: s.title, url: s.url, publisher: { "@type": "Organization", name: s.publisher } })) }
+      : {}),
   };
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -105,11 +111,14 @@ export default async function GuidePage({ params }: Props) {
             {fr ? "Rédigé avec l'aide de Claude, vérifié contre le comportement réel des outils · " : "Written with help from Claude, checked against the tools' actual behaviour · "}
             <Link href={`/${l}/about#how-built`} className="underline hover:text-fg">{fr ? "notre méthode" : "how we work"}</Link>
           </p>
+          <VerifyBadge guide={guide} lang={l} />
           <p className="text-[17px] text-fg leading-[1.7] border-l-2 border-brand pl-4">{text.lead}</p>
         </header>
 
-        <GuideBody sections={text.sections} lang={l} />
+        <GuideBody sections={text.sections} lang={l} cites={cites} />
       </article>
+
+      <VerifyBlock guide={guide} lang={l} cites={cites} />
 
       {tools.length > 0 && (
         <section className="mt-14 mb-10">

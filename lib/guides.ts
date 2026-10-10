@@ -10,9 +10,11 @@ import { GUIDE_MARKDOWN_TABLES } from "./guides/markdown-tables";
 /**
  * Guides éditoriaux (/[lang]/guides/[slug]).
  *
- * Le texte des blocs accepte deux marquages en ligne, et seulement ceux-là :
- * `code` et [libellé](/t/outil) — un lien interne sans préfixe de langue,
- * ajouté au rendu. Tout le reste est du texte brut.
+ * Le texte des blocs accepte trois marquages en ligne, et seulement ceux-là :
+ * `code`, [libellé](/t/outil) (lien interne sans préfixe de langue, ajouté au
+ * rendu) et [^id] (renvoi vers une source de `sources`, affiché [1], [2]…).
+ * Les renvois ne s'utilisent que dans les sections, collés au mot ou à la
+ * ponctuation qui précède. Tout le reste est du texte brut.
  *
  * Contraintes vérifiées par __tests__/catalog/guides.test.ts : slugs uniques,
  * outils liés existants, meta description 120–155 caractères, contenu FR et EN.
@@ -22,7 +24,31 @@ export type GuideBlock =
   | { ul: string[] }
   | { ol: string[] }
   | { code: string }
-  | { table: { head: string[]; rows: string[][] } };
+  | { table: { head: string[]; rows: string[][] } }
+  /** Prise en charge par navigateur ou par outil, rendue en sortie terminal. */
+  | { support: { query: string; rows: SupportRow[] } };
+
+export interface SupportRow {
+  label: string;                       // « chrome 155+ »
+  state: "yes" | "partial" | "no";
+  note: string;                        // « par défaut · oct. 2026 »
+}
+
+/** Source citée par un guide (renvois [^id] dans le texte, bloc de vérification). */
+export interface GuideSource {
+  id: string;                          // a-z0-9-, référencé par [^id]
+  title: string;                       // titre du document, non traduit
+  publisher: string;                   // « Chrome for Developers »
+  url: string;                         // https uniquement
+  official: boolean;                   // source primaire (éditeur, norme) ou secondaire
+}
+
+/** Affirmation vérifiée, listée dans le bloc `$ utilisio verify`. */
+export interface GuideClaim {
+  text: Record<Lang, string>;
+  source: string;                      // id d'une GuideSource, ou "test" (vérifié sur nos outils)
+  recheck?: Record<Lang, string>;      // affiché après « à revérifier » : « à la sortie de Firefox 158 »
+}
 
 export interface GuideSection { h: string; blocks: GuideBlock[] }
 
@@ -39,6 +65,10 @@ export interface Guide {
   published: string;         // AAAA-MM-JJ
   updated: string;           // AAAA-MM-JJ
   tools: string[];           // outils cités, liés depuis leur page et en fin de guide
+  /** Dernière passe de vérification des faits (AAAA-MM-JJ). Sans elle, ni badge ni bloc « verify ». */
+  verified?: string;
+  sources?: GuideSource[];
+  claims?: GuideClaim[];
   en: GuideText;
   fr: GuideText;
 }
@@ -59,8 +89,23 @@ export function guidesForCategory(cat: string): Guide[] {
   return GUIDES.filter((g) => g.tools.some((s) => TOOLS.find((t) => t.slug === s)?.cat === cat));
 }
 
+export const CITATION = /\[\^([a-z0-9-]+)\]/g;
+
+/**
+ * Numéro affiché de chaque source : ordre de première apparition des renvois
+ * [^id] dans les sections, puis les sources citées seulement par une affirmation.
+ */
+export function sourceNumbers(guide: Guide, lang: Lang): Map<string, number> {
+  const order = new Map<string, number>();
+  const add = (id: string) => { if (!order.has(id)) order.set(id, order.size + 1); };
+  for (const m of JSON.stringify(guide[lang].sections).matchAll(CITATION)) add(m[1]!);
+  for (const c of guide.claims ?? []) if (c.source !== "test") add(c.source);
+  for (const src of guide.sources ?? []) add(src.id);
+  return order;
+}
+
 export function guideWords(text: GuideText): number {
-  const count = (s: string) => s.split(/\s+/).filter(Boolean).length;
+  const count = (s: string) => s.replace(CITATION, "").split(/\s+/).filter(Boolean).length;
   return (
     count(text.lead) +
     text.sections.reduce((n, sec) => n + count(sec.h) + sec.blocks.reduce((m, b) => {
@@ -68,6 +113,7 @@ export function guideWords(text: GuideText): number {
       if ("ul" in b) return m + b.ul.reduce((k, x) => k + count(x), 0);
       if ("ol" in b) return m + b.ol.reduce((k, x) => k + count(x), 0);
       if ("table" in b) return m + b.table.rows.flat().reduce((k, x) => k + count(x), 0);
+      if ("support" in b) return m + b.support.rows.reduce((k, r) => k + count(r.label) + count(r.note), 0);
       return m;
     }, 0), 0) +
     text.faq.reduce((n, f) => n + count(f.q) + count(f.a), 0)

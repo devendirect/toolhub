@@ -8,6 +8,7 @@ import { findGuide } from "@/lib/guides";
 import { CHANGELOG, latestChangeDate, type ChangeEntry, type ChangeKind } from "@/lib/changelog";
 import type { Lang } from "@/lib/types";
 import { Cursor } from "@/components/brand/Cursor";
+import { TerminalWindow, TerminalPrompt } from "@/components/brand/TerminalWindow";
 
 interface Props {
   params: Promise<{ lang: string }>;
@@ -143,20 +144,8 @@ export default async function ChangelogPage({ params }: Props) {
       </header>
 
       {/* Fenêtre terminal : tout le contenu est rendu côté serveur, en vrais titres et paragraphes. */}
-      <div className="border border-line-2 bg-bg-code rounded-[6px] overflow-hidden max-w-[880px]">
-        <div className="flex items-center gap-2 px-[14px] py-[10px] border-b border-line bg-bg-1 font-mono text-[12px] text-dim">
-          <span className="flex gap-[6px]" aria-hidden>
-            <i className="block w-[10px] h-[10px] rounded-full bg-line-2" />
-            <i className="block w-[10px] h-[10px] rounded-full bg-line-2" />
-            <i className="block w-[10px] h-[10px] rounded-full bg-line-2" />
-          </span>
-          <span className="ml-[6px]">{BRAND_NAME} · changelog</span>
-        </div>
-
-        <div className="px-5 py-5 sm:px-6 font-mono text-[13px] leading-[1.75] text-fg-1">
-          <p className="text-fg" aria-hidden>
-            <span className="text-brand">~</span> $ {BRAND_NAME} changelog
-          </p>
+      <TerminalWindow title={`${BRAND_NAME} · changelog`} className="max-w-[880px]">
+          <TerminalPrompt>{BRAND_NAME} changelog</TerminalPrompt>
 
           {byMonth(CHANGELOG).map(([month, entries]) => (
             <section key={month} aria-labelledby={`m-${month}`} className="mt-7">
@@ -195,11 +184,8 @@ export default async function ChangelogPage({ params }: Props) {
             </section>
           ))}
 
-          <p className="mt-7 text-fg" aria-hidden>
-            <span className="text-brand">~</span> ${" "}<Cursor />
-          </p>
-        </div>
-      </div>
+          <TerminalPrompt className="mt-7"><Cursor /></TerminalPrompt>
+      </TerminalWindow>
     </div>
   );
 }
