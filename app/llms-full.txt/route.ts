@@ -16,7 +16,7 @@ export function GET() {
     `> ${BRAND_TAGLINE.en} Free browser-based toolkit for developers, designers and everyday users. No account, no signup.`,
     "> This file is generated from the live tool catalog. Every page listed below also exists in French: swap /en/ for /fr/ in any URL.",
     "",
-    `A condensed overview is available at ${SITE_URL}/llms.txt`,
+    `A condensed overview is available at [llms.txt](${SITE_URL}/llms.txt)`,
     "",
   ];
 
@@ -29,7 +29,7 @@ export function GET() {
     for (const tool of tools) {
       const content = TOOLS_CONTENT[tool.slug];
       lines.push(`### ${tool.name.en}`, "");
-      lines.push(`URL: ${SITE_URL}/en/t/${tool.slug}`);
+      lines.push(`URL: [${SITE_URL}/en/t/${tool.slug}](${SITE_URL}/en/t/${tool.slug})`);
       lines.push(
         tool.privacy === "network"
           ? "Privacy: fetches external data through a server-side proxy; inputs are kept only in standard access logs (~30 days)."
@@ -55,25 +55,25 @@ export function GET() {
   lines.push(
     "## Key URLs",
     "",
-    `- Tool catalog: ${SITE_URL}/en/tools`,
-    `- Guides: ${SITE_URL}/en/guides`,
-    `- What's new / changelog: ${SITE_URL}/en/changelog`,
-    `- About: ${SITE_URL}/en/about`,
-    `- Contact: ${SITE_URL}/en/contact (contact@utilisio.com)`,
-    `- Legal notice: ${SITE_URL}/en/legal`,
-    `- Privacy policy: ${SITE_URL}/en/privacy`,
-    `- Terms of use: ${SITE_URL}/en/terms`,
-    `- FAQ: ${SITE_URL}/en/faq`,
-    `- Source code (MIT): ${REPO_URL}`,
-    `- Video tutorials (YouTube): ${YOUTUBE_URL}`,
-    `- Short videos (TikTok): ${TIKTOK_URL}`,
+    `- [Tool catalog](${SITE_URL}/en/tools)`,
+    `- [Guides](${SITE_URL}/en/guides)`,
+    `- [What's new / changelog](${SITE_URL}/en/changelog)`,
+    `- [About](${SITE_URL}/en/about)`,
+    `- [Contact](${SITE_URL}/en/contact) (contact@utilisio.com)`,
+    `- [Legal notice](${SITE_URL}/en/legal)`,
+    `- [Privacy policy](${SITE_URL}/en/privacy)`,
+    `- [Terms of use](${SITE_URL}/en/terms)`,
+    `- [FAQ](${SITE_URL}/en/faq)`,
+    `- [Source code (MIT)](${REPO_URL})`,
+    `- [Video tutorials (YouTube)](${YOUTUBE_URL})`,
+    `- [Short videos (TikTok)](${TIKTOK_URL})`,
     "",
     "## Guides",
     "",
-    ...GUIDES.flatMap((g) => [`### ${g.en.title}`, "", `URL: ${SITE_URL}/en/guides/${g.slug}`, "", g.en.lead, ""]),
+    ...GUIDES.flatMap((g) => [`### ${g.en.title}`, "", `URL: [${SITE_URL}/en/guides/${g.slug}](${SITE_URL}/en/guides/${g.slug})`, "", g.en.lead, ""]),
     "## Recent changes",
     "",
-    ...CHANGELOG.slice(0, 10).map((e) => `- ${e.date}: ${e.text.en.title} (${SITE_URL}/en/changelog#${e.id})`),
+    ...CHANGELOG.slice(0, 10).map((e) => `- ${e.date}: [${e.text.en.title}](${SITE_URL}/en/changelog#${e.id})`),
     "",
   );
 
