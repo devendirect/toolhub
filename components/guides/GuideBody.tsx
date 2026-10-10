@@ -94,7 +94,7 @@ function Block({ block, lang, cites }: { block: GuideBlock; lang: Lang; cites: C
         <tbody>
           {block.table.rows.map((row, r) => (
             <tr key={r} className="border-b border-line last:border-b-0">
-              {row.map((cell, c) => <td key={c} className="px-3 py-2 text-fg-1 align-top"><Inline text={cell} lang={lang} cites={cites} /></td>)}
+              {row.map((cell, c) => <td key={c} className={`px-3 py-2 text-fg-1 align-top ${c === 0 ? "whitespace-nowrap" : ""}`}><Inline text={cell} lang={lang} cites={cites} /></td>)}
             </tr>
           ))}
         </tbody>

@@ -29,6 +29,38 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-10-10-guide-jpeg-xl",
+    date: "2026-10-10",
+    kind: "improved",
+    guides: ["webp-avif-jpeg"],
+    text: {
+      fr: {
+        title: "Guide des formats d'image : ajout du JPEG XL, que Chrome lit depuis le 6 octobre",
+        body: "Chrome 155 lit le JPEG XL par défaut depuis le 6 octobre 2026. Le guide explique où en sont Chrome, Safari et Firefox, quand ce format est utile et comment le servir avec un repli. Chaque fait est daté et relié à sa source officielle, dans un bloc de vérification en fin de guide.",
+      },
+      en: {
+        title: "Image format guide: JPEG XL added, now that Chrome reads it since 6 October",
+        body: "Chrome 155 reads JPEG XL by default since 6 October 2026. The guide explains where Chrome, Safari and Firefox stand, when the format is useful and how to serve it with a fallback. Every fact is dated and linked to its official source, in a fact-check block at the end of the guide.",
+      },
+    },
+  },
+  {
+    id: "2026-10-10-compressor-unreadable",
+    date: "2026-10-10",
+    kind: "fixed",
+    tools: ["image-compressor"],
+    text: {
+      fr: {
+        title: "Compresseur d'images : un message clair quand le navigateur ne sait pas lire l'image",
+        body: "Une image que le navigateur ne sait pas décoder, comme un JPEG XL avant Chrome 155 ou un HEIC hors de Safari, laissait le compresseur bloqué sur « compression… ». Il affiche maintenant que ce navigateur ne connaît pas le format.",
+      },
+      en: {
+        title: "Image compressor: a clear message when the browser can't read the image",
+        body: "An image the browser can't decode, such as JPEG XL before Chrome 155 or HEIC outside Safari, left the compressor stuck on \"compressing\". It now says that this browser doesn't support the format.",
+      },
+    },
+  },
+  {
     id: "2026-10-10-schema-faq",
     date: "2026-10-10",
     kind: "fixed",
