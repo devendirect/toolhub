@@ -7,6 +7,7 @@ import { OptionsBar, OptBlock, SegControl } from "@/components/workspace/Options
 import { fmtSize } from "@/lib/format";
 import { downloadUrl } from "@/lib/download";
 import { useTrackRun } from "@/hooks/useTrackRun";
+import { isJxlFile } from "@/lib/heic";
 
 type Format = "image/webp" | "image/jpeg" | "image/png";
 const FORMAT_LABELS: Record<Format, string> = {
@@ -95,7 +96,7 @@ export function ImageCompressor() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    if (file?.type.startsWith("image/")) handleFile(file);
+    if (file && (file.type.startsWith("image/") || isJxlFile(file))) handleFile(file);
   };
 
   const handleDownload = () => {
@@ -162,14 +163,14 @@ export function ImageCompressor() {
             <span className="font-mono text-[13px] text-fg">
               {TR[lang].dropImage}
             </span>
-            <span className="font-mono text-[11px] text-dim">JPG · PNG · WebP · AVIF</span>
+            <span className="font-mono text-[11px] text-dim">JPG · PNG · WebP · AVIF · JXL</span>
           </div>
         )}
 
         <input
           ref={inputRef}
           type="file"
-          accept="image/*"
+          accept="image/*,.jxl"
           className="hidden"
           onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
         />

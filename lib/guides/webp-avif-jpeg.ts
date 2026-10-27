@@ -3,18 +3,20 @@ import type { Guide } from "../guides";
 export const GUIDE_WEBP_AVIF_JPEG: Guide = {
   slug: "webp-avif-jpeg",
   published: "2026-09-25",
-  updated: "2026-10-10",
+  updated: "2026-10-27",
   tools: ["image-converter", "image-compressor", "compress-to-kb", "svg-optimizer"],
-  verified: "2026-10-10",
+  verified: "2026-10-27",
   sources: [
     { id: "chrome-jxl", title: "Shipping JPEG XL in Chrome", publisher: "Chrome for Developers", url: "https://developer.chrome.com/blog/jpeg-xl-in-chrome", official: true },
     { id: "chrome-155", title: "Chrome 155 release notes", publisher: "Chrome Platform Status", url: "https://chromestatus.com/release-notes/155", official: true },
     { id: "mozilla-jxl", title: "Intent to ship: JPEG XL", publisher: "Mozilla dev-platform", url: "https://groups.google.com/a/mozilla.org/g/dev-platform/c/3YMV4MS34KA", official: true },
+    { id: "firefox-158", title: "Firefox 158 release notes for developers", publisher: "MDN Web Docs", url: "https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Releases/158", official: true },
     { id: "webkit-17", title: "WebKit Features in Safari 17.0", publisher: "WebKit", url: "https://webkit.org/blog/14445/webkit-features-in-safari-17-0/", official: true },
   ],
   claims: [
     { text: { fr: "Chrome 155, sorti le 6 octobre 2026, décode le JPEG XL", en: "Chrome 155, released on 6 October 2026, decodes JPEG XL" }, source: "chrome-155" },
-    { text: { fr: "Firefox propose le JPEG XL en option (Firefox Labs) depuis la version 152 et prévoit de l'activer par défaut dans la 158", en: "Firefox offers JPEG XL as an option (Firefox Labs) since version 152 and plans to enable it by default in 158" }, source: "mozilla-jxl", recheck: { fr: "à la sortie de Firefox 158", en: "when Firefox 158 ships" } },
+    { text: { fr: "Firefox 158, sorti le 13 octobre 2026, active le JPEG XL par défaut", en: "Firefox 158, released on 13 October 2026, enables JPEG XL by default" }, source: "firefox-158" },
+    { text: { fr: "Avant la 158, Firefox proposait le JPEG XL en option (Firefox Labs) depuis la version 152", en: "Before 158, Firefox offered JPEG XL as an option (Firefox Labs) since version 152" }, source: "mozilla-jxl" },
     { text: { fr: "Safari lit le JPEG XL depuis la version 17.0, en septembre 2023", en: "Safari has read JPEG XL since version 17.0, in September 2023" }, source: "webkit-17" },
     { text: { fr: "Un JPEG recompressé en JPEG XL sans perte pèse en moyenne 20 % de moins", en: "A JPEG recompressed to JPEG XL without loss is 20% smaller on average" }, source: "webkit-17" },
     { text: { fr: "Nos outils images lisent un .jxl dans Chrome 155 (photo et image transparente) et le convertissent en JPG, PNG ou WebP ; Chrome 154 ne le lit pas", en: "Our image tools read a .jxl in Chrome 155 (photo and transparent image) and convert it to JPG, PNG or WebP; Chrome 154 can't read it" }, source: "test" },
@@ -22,7 +24,7 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
   en: {
     title: "WebP, AVIF, JPEG XL or JPEG: picking a web image format",
     description: "WebP, AVIF, JPEG XL or JPEG for your website? When each format wins, which browsers read it, and why width matters more than the format you pick.",
-    lead: "For photos on a website, WebP is the safe default: every current browser displays it and it's typically 25 to 35% lighter than a JPEG of the same visual quality. AVIF goes further but encodes slowly and needs a fallback on older devices. JPEG XL now opens in Chrome and Safari, but Firefox doesn't show it by default yet, so it needs a fallback too. Keep JPEG for files that leave the web, PNG for screenshots and logos. And before any of that, reduce the image to the width it's actually displayed at.",
+    lead: "For photos on a website, WebP is the safe default: every current browser displays it and it's typically 25 to 35% lighter than a JPEG of the same visual quality. AVIF goes further but encodes slowly and needs a fallback on older devices. JPEG XL now opens in Chrome, Firefox and Safari, but only in their latest versions, so it still needs a fallback. Keep JPEG for files that leave the web, PNG for screenshots and logos. And before any of that, reduce the image to the width it's actually displayed at.",
     sections: [
       {
         h: "The short answer, format by format",
@@ -32,7 +34,7 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
             rows: [
               ["WebP", "Photos and graphics on web pages, the default choice", "Some email clients and older desktop software still refuse it"],
               ["AVIF", "Large photos on high-traffic pages, with a WebP or JPEG fallback", "Slow to encode, and many apps still can't open it"],
-              ["JPEG XL", "Photos, and lossless recompression of existing JPEGs, with a fallback", "Not yet on by default in Firefox"],
+              ["JPEG XL", "Photos, and lossless recompression of existing JPEGs, with a fallback", "Only read by browsers updated since October 2026 (Safari since 2023)"],
               ["JPEG", "Anything that leaves the web: email, office documents, print shops", "No transparency, and visible artefacts around text"],
               ["PNG", "Screenshots, logos, diagrams, anything with sharp edges or transparency", "Photos saved as PNG are several times heavier than they need to be"],
               ["SVG", "Icons and logos drawn as vectors", "Exports from design tools carry editor data worth stripping"],
@@ -66,18 +68,18 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
         ],
       },
       {
-        h: "JPEG XL: now readable in Chrome",
+        h: "JPEG XL: now readable in every major browser",
         blocks: [
-          { p: "JPEG XL is a newer format, standardized as ISO/IEC 18181. Chrome reads it by default since version 155, released on 6 October 2026.[^chrome-155][^chrome-jxl] Safari has read it since version 17.0 in September 2023.[^webkit-17] Firefox offers it as an option in Firefox Labs since version 152 and plans to turn it on by default in version 158.[^mozilla-jxl]" },
+          { p: "JPEG XL is a newer format, standardized as ISO/IEC 18181. Chrome reads it by default since version 155, released on 6 October 2026.[^chrome-155][^chrome-jxl] Safari has read it since version 17.0 in September 2023.[^webkit-17] Firefox followed with version 158, released on 13 October 2026, which turns it on by default[^firefox-158] after offering it as a Firefox Labs option since version 152.[^mozilla-jxl]" },
           { support: { query: "image/jxl", rows: [
             { label: "chrome 155+", state: "yes", note: "on by default · Oct 2026" },
             { label: "safari 17+", state: "yes", note: "on by default · Sept 2023" },
-            { label: "firefox 152+", state: "partial", note: "Firefox Labs option · default planned in 158" },
+            { label: "firefox 158+", state: "yes", note: "on by default · Oct 2026" },
           ] } },
           { p: "Its most concrete advantage is with existing JPEGs: they can be recompressed into JPEG XL without any loss, and come out 20% smaller on average according to WebKit.[^webkit-17] For new photos, Chrome's advice is to try both AVIF and JPEG XL and compare on your own images.[^chrome-jxl]" },
-          { p: "As long as Firefox doesn't show it by default, JPEG XL goes in a `<picture>` element, before the other formats, with a WebP or JPEG fallback that every browser can read:" },
+          { p: "Support in Chrome and Firefox is only a few weeks old: browsers that haven't updated yet, and devices that no longer receive updates, can't read it. So JPEG XL still goes in a `<picture>` element, before the other formats, with a WebP or JPEG fallback that every browser can read:" },
           { code: "<picture>\n  <source srcset=\"photo.jxl\" type=\"image/jxl\">\n  <source srcset=\"photo.webp\" type=\"image/webp\">\n  <img src=\"photo.jpg\" alt=\"...\" width=\"1280\" height=\"853\">\n</picture>" },
-          { p: "Our image tools read a .jxl file in browsers that can decode it: we tested a photo and a transparent image in Chrome 155, in the [image converter](/t/image-converter), the [image compressor](/t/image-compressor) and the [compress to KB tool](/t/compress-to-kb). They write JPG, PNG or WebP, not JPEG XL. In a browser that can't read the file, the tool says so instead of producing an empty image." },
+          { p: "Our image tools read a .jxl file in browsers that can decode it: we tested a photo and a transparent image in Chrome 155, in the [image converter](/t/image-converter), the [image compressor](/t/image-compressor) and the [compress to KB tool](/t/compress-to-kb). They write JPG, PNG or WebP, not JPEG XL: to turn a .jxl into a file any app can open, see [JXL to JPG](/convert/jxl-to-jpg) or, to keep transparency, [JXL to PNG](/convert/jxl-to-png). In a browser that can't read the file, the tool says so instead of producing an empty image." },
         ],
       },
       {
@@ -101,14 +103,14 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
       { q: "Is WebP better than JPEG for SEO?", a: "Indirectly. Search engines don't rank a format, but lighter images load faster, which improves Largest Contentful Paint, one of the Core Web Vitals. Resizing to the display width usually saves even more than the format change." },
       { q: "Should I use AVIF instead of WebP?", a: "Use AVIF in addition to WebP, not instead of it. Serve AVIF first in a picture element, with WebP or JPEG as the fallback, so older devices still get an image. If you can only produce one format, WebP is the safer choice." },
       { q: "What quality setting should I use for WebP?", a: "80 for most photos, which is visually very close to the original. Go to 90 for images with smooth gradients or fine texture, and keep 100 for files you'll edit again rather than publish." },
-      { q: "Can I use JPEG XL on my website?", a: "Yes, inside a picture element with a WebP or JPEG fallback. Chrome reads it since version 155 and Safari since version 17, but Firefox doesn't show it by default yet, so the fallback is still needed." },
+      { q: "Can I use JPEG XL on my website?", a: "Yes, inside a picture element with a WebP or JPEG fallback. Chrome reads it since version 155, Firefox since version 158 and Safari since version 17, but browsers that haven't updated yet can't, so the fallback is still needed." },
       { q: "Why is my PNG bigger than the JPEG it came from?", a: "Because PNG is lossless and can't compress photographic detail the way JPEG does. Converting a photo to PNG adds weight without restoring any quality the JPEG already lost. Use PNG for screenshots and graphics, not photos." },
     ],
   },
   fr: {
     title: "WebP, AVIF, JPEG XL ou JPEG : quel format d'image web ?",
     description: "WebP, AVIF, JPEG XL ou JPEG pour votre site ? Quand chaque format l'emporte, ce que lisent les navigateurs, et pourquoi la largeur compte plus.",
-    lead: "Pour les photos d'un site web, le WebP est le choix sûr par défaut : tous les navigateurs actuels l'affichent et il pèse en général 25 à 35 % de moins qu'un JPEG de qualité visuelle équivalente. L'AVIF va plus loin mais s'encode lentement et demande une solution de repli sur les appareils anciens. Le JPEG XL s'ouvre désormais dans Chrome et Safari, mais Firefox ne l'affiche pas encore par défaut : il lui faut aussi un repli. Gardez le JPEG pour les fichiers qui quittent le web, le PNG pour les captures et les logos. Et avant tout cela, réduisez l'image à la largeur à laquelle elle s'affiche vraiment.",
+    lead: "Pour les photos d'un site web, le WebP est le choix sûr par défaut : tous les navigateurs actuels l'affichent et il pèse en général 25 à 35 % de moins qu'un JPEG de qualité visuelle équivalente. L'AVIF va plus loin mais s'encode lentement et demande une solution de repli sur les appareils anciens. Le JPEG XL s'ouvre désormais dans Chrome, Firefox et Safari, mais seulement dans leurs dernières versions : il lui faut encore un repli. Gardez le JPEG pour les fichiers qui quittent le web, le PNG pour les captures et les logos. Et avant tout cela, réduisez l'image à la largeur à laquelle elle s'affiche vraiment.",
     sections: [
       {
         h: "La réponse courte, format par format",
@@ -118,7 +120,7 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
             rows: [
               ["WebP", "Photos et graphismes des pages web, le choix par défaut", "Certains clients mail et vieux logiciels le refusent encore"],
               ["AVIF", "Grandes photos sur des pages très visitées, avec repli WebP ou JPEG", "Lent à encoder, et beaucoup d'applications ne l'ouvrent pas encore"],
-              ["JPEG XL", "Photos, et recompression sans perte de JPEG existants, avec un repli", "Pas encore activé par défaut dans Firefox"],
+              ["JPEG XL", "Photos, et recompression sans perte de JPEG existants, avec un repli", "Lu seulement par les navigateurs à jour depuis octobre 2026 (Safari depuis 2023)"],
               ["JPEG", "Tout ce qui quitte le web : e-mail, documents bureautiques, imprimeurs", "Pas de transparence, et des artefacts visibles autour du texte"],
               ["PNG", "Captures d'écran, logos, schémas, tout ce qui a des bords nets ou de la transparence", "Une photo enregistrée en PNG pèse plusieurs fois ce qu'elle devrait"],
               ["SVG", "Icônes et logos dessinés en vectoriel", "Les exports des logiciels de design contiennent des données à retirer"],
@@ -152,18 +154,18 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
         ],
       },
       {
-        h: "JPEG XL : enfin lisible dans Chrome",
+        h: "JPEG XL : désormais lisible dans tous les grands navigateurs",
         blocks: [
-          { p: "Le JPEG XL est un format plus récent, normalisé sous la référence ISO/IEC 18181. Chrome le lit par défaut depuis la version 155, sortie le 6 octobre 2026.[^chrome-155][^chrome-jxl] Safari le lit depuis sa version 17.0, en septembre 2023.[^webkit-17] Firefox le propose en option dans Firefox Labs depuis la version 152 et prévoit de l'activer par défaut dans la version 158.[^mozilla-jxl]" },
+          { p: "Le JPEG XL est un format plus récent, normalisé sous la référence ISO/IEC 18181. Chrome le lit par défaut depuis la version 155, sortie le 6 octobre 2026.[^chrome-155][^chrome-jxl] Safari le lit depuis sa version 17.0, en septembre 2023.[^webkit-17] Firefox a suivi avec la version 158, sortie le 13 octobre 2026, qui l'active par défaut[^firefox-158] après l'avoir proposé en option dans Firefox Labs depuis la version 152.[^mozilla-jxl]" },
           { support: { query: "image/jxl", rows: [
             { label: "chrome 155+", state: "yes", note: "par défaut · oct. 2026" },
             { label: "safari 17+", state: "yes", note: "par défaut · sept. 2023" },
-            { label: "firefox 152+", state: "partial", note: "option Firefox Labs · défaut prévu en 158" },
+            { label: "firefox 158+", state: "yes", note: "par défaut · oct. 2026" },
           ] } },
           { p: "Son atout le plus concret concerne les JPEG existants : ils peuvent être recompressés en JPEG XL sans aucune perte, et ressortent en moyenne 20 % plus légers d'après WebKit.[^webkit-17] Pour de nouvelles photos, Chrome conseille d'essayer l'AVIF et le JPEG XL et de comparer sur vos propres images.[^chrome-jxl]" },
-          { p: "Tant que Firefox ne l'affiche pas par défaut, le JPEG XL se place dans un élément `<picture>`, avant les autres formats, avec un repli en WebP ou en JPEG que tous les navigateurs savent lire :" },
+          { p: "La prise en charge par Chrome et Firefox n'a que quelques semaines : les navigateurs pas encore mis à jour, et les appareils qui ne reçoivent plus de mises à jour, ne le lisent pas. Le JPEG XL se place donc toujours dans un élément `<picture>`, avant les autres formats, avec un repli en WebP ou en JPEG que tous les navigateurs savent lire :" },
           { code: "<picture>\n  <source srcset=\"photo.jxl\" type=\"image/jxl\">\n  <source srcset=\"photo.webp\" type=\"image/webp\">\n  <img src=\"photo.jpg\" alt=\"...\" width=\"1280\" height=\"853\">\n</picture>" },
-          { p: "Nos outils images lisent un fichier .jxl dans les navigateurs qui savent le décoder : nous avons testé une photo et une image transparente dans Chrome 155, avec le [convertisseur d'images](/t/image-converter), le [compresseur d'images](/t/image-compressor) et l'outil [réduire une image à X Ko](/t/compress-to-kb). Ils produisent du JPG, du PNG ou du WebP, pas du JPEG XL. Dans un navigateur qui ne sait pas lire le fichier, l'outil le signale au lieu de produire une image vide." },
+          { p: "Nos outils images lisent un fichier .jxl dans les navigateurs qui savent le décoder : nous avons testé une photo et une image transparente dans Chrome 155, avec le [convertisseur d'images](/t/image-converter), le [compresseur d'images](/t/image-compressor) et l'outil [réduire une image à X Ko](/t/compress-to-kb). Ils produisent du JPG, du PNG ou du WebP, pas du JPEG XL : pour transformer un .jxl en fichier que tout logiciel sait ouvrir, voir [JXL en JPG](/convert/jxl-to-jpg) ou, pour garder la transparence, [JXL en PNG](/convert/jxl-to-png). Dans un navigateur qui ne sait pas lire le fichier, l'outil le signale au lieu de produire une image vide." },
         ],
       },
       {
@@ -187,7 +189,7 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
       { q: "Le WebP est-il meilleur que le JPEG pour le SEO ?", a: "Indirectement. Les moteurs ne classent pas un format, mais des images plus légères se chargent plus vite, ce qui améliore le Largest Contentful Paint, l'un des Core Web Vitals. Réduire à la largeur d'affichage fait en général gagner encore plus que le changement de format." },
       { q: "Faut-il utiliser l'AVIF à la place du WebP ?", a: "En plus du WebP, pas à sa place. Servez l'AVIF en premier dans un élément picture, avec le WebP ou le JPEG en repli, pour que les appareils anciens reçoivent quand même une image. Si vous ne pouvez produire qu'un format, le WebP est le choix le plus sûr." },
       { q: "Quelle qualité choisir pour le WebP ?", a: "80 pour la plupart des photos, visuellement très proche de l'original. Montez à 90 pour les images à dégradés doux ou à texture fine, et gardez 100 pour des fichiers à retoucher plutôt qu'à publier." },
-      { q: "Puis-je utiliser le JPEG XL sur mon site ?", a: "Oui, dans un élément picture avec un repli en WebP ou en JPEG. Chrome le lit depuis la version 155 et Safari depuis la version 17, mais Firefox ne l'affiche pas encore par défaut : le repli reste nécessaire." },
+      { q: "Puis-je utiliser le JPEG XL sur mon site ?", a: "Oui, dans un élément picture avec un repli en WebP ou en JPEG. Chrome le lit depuis la version 155, Firefox depuis la version 158 et Safari depuis la version 17, mais les navigateurs pas encore mis à jour ne le lisent pas : le repli reste nécessaire." },
       { q: "Pourquoi mon PNG est-il plus lourd que le JPEG d'origine ?", a: "Parce que le PNG est sans perte et ne sait pas compresser le détail photographique comme le JPEG. Convertir une photo en PNG ajoute du poids sans rendre la qualité que le JPEG avait déjà perdue. Réservez le PNG aux captures et aux graphismes." },
     ],
   },

@@ -213,7 +213,7 @@ export function CompressToKb() {
           >
             <span className="font-mono text-[28px] text-dim">▣≤</span>
             <span className="font-mono text-[13px] text-fg">{tr.dropImage}</span>
-            <span className="font-mono text-[11px] text-dim">JPG · PNG · WebP · AVIF · HEIC</span>
+            <span className="font-mono text-[11px] text-dim">JPG · PNG · WebP · AVIF · HEIC · JXL</span>
             {loading && <span className="font-mono text-[12px] text-dim">{tr.reading}</span>}
             {output?.kind === "error" && <span className="font-mono text-[12px] text-danger">{tr.error}</span>}
           </div>

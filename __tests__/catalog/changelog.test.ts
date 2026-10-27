@@ -70,7 +70,7 @@ describe("CHANGELOG — données", () => {
   });
 
   it("latestChangeForTool renvoie l'entrée la plus récente de l'outil", () => {
-    expect(latestChangeForTool("image-converter")?.id).toBe("2026-10-01-heic");
+    expect(latestChangeForTool("image-converter")?.id).toBe("2026-10-27-jpeg-xl-firefox");
     expect(latestChangeForTool("base64")).toBeUndefined();
   });
 });

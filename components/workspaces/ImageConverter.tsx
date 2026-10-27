@@ -271,7 +271,7 @@ export function ImageConverter({ initialFormat }: ImageConverterProps = {}) {
                 <span className="font-mono text-[12px] text-dim">
                   {TR[lang].dropImage}
                 </span>
-                <span className="font-mono text-[11px] text-dim">JPG · PNG · WebP · AVIF · HEIC · GIF · BMP</span>
+                <span className="font-mono text-[11px] text-dim">JPG · PNG · WebP · AVIF · HEIC · JXL · GIF · BMP</span>
               </div>
             )}
           </div>

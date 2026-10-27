@@ -8,16 +8,21 @@
  */
 
 /** Pour l'attribut `accept` des <input type="file"> */
-export const IMAGE_ACCEPT = "image/*,.heic,.heif";
+export const IMAGE_ACCEPT = "image/*,.heic,.heif,.jxl";
 
 /** Windows et Chrome laissent souvent `type` vide pour un .heic : on regarde aussi l'extension. */
 export function isHeicFile(file: { name: string; type: string }): boolean {
   return /^image\/hei[cf](-sequence)?$/i.test(file.type) || /\.hei[cf]$/i.test(file.name);
 }
 
-/** Image acceptée par nos outils, HEIC compris même sans type MIME. */
+/** Même souci pour un .jxl : Windows ne connaît pas encore son type MIME. Le navigateur le décode seul (Chrome 155+, Firefox 158+, Safari 17+). */
+export function isJxlFile(file: { name: string; type: string }): boolean {
+  return file.type === "image/jxl" || /\.jxl$/i.test(file.name);
+}
+
+/** Image acceptée par nos outils, HEIC et JPEG XL compris même sans type MIME. */
 export function isImageFile(file: { name: string; type: string }): boolean {
-  return file.type.startsWith("image/") || isHeicFile(file);
+  return file.type.startsWith("image/") || isHeicFile(file) || isJxlFile(file);
 }
 
 /** Safari 17+ décode le HEIC seul : on s'épargne alors les 3 Mo de libheif. */

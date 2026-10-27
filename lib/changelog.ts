@@ -29,6 +29,27 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-10-27-jpeg-xl-firefox",
+    date: "2026-10-27",
+    kind: "new",
+    tools: ["image-converter", "image-compressor", "compress-to-kb"],
+    guides: ["webp-avif-jpeg"],
+    links: [
+      { href: "/convert/jxl-to-jpg", label: { fr: "JXL en JPG", en: "JXL to JPG" } },
+      { href: "/convert/jxl-to-png", label: { fr: "JXL en PNG", en: "JXL to PNG" } },
+    ],
+    text: {
+      fr: {
+        title: "JPEG XL : deux pages pour convertir un .jxl en JPG ou en PNG, et le guide à jour pour Firefox 158",
+        body: "Firefox 158 lit le JPEG XL par défaut depuis le 13 octobre 2026, après Chrome 155 et Safari 17 : le guide des formats d'image est mis à jour. Les outils images acceptent maintenant un fichier .jxl même quand Windows ne reconnaît pas son type, et deux nouvelles pages le convertissent en JPG ou en PNG, dans le navigateur, sans envoi.",
+      },
+      en: {
+        title: "JPEG XL: two pages to convert a .jxl to JPG or PNG, and the guide updated for Firefox 158",
+        body: "Firefox 158 reads JPEG XL by default since 13 October 2026, after Chrome 155 and Safari 17: the image format guide is updated. The image tools now accept a .jxl file even when Windows doesn't recognise its type, and two new pages convert it to JPG or PNG, in your browser, with no upload.",
+      },
+    },
+  },
+  {
     id: "2026-10-10-contrast-guide",
     date: "2026-10-10",
     kind: "improved",

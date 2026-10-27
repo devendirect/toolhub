@@ -38,6 +38,7 @@ export const FORMAT_LABEL: Record<string, string> = {
   webp: "WebP",
   avif: "AVIF",
   heic: "HEIC",
+  jxl: "JXL",
   pdf: "PDF",
 };
 
@@ -858,6 +859,162 @@ export const CONVERT_PAIRS: ConvertPair[] = [
           fr: [
             "Une photo d'iPhone de 12 mégapixels pèse autour de 2 Mo en HEIC. En PNG, la même photo pèse couramment 15 à 25 Mo, parce que la compression du PNG fonctionne bien sur les aplats et les contours nets, et mal sur le grain et les dégradés d'une vraie scène. C'est normal, pas un bug.",
             "Si le poids pose problème, réduisez la largeur dans la même étape : 1920 pixels suffisent largement pour un écran ou une présentation et divisent le poids par plusieurs fois. Et si l'image part sur le web plutôt que dans un éditeur, convertissez plutôt en JPG ou en WebP.",
+          ],
+        },
+      },
+    ],
+  },
+  {
+    slug: "jxl-to-jpg",
+    from: "jxl",
+    to: "jpg",
+    why: {
+      en: "JPEG XL (.jxl) now opens in Chrome, Firefox and Safari, but most apps, email clients and upload forms still refuse it: converting JXL to JPG in your browser gives you a photo that opens everywhere, without installing anything.",
+      fr: "Le JPEG XL (.jxl) s'ouvre désormais dans Chrome, Firefox et Safari, mais la plupart des logiciels, clients mail et formulaires d'envoi le refusent encore : convertir un JXL en JPG dans votre navigateur donne une photo lisible partout, sans rien installer.",
+    },
+    points: {
+      en: [
+        "Your browser decodes the JXL itself (Chrome 155+, Firefox 158+, Safari 17+): no codec, no extension, no library to download.",
+        "The file never leaves your device: decoding and JPG encoding both happen in the tab.",
+        "Pick quality 90: a JXL is usually already compressed, and a low JPG setting would add a second layer of artefacts.",
+      ],
+      fr: [
+        "Votre navigateur décode le JXL lui-même (Chrome 155+, Firefox 158+, Safari 17+) : ni codec, ni extension, ni bibliothèque à télécharger.",
+        "Le fichier ne quitte jamais votre appareil : décodage et encodage JPG se font dans l'onglet.",
+        "Choisissez la qualité 90 : un JXL est en général déjà compressé, et un réglage JPG bas ajouterait une seconde couche d'artefacts.",
+      ],
+    },
+    faq: [
+      {
+        q: { en: "My .jxl file won't load in the tool, why?", fr: "Mon fichier .jxl ne se charge pas dans l'outil, pourquoi ?" },
+        a: {
+          en: "The tool relies on your browser's own JPEG XL decoder, which arrived in Chrome 155 and Firefox 158 in October 2026, and in Safari 17 in 2023. In an older version, the tool says it can't read the file: update your browser and drop it again.",
+          fr: "L'outil s'appuie sur le décodeur JPEG XL de votre navigateur, arrivé dans Chrome 155 et Firefox 158 en octobre 2026, et dans Safari 17 en 2023. Dans une version plus ancienne, l'outil indique qu'il ne sait pas lire le fichier : mettez votre navigateur à jour et déposez-le de nouveau.",
+        },
+      },
+      {
+        q: { en: "Can I convert several JXL files at once?", fr: "Peut-on convertir plusieurs fichiers JXL d'un coup ?" },
+        a: {
+          en: "Yes. Select or drop them all at once: they are converted one after another in your browser and downloaded as a single ZIP of JPGs. A file the browser can't read is flagged and the rest of the batch carries on.",
+          fr: "Oui. Sélectionnez ou déposez-les tous d'un coup : ils sont convertis l'un après l'autre dans votre navigateur et téléchargés dans un seul ZIP de JPG. Un fichier que le navigateur ne sait pas lire est signalé et le reste du lot continue.",
+        },
+      },
+    ],
+    deepDive: [
+      {
+        h: { en: "Why .jxl files are turning up now", fr: "Pourquoi les fichiers .jxl apparaissent maintenant" },
+        p: {
+          en: [
+            "JPEG XL, standardized as ISO/IEC 18181, was designed to replace JPEG: smaller files at the same quality, transparency, high bit depth and animation in one format. For years only Safari displayed it. That changed in October 2026, when Chrome 155 and then Firefox 158 turned it on by default, so sites can now serve it to almost every up-to-date browser.",
+            "The software around the browser hasn't caught up. Photo viewers, office suites, email clients, social networks and upload forms often don't recognise the .jxl extension yet. A picture saved from a site that serves JPEG XL then becomes a file nothing on your computer wants to open, and that's the gap this conversion fills.",
+          ],
+          fr: [
+            "Le JPEG XL, normalisé sous la référence ISO/IEC 18181, a été conçu pour remplacer le JPEG : des fichiers plus légers à qualité égale, la transparence, une profondeur de couleur élevée et l'animation dans un seul format. Pendant des années, seul Safari l'affichait. Tout a changé en octobre 2026, quand Chrome 155 puis Firefox 158 l'ont activé par défaut : les sites peuvent désormais le servir à presque tous les navigateurs à jour.",
+            "Les logiciels autour du navigateur n'ont pas suivi. Visionneuses, suites bureautiques, clients mail, réseaux sociaux et formulaires d'envoi ne reconnaissent souvent pas encore l'extension .jxl. Une image enregistrée depuis un site qui sert du JPEG XL devient alors un fichier que rien sur votre ordinateur ne veut ouvrir : c'est ce vide que comble cette conversion.",
+          ],
+        },
+      },
+      {
+        h: { en: "When the JXL was once a JPEG", fr: "Quand le JXL était autrefois un JPEG" },
+        p: {
+          en: [
+            "JPEG XL has a feature no other format offers: an existing JPEG can be repacked into it without any loss, about 20% smaller on average, and the original JPEG can later be rebuilt bit for bit. Many .jxl files on the web were made that way, from photos that started life as JPEGs.",
+            "This page doesn't do that exact rebuild. It decodes the pixels and encodes a new JPG, which is visually equivalent at quality 90 but not the same file. If you need the byte-identical original, for an archive or a checksum, use djxl, the command-line decoder from the reference libjxl tools, instead.",
+          ],
+          fr: [
+            "Le JPEG XL a une particularité qu'aucun autre format n'offre : un JPEG existant peut y être reconditionné sans aucune perte, environ 20 % plus léger en moyenne, et le JPEG d'origine peut ensuite être reconstruit à l'octet près. Beaucoup de fichiers .jxl du web ont été produits ainsi, à partir de photos nées en JPEG.",
+            "Cette page ne fait pas cette reconstruction exacte. Elle décode les pixels et encode un nouveau JPG, visuellement équivalent en qualité 90 mais qui n'est pas le même fichier. Si vous avez besoin de l'original identique à l'octet, pour une archive ou une empreinte, utilisez plutôt djxl, le décodeur en ligne de commande des outils de référence libjxl.",
+          ],
+        },
+      },
+      {
+        h: { en: "What a JPG can't carry", fr: "Ce qu'un JPG ne sait pas porter" },
+        p: {
+          en: [
+            "A JPG has no transparency: transparent areas of the JXL come out white. If the image is a logo or a cut-out, convert it to PNG instead. A JPG is also limited to 8 bits per colour channel, so an HDR or high-bit-depth JXL loses its extra range, and smooth gradients can show faint banding.",
+            "Animated JXL files are rare, but they exist: only the first frame is converted. And as with any conversion through a canvas, metadata such as the GPS position isn't copied into the JPG, which is welcome before sharing a photo.",
+          ],
+          fr: [
+            "Un JPG n'a pas de transparence : les zones transparentes du JXL ressortent en blanc. Si l'image est un logo ou un détourage, convertissez-la plutôt en PNG. Un JPG est aussi limité à 8 bits par canal de couleur : un JXL HDR ou à forte profondeur perd sa plage supplémentaire, et des dégradés lisses peuvent laisser voir de légères bandes.",
+            "Les JXL animés sont rares, mais ils existent : seule la première image est convertie. Et comme pour toute conversion par un canvas, les métadonnées comme la position GPS ne sont pas recopiées dans le JPG, ce qui est bienvenu avant de partager une photo.",
+          ],
+        },
+      },
+    ],
+  },
+  {
+    slug: "jxl-to-png",
+    from: "jxl",
+    to: "png",
+    why: {
+      en: "Converting JPEG XL (.jxl) to PNG gives you a lossless copy that keeps transparency and opens in any image editor or document, the safest way to bring a .jxl file into software that doesn't know the format yet.",
+      fr: "Convertir un JPEG XL (.jxl) en PNG donne une copie sans perte qui garde la transparence et s'ouvre dans n'importe quel éditeur d'images ou document, le moyen le plus sûr d'amener un .jxl dans un logiciel qui ne connaît pas encore le format.",
+    },
+    points: {
+      en: [
+        "Transparency in the JXL is kept in the PNG: the right choice for logos, icons and cut-outs.",
+        "PNG adds no compression loss of its own, so the image is ready to edit and re-save as often as needed.",
+        "Decoded by your browser (Chrome 155+, Firefox 158+, Safari 17+), and the file stays on your device.",
+      ],
+      fr: [
+        "La transparence du JXL est conservée dans le PNG : le bon choix pour les logos, icônes et détourages.",
+        "Le PNG n'ajoute aucune perte de compression : l'image est prête à être retouchée et réenregistrée autant que nécessaire.",
+        "Décodé par votre navigateur (Chrome 155+, Firefox 158+, Safari 17+), et le fichier reste sur votre appareil.",
+      ],
+    },
+    faq: [
+      {
+        q: { en: "JXL to PNG or JXL to JPG, which should I pick?", fr: "JXL vers PNG ou JXL vers JPG, que choisir ?" },
+        a: {
+          en: "PNG when the image has transparency, contains text or flat graphics, or will be edited further. JPG for a plain photo you want to send or attach, since it will be several times lighter.",
+          fr: "Le PNG quand l'image a de la transparence, contient du texte ou des aplats, ou sera encore retouchée. Le JPG pour une simple photo à envoyer ou à joindre, puisqu'il sera plusieurs fois plus léger.",
+        },
+      },
+      {
+        q: { en: "Why is the PNG so much bigger than the JXL?", fr: "Pourquoi le PNG est-il tellement plus lourd que le JXL ?" },
+        a: {
+          en: "Because JPEG XL is one of the most efficient image formats and PNG stores every pixel without lossy compression. For a photo, a PNG ten times heavier is normal. You're trading size for a file every program can open and edit.",
+          fr: "Parce que le JPEG XL est l'un des formats d'image les plus efficaces et que le PNG stocke chaque pixel sans compression avec perte. Pour une photo, un PNG dix fois plus lourd n'a rien d'anormal. Vous échangez du poids contre un fichier que tout logiciel sait ouvrir et retoucher.",
+        },
+      },
+    ],
+    deepDive: [
+      {
+        h: { en: "Two lossless formats, very different reach", fr: "Deux formats sans perte, une portée très différente" },
+        p: {
+          en: [
+            "JPEG XL has a lossless mode of its own, and it usually produces noticeably smaller files than PNG for the same pixels. So converting a lossless JXL to PNG gives you exactly the same image in a heavier file. What you gain is reach: PNG has opened in every editor, office suite and browser for more than twenty years, while .jxl support outside browsers is still patchy.",
+            "When the JXL was encoded lossily, which is the common case for photos, the PNG reproduces those pixels faithfully, including any compression artefacts. The format change stops further degradation; it can't bring back detail the encoder already discarded.",
+          ],
+          fr: [
+            "Le JPEG XL a son propre mode sans perte, qui produit en général des fichiers nettement plus légers que le PNG pour les mêmes pixels. Convertir un JXL sans perte en PNG donne donc exactement la même image dans un fichier plus lourd. Ce que vous gagnez, c'est la portée : le PNG s'ouvre dans tous les éditeurs, suites bureautiques et navigateurs depuis plus de vingt ans, alors que la prise en charge du .jxl hors des navigateurs reste inégale.",
+            "Quand le JXL a été encodé avec perte, ce qui est le cas courant pour les photos, le PNG reproduit fidèlement ces pixels, artefacts de compression compris. Le changement de format arrête la dégradation ; il ne peut pas rendre le détail que l'encodeur a déjà écarté.",
+          ],
+        },
+      },
+      {
+        h: { en: "Transparency, depth and animation", fr: "Transparence, profondeur et animation" },
+        p: {
+          en: [
+            "Transparency survives the trip intact, which is the main reason to choose PNG over JPG here. Colour depth is another matter: the conversion goes through the browser's canvas, which works in 8 bits per channel, so a JXL with 10, 12 or 16-bit colour, or HDR content, comes out as a standard 8-bit PNG.",
+            "An animated JXL becomes a still: only the first frame is converted. Metadata such as the GPS position isn't copied either, since the canvas only keeps pixels.",
+          ],
+          fr: [
+            "La transparence traverse la conversion intacte, et c'est la principale raison de préférer le PNG au JPG ici. La profondeur de couleur, c'est autre chose : la conversion passe par le canvas du navigateur, qui travaille en 8 bits par canal, donc un JXL en couleurs 10, 12 ou 16 bits, ou au contenu HDR, ressort en PNG 8 bits standard.",
+            "Un JXL animé devient une image fixe : seule la première image est convertie. Les métadonnées comme la position GPS ne sont pas recopiées non plus, puisque le canvas ne garde que les pixels.",
+          ],
+        },
+      },
+      {
+        h: { en: "If the image is going back on a website", fr: "Si l'image retourne sur un site web" },
+        p: {
+          en: [
+            "A PNG is the right intermediate file for editing, not the right file to publish. Once the image is ready, converting it to WebP will usually make it far lighter while keeping the transparency.",
+            "And if you control the site, there's no need to give up JPEG XL: serve it inside a picture element with a WebP or JPEG fallback for browsers that haven't updated yet. Our guide to web image formats shows the markup.",
+          ],
+          fr: [
+            "Un PNG est le bon fichier intermédiaire pour retoucher, pas le bon fichier à publier. Une fois l'image prête, la convertir en WebP la rendra en général bien plus légère tout en gardant la transparence.",
+            "Et si le site est le vôtre, inutile de renoncer au JPEG XL : servez-le dans un élément picture avec un repli en WebP ou en JPEG pour les navigateurs pas encore à jour. Notre guide des formats d'image web montre le code.",
           ],
         },
       },

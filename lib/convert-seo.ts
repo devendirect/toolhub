@@ -49,6 +49,15 @@ export const CONVERT_META: Record<string, Localized> = {
     fr: "Convertissez une photo HEIC d'iPhone en PNG sans perte, lisible par tout éditeur d'images et prêt à retoucher. Gratuit, décodé dans le navigateur.",
   },
 
+  "jxl-to-jpg": {
+    en: "Convert JPEG XL (.jxl) to JPG when an app, email or upload form refuses it. Batch to ZIP, decoded by your browser, nothing uploaded. Free.",
+    fr: "Convertissez un JPEG XL (.jxl) en JPG quand un logiciel, un e-mail ou un formulaire le refuse. Par lot en ZIP, décodé par le navigateur, sans envoi.",
+  },
+  "jxl-to-png": {
+    en: "Convert JPEG XL (.jxl) to a lossless PNG that keeps transparency and opens in any image editor. Free, decoded by your browser, nothing uploaded.",
+    fr: "Convertissez un JPEG XL (.jxl) en PNG sans perte qui garde la transparence et s'ouvre dans tout éditeur d'images. Gratuit, sans envoi, dans le navigateur.",
+  },
+
   /* ── Paires PDF ── */
   "pdf-to-png": {
     en: "Convert every page of a PDF to a sharp, lossless PNG, ideal for diagrams, screenshots and fine text. Choose 1×, 2× or 3× scale. No upload.",
@@ -86,6 +95,14 @@ export const CONVERT_META: Record<string, Localized> = {
  * Le H1 reste pairTitle() ; sans entrée ici, le <title> aussi.
  */
 export const CONVERT_TITLE: Record<string, Localized> = {
+  "jxl-to-jpg": {
+    en: "Convert JXL to JPG free, online, no upload",
+    fr: "Convertir JXL en JPG gratuit, en ligne, sans envoi",
+  },
+  "jxl-to-png": {
+    en: "Convert JXL to PNG free, transparency kept",
+    fr: "Convertir JXL en PNG gratuit, transparence conservée",
+  },
   "heic-to-jpg": {
     en: "Convert HEIC to JPG free, online, no upload",
     fr: "Convertir HEIC en JPG gratuit, en ligne, sans envoi",
