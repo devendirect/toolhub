@@ -125,6 +125,7 @@ Skills tiers contenu/SEO (copiés tels quels, markdown seul, licence dans chaque
 |-------|--------|-------|
 | `copywriting`, `site-architecture`, `directory-submissions` | [coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills) @ `5b2c000` (MIT) | Titres/meta, hubs catégories & maillage, annuaires/backlinks |
 | `improve-content`, `content-brief`, `write-content`, `eeat-audit` | [inhouseseo/superseo-skills](https://github.com/inhouseseo/superseo-skills) @ `9cf22cc` (Apache-2.0) | Enrichir les pages outils, guides, audit E-E-A-T (règles anti-« AI slop ») |
+| `impeccable` (+ 4 agents dans `.claude/agents/`) | [pbakaus/impeccable](https://github.com/pbakaus/impeccable) @ `5e745ac` (Apache-2.0) | Design UI : critique, audit, polish, typo/couleur/layout. Lanceur `scripts/impeccable(.cmd)`, binaire téléchargé au 1er usage dans `~/.impeccable/bin/` ; hook de détection non installé |
 
 Ces skills sont écrits pour l'anglais : toujours préciser que le contenu est à produire en FR **et** EN.
 

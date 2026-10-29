@@ -6,6 +6,8 @@ import { GUIDE_JWT } from "./guides/jwt-explained";
 import { GUIDE_SECURITY_HEADERS } from "./guides/http-security-headers";
 import { GUIDE_OPEN_GRAPH } from "./guides/open-graph-link-previews";
 import { GUIDE_MARKDOWN_TABLES } from "./guides/markdown-tables";
+import { GUIDE_WHERE_FILES_GO } from "./guides/where-converted-files-go";
+import { GUIDE_ONE_PDF_APPLICATION } from "./guides/one-pdf-application";
 
 /**
  * Guides éditoriaux (/[lang]/guides/[slug]).
@@ -73,7 +75,7 @@ export interface Guide {
   fr: GuideText;
 }
 
-export const GUIDES: Guide[] = [GUIDE_JSON_YAML_TOML, GUIDE_WEBP_AVIF_JPEG, GUIDE_JWT, GUIDE_SECURITY_HEADERS, GUIDE_OPEN_GRAPH, GUIDE_MARKDOWN_TABLES];
+export const GUIDES: Guide[] = [GUIDE_JSON_YAML_TOML, GUIDE_WEBP_AVIF_JPEG, GUIDE_JWT, GUIDE_SECURITY_HEADERS, GUIDE_OPEN_GRAPH, GUIDE_MARKDOWN_TABLES, GUIDE_WHERE_FILES_GO, GUIDE_ONE_PDF_APPLICATION];
 
 export function findGuide(slug: string): Guide | undefined {
   return GUIDES.find((g) => g.slug === slug);

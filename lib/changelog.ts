@@ -29,6 +29,23 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-10-29-guides-files-pdf",
+    date: "2026-10-29",
+    kind: "new",
+    tools: ["pdf-merge", "pdf-converter", "compress-to-kb"],
+    guides: ["where-converted-files-go", "one-pdf-application"],
+    text: {
+      fr: {
+        title: "Deux nouveaux guides : où vont vos fichiers convertis, et un dossier en un seul PDF",
+        body: "Le premier explique ce que deviennent vos fichiers sur un site de conversion classique, et comment vérifier en trente secondes qu'un outil travaille dans votre navigateur. Le second montre, étape par étape, comment transformer scans, photos et PDF en un seul fichier ordonné et léger pour un dossier de location ou de candidature.",
+      },
+      en: {
+        title: "Two new guides: where your converted files go, and an application in one PDF",
+        body: "The first explains what happens to your files on a typical conversion site, and how to check in thirty seconds that a tool works in your browser. The second shows, step by step, how to turn scans, photos and PDFs into one ordered, lightweight file for a rental or job application.",
+      },
+    },
+  },
+  {
     id: "2026-10-27-jpeg-xl-firefox",
     date: "2026-10-27",
     kind: "new",
