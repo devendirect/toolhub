@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Le layout racine est app/[lang]/layout.tsx : sans layout au-dessus, les URL
+  // sans route ont besoin de app/global-not-found.tsx.
+  experimental: { globalNotFound: true },
   async redirects() {
     return [
       // text-diff fusionné dans diff-viewer : même workspace, contenu en double

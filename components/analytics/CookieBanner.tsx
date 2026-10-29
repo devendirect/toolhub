@@ -43,7 +43,7 @@ function ensureGtag() {
 // elle-même `ad_storage`, `ad_user_data` et `ad_personalization`. Y toucher
 // depuis ici reviendrait à écraser son verdict selon l'ordre de chargement.
 //
-// Les valeurs par défaut sont posées dans app/layout.tsx avant tout script
+// Les valeurs par défaut sont posées dans app/[lang]/layout.tsx avant tout script
 // Google ; on n'émet ici que des « update », seul type d'appel pris en compte
 // après coup — un second « default » serait ignoré.
 function pushAnalyticsConsent(granted: boolean) {
