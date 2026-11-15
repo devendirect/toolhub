@@ -197,11 +197,13 @@ export function PasswordGenerator() {
           <div className="flex flex-col gap-1">
             <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
               {lang === "fr" ? "stocker vos mots de passe" : "store your passwords"}
+              {" · "}
+              {lang === "fr" ? "lien affilié" : "affiliate link"}
             </span>
             <p className="text-[13px] text-fg-1">
               {lang === "fr"
-                ? "Un bon mot de passe ne sert à rien s'il est dans un post-it. NordPass le stocke et le remplit automatiquement."
-                : "A strong password is useless on a sticky note. NordPass stores and autofills it for you."}
+                ? "Un bon mot de passe ne sert à rien s'il est dans un post-it. Un gestionnaire de mots de passe, comme NordPass, sert à les ranger."
+                : "A strong password is useless on a sticky note. A password manager, such as NordPass, is made to keep them."}
             </p>
             <a
               href={AFFILIATE_NORDPASS}

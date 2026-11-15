@@ -183,6 +183,8 @@ export function IpLookup() {
           <div className="flex flex-col gap-1">
             <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
               {lang === "fr" ? "votre IP est visible" : "your IP is visible"}
+              {" · "}
+              {lang === "fr" ? "lien affilié" : "affiliate link"}
             </span>
             <p className="text-[13px] text-fg-1">
               {lang === "fr"
@@ -195,7 +197,7 @@ export function IpLookup() {
               rel="sponsored noopener noreferrer"
               className="mt-1 inline-flex items-center gap-1 font-mono text-[12px] text-brand hover:underline"
             >
-              {lang === "fr" ? "Masquer mon IP avec NordVPN →" : "Hide my IP with NordVPN →"}
+              {lang === "fr" ? "Découvrir NordVPN →" : "Discover NordVPN →"}
             </a>
           </div>
         </div>

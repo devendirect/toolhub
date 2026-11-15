@@ -122,6 +122,8 @@ export function SitemapGenerator() {
           <div className="flex flex-col gap-1">
             <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">
               {lang === "fr" ? "votre site, votre domaine" : "your site, your domain"}
+              {" · "}
+              {lang === "fr" ? "lien affilié" : "affiliate link"}
             </span>
             <p className="text-[13px] text-fg-1">
               {lang === "fr"

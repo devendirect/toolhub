@@ -237,7 +237,7 @@ export function MetaPreview() {
         <div className="mt-4 p-4 border border-line bg-bg-1 flex items-start gap-4">
           <span className="font-mono text-[20px] shrink-0">↗</span>
           <div className="flex flex-col gap-1">
-            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">{TR[lang].affLabel}</span>
+            <span className="font-mono text-[11px] text-dim uppercase tracking-[0.1em]">{TR[lang].affLabel}{" · "}{lang === "fr" ? "lien affilié" : "affiliate link"}</span>
             <p className="text-[13px] text-fg-1">{TR[lang].affText}</p>
             <a
               href={affiliateUrl}
