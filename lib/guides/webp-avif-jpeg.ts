@@ -3,7 +3,7 @@ import type { Guide } from "../guides";
 export const GUIDE_WEBP_AVIF_JPEG: Guide = {
   slug: "webp-avif-jpeg",
   published: "2026-09-25",
-  updated: "2026-10-27",
+  updated: "2026-11-15",
   tools: ["image-converter", "image-compressor", "compress-to-kb", "svg-optimizer"],
   verified: "2026-10-27",
   sources: [
@@ -64,7 +64,7 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
           { p: "AVIF compresses photos harder than WebP, and the gap is largest at low file sizes, which is exactly where a web page wants to be. The reported savings vary a lot with the image and the settings, so test on your own photos rather than trusting a single percentage." },
           { p: "Support arrived in stages: Chrome 85 in 2020, Firefox 93 in 2021, Safari 16 in 2022, Edge 121 in 2024. Current devices are covered, but a phone that stopped receiving updates a few years ago may not be, so AVIF belongs inside a `<picture>` element with a WebP or JPEG fallback:" },
           { code: "<picture>\n  <source srcset=\"photo.avif\" type=\"image/avif\">\n  <source srcset=\"photo.webp\" type=\"image/webp\">\n  <img src=\"photo.jpg\" alt=\"...\" width=\"1280\" height=\"853\">\n</picture>" },
-          { p: "The other cost is encoding. AVIF takes much longer to produce than WebP, which is fine in a build pipeline or an image CDN, and less fine when you convert by hand. It's also why browsers don't offer AVIF as an output format to web pages: our converter reads AVIF but can only write WebP, JPEG or PNG." },
+          { p: "The other cost is encoding. AVIF takes much longer to produce than WebP, which is fine in a build pipeline or an image CDN, and less fine when you convert by hand. It's also why browsers don't offer AVIF as an output format to web pages: our converter reads AVIF but can only write WebP, JPEG or PNG. When a CMS or an app accepts WebP but not AVIF, [AVIF to WebP](/convert/avif-to-webp) does the conversion in the tab, and [AVIF to JPG](/convert/avif-to-jpg) covers the places that only take JPEG." },
         ],
       },
       {
@@ -94,7 +94,7 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
         h: "What converting does to your photos",
         blocks: [
           { p: "Converting in the browser redraws the image from its pixels, so everything that isn't a pixel stays behind. That includes EXIF metadata: GPS position, phone model, date taken. Before publishing a photo, that's a feature. If you need the location or the date later, keep the original." },
-          { p: "Two more details. Transparent areas turn white when you export to JPEG, since JPEG has no alpha channel. And iPhone photos in HEIC can only be decoded by Safari among browsers; elsewhere, our [HEIC to JPG](/convert/heic-to-jpg) page brings its own decoder and converts them in the tab." },
+          { p: "Two more details. Transparent areas turn white when you export to JPEG, since JPEG has no alpha channel. And iPhone photos in HEIC can only be decoded by Safari among browsers; elsewhere, our [HEIC to JPG](/convert/heic-to-jpg) page brings its own decoder and converts them in the tab, or [HEIC to WebP](/convert/heic-to-webp) if the photos are headed for a web page." },
           { p: "When you only want a lighter file in the same format, use the [image compressor](/t/image-compressor) instead: it keeps the format, lets you set the quality from 10 to 100, and shows the exact number of bytes saved. If a form imposes a limit such as 100 KB, let the [compress to KB tool](/t/compress-to-kb) find the setting for you." },
         ],
       },
@@ -150,7 +150,7 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
           { p: "L'AVIF compresse les photos plus fort que le WebP, et l'écart est le plus grand aux petites tailles de fichier, précisément là où une page web veut se trouver. Les gains annoncés varient beaucoup selon l'image et les réglages : testez sur vos propres photos plutôt que de vous fier à un pourcentage unique." },
           { p: "La prise en charge est arrivée par étapes : Chrome 85 en 2020, Firefox 93 en 2021, Safari 16 en 2022, Edge 121 en 2024. Les appareils actuels sont couverts, mais un téléphone qui ne reçoit plus de mises à jour depuis quelques années peut ne pas l'être. L'AVIF se place donc dans un élément `<picture>`, avec un repli en WebP ou en JPEG :" },
           { code: "<picture>\n  <source srcset=\"photo.avif\" type=\"image/avif\">\n  <source srcset=\"photo.webp\" type=\"image/webp\">\n  <img src=\"photo.jpg\" alt=\"...\" width=\"1280\" height=\"853\">\n</picture>" },
-          { p: "L'autre coût, c'est l'encodage. Produire un AVIF prend bien plus longtemps qu'un WebP : aucun souci dans une chaîne de build ou un CDN d'images, davantage quand on convertit à la main. C'est aussi pour ça que les navigateurs ne proposent pas l'AVIF comme format de sortie aux pages web : notre convertisseur lit l'AVIF mais ne sait écrire que du WebP, du JPEG ou du PNG." },
+          { p: "L'autre coût, c'est l'encodage. Produire un AVIF prend bien plus longtemps qu'un WebP : aucun souci dans une chaîne de build ou un CDN d'images, davantage quand on convertit à la main. C'est aussi pour ça que les navigateurs ne proposent pas l'AVIF comme format de sortie aux pages web : notre convertisseur lit l'AVIF mais ne sait écrire que du WebP, du JPEG ou du PNG. Quand un CMS ou un logiciel accepte le WebP mais pas l'AVIF, [AVIF en WebP](/convert/avif-to-webp) fait la conversion dans l'onglet, et [AVIF en JPG](/convert/avif-to-jpg) couvre les endroits qui n'acceptent que le JPEG." },
         ],
       },
       {
@@ -180,7 +180,7 @@ export const GUIDE_WEBP_AVIF_JPEG: Guide = {
         h: "Ce que la conversion fait à vos photos",
         blocks: [
           { p: "Convertir dans le navigateur redessine l'image à partir de ses pixels : tout ce qui n'est pas pixel reste en route. Y compris les métadonnées EXIF : position GPS, modèle de téléphone, date de prise de vue. Avant de publier une photo, c'est un avantage. Si vous avez besoin plus tard du lieu ou de la date, gardez l'original." },
-          { p: "Deux détails encore. Les zones transparentes deviennent blanches à l'export en JPEG, puisque le JPEG n'a pas de couche alpha. Et parmi les navigateurs, seul Safari sait décoder les photos d'iPhone en HEIC ; ailleurs, notre page [HEIC en JPG](/convert/heic-to-jpg) apporte son propre décodeur et les convertit dans l'onglet." },
+          { p: "Deux détails encore. Les zones transparentes deviennent blanches à l'export en JPEG, puisque le JPEG n'a pas de couche alpha. Et parmi les navigateurs, seul Safari sait décoder les photos d'iPhone en HEIC ; ailleurs, notre page [HEIC en JPG](/convert/heic-to-jpg) apporte son propre décodeur et les convertit dans l'onglet, ou [HEIC en WebP](/convert/heic-to-webp) si les photos sont destinées à une page web." },
           { p: "Quand vous voulez seulement un fichier plus léger dans le même format, utilisez plutôt le [compresseur d'images](/t/image-compressor) : il garde le format, règle la qualité de 10 à 100 et affiche le nombre exact d'octets gagnés. Si un formulaire impose une limite comme 100 Ko, laissez l'outil [réduire une image à X Ko](/t/compress-to-kb) trouver le réglage à votre place." },
         ],
       },
