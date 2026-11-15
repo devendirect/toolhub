@@ -29,6 +29,23 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-11-15-guide-utm-ga4",
+    date: "2026-11-15",
+    kind: "new",
+    tools: ["utm-builder"],
+    guides: ["utm-ga4-channels"],
+    text: {
+      fr: {
+        title: "Nouveau guide : UTM et canaux GA4, quel medium va dans quel canal",
+        body: "Le guide explique comment Google Analytics 4 range une visite dans Email, Paid Social, Organic Social ou Display d'après la source et le medium, pourquoi une publicité Facebook balisée en social est comptée comme du trafic gratuit, et ce que change le canal AI Assistant pour les visites venant de ChatGPT, Gemini ou Copilot. Les règles sont vérifiées dans l'aide officielle de Google, et les deux points issus de la presse sont signalés comme tels.",
+      },
+      en: {
+        title: "New guide: UTM parameters and GA4 channels, which medium goes where",
+        body: "The guide explains how Google Analytics 4 sorts a visit into Email, Paid Social, Organic Social or Display from the source and medium, why a Facebook ad tagged as social is counted as free traffic, and what the AI Assistant channel changes for visits from ChatGPT, Gemini or Copilot. The rules are checked against Google's official help, and the two points that come from trade press are flagged as such.",
+      },
+    },
+  },
+  {
     id: "2026-11-15-convert-avif-heic-jfif-ico",
     date: "2026-11-15",
     kind: "new",
