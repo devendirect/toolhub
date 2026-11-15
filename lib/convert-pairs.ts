@@ -39,6 +39,8 @@ export const FORMAT_LABEL: Record<string, string> = {
   avif: "AVIF",
   heic: "HEIC",
   jxl: "JXL",
+  jfif: "JFIF",
+  ico: "ICO",
   pdf: "PDF",
 };
 
@@ -1015,6 +1017,346 @@ export const CONVERT_PAIRS: ConvertPair[] = [
           fr: [
             "Un PNG est le bon fichier intermédiaire pour retoucher, pas le bon fichier à publier. Une fois l'image prête, la convertir en WebP la rendra en général bien plus légère tout en gardant la transparence.",
             "Et si le site est le vôtre, inutile de renoncer au JPEG XL : servez-le dans un élément picture avec un repli en WebP ou en JPEG pour les navigateurs pas encore à jour. Notre guide des formats d'image web montre le code.",
+          ],
+        },
+      },
+    ],
+  },
+  {
+    slug: "avif-to-webp",
+    from: "avif",
+    to: "webp",
+    why: {
+      en: "Converting AVIF to WebP makes sense when a CMS, an app or an upload form accepts WebP but not AVIF yet: WebP is older and read almost everywhere, and the conversion runs in your browser without uploading the file.",
+      fr: "Convertir un AVIF en WebP a du sens quand un CMS, un logiciel ou un formulaire accepte le WebP mais pas encore l'AVIF : le WebP est plus ancien et lu presque partout, et la conversion se fait dans votre navigateur sans envoyer le fichier.",
+    },
+    points: {
+      en: [
+        "Your browser decodes the AVIF itself and encodes the WebP: nothing to install, nothing uploaded.",
+        "Transparency is kept: both formats carry an alpha channel.",
+        "Expect a heavier file. AVIF usually compresses better than WebP, so the same picture weighs more once converted. Quality 85 to 90 keeps the second encoding invisible.",
+      ],
+      fr: [
+        "Votre navigateur décode lui-même l'AVIF et encode le WebP : rien à installer, rien d'envoyé.",
+        "La transparence est conservée : les deux formats portent un canal alpha.",
+        "Attendez-vous à un fichier plus lourd. L'AVIF compresse en général mieux que le WebP : la même image pèse donc plus une fois convertie. Une qualité de 85 à 90 rend ce second encodage invisible.",
+      ],
+    },
+    faq: [
+      {
+        q: { en: "Will the WebP be bigger than the AVIF?", fr: "Le WebP sera-t-il plus lourd que l'AVIF ?" },
+        a: {
+          en: "Usually, yes. AVIF is one of the most efficient formats, so for the same visual quality a WebP is generally larger. If the place you are sending the image to accepts AVIF, keep the AVIF.",
+          fr: "En général, oui. L'AVIF est l'un des formats les plus efficaces : à qualité visuelle égale, un WebP est le plus souvent plus lourd. Si l'endroit où vous envoyez l'image accepte l'AVIF, gardez l'AVIF.",
+        },
+      },
+      {
+        q: { en: "Do I need to convert AVIF to WebP for my website?", fr: "Faut-il convertir l'AVIF en WebP pour mon site ?" },
+        a: {
+          en: "Rarely. Current browsers display both formats, so a page can serve either. The conversion helps when something in your chain only accepts WebP: a CMS, a plugin, an email tool or an image pipeline.",
+          fr: "Rarement. Les navigateurs actuels affichent les deux formats : une page peut servir l'un ou l'autre. La conversion aide quand un maillon de votre chaîne n'accepte que le WebP : un CMS, une extension, un outil d'e-mailing ou une chaîne de traitement d'images.",
+        },
+      },
+      {
+        q: { en: "Is an animated AVIF kept animated?", fr: "Un AVIF animé reste-t-il animé ?" },
+        a: {
+          en: "No. The conversion goes through a canvas, which captures a single image: only the first frame of an animated AVIF ends up in the WebP.",
+          fr: "Non. La conversion passe par un canvas, qui ne capture qu'une seule image : seule la première image d'un AVIF animé se retrouve dans le WebP.",
+        },
+      },
+    ],
+    deepDive: [
+      {
+        h: { en: "Two modern formats that don't live in the same places", fr: "Deux formats modernes qui ne vivent pas aux mêmes endroits" },
+        p: {
+          en: [
+            "WebP came first, from Google in 2010, and has been accepted by browsers, CMS and design tools for years. AVIF, based on the AV1 video codec, arrived later and compresses better, but the software around browsers adopted it more slowly. WordPress, for instance, only started accepting AVIF uploads in 2024, a few years after WebP.",
+            "That gap is the whole reason for this page. An AVIF saved from a modern site is a perfectly good image that some of your tools simply refuse, while the same tools take a WebP without complaint.",
+          ],
+          fr: [
+            "Le WebP est arrivé le premier, chez Google en 2010, et les navigateurs, les CMS et les outils de création l'acceptent depuis des années. L'AVIF, issu du codec vidéo AV1, est venu plus tard et compresse mieux, mais les logiciels autour des navigateurs l'ont adopté plus lentement. WordPress, par exemple, n'a accepté l'envoi d'AVIF qu'en 2024, quelques années après le WebP.",
+            "Cet écart est toute la raison d'être de cette page. Un AVIF enregistré depuis un site moderne est une image parfaitement valable que certains de vos outils refusent tout simplement, alors que les mêmes outils acceptent un WebP sans broncher.",
+          ],
+        },
+      },
+      {
+        h: { en: "A second lossy pass, kept as gentle as possible", fr: "Une seconde passe avec perte, la plus douce possible" },
+        p: {
+          en: [
+            "AVIF and WebP both throw away detail to save space, and they don't throw away the same detail. Converting one to the other decodes the AVIF's approximation and compresses it again, so the result carries the first format's losses plus the second one's.",
+            "A high quality setting, around 85 to 90, keeps the added damage below what you can see on a photograph. Avoid chaining conversions: if you still have the original image, export the WebP from that instead.",
+          ],
+          fr: [
+            "L'AVIF et le WebP écartent tous deux du détail pour gagner de la place, et ils n'écartent pas les mêmes détails. Passer de l'un à l'autre décode l'approximation de l'AVIF et la compresse à nouveau : le résultat porte les pertes du premier format plus celles du second.",
+            "Un réglage de qualité élevé, autour de 85 à 90, garde le dommage ajouté sous ce que l'œil perçoit sur une photographie. Évitez d'enchaîner les conversions : si vous avez encore l'image d'origine, exportez plutôt le WebP depuis celle-ci.",
+          ],
+        },
+      },
+      {
+        h: { en: "What gets flattened on the way", fr: "Ce qui est aplati en route" },
+        p: {
+          en: [
+            "AVIF can store 10 or 12 bits per colour channel, WebP stores 8. A photo with a wide, smooth gradient such as a sunset sky can show faint banding after the conversion. Most AVIF files on the web are 8-bit and come through unchanged.",
+            "As with any conversion through a canvas, metadata such as the GPS position or the colour profile isn't copied into the WebP. That is useful before publishing a photo, and worth knowing if a profile mattered for print.",
+          ],
+          fr: [
+            "L'AVIF peut stocker 10 ou 12 bits par canal de couleur, le WebP en stocke 8. Une photo à large dégradé lisse, comme un ciel de coucher de soleil, peut montrer de légères bandes après la conversion. La plupart des AVIF du web sont en 8 bits et passent sans changement.",
+            "Comme pour toute conversion par un canvas, les métadonnées comme la position GPS ou le profil colorimétrique ne sont pas recopiées dans le WebP. C'est utile avant de publier une photo, et à savoir si un profil comptait pour l'impression.",
+          ],
+        },
+      },
+    ],
+  },
+  {
+    slug: "heic-to-webp",
+    from: "heic",
+    to: "webp",
+    why: {
+      en: "iPhone photos in HEIC don't display on most websites and many CMS refuse them: converting HEIC to WebP gives a picture that is ready for the web and usually lighter than a JPG, decoded in your browser without uploading anything.",
+      fr: "Les photos HEIC d'iPhone ne s'affichent pas sur la plupart des sites et de nombreux CMS les refusent : convertir un HEIC en WebP donne une image prête pour le web, en général plus légère qu'un JPG, décodée dans votre navigateur sans rien envoyer.",
+    },
+    points: {
+      en: [
+        "WebP typically weighs a quarter to a third less than a JPG at similar quality: a good format for photos that will go on a web page.",
+        "Select several photos at once: they are converted one after another and downloaded as a single ZIP.",
+        "No Windows codec needed: when your browser can't read HEIC itself, the page loads a decoder on demand and everything stays on your device.",
+      ],
+      fr: [
+        "Le WebP pèse en général un quart à un tiers de moins qu'un JPG à qualité comparable : un bon format pour des photos destinées à une page web.",
+        "Sélectionnez plusieurs photos d'un coup : elles sont converties l'une après l'autre et téléchargées dans un seul ZIP.",
+        "Aucun codec Windows à installer : quand votre navigateur ne lit pas le HEIC seul, la page charge un décodeur à la demande et tout reste sur votre appareil.",
+      ],
+    },
+    faq: [
+      {
+        q: { en: "Should I convert HEIC to WebP or to JPG?", fr: "Convertir un HEIC en WebP ou en JPG ?" },
+        a: {
+          en: "WebP if the photo is going on a website or into a CMS that accepts it: it is lighter. JPG if it is going by email, to a print lab or into older software, where JPG remains the format nothing refuses.",
+          fr: "WebP si la photo est destinée à un site web ou à un CMS qui l'accepte : il est plus léger. JPG si elle part par e-mail, chez un imprimeur ou dans un logiciel ancien, où le JPG reste le format que rien ne refuse.",
+        },
+      },
+      {
+        q: { en: "Why can't I open HEIC photos on my Windows PC?", fr: "Pourquoi ne puis-je pas ouvrir les photos HEIC sur mon PC Windows ?" },
+        a: {
+          en: "Windows needs extensions from the Microsoft Store to read HEIC, and they are not always installed. This page does not depend on them: it decodes the file in the browser tab, then gives you a WebP that opens everywhere.",
+          fr: "Windows a besoin d'extensions du Microsoft Store pour lire le HEIC, et elles ne sont pas toujours installées. Cette page n'en dépend pas : elle décode le fichier dans l'onglet du navigateur, puis vous rend un WebP lisible partout.",
+        },
+      },
+      {
+        q: { en: "Is the location of my photo kept in the WebP?", fr: "L'emplacement de ma photo est-il conservé dans le WebP ?" },
+        a: {
+          en: "No. The conversion passes through a canvas, which carries the pixels only: GPS position, date and camera details are not copied. That is welcome before putting a photo online.",
+          fr: "Non. La conversion passe par un canvas, qui ne transporte que les pixels : la position GPS, la date et les détails de l'appareil ne sont pas recopiés. C'est bienvenu avant de mettre une photo en ligne.",
+        },
+      },
+    ],
+    deepDive: [
+      {
+        h: { en: "Why your iPhone photos are HEIC in the first place", fr: "Pourquoi vos photos d'iPhone sont en HEIC" },
+        p: {
+          en: [
+            "Apple switched its cameras to HEIC in 2017 with iOS 11. The format stores a photo in about half the space of a JPEG at similar quality, which is why an iPhone holds so many pictures. The cost is compatibility: websites, CMS and a lot of software never added support.",
+            "If you would rather avoid the problem at the source, the Camera settings have a Formats option: choosing Most Compatible makes the iPhone shoot JPEG. For the photos you already have, converting is the way out.",
+          ],
+          fr: [
+            "Apple a basculé ses appareils photo en HEIC en 2017 avec iOS 11. Le format stocke une photo dans environ deux fois moins de place qu'un JPEG à qualité comparable, ce qui explique qu'un iPhone contienne autant d'images. Le prix à payer est la compatibilité : sites, CMS et beaucoup de logiciels n'ont jamais ajouté le support.",
+            "Si vous préférez éviter le problème à la source, les réglages de l'appareil photo ont une option Formats : choisir Le plus compatible fait photographier l'iPhone en JPEG. Pour les photos que vous avez déjà, la conversion est la sortie.",
+          ],
+        },
+      },
+      {
+        h: { en: "Choosing WebP over JPG at the last step", fr: "Choisir le WebP plutôt que le JPG à la dernière étape" },
+        p: {
+          en: [
+            "Both are lossy formats, so the choice is about where the photo goes. A web page, a blog or a shop that you control benefits from WebP: smaller files load faster, which helps Core Web Vitals. A photo that leaves the web, by email, to a printer, into a document template, is safer as a JPG.",
+            "For the web, a quality of 80 to 85 is usually enough for a photo, and if you want a width cap as well, the full image converter can resize and convert in the same pass.",
+          ],
+          fr: [
+            "Les deux sont des formats avec perte : le choix dépend donc de la destination de la photo. Une page web, un blog ou une boutique que vous maîtrisez profitent du WebP : des fichiers plus petits se chargent plus vite, ce qui aide les Core Web Vitals. Une photo qui quitte le web, par e-mail, chez un imprimeur, dans un modèle de document, est plus sûre en JPG.",
+            "Pour le web, une qualité de 80 à 85 suffit en général pour une photo, et si vous voulez aussi plafonner la largeur, le convertisseur d'images complet sait redimensionner et convertir dans la même passe.",
+          ],
+        },
+      },
+      {
+        h: { en: "What the conversion doesn't carry over", fr: "Ce que la conversion ne reprend pas" },
+        p: {
+          en: [
+            "A HEIC file can hold more than a single picture: a Live Photo, a burst or a depth map travel in the same container. Only the main image is converted, so the motion of a Live Photo is not kept.",
+            "Recent iPhones also shoot with a wide colour range. The conversion produces an ordinary sRGB image, which looks nearly identical on most screens but can appear slightly less saturated on a wide-gamut display.",
+          ],
+          fr: [
+            "Un fichier HEIC peut contenir plus d'une image : une Live Photo, une rafale ou une carte de profondeur voyagent dans le même conteneur. Seule l'image principale est convertie : le mouvement d'une Live Photo n'est donc pas conservé.",
+            "Les iPhone récents photographient aussi avec une large gamme de couleurs. La conversion produit une image sRGB ordinaire, presque identique sur la plupart des écrans mais qui peut sembler un peu moins saturée sur un écran à large gamme.",
+          ],
+        },
+      },
+    ],
+  },
+  {
+    slug: "jfif-to-jpg",
+    from: "jfif",
+    to: "jpg",
+    why: {
+      en: "A .jfif file is an ordinary JPEG with an unusual extension: converting it to JPG gives a file that every site, app and upload form accepts, in your browser and without uploading anything.",
+      fr: "Un fichier .jfif est un JPEG ordinaire à l'extension inhabituelle : le convertir en JPG donne un fichier que tous les sites, logiciels et formulaires d'envoi acceptent, dans votre navigateur et sans rien envoyer.",
+    },
+    points: {
+      en: [
+        "Honest shortcut: since a .jfif already is a JPEG, renaming it to .jpg usually works with no loss at all. Convert when renaming isn't practical or when you also want to recompress.",
+        "Converting re-encodes the picture, so pick quality 90 or higher to avoid a visible second compression pass.",
+        "Several files at once are converted in your browser and downloaded as a single ZIP of JPGs. Nothing is uploaded.",
+      ],
+      fr: [
+        "Raccourci honnête : un .jfif étant déjà un JPEG, le renommer en .jpg fonctionne en général sans aucune perte. Convertissez quand renommer n'est pas pratique ou quand vous voulez aussi recompresser.",
+        "Convertir ré-encode l'image : choisissez une qualité de 90 ou plus pour éviter une seconde passe de compression visible.",
+        "Plusieurs fichiers d'un coup sont convertis dans votre navigateur et téléchargés dans un seul ZIP de JPG. Rien n'est envoyé.",
+      ],
+    },
+    faq: [
+      {
+        q: { en: "What is a JFIF file?", fr: "Qu'est-ce qu'un fichier JFIF ?" },
+        a: {
+          en: "JFIF, JPEG File Interchange Format, is the small wrapper that lets JPEG images be exchanged between programs. Most .jpg files are JFIF inside already. A .jfif file is the same kind of image with a different extension.",
+          fr: "JFIF, JPEG File Interchange Format, est la petite enveloppe qui permet d'échanger des images JPEG entre programmes. La plupart des fichiers .jpg sont déjà du JFIF à l'intérieur. Un fichier .jfif est le même type d'image avec une autre extension.",
+        },
+      },
+      {
+        q: { en: "Can I just rename .jfif to .jpg?", fr: "Puis-je simplement renommer .jfif en .jpg ?" },
+        a: {
+          en: "Usually, yes: the content is already JPEG, so only the name changes and nothing is lost. If Windows hides extensions, open File Explorer, then View, Show, File name extensions, and rename the file. Use the converter when you also want a different quality or a batch.",
+          fr: "En général, oui : le contenu est déjà du JPEG, seul le nom change et rien n'est perdu. Si Windows masque les extensions, ouvrez l'Explorateur de fichiers, puis Affichage, Afficher, Extensions de noms de fichiers, et renommez le fichier. Utilisez le convertisseur quand vous voulez aussi une autre qualité ou un lot.",
+        },
+      },
+      {
+        q: { en: "Why do my downloaded images save as .jfif?", fr: "Pourquoi mes images téléchargées s'enregistrent-elles en .jfif ?" },
+        a: {
+          en: "On some Windows setups the system associates the JPEG type with the .jfif extension, and browsers follow that association when you save a picture. The image is a normal JPEG, only the name differs.",
+          fr: "Sur certaines configurations Windows, le système associe le type JPEG à l'extension .jfif, et les navigateurs suivent cette association quand vous enregistrez une image. L'image est un JPEG normal, seul le nom diffère.",
+        },
+      },
+    ],
+    deepDive: [
+      {
+        h: { en: "JFIF is a wrapper, not a different picture", fr: "Le JFIF est une enveloppe, pas une image différente" },
+        p: {
+          en: [
+            "The JPEG standard describes how to compress an image, not how to store it in a file. JFIF, defined in the early 1990s, fills that gap with a simple header so that any program can open any JPEG. The result is what everyone calls a JPEG file, and most .jpg files you have ever opened are JFIF inside.",
+            "A .jfif file therefore holds the same compressed picture as a .jpg. What stops it from opening is not the image but the extension, which some upload forms and older programs check before anything else.",
+          ],
+          fr: [
+            "La norme JPEG décrit comment compresser une image, pas comment la ranger dans un fichier. Le JFIF, défini au début des années 1990, comble ce manque avec un en-tête simple pour que n'importe quel programme ouvre n'importe quel JPEG. Le résultat est ce que tout le monde appelle un fichier JPEG, et la plupart des .jpg que vous avez ouverts sont du JFIF à l'intérieur.",
+            "Un fichier .jfif contient donc la même image compressée qu'un .jpg. Ce qui l'empêche de s'ouvrir n'est pas l'image mais l'extension, que certains formulaires d'envoi et logiciels anciens vérifient avant toute chose.",
+          ],
+        },
+      },
+      {
+        h: { en: "Rename or convert", fr: "Renommer ou convertir" },
+        p: {
+          en: [
+            "Renaming costs nothing and changes no pixel. It is the right move for one file when you can see the extension. Converting is worth it for a folder of files, when extensions are hidden, or when you also want to control the quality and the size of the result.",
+            "Converting does re-encode the image, which is a second lossy pass on a picture that was already compressed. At quality 90 or higher the difference is not visible on a photograph, but it is not zero, and it adds up if you convert the same file repeatedly.",
+          ],
+          fr: [
+            "Renommer ne coûte rien et ne change aucun pixel. C'est le bon geste pour un seul fichier quand l'extension est visible. Convertir vaut la peine pour un dossier entier, quand les extensions sont masquées, ou quand vous voulez aussi maîtriser la qualité et le poids du résultat.",
+            "Convertir ré-encode bien l'image : c'est une seconde passe avec perte sur une image déjà compressée. À qualité 90 ou plus, la différence n'est pas visible sur une photographie, mais elle n'est pas nulle, et elle s'additionne si vous convertissez le même fichier à répétition.",
+          ],
+        },
+      },
+      {
+        h: { en: "What the conversion drops", fr: "Ce que la conversion abandonne" },
+        p: {
+          en: [
+            "The picture goes through a canvas, which carries the pixels only. Metadata such as the date, the camera model or the GPS position is not copied into the new JPG. That is welcome before sharing a photo, and a drawback if you were relying on the date to sort a folder.",
+            "If you need the metadata kept, rename the file instead of converting it: the content is untouched.",
+          ],
+          fr: [
+            "L'image passe par un canvas, qui ne transporte que les pixels. Les métadonnées comme la date, le modèle d'appareil ou la position GPS ne sont pas recopiées dans le nouveau JPG. C'est bienvenu avant de partager une photo, et gênant si vous comptiez sur la date pour trier un dossier.",
+            "Si vous devez conserver les métadonnées, renommez le fichier au lieu de le convertir : le contenu reste intact.",
+          ],
+        },
+      },
+    ],
+  },
+  {
+    slug: "ico-to-png",
+    from: "ico",
+    to: "png",
+    why: {
+      en: "An .ico file is a Windows icon container: converting ICO to PNG gives an ordinary image with transparency that opens in any editor or web page, decoded by your browser without uploading the file.",
+      fr: "Un fichier .ico est un conteneur d'icône Windows : convertir un ICO en PNG donne une image ordinaire avec transparence, lisible par tout éditeur ou page web, décodée par votre navigateur sans envoyer le fichier.",
+    },
+    points: {
+      en: [
+        "Transparency is kept: ICO and PNG both carry an alpha channel.",
+        "An .ico usually holds several sizes of the same icon, and the PNG gets one of them. Check the dimensions of the result before using it.",
+        "Everything happens in the tab: the icon is decoded locally and never leaves your device.",
+      ],
+      fr: [
+        "La transparence est conservée : l'ICO et le PNG portent tous deux un canal alpha.",
+        "Un .ico contient en général plusieurs tailles de la même icône, et le PNG en reçoit une seule. Vérifiez les dimensions du résultat avant de l'utiliser.",
+        "Tout se passe dans l'onglet : l'icône est décodée localement et ne quitte jamais votre appareil.",
+      ],
+    },
+    faq: [
+      {
+        q: { en: "Can I get every size of the icon as a separate PNG?", fr: "Puis-je obtenir chaque taille de l'icône dans un PNG séparé ?" },
+        a: {
+          en: "No: this page produces one PNG per file, using the image your browser decodes from it. To extract every size, use a command-line tool such as ImageMagick, which can write each size of an ICO to its own PNG.",
+          fr: "Non : cette page produit un PNG par fichier, à partir de l'image que votre navigateur décode. Pour extraire toutes les tailles, utilisez un outil en ligne de commande comme ImageMagick, qui sait écrire chaque taille d'un ICO dans son propre PNG.",
+        },
+      },
+      {
+        q: { en: "Can I use the PNG as a favicon?", fr: "Puis-je utiliser le PNG comme favicon ?" },
+        a: {
+          en: "Yes. Browsers accept a PNG declared with a link rel icon tag. Google asks for a favicon whose size is a multiple of 48 pixels, such as 48, 96 or 144, so start from the largest size available.",
+          fr: "Oui. Les navigateurs acceptent un PNG déclaré avec une balise link rel icon. Google demande une favicon dont la taille est un multiple de 48 pixels, comme 48, 96 ou 144 : partez de la plus grande taille disponible.",
+        },
+      },
+      {
+        q: { en: "Does the PNG keep the icon's transparent background?", fr: "Le PNG garde-t-il le fond transparent de l'icône ?" },
+        a: {
+          en: "Yes. Transparent areas of the icon stay transparent in the PNG. Open the result on a dark background to check it: a white square around the icon would mean the original had a solid background.",
+          fr: "Oui. Les zones transparentes de l'icône restent transparentes dans le PNG. Ouvrez le résultat sur un fond sombre pour vérifier : un carré blanc autour de l'icône signifierait que l'original avait un fond plein.",
+        },
+      },
+    ],
+    deepDive: [
+      {
+        h: { en: "What is inside an .ico file", fr: "Ce que contient un fichier .ico" },
+        p: {
+          en: [
+            "An ICO is not a single picture but a small archive of pictures: the same icon drawn at 16, 32, 48 or 256 pixels, so that Windows can pick the sharpest one for each place it is displayed. Since Windows Vista, the 256-pixel entry is stored as a compressed PNG inside the ICO.",
+            "That structure explains the main limit of this conversion. A PNG holds one image, so the result is one size out of the several in the file, the one your browser decodes.",
+          ],
+          fr: [
+            "Un ICO n'est pas une image unique mais une petite archive d'images : la même icône dessinée en 16, 32, 48 ou 256 pixels, pour que Windows choisisse la plus nette à chaque endroit où elle est affichée. Depuis Windows Vista, l'entrée de 256 pixels est stockée sous forme de PNG compressé à l'intérieur de l'ICO.",
+            "Cette structure explique la principale limite de cette conversion. Un PNG ne contient qu'une image : le résultat est donc une taille parmi celles du fichier, celle que décode votre navigateur.",
+          ],
+        },
+      },
+      {
+        h: { en: "Check the size before you use the result", fr: "Vérifiez la taille avant d'utiliser le résultat" },
+        p: {
+          en: [
+            "If the PNG comes out small, such as 16 or 32 pixels, enlarging it will only make it blurry. In that case the original ICO probably didn't hold anything bigger, or the larger entry wasn't the one decoded.",
+            "For a logo or an app icon you need at a larger size, go back to the source file the icon was made from, usually a vector file or a large PNG, rather than stretching a small icon.",
+          ],
+          fr: [
+            "Si le PNG ressort petit, par exemple 16 ou 32 pixels, l'agrandir ne fera que le rendre flou. Dans ce cas, l'ICO d'origine ne contenait probablement rien de plus grand, ou l'entrée la plus grande n'est pas celle qui a été décodée.",
+            "Pour un logo ou une icône d'application qu'il vous faut en plus grand, retournez au fichier source dont l'icône est issue, en général un fichier vectoriel ou un grand PNG, plutôt que d'étirer une petite icône.",
+          ],
+        },
+      },
+      {
+        h: { en: "Where ICO still matters, and where PNG is enough", fr: "Où l'ICO compte encore, et où le PNG suffit" },
+        p: {
+          en: [
+            "ICO remains the native icon format on Windows, and browsers still request a favicon.ico at the root of a site when no icon is declared. Beyond that, the web has moved on: a PNG declared in the page head is accepted by current browsers and is far easier to edit.",
+            "So converting an ICO to PNG is mostly about getting the icon into a tool or a page that doesn't read ICO, a design program, a document, a web page, a store listing.",
+          ],
+          fr: [
+            "L'ICO reste le format d'icône natif de Windows, et les navigateurs réclament encore un favicon.ico à la racine d'un site quand aucune icône n'est déclarée. Au-delà, le web est passé à autre chose : un PNG déclaré dans l'en-tête de la page est accepté par les navigateurs actuels et bien plus simple à retoucher.",
+            "Convertir un ICO en PNG sert donc surtout à faire entrer l'icône dans un outil ou une page qui ne lit pas l'ICO : un logiciel de design, un document, une page web, une fiche de boutique d'applications.",
           ],
         },
       },

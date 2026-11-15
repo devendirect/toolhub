@@ -58,6 +58,23 @@ export const CONVERT_META: Record<string, Localized> = {
     fr: "Convertissez un JPEG XL (.jxl) en PNG sans perte qui garde la transparence et s'ouvre dans tout éditeur d'images. Gratuit, sans envoi, dans le navigateur.",
   },
 
+  "avif-to-webp": {
+    en: "Convert AVIF to WebP when a CMS, app or upload form accepts WebP but not AVIF. Transparency kept, decoded by your browser, nothing uploaded. Free.",
+    fr: "Convertissez un AVIF en WebP quand un CMS, un logiciel ou un formulaire accepte le WebP mais pas l'AVIF. Transparence conservée, sans envoi. Gratuit.",
+  },
+  "heic-to-webp": {
+    en: "Convert iPhone HEIC photos to WebP for your website or CMS: lighter than JPG at similar quality. Batch to ZIP, decoded in your browser, no upload.",
+    fr: "Convertissez des photos HEIC d'iPhone en WebP pour votre site ou CMS : plus léger que le JPG à qualité comparable. Lot en ZIP, sans envoi, gratuit.",
+  },
+  "jfif-to-jpg": {
+    en: "Convert a .jfif file to JPG when a site, app or form refuses the extension. Same JPEG image, opens everywhere. Batch to ZIP, no upload, free.",
+    fr: "Convertissez un fichier .jfif en JPG quand un site, un logiciel ou un formulaire refuse l'extension. Même image JPEG, lisible partout, sans envoi.",
+  },
+  "ico-to-png": {
+    en: "Convert an ICO icon to PNG: a transparent image that opens in any editor or web page. Free, decoded by your browser, nothing is uploaded.",
+    fr: "Convertissez une icône ICO en PNG : une image transparente lisible par tout éditeur ou page web. Gratuit, décodée dans le navigateur, sans envoi.",
+  },
+
   /* ── Paires PDF ── */
   "pdf-to-png": {
     en: "Convert every page of a PDF to a sharp, lossless PNG, ideal for diagrams, screenshots and fine text. Choose 1×, 2× or 3× scale. No upload.",
@@ -102,6 +119,22 @@ export const CONVERT_TITLE: Record<string, Localized> = {
   "jxl-to-png": {
     en: "Convert JXL to PNG free, transparency kept",
     fr: "Convertir JXL en PNG gratuit, transparence conservée",
+  },
+  "avif-to-webp": {
+    en: "Convert AVIF to WebP free, online, no upload",
+    fr: "Convertir AVIF en WebP gratuit, en ligne, sans envoi",
+  },
+  "heic-to-webp": {
+    en: "Convert HEIC to WebP free, online, no upload",
+    fr: "Convertir HEIC en WebP gratuit, en ligne, sans envoi",
+  },
+  "jfif-to-jpg": {
+    en: "Convert JFIF to JPG free, online, no upload",
+    fr: "Convertir JFIF en JPG gratuit, en ligne, sans envoi",
+  },
+  "ico-to-png": {
+    en: "Convert ICO to PNG free, transparency kept",
+    fr: "Convertir ICO en PNG gratuit, transparence conservée",
   },
   "heic-to-jpg": {
     en: "Convert HEIC to JPG free, online, no upload",

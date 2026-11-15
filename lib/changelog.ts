@@ -29,6 +29,28 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-11-15-convert-avif-heic-jfif-ico",
+    date: "2026-11-15",
+    kind: "new",
+    tools: ["image-converter"],
+    links: [
+      { href: "/convert/avif-to-webp", label: { fr: "AVIF en WebP", en: "AVIF to WebP" } },
+      { href: "/convert/heic-to-webp", label: { fr: "HEIC en WebP", en: "HEIC to WebP" } },
+      { href: "/convert/jfif-to-jpg", label: { fr: "JFIF en JPG", en: "JFIF to JPG" } },
+      { href: "/convert/ico-to-png", label: { fr: "ICO en PNG", en: "ICO to PNG" } },
+    ],
+    text: {
+      fr: {
+        title: "Quatre nouvelles conversions : AVIF en WebP, HEIC en WebP, JFIF en JPG et ICO en PNG",
+        body: "Chaque page explique ce que la conversion change vraiment : le poids, la transparence, ce qui n'est pas conservé. Pour un fichier .jfif, elle rappelle aussi qu'un simple renommage en .jpg suffit souvent. Les outils images acceptent maintenant un fichier .jfif ou .ico même quand Windows ne reconnaît pas son type. Tout reste dans votre navigateur, sans envoi.",
+      },
+      en: {
+        title: "Four new conversions: AVIF to WebP, HEIC to WebP, JFIF to JPG and ICO to PNG",
+        body: "Each page explains what the conversion really changes: file size, transparency, what is not kept. For a .jfif file, it also reminds you that simply renaming it to .jpg often does the job. The image tools now accept a .jfif or .ico file even when Windows doesn't recognise its type. Everything stays in your browser, with no upload.",
+      },
+    },
+  },
+  {
     id: "2026-11-15-utm-open-graph",
     date: "2026-11-15",
     kind: "improved",

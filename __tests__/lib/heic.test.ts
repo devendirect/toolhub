@@ -23,4 +23,9 @@ describe("isImageFile", () => {
     expect(isImageFile({ name: "IMG_0042.heic", type: "" })).toBe(true);
     expect(isImageFile({ name: "doc.pdf", type: "application/pdf" })).toBe(false);
   });
+
+  it("accepte un .jfif ou un .ico même sans type MIME", () => {
+    expect(isImageFile({ name: "photo.jfif", type: "" })).toBe(true);
+    expect(isImageFile({ name: "favicon.ICO", type: "" })).toBe(true);
+  });
 });

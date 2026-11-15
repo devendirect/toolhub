@@ -8,7 +8,7 @@
  */
 
 /** Pour l'attribut `accept` des <input type="file"> */
-export const IMAGE_ACCEPT = "image/*,.heic,.heif,.jxl";
+export const IMAGE_ACCEPT = "image/*,.heic,.heif,.jxl,.jfif,.ico";
 
 /** Windows et Chrome laissent souvent `type` vide pour un .heic : on regarde aussi l'extension. */
 export function isHeicFile(file: { name: string; type: string }): boolean {
@@ -20,9 +20,14 @@ export function isJxlFile(file: { name: string; type: string }): boolean {
   return file.type === "image/jxl" || /\.jxl$/i.test(file.name);
 }
 
-/** Image acceptée par nos outils, HEIC et JPEG XL compris même sans type MIME. */
+/** .jfif (un JPEG à l'extension inhabituelle) et .ico : selon le système, le type MIME peut arriver vide. */
+export function isJfifOrIcoFile(file: { name: string; type: string }): boolean {
+  return /\.(jfif|ico)$/i.test(file.name);
+}
+
+/** Image acceptée par nos outils, HEIC, JPEG XL, JFIF et ICO compris même sans type MIME. */
 export function isImageFile(file: { name: string; type: string }): boolean {
-  return file.type.startsWith("image/") || isHeicFile(file) || isJxlFile(file);
+  return file.type.startsWith("image/") || isHeicFile(file) || isJxlFile(file) || isJfifOrIcoFile(file);
 }
 
 /** Safari 17+ décode le HEIC seul : on s'épargne alors les 3 Mo de libheif. */
