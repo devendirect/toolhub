@@ -29,6 +29,23 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-11-15-utm-open-graph",
+    date: "2026-11-15",
+    kind: "improved",
+    tools: ["utm-builder"],
+    guides: ["open-graph-link-previews"],
+    text: {
+      fr: {
+        title: "Générateur UTM : quel medium pour quel canal, et le guide Open Graph complété",
+        body: "La page du générateur UTM explique maintenant quelles valeurs de medium Google Analytics 4 range dans le bon canal, signale que le préréglage Facebook compte une publicité payante comme du social organique, et décrit ce que l'outil fait d'une adresse qui a déjà des paramètres. Le guide Open Graph ajoute les types og:type et les balises facultatives (texte alternatif, dimensions de l'image). Une précision corrigée : les espaces sortent en + dans le lien final.",
+      },
+      en: {
+        title: "UTM builder: which medium for which channel, and the Open Graph guide extended",
+        body: "The UTM builder page now explains which medium values Google Analytics 4 files under the right channel, warns that the Facebook preset counts a paid ad as organic social, and describes what the tool does with an address that already has parameters. The Open Graph guide adds og:type values and the optional tags (image alt text, image dimensions). One detail corrected: spaces come out as + in the finished link.",
+      },
+    },
+  },
+  {
     id: "2026-10-29-guides-files-pdf",
     date: "2026-10-29",
     kind: "new",

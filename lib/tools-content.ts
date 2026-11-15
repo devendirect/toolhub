@@ -1459,11 +1459,11 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
         p: {
           en: [
           "UTM values are case-sensitive in most analytics platforms, so Newsletter and newsletter become two separate rows in the report. The same goes for trailing spaces picked up when pasting from a spreadsheet. Neither produces an error; the data simply fragments, and the split is often noticed only weeks later.",
-          "Sticking to lowercase throughout, with hyphens instead of spaces, removes the whole class of problem. Avoid characters that need encoding as well: a space becomes %20 in the URL and is easy to mistake for part of the value.",
+          "Sticking to lowercase throughout, with hyphens instead of spaces, removes the whole class of problem. Avoid characters that need encoding as well: a space comes out as + in the finished link (some tools write %20) and is easy to mistake for part of the value.",
           ],
           fr: [
           "Les valeurs UTM sont sensibles à la casse dans la plupart des plateformes d'analyse : Newsletter et newsletter deviennent donc deux lignes distinctes du rapport. Il en va de même des espaces finales récupérées en collant depuis un tableur. Ni l'un ni l'autre ne produit d'erreur ; les données se fragmentent simplement, et l'on s'en aperçoit souvent des semaines plus tard.",
-          "S'en tenir aux minuscules de bout en bout, avec des traits d'union plutôt que des espaces, élimine toute cette classe de problèmes. Évitez aussi les caractères nécessitant un encodage : une espace devient %20 dans l'URL et se confond aisément avec la valeur.",
+          "S'en tenir aux minuscules de bout en bout, avec des traits d'union plutôt que des espaces, élimine toute cette classe de problèmes. Évitez aussi les caractères nécessitant un encodage : une espace ressort sous la forme + dans le lien final (certains outils écrivent %20) et se confond aisément avec la valeur.",
           ],
         },
       },
@@ -1477,6 +1477,32 @@ export const TOOLS_CONTENT: Partial<Record<string, ToolContent>> = {
           fr: [
           "Ne balisez que les liens sortants, ceux que vous placez sur une propriété qui n'est pas la vôtre, dans un e-mail ou dans une annonce. Poser des paramètres UTM sur des liens internes réamorce l'attribution de session dans votre propre outil d'analyse : la source d'acquisition réelle est écrasée par votre propre page, et le canal d'origine disparaît du rapport.",
           "Les URL balisées sont par ailleurs publiques : elles apparaissent dans les barres d'adresse, se partagent, et finissent indexées. Les noms de campagne relevant du jargon interne, ou révélant un lancement non annoncé, sont à éviter pour cette seule raison.",
+          ],
+        },
+      },
+      {
+        h: { en: "Medium values that land in the right channel", fr: "Les valeurs de medium qui tombent dans le bon canal" },
+        p: {
+          en: [
+          "Google Analytics 4 sorts each visit into a default channel group using the medium and the source. A medium of email goes to Email. A medium of cpc, ppc or anything starting with paid goes to Paid Search or Paid Social when the source is a known search engine or social network. Social on its own is read as organic social. A medium you invented, such as fb-ad, matches none of these rules, and the visit ends up in Unassigned or Referral instead of the channel you meant.",
+          "The Facebook and X presets of this builder set the medium to social, which GA4 reports as organic social. For a paid campaign on those networks, change the medium to paid_social or cpc after picking the preset, otherwise the ad traffic is counted as free.",
+          ],
+          fr: [
+          "Google Analytics 4 range chaque visite dans un groupe de canaux par défaut à partir du medium et de la source. Un medium email va dans Email. Un medium cpc, ppc ou commençant par paid va dans Recherche payante ou Réseaux sociaux payants quand la source est un moteur de recherche ou un réseau social connu. Social seul est lu comme du social organique. Un medium de votre invention, comme fb-ad, ne correspond à aucune de ces règles : la visite finit dans Non attribué ou Référent au lieu du canal voulu.",
+          "Les préréglages Facebook et X de ce générateur utilisent le medium social, que GA4 range en social organique. Pour une campagne payante sur ces réseaux, changez le medium en paid_social ou cpc après avoir choisi le préréglage, sinon le trafic publicitaire est compté comme gratuit.",
+          ],
+        },
+      },
+      {
+        h: { en: "What the builder does to your address", fr: "Ce que le générateur fait de votre adresse" },
+        p: {
+          en: [
+          "The builder adds the parameters to the address you give it and leaves the rest alone. An existing query string such as ?ref=home is kept, and a #fragment stays at the end. If the address already carries a utm_source, utm_medium or utm_campaign, that value is replaced rather than repeated, so a link never ends up with two utm_source. A missing https:// is added, and term and content only appear when you fill them in.",
+          "Paste the finished link into a private window before using it, and check that the page loads and that the parameters are still in the address bar. Some redirects, such as an http to https redirect or a trailing slash redirect, drop the query string. A tagged link that loses its parameters on the way reports its visits as direct traffic.",
+          ],
+          fr: [
+          "Le générateur ajoute les paramètres à l'adresse fournie et ne touche pas au reste. Une chaîne de requête existante comme ?ref=home est conservée, et un #fragment reste à la fin. Si l'adresse porte déjà un utm_source, un utm_medium ou un utm_campaign, cette valeur est remplacée et non répétée : un lien ne se retrouve jamais avec deux utm_source. Un https:// manquant est ajouté, et le terme et le contenu n'apparaissent que si vous les renseignez.",
+          "Collez le lien final dans une fenêtre privée avant de l'utiliser, et vérifiez que la page se charge et que les paramètres sont toujours dans la barre d'adresse. Certaines redirections, comme celle de http vers https ou celle d'une barre oblique finale, suppriment la chaîne de requête. Un lien balisé qui perd ses paramètres en route voit ses visites comptées en trafic direct.",
           ],
         },
       },

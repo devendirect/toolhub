@@ -3,7 +3,7 @@ import type { Guide } from "../guides";
 export const GUIDE_OPEN_GRAPH: Guide = {
   slug: "open-graph-link-previews",
   published: "2026-09-25",
-  updated: "2026-09-25",
+  updated: "2026-11-15",
   tools: ["meta-preview", "seo-analyzer"],
   en: {
     title: "Open Graph tags: getting your link previews right",
@@ -17,6 +17,15 @@ export const GUIDE_OPEN_GRAPH: Guide = {
           { code: "<meta property=\"og:title\" content=\"Merge PDF files without uploading them\">\n<meta property=\"og:description\" content=\"Combine several PDFs into one, in your browser.\">\n<meta property=\"og:image\" content=\"https://example.com/og/pdf-merge.png\">\n<meta property=\"og:url\" content=\"https://example.com/tools/pdf-merge\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:site_name\" content=\"Example\">\n<meta name=\"twitter:card\" content=\"summary_large_image\">" },
           { p: "Open Graph tags use the property attribute, Twitter Card tags use name. og:type is website for most pages and article for blog posts. og:site_name shows your brand above or below the title on several platforms, and og:locale (fr_FR, en_US) helps when you publish in more than one language." },
           { p: "You don't need twitter:title, twitter:description or twitter:image if the Open Graph versions exist: X falls back to them. twitter:card is the exception, because it has no Open Graph equivalent: summary gives a small square thumbnail next to the text, summary_large_image a wide image above it." },
+        ],
+      },
+      {
+        h: "Beyond the minimum: og:type and the optional tags",
+        blocks: [
+          { p: "og:type tells the platforms what kind of object the page is. website is the safe default for home pages, tools and landing pages. article is for posts and news, and it unlocks article:published_time, article:modified_time, article:author and article:section. Other types exist, such as profile for a person's page or video.movie and music.song for media, but unless you publish that kind of content, website and article cover nearly everything." },
+          { code: "<meta property=\"og:type\" content=\"article\">\n<meta property=\"article:published_time\" content=\"2026-11-15T09:00:00+01:00\">\n<meta property=\"og:image:alt\" content=\"The UTM builder with a campaign link filled in\">\n<meta property=\"og:image:width\" content=\"1200\">\n<meta property=\"og:image:height\" content=\"630\">\n<meta property=\"og:locale\" content=\"en_US\">" },
+          { p: "og:image:alt describes the picture for screen readers and for the platforms that display it. og:image:width and og:image:height let a crawler lay out the card before it has downloaded the image, which helps the very first share look right. None of these is required." },
+          { p: "When a checker reports incomplete Open Graph tags, look at the four core ones first: og:title, og:description, og:image and og:url, present and non-empty on that page. Those four matter far more than any number of optional tags." },
         ],
       },
       {
@@ -77,6 +86,7 @@ export const GUIDE_OPEN_GRAPH: Guide = {
       { q: "What size should an og:image be?", a: "1200 × 630 pixels, a 1.91:1 ratio. That fills the large card on Facebook, LinkedIn and X. Use an absolute https:// URL and a JPEG or PNG file, and keep important content away from the edges in case an app crops it." },
       { q: "Do I need both Open Graph and Twitter Card tags?", a: "Mostly Open Graph. X falls back to og:title, og:description and og:image when the twitter: versions are missing. Add twitter:card, which has no Open Graph equivalent and chooses between the small and large layout." },
       { q: "Why does LinkedIn still show my old image?", a: "Because LinkedIn cached the preview the first time the URL was shared. Paste the URL into LinkedIn's Post Inspector to make it fetch the page again. Facebook works the same way with its Sharing Debugger." },
+      { q: "Which og:type should I use?", a: "website for home pages, tools and landing pages; article for blog posts and news, together with article:published_time. Other values such as profile, video.movie or music.song exist for specific content, and most sites never need them." },
       { q: "Do Open Graph tags help SEO?", a: "Not directly: Google ranks and titles pages from the title tag, meta description and content. Good previews help indirectly, because a clear card gets more clicks and shares, which bring visitors and links." },
     ],
   },
@@ -92,6 +102,15 @@ export const GUIDE_OPEN_GRAPH: Guide = {
           { code: "<meta property=\"og:title\" content=\"Fusionner des PDF sans les envoyer\">\n<meta property=\"og:description\" content=\"Réunissez plusieurs PDF en un seul, dans votre navigateur.\">\n<meta property=\"og:image\" content=\"https://example.com/og/pdf-merge.png\">\n<meta property=\"og:url\" content=\"https://example.com/outils/pdf-merge\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:site_name\" content=\"Exemple\">\n<meta name=\"twitter:card\" content=\"summary_large_image\">" },
           { p: "Les balises Open Graph utilisent l'attribut property, les Twitter Cards l'attribut name. og:type vaut website pour la plupart des pages et article pour un billet de blog. og:site_name affiche votre marque au-dessus ou au-dessous du titre sur plusieurs plateformes, et og:locale (fr_FR, en_US) aide quand vous publiez en plusieurs langues." },
           { p: "Inutile d'ajouter twitter:title, twitter:description ou twitter:image si les versions Open Graph existent : X se rabat dessus. twitter:card fait exception, car elle n'a pas d'équivalent Open Graph : summary donne une petite vignette carrée à côté du texte, summary_large_image une image large au-dessus." },
+        ],
+      },
+      {
+        h: "Au-delà du minimum : og:type et les balises facultatives",
+        blocks: [
+          { p: "og:type indique aux plateformes de quelle sorte d'objet il s'agit. website est le choix sûr pour les pages d'accueil, les outils et les pages de destination. article convient aux billets et aux actualités, et donne accès à article:published_time, article:modified_time, article:author et article:section. D'autres types existent, comme profile pour la page d'une personne ou video.movie et music.song pour les médias, mais sauf à publier ce genre de contenu, website et article couvrent presque tout." },
+          { code: "<meta property=\"og:type\" content=\"article\">\n<meta property=\"article:published_time\" content=\"2026-11-15T09:00:00+01:00\">\n<meta property=\"og:image:alt\" content=\"Le générateur UTM avec un lien de campagne rempli\">\n<meta property=\"og:image:width\" content=\"1200\">\n<meta property=\"og:image:height\" content=\"630\">\n<meta property=\"og:locale\" content=\"fr_FR\">" },
+          { p: "og:image:alt décrit l'image pour les lecteurs d'écran et pour les plateformes qui l'affichent. og:image:width et og:image:height permettent à un robot de mettre en page la carte avant d'avoir téléchargé l'image, ce qui aide le tout premier partage à être correct. Aucune de ces balises n'est obligatoire." },
+          { p: "Quand un outil de contrôle signale des balises Open Graph incomplètes, regardez d'abord les quatre balises de base : og:title, og:description, og:image et og:url, présentes et non vides sur cette page. Ces quatre-là comptent bien plus que n'importe quel nombre de balises facultatives." },
         ],
       },
       {
@@ -152,6 +171,7 @@ export const GUIDE_OPEN_GRAPH: Guide = {
       { q: "Quelle taille donner à une og:image ?", a: "1200 × 630 pixels, soit un ratio de 1,91:1. Elle remplit la grande carte sur Facebook, LinkedIn et X. Utilisez une URL absolue en https:// et un fichier JPEG ou PNG, et gardez l'essentiel loin des bords au cas où une application la recadrerait." },
       { q: "Faut-il à la fois les balises Open Graph et Twitter Card ?", a: "Surtout Open Graph. X se rabat sur og:title, og:description et og:image quand les versions twitter: manquent. Ajoutez twitter:card, qui n'a pas d'équivalent Open Graph et choisit entre la petite et la grande mise en page." },
       { q: "Pourquoi LinkedIn affiche-t-il encore mon ancienne image ?", a: "Parce que LinkedIn a gardé en cache l'aperçu du premier partage de l'URL. Collez l'URL dans le Post Inspector de LinkedIn pour qu'il récupère à nouveau la page. Facebook fonctionne de la même façon avec son Sharing Debugger." },
+      { q: "Quel og:type choisir ?", a: "website pour les pages d'accueil, les outils et les pages de destination ; article pour les billets de blog et l'actualité, avec article:published_time. D'autres valeurs comme profile, video.movie ou music.song existent pour des contenus précis, et la plupart des sites n'en ont jamais besoin." },
       { q: "Les balises Open Graph aident-elles le SEO ?", a: "Pas directement : Google classe et titre les pages à partir de la balise title, de la meta description et du contenu. De bons aperçus aident indirectement, car une carte claire obtient plus de clics et de partages, qui amènent visiteurs et liens." },
     ],
   },
