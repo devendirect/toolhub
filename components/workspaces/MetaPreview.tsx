@@ -23,6 +23,7 @@ const TR = {
     affLabel:       "votre site, votre domaine",
     affText:        "Prêt à mettre votre site en ligne ? Enregistrez votre domaine chez Strato.",
     affCta:         "Trouver mon domaine →",
+    googleNote:     "Aperçu approximatif : Google ne fixe aucune limite de caractères, il coupe titre et description selon la largeur de l'écran. Les coupures ci-dessus sont indicatives.",
   },
   en: {
     preview:        "preview",
@@ -36,6 +37,7 @@ const TR = {
     affLabel:       "your site, your domain",
     affText:        "Ready to put your site online? Register your domain with Namecheap.",
     affCta:         "Find my domain →",
+    googleNote:     "Approximate preview: Google sets no character limit, it cuts the title and description to fit the screen width. The cut-offs above are indicative.",
   },
 } as const;
 
@@ -162,6 +164,7 @@ export function MetaPreview() {
                 <div className="text-[14px] text-[#4d5156] leading-[1.58]">
                   {truncate(gDesc, 165) || <span className="italic text-[#70757a]">{TR[lang].noDesc}</span>}
                 </div>
+                <p className="mt-4 font-sans text-[12px] text-dim leading-[1.5]">{TR[lang].googleNote}</p>
               </div>
             )}
 

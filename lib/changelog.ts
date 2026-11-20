@@ -29,6 +29,23 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-11-20-meta-preview-google-note",
+    date: "2026-11-20",
+    kind: "improved",
+    tools: ["meta-preview", "seo-analyzer"],
+    guides: ["seo-file-limits"],
+    text: {
+      fr: {
+        title: "Aperçu des balises meta : l'aperçu Google précise qu'il est approximatif",
+        body: "Google ne fixe aucune limite de caractères pour un titre ou une description : il les coupe selon la largeur de l'écran. L'aperçu Google de l'outil l'indique maintenant sous le résultat, et la page de l'analyseur SEO précise que ses plages de longueur sont des repères de confort, pas une règle de Google.",
+      },
+      en: {
+        title: "Meta tag preview: the Google preview now says it is approximate",
+        body: "Google sets no character limit for a title or a description: it cuts them to fit the screen width. The tool's Google preview now says so under the result, and the SEO analyzer page makes clear that its length ranges are comfort targets, not a Google rule.",
+      },
+    },
+  },
+  {
     id: "2026-11-20-seo-file-limits",
     date: "2026-11-20",
     kind: "new",
