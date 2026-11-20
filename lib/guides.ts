@@ -9,6 +9,7 @@ import { GUIDE_MARKDOWN_TABLES } from "./guides/markdown-tables";
 import { GUIDE_WHERE_FILES_GO } from "./guides/where-converted-files-go";
 import { GUIDE_ONE_PDF_APPLICATION } from "./guides/one-pdf-application";
 import { GUIDE_UTM_GA4_CHANNELS } from "./guides/utm-ga4-channels";
+import { GUIDE_IMAGE_FORMAT_SUPPORT } from "./guides/image-format-support";
 
 /**
  * Guides éditoriaux (/[lang]/guides/[slug]).
@@ -76,7 +77,7 @@ export interface Guide {
   fr: GuideText;
 }
 
-export const GUIDES: Guide[] = [GUIDE_JSON_YAML_TOML, GUIDE_WEBP_AVIF_JPEG, GUIDE_JWT, GUIDE_SECURITY_HEADERS, GUIDE_OPEN_GRAPH, GUIDE_MARKDOWN_TABLES, GUIDE_WHERE_FILES_GO, GUIDE_ONE_PDF_APPLICATION, GUIDE_UTM_GA4_CHANNELS];
+export const GUIDES: Guide[] = [GUIDE_JSON_YAML_TOML, GUIDE_WEBP_AVIF_JPEG, GUIDE_JWT, GUIDE_SECURITY_HEADERS, GUIDE_OPEN_GRAPH, GUIDE_MARKDOWN_TABLES, GUIDE_WHERE_FILES_GO, GUIDE_ONE_PDF_APPLICATION, GUIDE_UTM_GA4_CHANNELS, GUIDE_IMAGE_FORMAT_SUPPORT];
 
 export function findGuide(slug: string): Guide | undefined {
   return GUIDES.find((g) => g.slug === slug);

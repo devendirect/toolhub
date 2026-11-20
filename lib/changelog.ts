@@ -29,6 +29,22 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-11-20-image-format-support",
+    date: "2026-11-20",
+    kind: "new",
+    guides: ["image-format-support"],
+    text: {
+      fr: {
+        title: "Nouvelle page de référence : quels navigateurs lisent WebP, AVIF, JPEG XL et HEIC",
+        body: "Un tableau donne la première version de Chrome, Edge, Firefox et Safari qui lit chaque format, avec les sources de chaque ligne et la date de la dernière vérification. On y voit par exemple que le JPEG XL est lu par Chrome 155, Firefox 158 et Safari 17 mais pas encore par Edge, et que le HEIC n'est lu que par Safari. Les navigateurs Android et les systèmes d'exploitation ne sont pas couverts, la page le dit.",
+      },
+      en: {
+        title: "New reference page: which browsers read WebP, AVIF, JPEG XL and HEIC",
+        body: "A table gives the first Chrome, Edge, Firefox and Safari version that reads each format, with the sources behind every row and the date of the last check. It shows, for instance, that JPEG XL is read by Chrome 155, Firefox 158 and Safari 17 but not yet by Edge, and that HEIC is only read by Safari. Android browsers and operating systems are not covered, and the page says so.",
+      },
+    },
+  },
+  {
     id: "2026-11-15-guide-utm-ga4",
     date: "2026-11-15",
     kind: "new",
