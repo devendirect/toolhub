@@ -29,6 +29,22 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-11-20-seo-file-limits",
+    date: "2026-11-20",
+    kind: "new",
+    guides: ["seo-file-limits"],
+    text: {
+      fr: {
+        title: "Nouveau guide : les limites officielles de robots.txt, sitemap, favicon, titres et Open Graph",
+        body: "Chaque règle est reprise d'une page officielle de Google ou de la norme, avec sa source. On y trouve par exemple les 500 Kio lus d'un robots.txt, les 50 000 URL d'un sitemap, le fait que Google ignore priority et changefreq, et qu'il n'existe aucune limite officielle de caractères pour un titre ou une description. Les règles répandues qui ne figurent pas sur les pages officielles sont signalées comme telles.",
+      },
+      en: {
+        title: "New guide: the official limits for robots.txt, sitemaps, favicons, titles and Open Graph",
+        body: "Each rule is taken from an official Google page or from the standard, with its source. It covers, for instance, the 500 KiB read from a robots.txt, the 50,000 URLs in a sitemap, the fact that Google ignores priority and changefreq, and that there is no official character limit for a title or a description. Widely repeated rules that are not on the official pages are flagged as such.",
+      },
+    },
+  },
+  {
     id: "2026-11-20-image-format-support",
     date: "2026-11-20",
     kind: "new",
