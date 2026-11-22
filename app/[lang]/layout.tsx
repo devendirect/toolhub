@@ -9,7 +9,9 @@ import { ADS_CLIENT } from "@/lib/ads";
 import { isValidLang } from "@/lib/localePath";
 import { Providers } from "@/components/providers/Providers";
 import { AppShell } from "@/components/layout/AppShell";
+import { SEASON_ENABLED, SEASON_SCRIPT } from "@/lib/season";
 import "../globals.css";
+import "../seasonal-xmas.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -61,8 +63,12 @@ export default async function RootLayout({ children, params }: Props) {
       data-accent="green"
       data-density="regular"
       data-font="geist"
+      suppressHydrationWarning
     >
       <body className="bg-bg text-fg antialiased">
+        {/* Thème saisonnier : pose data-season="xmas" en décembre, avant le premier rendu (voir lib/season.ts) */}
+        {SEASON_ENABLED && <script dangerouslySetInnerHTML={{ __html: SEASON_SCRIPT }} />}
+
         {/*
           Consent Mode v2 — les signaux par défaut doivent être posés AVANT tout
           script Google, d'où `beforeInteractive`. `wait_for_update` laisse 500 ms

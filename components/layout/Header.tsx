@@ -11,6 +11,7 @@ import { useLang } from "@/components/providers/I18nProvider";
 import { usePalette } from "@/components/providers/PaletteProvider";
 import { LogoMark } from "@/components/brand/LogoMark";
 import { TweaksPopover } from "@/components/layout/TweaksPopover";
+import { XmasGarland, XmasHat } from "@/components/season/xmas";
 
 const NAV = [
   { path: "/",      labelKey: "navHome"  },
@@ -36,6 +37,7 @@ export function Header() {
 
   return (
     <header
+      data-site-header
       className="sticky top-0 z-50 border-b border-line"
       style={{ backgroundColor: "color-mix(in oklab, var(--bg) 86%, transparent)", backdropFilter: "blur(12px) saturate(1.2)" }}
     >
@@ -43,8 +45,9 @@ export function Header() {
 
         {/* Logo */}
         <Link href={localePath(lang, "/")} className="inline-flex items-center gap-[10px] text-[17px] font-semibold tracking-[-0.02em] text-fg group">
-          <span className="text-brand transition-[filter] duration-200 group-hover:[filter:drop-shadow(0_0_8px_var(--brand-mid))]">
+          <span className="relative text-brand transition-[filter] duration-200 group-hover:[filter:drop-shadow(0_0_8px_var(--brand-mid))]">
             <LogoMark size={26} />
+            <XmasHat />
           </span>
           <span>
             <span className="text-fg">{BRAND_NAME.slice(0, 4)}</span>
@@ -93,7 +96,7 @@ export function Header() {
 
           {/* Status */}
           <div className="hidden sm:inline-flex items-center gap-2 text-[12px]">
-            <span className="inline-block w-[7px] h-[7px] rounded-full bg-brand" style={{ boxShadow: "0 0 8px var(--brand)" }} />
+            <span data-xmas-ok className="inline-block w-[7px] h-[7px] rounded-full bg-brand" style={{ boxShadow: "0 0 8px var(--brand)" }} />
             <span className="font-mono text-dim">{i.operational}</span>
           </div>
 
@@ -116,6 +119,7 @@ export function Header() {
           </div>
         </div>
       </div>
+      <XmasGarland />
     </header>
   );
 }

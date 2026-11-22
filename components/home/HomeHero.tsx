@@ -1,4 +1,5 @@
 import { Cursor } from "@/components/brand/Cursor";
+import { XmasLogs, XmasTree } from "@/components/season/xmas";
 import { TOOLS } from "@/lib/tools";
 import type { Lang } from "@/lib/types";
 import type { Dict } from "@/lib/i18n";
@@ -37,6 +38,9 @@ export function HomeHero({ lang, i, onSearchClick }: HomeHeroProps) {
             {char}
           </span>
         ))}
+
+        <XmasTree />
+        <XmasLogs />
 
         <div className="flex gap-[10px] font-mono text-[11px] text-dim mb-5">
           <span>{toolCount} {i.toolsAvailable}</span>

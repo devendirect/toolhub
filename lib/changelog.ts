@@ -29,6 +29,21 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-11-22-xmas-theme",
+    date: "2026-11-22",
+    kind: "new",
+    text: {
+      fr: {
+        title: "Le site se met aux couleurs de Noël en décembre",
+        body: "Pendant tout le mois de décembre, le site prend des couleurs de fête : accent rouge, neige légère, guirlande lumineuse sous l'en-tête, bonnet sur le logo et un petit sapin sur l'accueil. Les décors sont purement visuels, aucun outil n'est modifié, et un bandeau fermable souhaite de bonnes fêtes. Le site retrouve son apparence habituelle tout seul le 1er janvier.",
+      },
+      en: {
+        title: "The site gets a Christmas look in December",
+        body: "Throughout December the site wears a festive look: a red accent, light snowfall, a string of lights under the header, a Santa hat on the logo and a small tree on the home page. The decorations are purely visual, no tool is changed, and a banner you can close wishes you happy holidays. The site returns to its usual look by itself on January 1st.",
+      },
+    },
+  },
+  {
     id: "2026-11-20-meta-preview-google-note",
     date: "2026-11-20",
     kind: "improved",
