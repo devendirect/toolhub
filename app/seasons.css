@@ -1,0 +1,118 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Thèmes saisonniers (calendrier et mode d'emploi : lib/season.ts).
+   Actifs uniquement quand <html data-season="<id>"> est posé.
+   Les couleurs sont écrites ici (et dans lib/season-decor.ts, et dans les SVG
+   de la guirlande qui ne peuvent pas lire de variable CSS) : seul endroit où
+   c'est permis. Retrait : voir lib/season.ts.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ── Emplacements réservés (aucun décalage de mise en page à l'hydratation) ── */
+.season-banner-slot { display: none; }
+[data-season] .season-banner-slot { display: block; min-height: 33px; }
+[data-season-banner="closed"] .season-banner-slot { display: none; }
+
+.season-logs-slot { min-height: 0; }
+[data-season] .season-logs-slot { min-height: var(--logs-h, 81px); }
+[data-season="xmas"] { --logs-h: 102px; }
+
+/* ── Palettes : l'accent par défaut (« green ») est remplacé, le choix de
+      l'utilisateur dans Tweaks est respecté ── */
+[data-season="xmas"][data-accent="green"]      { --brand: #ff4d5e; --brand-soft: #ff4d5e22; --brand-mid: #ff4d5e66; --syntax-string: #2fbf71; --ok: #2fbf71; }
+[data-season="newyear"][data-accent="green"]   { --brand: #ffd166; --brand-soft: #ffd16622; --brand-mid: #ffd16666; }
+[data-season="valentine"][data-accent="green"] { --brand: #ff4d6d; --brand-soft: #ff4d6d22; --brand-mid: #ff4d6d66; }
+[data-season="easter"][data-accent="green"]    { --brand: #ffd166; --brand-soft: #ffd16622; --brand-mid: #ffd16666; --ok: #8fd694; }
+[data-season="halloween"][data-accent="green"] { --brand: #ff8a1f; --brand-soft: #ff8a1f22; --brand-mid: #ff8a1f66; --ok: #9be564; }
+[data-season="summer"][data-accent="green"]    { --brand: #ffb454; --brand-soft: #ffb45422; --brand-mid: #ffb45466; }
+[data-season="back"][data-accent="green"]      { --brand: #e8803a; --brand-soft: #e8803a22; --brand-mid: #e8803a66; --ok: #c0d36a; }
+
+/* Fonds teintés */
+[data-season="valentine"] { --bg: #0d0a0c; --bg-1: #120d10; --bg-2: #181114; }
+[data-season="halloween"] { --bg: #0a080d; --bg-1: #0f0b14; --bg-2: #140f1a; --line: #241a30; }
+[data-season="summer"]    { --bg: #120d08; --bg-1: #17110a; --bg-2: #1b140c; --line: #2c2114; }
+[data-season="back"]      { --bg: #0d0a08; --bg-1: #120d0a; --bg-2: #17110d; --line: #2a2018; }
+
+/* Point « operational » : reste vert (les couleurs de marque changent, pas l'état) */
+[data-season][data-accent="green"] [data-season-ok] {
+  background-color: var(--ok) !important;
+  box-shadow: 0 0 8px var(--ok) !important;
+}
+
+/* ── Curseur : un glyphe par saison à la place du bloc ── */
+[data-season] .cursor-mark { font-size: 0; }
+[data-season] .cursor-mark::before { font-size: 0.6em; vertical-align: 0.15em; }
+[data-season="xmas"] .cursor-mark::before      { content: "❄"; }
+[data-season="newyear"] .cursor-mark::before   { content: "✦"; }
+[data-season="valentine"] .cursor-mark::before { content: "♥"; }
+[data-season="easter"] .cursor-mark::before    { content: "✿"; }
+[data-season="halloween"] .cursor-mark::before { content: "▲"; }
+[data-season="summer"] .cursor-mark::before    { content: "☀"; }
+[data-season="back"] .cursor-mark::before      { content: "✎"; }
+
+/* ── Logo : bonnet ou symbole sur le coin ── */
+.xmas-hat, .season-sym {
+  position: absolute; top: -9px; left: -7px; transform: rotate(-16deg);
+  pointer-events: none; line-height: 1;
+}
+.season-sym { font-size: 14px; }
+
+/* ── Lueurs d'ambiance (calque fixe derrière le contenu) ── */
+.season-glow { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+[data-season="summer"] .season-glow    { background: radial-gradient(45% 55% at 90% 0%, rgba(255,180,84,.26), transparent 70%); }
+[data-season="halloween"] .season-glow { background: radial-gradient(40% 50% at 100% 0%, rgba(255,138,31,.16), transparent 70%), radial-gradient(40% 50% at 0% 100%, rgba(130,70,200,.14), transparent 70%); }
+[data-season="newyear"] .season-glow   { background: radial-gradient(60% 40% at 50% 0%, rgba(255,209,102,.10), transparent 70%); }
+
+/* ── Particules (neige, confettis, cœurs, braises, feuilles…) ── */
+.season-parts { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.season-parts span {
+  position: absolute; left: var(--l); top: -6%;
+  font-size: var(--s); line-height: 1; color: var(--c);
+  opacity: 0; animation: season-fall var(--d) linear var(--dl) infinite;
+}
+.season-parts.up span { top: auto; bottom: -6%; animation-name: season-rise; }
+@keyframes season-fall {
+  0%   { transform: translateY(-5vh) rotate(0); opacity: 0; }
+  10%  { opacity: .8; }
+  90%  { opacity: .8; }
+  100% { transform: translateY(105vh) rotate(260deg); opacity: 0; }
+}
+@keyframes season-rise {
+  0%   { transform: translateY(5vh) translateX(0); opacity: 0; }
+  10%  { opacity: .8; }
+  90%  { opacity: .8; }
+  100% { transform: translateY(-105vh) translateX(24px); opacity: 0; }
+}
+
+/* ── Dessin ASCII du hero (assez large pour ne pas toucher le titre) ── */
+.season-art {
+  display: none;
+  position: absolute; top: 20px; right: 48px; margin: 0;
+  font-family: var(--font-mono); font-size: 13px; line-height: 1.15;
+  color: var(--brand); user-select: none; pointer-events: none;
+}
+@media (min-width: 1280px) { .season-art { display: block; } }
+
+/* ── Noël : header sans ligne de séparation + guirlande ── */
+[data-season="xmas"] [data-site-header] { border-bottom-color: transparent; }
+
+/* Fil qui pend en festons + ampoules avec halo ; deux groupes d'ampoules
+   scintillent en alternance. SVG répétés, aucun JS. */
+.xmas-garland { position: absolute; left: 0; right: 0; top: 100%; height: 34px; pointer-events: none; z-index: 1; }
+.xmas-garland i { position: absolute; inset: 0; background-repeat: repeat-x; background-size: 192px 34px; }
+.xmas-garland .w { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='192' height='34'><path d='M0 3Q48 26 96 3Q144 26 192 3' fill='none' stroke='%23314a3e' stroke-width='1.6'/></svg>"); }
+.xmas-garland .a {
+  animation: xmas-twinkle 2.4s ease-in-out infinite alternate;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='192' height='34'><g><rect x='17' y='9' width='4' height='5' rx='1' fill='%23222'/><circle cx='19' cy='19' r='10' fill='%23ff4d5e' opacity='.18'/><ellipse cx='19' cy='19' rx='4.2' ry='6' fill='%23ff4d5e'/><ellipse cx='17.8' cy='17' rx='1' ry='2' fill='white' opacity='.55'/></g><g><rect x='75' y='9' width='4' height='5' rx='1' fill='%23222'/><circle cx='77' cy='19' r='10' fill='%23ffd166' opacity='.18'/><ellipse cx='77' cy='19' rx='4.2' ry='6' fill='%23ffd166'/><ellipse cx='75.8' cy='17' rx='1' ry='2' fill='white' opacity='.55'/></g><g><rect x='142' y='13.5' width='4' height='5' rx='1' fill='%23222'/><circle cx='144' cy='23.5' r='10' fill='%23ff4d5e' opacity='.18'/><ellipse cx='144' cy='23.5' rx='4.2' ry='6' fill='%23ff4d5e'/><ellipse cx='142.8' cy='21.5' rx='1' ry='2' fill='white' opacity='.55'/></g></svg>");
+}
+.xmas-garland .b {
+  animation: xmas-twinkle 2.4s ease-in-out -1.2s infinite alternate;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='192' height='34'><g><rect x='46' y='13.5' width='4' height='5' rx='1' fill='%23222'/><circle cx='48' cy='23.5' r='10' fill='%233ddc84' opacity='.18'/><ellipse cx='48' cy='23.5' rx='4.2' ry='6' fill='%233ddc84'/><ellipse cx='46.8' cy='21.5' rx='1' ry='2' fill='white' opacity='.55'/></g><g><rect x='113' y='9' width='4' height='5' rx='1' fill='%23222'/><circle cx='115' cy='19' r='10' fill='%234dabff' opacity='.18'/><ellipse cx='115' cy='19' rx='4.2' ry='6' fill='%234dabff'/><ellipse cx='113.8' cy='17' rx='1' ry='2' fill='white' opacity='.55'/></g><g><rect x='171' y='9' width='4' height='5' rx='1' fill='%23222'/><circle cx='173' cy='19' r='10' fill='%233ddc84' opacity='.18'/><ellipse cx='173' cy='19' rx='4.2' ry='6' fill='%233ddc84'/><ellipse cx='171.8' cy='17' rx='1' ry='2' fill='white' opacity='.55'/></g></svg>");
+}
+@keyframes xmas-twinkle { from { opacity: 0.45; } to { opacity: 1; } }
+
+/* Mobile : pas de guirlande */
+@media (max-width: 640px) { .xmas-garland { display: none !important; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .season-parts { display: none; }
+  .xmas-garland .a, .xmas-garland .b { animation: none; }
+}

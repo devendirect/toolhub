@@ -29,17 +29,32 @@ export interface ChangeEntry {
 
 export const CHANGELOG: ChangeEntry[] = [
   {
+    id: "2026-11-22-seasonal-themes",
+    date: "2026-11-22",
+    kind: "new",
+    text: {
+      fr: {
+        title: "Le site change d'habillage au fil des saisons",
+        body: "Après Noël, le site se pare des couleurs du Nouvel An avec un compte à rebours (26 décembre au 5 janvier), de la Saint-Valentin (7 au 14 février), de Pâques (la semaine de Pâques), d'Halloween (24 au 31 octobre), de l'été (juillet et août) et de la rentrée (25 août au 15 septembre). Seuls les couleurs et les décors changent, aucun outil n'est modifié, et un bandeau fermable accompagne chaque saison.",
+      },
+      en: {
+        title: "The site changes its look with the seasons",
+        body: "After Christmas, the site takes on the colors of New Year with a countdown (December 26 to January 5), Valentine's Day (February 7 to 14), Easter (the week of Easter), Halloween (October 24 to 31), summer (July and August) and back to school (August 25 to September 15). Only colors and decorations change, no tool is modified, and a banner you can close goes with each season.",
+      },
+    },
+  },
+  {
     id: "2026-11-22-xmas-theme",
     date: "2026-11-22",
     kind: "new",
     text: {
       fr: {
         title: "Le site se met aux couleurs de Noël en décembre",
-        body: "Pendant tout le mois de décembre, le site prend des couleurs de fête : accent rouge, neige légère, guirlande lumineuse sous l'en-tête, bonnet sur le logo et un petit sapin sur l'accueil. Les décors sont purement visuels, aucun outil n'est modifié, et un bandeau fermable souhaite de bonnes fêtes. Le site retrouve son apparence habituelle tout seul le 1er janvier.",
+        body: "Du 1er au 25 décembre, le site prend des couleurs de fête : accent rouge, neige légère, guirlande lumineuse sous l'en-tête, bonnet sur le logo et un petit sapin sur l'accueil. Les décors sont purement visuels, aucun outil n'est modifié, et un bandeau fermable souhaite de bonnes fêtes. Le thème s'arrête tout seul le 25 décembre.",
       },
       en: {
         title: "The site gets a Christmas look in December",
-        body: "Throughout December the site wears a festive look: a red accent, light snowfall, a string of lights under the header, a Santa hat on the logo and a small tree on the home page. The decorations are purely visual, no tool is changed, and a banner you can close wishes you happy holidays. The site returns to its usual look by itself on January 1st.",
+        body: "From December 1st to 25th the site wears a festive look: a red accent, light snowfall, a string of lights under the header, a Santa hat on the logo and a small tree on the home page. The decorations are purely visual, no tool is changed, and a banner you can close wishes you happy holidays. The theme stops by itself on December 25th.",
       },
     },
   },

@@ -3,7 +3,7 @@ import type { Lang } from "@/lib/types";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { PaletteLauncher } from "@/components/palette/PaletteLauncher";
-import { XmasBanner, XmasSnow } from "@/components/season/xmas";
+import { SeasonBanner, SeasonDecor } from "@/components/season/Season";
 
 export function AppShell({ children, lang }: { children: ReactNode; lang: Lang }) {
   return (
@@ -28,8 +28,8 @@ export function AppShell({ children, lang }: { children: ReactNode; lang: Lang }
         }}
       />
 
-      <XmasSnow />
-      <XmasBanner />
+      <SeasonDecor />
+      <SeasonBanner />
       <Header />
 
       <main className="relative z-10 flex-1 mx-auto w-full px-pad pb-20" style={{ maxWidth: "var(--maxw)" }}>
